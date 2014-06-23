@@ -1,0 +1,474 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		68F0A9C819587AEC00A97B86 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
+		68F0A9CA19587AEC00A97B86 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */; };
+		68F0A9CC19587AEC00A97B86 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
+		68F0A9D219587AEC00A97B86 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 68F0A9D019587AEC00A97B86 /* InfoPlist.strings */; };
+		68F0A9D419587AEC00A97B86 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0A9D319587AEC00A97B86 /* main.m */; };
+		68F0A9D819587AEC00A97B86 /* DHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0A9D719587AEC00A97B86 /* DHAppDelegate.m */; };
+		68F0A9DB19587AEC00A97B86 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 68F0A9D919587AEC00A97B86 /* Main.storyboard */; };
+		68F0A9DE19587AEC00A97B86 /* DHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0A9DD19587AEC00A97B86 /* DHViewController.m */; };
+		68F0A9E019587AEC00A97B86 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 68F0A9DF19587AEC00A97B86 /* Images.xcassets */; };
+		68F0A9E719587AEC00A97B86 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9E619587AEC00A97B86 /* XCTest.framework */; };
+		68F0A9E819587AEC00A97B86 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
+		68F0A9E919587AEC00A97B86 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
+		68F0A9F119587AEC00A97B86 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 68F0A9EF19587AEC00A97B86 /* InfoPlist.strings */; };
+		68F0A9F319587AEC00A97B86 /* PrincipiaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0A9F219587AEC00A97B86 /* PrincipiaTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		68F0A9EA19587AEC00A97B86 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 68F0A9BC19587AEC00A97B86 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 68F0A9C319587AEC00A97B86;
+			remoteInfo = Principia;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		68F0A9C419587AEC00A97B86 /* Principia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Principia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		68F0A9C719587AEC00A97B86 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		68F0A9CB19587AEC00A97B86 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		68F0A9CF19587AEC00A97B86 /* Principia-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Principia-Info.plist"; sourceTree = "<group>"; };
+		68F0A9D119587AEC00A97B86 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		68F0A9D319587AEC00A97B86 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		68F0A9D519587AEC00A97B86 /* Principia-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Principia-Prefix.pch"; sourceTree = "<group>"; };
+		68F0A9D619587AEC00A97B86 /* DHAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHAppDelegate.h; sourceTree = "<group>"; };
+		68F0A9D719587AEC00A97B86 /* DHAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DHAppDelegate.m; sourceTree = "<group>"; };
+		68F0A9DA19587AEC00A97B86 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		68F0A9DC19587AEC00A97B86 /* DHViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHViewController.h; sourceTree = "<group>"; };
+		68F0A9DD19587AEC00A97B86 /* DHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DHViewController.m; sourceTree = "<group>"; };
+		68F0A9DF19587AEC00A97B86 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		68F0A9E519587AEC00A97B86 /* PrincipiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrincipiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		68F0A9E619587AEC00A97B86 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		68F0A9EE19587AEC00A97B86 /* PrincipiaTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PrincipiaTests-Info.plist"; sourceTree = "<group>"; };
+		68F0A9F019587AEC00A97B86 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		68F0A9F219587AEC00A97B86 /* PrincipiaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrincipiaTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		68F0A9C119587AEC00A97B86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68F0A9CA19587AEC00A97B86 /* CoreGraphics.framework in Frameworks */,
+				68F0A9CC19587AEC00A97B86 /* UIKit.framework in Frameworks */,
+				68F0A9C819587AEC00A97B86 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		68F0A9E219587AEC00A97B86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68F0A9E719587AEC00A97B86 /* XCTest.framework in Frameworks */,
+				68F0A9E919587AEC00A97B86 /* UIKit.framework in Frameworks */,
+				68F0A9E819587AEC00A97B86 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		68F0A9BB19587AEC00A97B86 = {
+			isa = PBXGroup;
+			children = (
+				68F0A9CD19587AEC00A97B86 /* Principia */,
+				68F0A9EC19587AEC00A97B86 /* PrincipiaTests */,
+				68F0A9C619587AEC00A97B86 /* Frameworks */,
+				68F0A9C519587AEC00A97B86 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		68F0A9C519587AEC00A97B86 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				68F0A9C419587AEC00A97B86 /* Principia.app */,
+				68F0A9E519587AEC00A97B86 /* PrincipiaTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		68F0A9C619587AEC00A97B86 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				68F0A9C719587AEC00A97B86 /* Foundation.framework */,
+				68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */,
+				68F0A9CB19587AEC00A97B86 /* UIKit.framework */,
+				68F0A9E619587AEC00A97B86 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		68F0A9CD19587AEC00A97B86 /* Principia */ = {
+			isa = PBXGroup;
+			children = (
+				68F0A9D619587AEC00A97B86 /* DHAppDelegate.h */,
+				68F0A9D719587AEC00A97B86 /* DHAppDelegate.m */,
+				68F0A9D919587AEC00A97B86 /* Main.storyboard */,
+				68F0A9DC19587AEC00A97B86 /* DHViewController.h */,
+				68F0A9DD19587AEC00A97B86 /* DHViewController.m */,
+				68F0A9DF19587AEC00A97B86 /* Images.xcassets */,
+				68F0A9CE19587AEC00A97B86 /* Supporting Files */,
+			);
+			path = Principia;
+			sourceTree = "<group>";
+		};
+		68F0A9CE19587AEC00A97B86 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				68F0A9CF19587AEC00A97B86 /* Principia-Info.plist */,
+				68F0A9D019587AEC00A97B86 /* InfoPlist.strings */,
+				68F0A9D319587AEC00A97B86 /* main.m */,
+				68F0A9D519587AEC00A97B86 /* Principia-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		68F0A9EC19587AEC00A97B86 /* PrincipiaTests */ = {
+			isa = PBXGroup;
+			children = (
+				68F0A9F219587AEC00A97B86 /* PrincipiaTests.m */,
+				68F0A9ED19587AEC00A97B86 /* Supporting Files */,
+			);
+			path = PrincipiaTests;
+			sourceTree = "<group>";
+		};
+		68F0A9ED19587AEC00A97B86 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				68F0A9EE19587AEC00A97B86 /* PrincipiaTests-Info.plist */,
+				68F0A9EF19587AEC00A97B86 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		68F0A9C319587AEC00A97B86 /* Principia */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 68F0A9F619587AEC00A97B86 /* Build configuration list for PBXNativeTarget "Principia" */;
+			buildPhases = (
+				68F0A9C019587AEC00A97B86 /* Sources */,
+				68F0A9C119587AEC00A97B86 /* Frameworks */,
+				68F0A9C219587AEC00A97B86 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Principia;
+			productName = Principia;
+			productReference = 68F0A9C419587AEC00A97B86 /* Principia.app */;
+			productType = "com.apple.product-type.application";
+		};
+		68F0A9E419587AEC00A97B86 /* PrincipiaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 68F0A9F919587AEC00A97B86 /* Build configuration list for PBXNativeTarget "PrincipiaTests" */;
+			buildPhases = (
+				68F0A9E119587AEC00A97B86 /* Sources */,
+				68F0A9E219587AEC00A97B86 /* Frameworks */,
+				68F0A9E319587AEC00A97B86 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				68F0A9EB19587AEC00A97B86 /* PBXTargetDependency */,
+			);
+			name = PrincipiaTests;
+			productName = PrincipiaTests;
+			productReference = 68F0A9E519587AEC00A97B86 /* PrincipiaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		68F0A9BC19587AEC00A97B86 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = DH;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "David Hallgren";
+				TargetAttributes = {
+					68F0A9E419587AEC00A97B86 = {
+						TestTargetID = 68F0A9C319587AEC00A97B86;
+					};
+				};
+			};
+			buildConfigurationList = 68F0A9BF19587AEC00A97B86 /* Build configuration list for PBXProject "Principia" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 68F0A9BB19587AEC00A97B86;
+			productRefGroup = 68F0A9C519587AEC00A97B86 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				68F0A9C319587AEC00A97B86 /* Principia */,
+				68F0A9E419587AEC00A97B86 /* PrincipiaTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		68F0A9C219587AEC00A97B86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68F0A9E019587AEC00A97B86 /* Images.xcassets in Resources */,
+				68F0A9D219587AEC00A97B86 /* InfoPlist.strings in Resources */,
+				68F0A9DB19587AEC00A97B86 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		68F0A9E319587AEC00A97B86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68F0A9F119587AEC00A97B86 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		68F0A9C019587AEC00A97B86 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68F0A9D819587AEC00A97B86 /* DHAppDelegate.m in Sources */,
+				68F0A9DE19587AEC00A97B86 /* DHViewController.m in Sources */,
+				68F0A9D419587AEC00A97B86 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		68F0A9E119587AEC00A97B86 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68F0A9F319587AEC00A97B86 /* PrincipiaTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		68F0A9EB19587AEC00A97B86 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 68F0A9C319587AEC00A97B86 /* Principia */;
+			targetProxy = 68F0A9EA19587AEC00A97B86 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		68F0A9D019587AEC00A97B86 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				68F0A9D119587AEC00A97B86 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		68F0A9D919587AEC00A97B86 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				68F0A9DA19587AEC00A97B86 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		68F0A9EF19587AEC00A97B86 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				68F0A9F019587AEC00A97B86 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		68F0A9F419587AEC00A97B86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		68F0A9F519587AEC00A97B86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		68F0A9F719587AEC00A97B86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Principia/Principia-Prefix.pch";
+				INFOPLIST_FILE = "Principia/Principia-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		68F0A9F819587AEC00A97B86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Principia/Principia-Prefix.pch";
+				INFOPLIST_FILE = "Principia/Principia-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		68F0A9FA19587AEC00A97B86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Principia.app/Principia";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Principia/Principia-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "PrincipiaTests/PrincipiaTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		68F0A9FB19587AEC00A97B86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Principia.app/Principia";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Principia/Principia-Prefix.pch";
+				INFOPLIST_FILE = "PrincipiaTests/PrincipiaTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		68F0A9BF19587AEC00A97B86 /* Build configuration list for PBXProject "Principia" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68F0A9F419587AEC00A97B86 /* Debug */,
+				68F0A9F519587AEC00A97B86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		68F0A9F619587AEC00A97B86 /* Build configuration list for PBXNativeTarget "Principia" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68F0A9F719587AEC00A97B86 /* Debug */,
+				68F0A9F819587AEC00A97B86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		68F0A9F919587AEC00A97B86 /* Build configuration list for PBXNativeTarget "PrincipiaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68F0A9FA19587AEC00A97B86 /* Debug */,
+				68F0A9FB19587AEC00A97B86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 68F0A9BC19587AEC00A97B86 /* Project object */;
+}

@@ -27,6 +27,7 @@
 		68F0AA09195A184500A97B86 /* DHLevel1.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA08195A184500A97B86 /* DHLevel1.m */; };
 		68F0AA15195A92A700A97B86 /* DHLevelSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */; };
 		68F0AA18195A96D500A97B86 /* DHLevel2.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA17195A96D500A97B86 /* DHLevel2.m */; };
+		68F0AA1C195B256B00A97B86 /* DHLevel3.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA1B195B256B00A97B86 /* DHLevel3.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,9 @@
 		68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSelectionViewController.m; sourceTree = "<group>"; };
 		68F0AA16195A96D500A97B86 /* DHLevel2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevel2.h; sourceTree = "<group>"; };
 		68F0AA17195A96D500A97B86 /* DHLevel2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevel2.m; sourceTree = "<group>"; };
+		68F0AA19195A983D00A97B86 /* DHLevels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHLevels.h; sourceTree = "<group>"; };
+		68F0AA1A195B256300A97B86 /* DHLevel3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevel3.h; sourceTree = "<group>"; };
+		68F0AA1B195B256B00A97B86 /* DHLevel3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevel3.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,14 +142,14 @@
 				68F0A9D919587AEC00A97B86 /* Main.storyboard */,
 				68F0AA13195A92A700A97B86 /* DHLevelSelectionViewController.h */,
 				68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */,
+				68F0A9DC19587AEC00A97B86 /* DHGeometryViewController.h */,
+				68F0A9DD19587AEC00A97B86 /* DHGeometryViewController.m */,
 				68F0AA051959936C00A97B86 /* DHMath.h */,
 				68F0AA061959FBB000A97B86 /* DHMathCGVector.h */,
 				68F0A9FF1958C5AB00A97B86 /* DHGeometricObjects.h */,
 				68F0AA001958C5AB00A97B86 /* DHGeometricObjects.m */,
 				68F0A9FC1958BDD500A97B86 /* DHGeometryView.h */,
 				68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */,
-				68F0A9DC19587AEC00A97B86 /* DHGeometryViewController.h */,
-				68F0A9DD19587AEC00A97B86 /* DHGeometryViewController.m */,
 				68F0AA02195969A300A97B86 /* DHGeometricTools.h */,
 				68F0AA03195969A300A97B86 /* DHGeometricTools.m */,
 				68F0AA0A195A184C00A97B86 /* Levels */,
@@ -187,11 +191,14 @@
 		68F0AA0A195A184C00A97B86 /* Levels */ = {
 			isa = PBXGroup;
 			children = (
+				68F0AA19195A983D00A97B86 /* DHLevels.h */,
 				68F0AA0B195A188500A97B86 /* DHLevel.h */,
 				68F0AA07195A184500A97B86 /* DHLevel1.h */,
 				68F0AA08195A184500A97B86 /* DHLevel1.m */,
 				68F0AA16195A96D500A97B86 /* DHLevel2.h */,
 				68F0AA17195A96D500A97B86 /* DHLevel2.m */,
+				68F0AA1A195B256300A97B86 /* DHLevel3.h */,
+				68F0AA1B195B256B00A97B86 /* DHLevel3.m */,
 			);
 			name = Levels;
 			sourceTree = "<group>";
@@ -302,6 +309,7 @@
 				68F0A9D419587AEC00A97B86 /* main.m in Sources */,
 				68F0AA04195969A300A97B86 /* DHGeometricTools.m in Sources */,
 				68F0AA09195A184500A97B86 /* DHLevel1.m in Sources */,
+				68F0AA1C195B256B00A97B86 /* DHLevel3.m in Sources */,
 				68F0AA18195A96D500A97B86 /* DHLevel2.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

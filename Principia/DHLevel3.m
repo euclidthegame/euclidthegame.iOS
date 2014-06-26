@@ -1,18 +1,18 @@
 //
-//  DHLevel2.m
+//  DHLevel3.m
 //  Principia
 //
 //  Created by David Hallgren on 2014-06-25.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
 //
 
-#import "DHLevel2.h"
+#import "DHLevel3.h"
 
-@implementation DHLevel2
+@implementation DHLevel3
 
 - (NSString*)levelTitle
 {
-    return @"Challenge 2";
+    return @"Challenge 3";
 }
 
 - (NSString*)levelDescription

@@ -7,6 +7,8 @@
 //
 
 #import "DHLevelSelectionViewController.h"
+#import "DHGeometryViewController.h"
+#import "DHLevels.h"
 
 @interface DHLevelSelectionViewController ()
 
@@ -37,19 +39,27 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"%@", indexPath);
     NSString * storyboardName = @"Main";
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
-    UIViewController * vc = [storyboard instantiateViewControllerWithIdentifier:@"GeometryView"];
-    [self.navigationController pushViewController:vc animated:YES];
+    DHGeometryViewController * vc = [storyboard instantiateViewControllerWithIdentifier:@"GeometryView"];
+    
+    id<DHLevel> level = [self levelForIndexPath:indexPath];
+    
+    if (level) {
+        vc.currentLevel = level;
+        [self.navigationController pushViewController:vc animated:YES];
+    }
+    
 }
 
-#pragma mark - Navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (id<DHLevel>)levelForIndexPath:(NSIndexPath*)indexPath
 {
-    //segue.destinationViewController;
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    assert(indexPath.row < 3);
+    NSString* levelClass = [NSString stringWithFormat:@"DHLevel%d", indexPath.row + 1];
+    
+    id<DHLevel> level = [[NSClassFromString(levelClass) alloc] init];;
+    
+    return level;
 }
 
 @end

@@ -10,23 +10,67 @@
 #import "DHGeometricObjects.h"
 
 
-@interface DHGeometricTools : NSObject
-
+@protocol DHGeometryToolDelegate <NSObject>
+- (NSArray*)geometryObjects;
+- (void)toolTipDidChange:(NSString*)currentTip;
+- (void)addNewGeometricObject:(id)object;
 @end
 
-@interface DHLineTool : NSObject
+
+@protocol DHGeometryTool <NSObject>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+@end
+
+
+@interface DHPointTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+@end
+
+
+@interface DHLineTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
 
-@interface DHCircleTool : NSObject
+
+@interface DHCircleTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
 @property (nonatomic, weak) DHPoint* center;
 @end
 
-@interface DHIntersectTool : NSObject
-
+@interface DHIntersectTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
 @end
 
-@interface DHMoveTool : NSObject
+@interface DHMoveTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
 @property (nonatomic, weak) DHPoint* point;
 @property (nonatomic) CGPoint touchStart;
 @end

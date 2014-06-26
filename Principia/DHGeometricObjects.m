@@ -10,6 +10,16 @@
 #import "DHMath.h"
 
 @implementation DHPoint
+- (instancetype) initWithPositionX:(CGFloat)x andY:(CGFloat)y
+{
+    self = [super init];
+    
+    if (self) {
+        _position = CGPointMake(x, y);
+    }
+    
+    return self;
+}
 - (void)drawInContext:(CGContextRef)context
 {
     CGFloat pointWidth = 10.0f;

@@ -7,10 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DHGeometricObjects.h"
 
 @protocol DHLevel <NSObject>
 
+- (NSString*)levelTitle;
+- (NSString*)levelDescription;
 - (void)setUpLevel:(NSMutableArray*)geometricObjects;
-- (BOOL)isLevelComplete;
+- (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;
 
 @end

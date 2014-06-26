@@ -1,5 +1,5 @@
 //
-//  DHLevel2.h
+//  DHLevel3.h
 //  Principia
 //
 //  Created by David Hallgren on 2014-06-25.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevel2 : NSObject <DHLevel>
+@interface DHLevel3 : NSObject <DHLevel>
 
 - (NSString*)levelTitle;
 - (NSString*)levelDescription;

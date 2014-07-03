@@ -76,7 +76,6 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
     CGPoint touchPoint = [touch locationInView:touch.view];
     DHPoint* point = [[DHPoint alloc] init];
     point.position = touchPoint;
-    
     [self.delegate addNewGeometricObject:point];
 }
 @end
@@ -100,7 +99,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
     CGPoint touchPoint = [touch locationInView:touch.view];
     DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects);
     if (point) {
-        if (self.startPoint) {
+        if (self.startPoint && point != self.startPoint) {
             DHLine* line = [[DHLine alloc] init];
             line.start = self.startPoint;
             line.end = point;
@@ -145,7 +144,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
     CGPoint touchPoint = [touch locationInView:touch.view];
     DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects);
     if (point) {
-        if (self.center) {
+        if (self.center && point != self.center) {
             DHCircle* circle = [[DHCircle alloc] init];
             circle.center = self.center;
             circle.pointOnRadius = point;
@@ -190,6 +189,12 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
     CGPoint touchPoint = [touch locationInView:touch.view];    
     NSArray* nearObjects = FindIntersectablesNearPoint(touchPoint, self.delegate.geometryObjects);
     
+    NSMutableArray* intersectionPoints = [[NSMutableArray alloc] init];
+    
+    if (nearObjects.count < 2) {
+        return;
+    }
+    
     for (int index1 = 0; index1 < nearObjects.count-1; ++index1) {
         for (int index2 = index1+1; index2 < nearObjects.count; ++index2) {
             id object1 = [nearObjects objectAtIndex:index1];
@@ -202,19 +207,20 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
                 DHCircle* c2 = object2;
                 
                 if (DoCirclesIntersect(c1, c2)) {
-                    DHIntersectionPointCircleCircle* iPoint = [[DHIntersectionPointCircleCircle alloc] init];
-                    iPoint.c1 = c1;
-                    iPoint.c2 = c2;
-                    
-                    // Check if above or below line
-                    CGFloat m = (c1.center.position.y - c2.center.position.y)/(c1.center.position.x - c2.center.position.x);
-                    if (touchPoint.y > m*touchPoint.x + (c1.center.position.y - m*c1.center.position.x)) {
+                    { // First variant
+                        DHIntersectionPointCircleCircle* iPoint = [[DHIntersectionPointCircleCircle alloc] init];
+                        iPoint.c1 = c1;
+                        iPoint.c2 = c2;
                         iPoint.onPositiveY = false;
-                    } else {
-                        iPoint.onPositiveY = true;
+                        [intersectionPoints addObject:iPoint];
                     }
-                    
-                    [self.delegate addNewGeometricObject:iPoint];
+                    { // Second variant
+                        DHIntersectionPointCircleCircle* iPoint = [[DHIntersectionPointCircleCircle alloc] init];
+                        iPoint.c1 = c1;
+                        iPoint.c2 = c2;
+                        iPoint.onPositiveY = true;
+                        [intersectionPoints addObject:iPoint];
+                    }
                 }
             }
             
@@ -228,8 +234,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
                     DHIntersectionPointLineLine* iPoint = [[DHIntersectionPointLineLine alloc] init];
                     iPoint.l1 = l1;
                     iPoint.l2 = l2;
-                    
-                    [self.delegate addNewGeometricObject:iPoint];
+                    [intersectionPoints addObject:iPoint];
                 }
             }
             
@@ -239,13 +244,22 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
                 DHLine* l = object1;
                 DHCircle* c = object2;
                 
-                DHIntersectionResult result = DoLineAndCircleIntersect(l, c);
+                DHIntersectionResult result = DoLineAndCircleIntersect(l, c, NO);
                 if (result.intersect) {
-                    DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
-                    iPoint.l = l;
-                    iPoint.c = c;
-                    
-                    [self.delegate addNewGeometricObject:iPoint];
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = NO;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = YES;
+                        [intersectionPoints addObject:iPoint];
+                    }
                 }
             }
             if ([[object1 class] isSubclassOfClass:[DHCircle class]] &&
@@ -253,16 +267,44 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
                 DHCircle* c = object1;
                 DHLine* l = object2;
                 
-                DHIntersectionResult result = DoLineAndCircleIntersect(l, c);
+                DHIntersectionResult result = DoLineAndCircleIntersect(l, c, NO);
                 if (result.intersect) {
-                    DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
-                    iPoint.l = l;
-                    iPoint.c = c;
-                    
-                    [self.delegate addNewGeometricObject:iPoint];
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = NO;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = YES;
+                        [intersectionPoints addObject:iPoint];
+                    }
                 }
             }
         }
+    }
+    
+    if (intersectionPoints.count < 1) {
+        return;
+    }
+    
+    // Found closest point
+    CGFloat closestDistance = CGFLOAT_MAX;
+    DHPoint* closestPoint = nil;
+    for (DHPoint* iPoint in intersectionPoints) {
+        CGFloat distance = DistanceBetweenPoints(touchPoint, iPoint.position);
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestPoint = iPoint;
+        }
+    }
+    
+    if (closestPoint) {
+        [self.delegate addNewGeometricObject:closestPoint];
     }
 }
 
@@ -272,7 +314,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
 @implementation DHMoveTool
 - (NSString*)initialToolTip
 {
-    return @"Tap and hold on a point and them move it to a new location";
+    return @"Tap and hold on a point and then move it to a new location";
 }
 - (void)touchBegan:(UITouch*)touch
 {
@@ -305,5 +347,95 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects)
 {
     self.point = nil;
     [self.delegate toolTipDidChange:self.initialToolTip];
+}
+@end
+
+
+@implementation DHMidPointTool
+- (NSString*)initialToolTip
+{
+    return @"Tap a line or two points two create a midpoint";
+}
+- (void)touchBegan:(UITouch*)touch
+{
+    
+}
+- (void)touchMoved:(UITouch*)touch
+{
+    
+}
+- (void)touchEnded:(UITouch*)touch
+{
+    CGPoint touchPoint = [touch locationInView:touch.view];
+    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects);
+    if (point) {
+        if (self.startPoint && point != self.startPoint) {
+            DHMidPoint* midPoint = [[DHMidPoint alloc] init];
+            midPoint.start = self.startPoint;
+            midPoint.end = point;
+            
+            self.startPoint.highlighted = false;
+            self.startPoint = nil;
+            
+            [self.delegate addNewGeometricObject:midPoint];
+            [self.delegate toolTipDidChange:self.initialToolTip];
+        } else {
+            self.startPoint = point;
+            point.highlighted = true;
+            [self.delegate toolTipDidChange:@"Tap on a second point, between which to create the midpoint"];
+            [touch.view setNeedsDisplay];
+        }
+    }
+}
+- (void)dealloc
+{
+    if (self.startPoint) {
+        self.startPoint.highlighted = false;
+    }
+}
+@end
+
+
+@implementation DHRayTool
+- (NSString*)initialToolTip
+{
+    return @"Tap on a point to mark the start of a new ray";
+}
+- (void)touchBegan:(UITouch*)touch
+{
+    
+}
+- (void)touchMoved:(UITouch*)touch
+{
+    
+}
+- (void)touchEnded:(UITouch*)touch
+{
+    CGPoint touchPoint = [touch locationInView:touch.view];
+    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects);
+    if (point) {
+        if (self.startPoint && point != self.startPoint) {
+            DHRay* line = [[DHRay alloc] init];
+            line.start = self.startPoint;
+            line.direction = point;
+            
+            self.startPoint.highlighted = false;
+            self.startPoint = nil;
+            
+            [self.delegate addNewGeometricObject:line];
+            [self.delegate toolTipDidChange:self.initialToolTip];
+        } else {
+            self.startPoint = point;
+            point.highlighted = true;
+            [self.delegate toolTipDidChange:@"Tap on a second point that the ray will pass through"];
+            [touch.view setNeedsDisplay];
+        }
+    }
+}
+- (void)dealloc
+{
+    if (self.startPoint) {
+        self.startPoint.highlighted = false;
+    }
 }
 @end

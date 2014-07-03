@@ -1,15 +1,15 @@
 //
-//  DHLevel1.h
+//  DHLevel6.h
 //  Principia
 //
-//  Created by David Hallgren on 2014-06-24.
+//  Created by David Hallgren on 2014-07-02.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevel1 : NSObject <DHLevel>
+@interface DHLevel6 : NSObject <DHLevel>
 
 - (NSString*)title;
 - (NSString*)levelDescription;

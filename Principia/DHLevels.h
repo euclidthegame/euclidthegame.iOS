@@ -9,7 +9,10 @@
 #ifndef Principia_DHLevels_h
 #define Principia_DHLevels_h
 
+#import "DHLevelTutorial.h"
 #import "DHLevel1.h"
 #import "DHLevel2.h"
+#import "DHLevel3.h"
+#import "DHLevel3.h"
 
 #endif

@@ -1,0 +1,18 @@
+Ideas:
+Add ability to draw line from anywhere, create point of not found near taps
+Add ability to draw line with one swipe, create/connect to point on touch start and end
+Add ability to draw circle by marking radius first and then select where to center it
+Add highlight functionality to lines
+Only show tools for each level that are unlocked
+Lock levels until previous has been beaten?
+Add playground mode with all tools unlocked
+Add bisect tool
+Expand on tutorial-level: Explain interface, Points, line, circle, ray, intersect
+Implement check for level solutions even after perturbation to points
+
+Level ideas:
+Make square
+Make midpoint (bisect line segment)
+Bisect angle
+Make perpendicular line
+Make perpendicular line to line segment starting from specified fixed point

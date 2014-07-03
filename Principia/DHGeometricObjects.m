@@ -8,14 +8,32 @@
 
 #import "DHGeometricObjects.h"
 #import "DHMath.h"
+#import "DHGeometricObjectLabeler.h"
+
+@implementation DHGeometricObject
+
+
+@end
 
 @implementation DHPoint
+- (instancetype) init
+{
+    self = [super init];
+    
+    if (self) {
+        _label = [DHGeometricObjectLabeler nextLabel];
+    }
+    
+    return self;
+}
+
 - (instancetype) initWithPositionX:(CGFloat)x andY:(CGFloat)y
 {
     self = [super init];
     
     if (self) {
         _position = CGPointMake(x, y);
+        _label = [DHGeometricObjectLabeler nextLabel];
     }
     
     return self;
@@ -27,7 +45,7 @@
 
     CGContextSaveGState(context);
     
-    if (_highlighted) {
+    if (self.highlighted) {
         CGSize shadowSize = CGSizeMake(0, 0);
         CGContextSetShadow(context, shadowSize, 10.0f);
         CGContextSetLineWidth(context, 1.0);
@@ -43,6 +61,22 @@
     }
     
     CGContextRestoreGState(context);
+    
+    if (self.label) {
+        /// Make a copy of the default paragraph style
+        NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        paragraphStyle.alignment = NSTextAlignmentCenter;
+        
+        NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:10],
+                                     NSParagraphStyleAttributeName: paragraphStyle};
+        CGSize textSize = [self.label sizeWithAttributes:attributes];
+        CGRect labelRect = CGRectMake(self.position.x - textSize.width*0.5f,
+                                      self.position.y - pointWidth*0.5f - 5 - textSize.height,
+                                      textSize.width, textSize.height);
+        [self.label drawInRect:labelRect withAttributes:attributes];
+
+    }
 }
 @end
 
@@ -50,6 +84,10 @@
 - (CGFloat)length
 {
     return DistanceBetweenPoints(_start.position, _end.position);
+}
+- (CGVector)vector
+{
+    return CGVectorMake(_end.position.x - _start.position.x, _end.position.y - _start.position.y);
 }
 - (void)drawInContext:(CGContextRef)context
 {
@@ -157,8 +195,52 @@
 
 - (CGPoint)position
 {
-    DHIntersectionResult result = DoLineAndCircleIntersect(_l, _c);
+    DHIntersectionResult result = DoLineAndCircleIntersect(_l, _c, _preferEnd);
     return result.intersectionPoint;
 }
 
+@end
+
+
+@implementation DHMidPoint
+- (void)drawInContext:(CGContextRef)context
+{
+    [super drawInContext:context];
+}
+- (CGPoint)position
+{
+    return MidPointFromPoints(self.start.position, self.end.position);
+}
+@end
+
+
+@implementation DHPointOnLine
+- (void)drawInContext:(CGContextRef)context
+{
+    [super drawInContext:context];
+}
+- (CGPoint)position
+{
+    CGPoint p1 = self.line.start.position;
+    CGPoint p2 = self.line.end.position;
+    return CGPointMake(p1.x + self.tValue * (p2.x - p1.x), p1.y + self.tValue * (p2.y - p1.y));
+}
+@end
+
+
+@implementation DHRay
+- (void)drawInContext:(CGContextRef)context
+{
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+    
+    CGPoint endPoint;
+    endPoint.x = self.start.position.x + 1000*(self.direction.position.x - self.start.position.x);
+    endPoint.y = self.start.position.y + 1000*(self.direction.position.y - self.start.position.y);
+    
+    CGContextMoveToPoint(context, self.start.position.x, self.start.position.y);
+    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
+    CGContextStrokePath(context);
+}
 @end

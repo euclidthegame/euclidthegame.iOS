@@ -20,6 +20,24 @@ typedef struct DHIntersectionResult {
     CGPoint intersectionPoint;
 } DHIntersectionResult;
 
+#pragma mark - Floating point comparison
+
+#ifndef CGFLOAT_EPSILON
+#if CGFLOAT_IS_DOUBLE
+#define CGFLOAT_EPSILON DBL_EPSILON
+#else
+#define CGFLOAT_EPSILON FLT_EPSILON
+#endif
+#endif
+static BOOL CGFloatsEqualWithinEpsilon(CGFloat a, CGFloat b)
+{
+    if(a == b) return YES;
+    
+    if (fabs(a-b) < 5 * CGFLOAT_EPSILON * fabs(a+b) || fabs(a-b) < CGFLOAT_MIN) return YES;
+    
+    return NO;
+}
+
 #pragma mark - Distance functions
 static CGFloat DistanceBetweenPoints(CGPoint a, CGPoint b)
 {
@@ -84,6 +102,15 @@ static BOOL DoLinesIntersect(DHLine* l1, DHLine* l2)
     CGPoint p2 = l2.start.position;
     CGPoint q2 = l2.end.position;
     
+    if (CGPointEqualToPoint(p1, q1) ||
+        CGPointEqualToPoint(p1, p2) ||
+        CGPointEqualToPoint(p1, q2) ||
+        CGPointEqualToPoint(q1, p2) ||
+        CGPointEqualToPoint(q1, q2) ||
+        CGPointEqualToPoint(p2, q2)) {
+        return false;
+    }
+    
     // Find the four orientations
     int o1 = OrientationOfPoints(p1, q1, p2);
     int o2 = OrientationOfPoints(p1, q1, q2);
@@ -96,7 +123,7 @@ static BOOL DoLinesIntersect(DHLine* l1, DHLine* l2)
     return false;
 }
 
-static DHIntersectionResult DoLineAndCircleIntersect(DHLine* line, DHCircle* circle)
+static DHIntersectionResult DoLineAndCircleIntersect(DHLine* line, DHCircle* circle, BOOL preferEnd)
 {
     DHIntersectionResult result;
     result.intersectionPoint.x = NAN;
@@ -119,7 +146,7 @@ static DHIntersectionResult DoLineAndCircleIntersect(DHLine* line, DHCircle* cir
     if (discr < 0.0f) return result;
     
     CGFloat t = -b - sqrt(discr);
-    if (t < 0.0f) {
+    if (t < 0.0f || (preferEnd && -b + sqrt(discr) <= l)) {
         t = -b + sqrt(discr);
     }
     
@@ -132,6 +159,30 @@ static DHIntersectionResult DoLineAndCircleIntersect(DHLine* line, DHCircle* cir
     }
     
     return result;
+}
+
+#pragma mark - Other
+static BOOL AreLinesConnected(DHLine* l1, DHLine* l2)
+{
+    if (l1.start == l2.start || l1.start == l2.end || l1.end == l2.start || l1.end == l2.end) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+static BOOL AreLinesEqual(DHLine* l1, DHLine* l2)
+{
+    if ((l1.start == l2.start && l1.end == l2.end) || (l1.start == l2.end && l1.end == l2.start)) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+static CGPoint MidPointFromPoints(CGPoint p1, CGPoint p2)
+{
+    return CGPointMake(0.5*(p1.x + p2.x), 0.5*(p1.y + p2.y));
 }
 
 #pragma clang diagnostic pop

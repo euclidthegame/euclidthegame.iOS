@@ -8,12 +8,19 @@
 
 #import <Foundation/Foundation.h>
 #import "DHGeometricObjects.h"
+#import "DHGeometricTools.h"
+#import "DHMath.h"
 
 @protocol DHLevel <NSObject>
 
-- (NSString*)levelTitle;
+@required
+- (NSString*)title;
+- (NSString*)subTitle;
 - (NSString*)levelDescription;
 - (void)setUpLevel:(NSMutableArray*)geometricObjects;
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;
+
+@optional
+- (DHToolsAvailable)availableTools;
 
 @end

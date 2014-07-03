@@ -25,9 +25,17 @@
     // Drawing code
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    for (id point in self.geometricObjects) {
-        [point drawInContext:context];
+    for (id object in self.geometricObjects) {
+        [object drawInContext:context];
     }
+    
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 1.0);
+    
+    CGContextMoveToPoint(context, 0, 0);
+    CGContextAddLineToPoint(context, self.bounds.size.width, 0);
+    CGContextStrokePath(context);
 }
 
 @end

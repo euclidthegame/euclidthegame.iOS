@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevel1 : NSObject <DHLevel>
+@interface DHLevelTutorial : NSObject <DHLevel>
 
 - (NSString*)title;
 - (NSString*)levelDescription;

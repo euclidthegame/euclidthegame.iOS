@@ -9,6 +9,18 @@
 #import <Foundation/Foundation.h>
 #import "DHGeometricObjects.h"
 
+typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
+{
+    DHPointToolAvailable = 1 << 0,
+    DHLineToolAvailable = 1 << 1,
+    DHRayToolAvailable = 1 << 2,
+    DHCircleToolAvailable = 1 << 3,
+    DHIntersectToolAvailable = 1 << 4,
+    DHMidpointToolAvailable = 1 << 5,
+    DHMoveToolAvailable = 1 << 6,
+    DHAllToolsAvailable = NSUIntegerMax
+};
+
 
 @protocol DHGeometryToolDelegate <NSObject>
 - (NSArray*)geometryObjects;
@@ -73,4 +85,24 @@
 
 @property (nonatomic, weak) DHPoint* point;
 @property (nonatomic) CGPoint touchStart;
+@end
+
+@interface DHMidPointTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
+@property (nonatomic, weak) DHPoint* startPoint;
+@end
+
+@interface DHRayTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
+@property (nonatomic, weak) DHPoint* startPoint;
 @end

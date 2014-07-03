@@ -11,7 +11,7 @@
 
 @interface DHLevel2 : NSObject <DHLevel>
 
-- (NSString*)levelTitle;
+- (NSString*)title;
 - (NSString*)levelDescription;
 - (void)setUpLevel:(NSMutableArray *)geometricObjects;
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;

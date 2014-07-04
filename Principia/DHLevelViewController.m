@@ -55,6 +55,14 @@
     [DHGeometricObjectLabeler reset];
     [_currentLevel setUpLevel:_geometricObjects];
     
+    // Set up completion message
+    self.levelCompletionMessage.layer.cornerRadius = 10.0;
+    self.levelCompletionMessage.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.levelCompletionMessage.layer.shadowOffset = CGSizeMake(5, 5);
+    self.levelCompletionMessage.layer.shadowOpacity = 0.5;
+    self.levelCompletionMessage.layer.shadowRadius = 10.0;
+    [self.levelCompletionMessage removeFromSuperview];
+    
     
 }
 
@@ -71,11 +79,11 @@
     [self.geometryView setNeedsDisplay];
     
     // Test if level matches completion objective
-    if ([_currentLevel isLevelComplete:_geometricObjects]) {
+    if ([_currentLevel isLevelComplete:_geometricObjects] && self.levelCompletionMessage.superview == nil) {
         NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
         [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyCompleted];
         [DHLevelResults newResult:result forLevel:NSStringFromClass([_currentLevel class])];
-        NSLog(@"Level competed");
+        [self showLevelCompleteMessage];
     }
 }
 
@@ -85,6 +93,7 @@
     [_geometricObjects removeAllObjects];
     [_currentLevel setUpLevel:_geometricObjects];
     [self.geometryView setNeedsDisplay];
+    [self.levelCompletionMessage removeFromSuperview];
 }
 
 #pragma mark Layout/appereance
@@ -179,5 +188,19 @@
         self.geometryView = (DHGeometryView*)childViewController.view;
         self.geometryViewController = childViewController;
     }
+}
+
+- (void)showLevelCompleteMessage
+{
+    self.levelCompletionMessage.alpha = 0;
+    [self.view addSubview:self.levelCompletionMessage];
+    [UIView animateWithDuration:1.0
+                          delay:0.0
+                        options: UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         self.levelCompletionMessage.alpha = 1;
+                     }
+                     completion:^(BOOL finished){
+                     }];
 }
 @end

@@ -11,7 +11,7 @@
 
 #import "DHLevelTutorial.h"
 #import "DHLevel1.h"
-#import "DHLevel2.h"
+#import "DHLevelEquiTri.h"
 #import "DHLevel3.h"
 #import "DHLevel3.h"
 

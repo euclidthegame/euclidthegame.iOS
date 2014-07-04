@@ -37,8 +37,12 @@
     
     // Create levels array
     _levels = [[NSMutableArray alloc] init];
+    
     [_levels addObject:[[DHLevelTutorial alloc] init]];
-    for (int i = 1; i < 100; ++i) {
+    [_levels addObject:[[DHLevelEquiTri alloc] init]];
+    [_levels addObject:[[DHLevel3 alloc] init]];
+    
+    /*for (int i = 1; i < 100; ++i) {
         NSString* levelClass = [NSString stringWithFormat:@"DHLevel%d", i];
         id<DHLevel> level = [[NSClassFromString(levelClass) alloc] init];;
         if (level) {
@@ -46,7 +50,7 @@
         } else {
             break;
         }
-    }
+    }*/
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear results" style:UIBarButtonItemStylePlain target:self action:@selector(clearLevelResults)];
 }

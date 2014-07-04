@@ -37,8 +37,8 @@
 - (void)setUpLevel:(NSMutableArray *)geometricObjects
 {
     DHPointOnLine* p1 = [[DHPointOnLine alloc] init];
-    DHPoint* p2 = [[DHPoint alloc] initWithPositionX:500 andY:300];
-    DHPoint* p3 = [[DHPoint alloc] initWithPositionX:200 andY:300];
+    DHPoint* p2 = [[DHPoint alloc] initWithPositionX:200 andY:300];
+    DHPoint* p3 = [[DHPoint alloc] initWithPositionX:500 andY:300];
     
     DHLine* l1 = [[DHLine alloc] init];
     l1.start = p2;
@@ -57,6 +57,29 @@
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
+{
+    BOOL complete = [self isLevelCompleteHelper:geometricObjects];
+    
+    if (!complete) {
+        return NO;
+    }
+
+    // Move B and C and ensure solution holds    
+    CGPoint pointB = _lineBC.start.position;
+    CGPoint pointC = _lineBC.end.position;
+    
+    _lineBC.start.position = CGPointMake(100, 100);
+    _lineBC.end.position = CGPointMake(400, 400);
+    
+    complete = [self isLevelCompleteHelper:geometricObjects];
+
+    _lineBC.start.position = pointB;
+    _lineBC.end.position = pointC;
+    
+    return complete;
+}
+
+- (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];

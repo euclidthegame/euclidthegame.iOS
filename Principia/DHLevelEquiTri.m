@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
 //
 
-#import "DHLevel2.h"
+#import "DHLevelEquiTri.h"
 
-@implementation DHLevel2
+@implementation DHLevelEquiTri
 
 - (NSString*)title
 {
@@ -23,6 +23,12 @@
 - (NSString*)levelDescription
 {
     return @"Create 3 lines forming an equilateral triangle (a triangle whose sides all are of equal length)";
+}
+
+- (DHToolsAvailable)availableTools
+{
+    return (DHPointToolAvailable | DHLineToolAvailable | DHRayToolAvailable | DHCircleToolAvailable |
+            DHIntersectToolAvailable | DHMoveToolAvailable);
 }
 
 - (void)setUpLevel:(NSMutableArray *)geometricObjects

@@ -26,7 +26,7 @@
 		68F0AA04195969A300A97B86 /* DHGeometricTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA03195969A300A97B86 /* DHGeometricTools.m */; };
 		68F0AA09195A184500A97B86 /* DHLevel1.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA08195A184500A97B86 /* DHLevel1.m */; };
 		68F0AA15195A92A700A97B86 /* DHLevelSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */; };
-		68F0AA18195A96D500A97B86 /* DHLevel2.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA17195A96D500A97B86 /* DHLevel2.m */; };
+		68F0AA18195A96D500A97B86 /* DHLevelEquiTri.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA17195A96D500A97B86 /* DHLevelEquiTri.m */; };
 		68F0AA1C195B256B00A97B86 /* DHLevel3.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA1B195B256B00A97B86 /* DHLevel3.m */; };
 		68F0AA25195CBCA200A97B86 /* DHLevelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA24195CBCA200A97B86 /* DHLevelViewController.m */; };
 		68F0AA2A195E00D800A97B86 /* DHLevel4.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA29195E00D800A97B86 /* DHLevel4.m */; };
@@ -80,8 +80,8 @@
 		68F0AA0B195A188500A97B86 /* DHLevel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHLevel.h; sourceTree = "<group>"; };
 		68F0AA13195A92A700A97B86 /* DHLevelSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSelectionViewController.h; sourceTree = "<group>"; };
 		68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSelectionViewController.m; sourceTree = "<group>"; };
-		68F0AA16195A96D500A97B86 /* DHLevel2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevel2.h; sourceTree = "<group>"; };
-		68F0AA17195A96D500A97B86 /* DHLevel2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevel2.m; sourceTree = "<group>"; };
+		68F0AA16195A96D500A97B86 /* DHLevelEquiTri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelEquiTri.h; sourceTree = "<group>"; };
+		68F0AA17195A96D500A97B86 /* DHLevelEquiTri.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelEquiTri.m; sourceTree = "<group>"; };
 		68F0AA19195A983D00A97B86 /* DHLevels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHLevels.h; sourceTree = "<group>"; };
 		68F0AA1A195B256300A97B86 /* DHLevel3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevel3.h; sourceTree = "<group>"; };
 		68F0AA1B195B256B00A97B86 /* DHLevel3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevel3.m; sourceTree = "<group>"; };
@@ -213,8 +213,8 @@
 				68F0AA3B1961DE5100A97B86 /* DHLevelTutorial.m */,
 				68F0AA07195A184500A97B86 /* DHLevel1.h */,
 				68F0AA08195A184500A97B86 /* DHLevel1.m */,
-				68F0AA16195A96D500A97B86 /* DHLevel2.h */,
-				68F0AA17195A96D500A97B86 /* DHLevel2.m */,
+				68F0AA16195A96D500A97B86 /* DHLevelEquiTri.h */,
+				68F0AA17195A96D500A97B86 /* DHLevelEquiTri.m */,
 				68F0AA1A195B256300A97B86 /* DHLevel3.h */,
 				68F0AA1B195B256B00A97B86 /* DHLevel3.m */,
 				68F0AA28195E00CF00A97B86 /* DHLevel4.h */,
@@ -377,7 +377,7 @@
 				68F0AA2A195E00D800A97B86 /* DHLevel4.m in Sources */,
 				68F0AA3F1961F3B000A97B86 /* DHLevelResults.m in Sources */,
 				68F0AA1C195B256B00A97B86 /* DHLevel3.m in Sources */,
-				68F0AA18195A96D500A97B86 /* DHLevel2.m in Sources */,
+				68F0AA18195A96D500A97B86 /* DHLevelEquiTri.m in Sources */,
 				68F0AA45196420C700A97B86 /* DHLevel6.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -585,6 +585,7 @@
 				68F0A9F819587AEC00A97B86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		68F0A9F919587AEC00A97B86 /* Build configuration list for PBXNativeTarget "PrincipiaTests" */ = {
 			isa = XCConfigurationList;
@@ -593,6 +594,7 @@
 				68F0A9FB19587AEC00A97B86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

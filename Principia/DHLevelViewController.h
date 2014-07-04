@@ -17,6 +17,7 @@
 @property (nonatomic, strong) id<DHLevel> currentLevel;
 
 @property (nonatomic, weak) IBOutlet UISegmentedControl* toolControl;
+@property (nonatomic, strong) IBOutlet UIView* levelCompletionMessage;
 @property (nonatomic, weak) IBOutlet UILabel* toolInstruction;
 @property (nonatomic, weak) IBOutlet UILabel* levelInstruction;
 @property (nonatomic, weak) IBOutlet DHGeometryView* geometryView;

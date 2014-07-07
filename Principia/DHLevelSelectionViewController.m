@@ -40,17 +40,19 @@
     
     [_levels addObject:[[DHLevelTutorial alloc] init]];
     [_levels addObject:[[DHLevelEquiTri alloc] init]];
-    [_levels addObject:[[DHLevel3 alloc] init]];
-    
-    /*for (int i = 1; i < 100; ++i) {
-        NSString* levelClass = [NSString stringWithFormat:@"DHLevel%d", i];
-        id<DHLevel> level = [[NSClassFromString(levelClass) alloc] init];;
-        if (level) {
-            [_levels addObject:level];
-        } else {
-            break;
-        }
-    }*/
+    [_levels addObject:[[DHLevelMidPoint alloc] init]];
+    [_levels addObject:[[DHLevelBisect alloc] init]];
+    [_levels addObject:[[DHLevelPerpendicular alloc] init]];
+    [_levels addObject:[[DHLevelPerpendicularB alloc] init]];
+    [_levels addObject:[[DHLevelParallellLines alloc] init]];
+    [_levels addObject:[[DHLevelLineCopy alloc] init]];
+    [_levels addObject:[[DHLevelLineCopy2 alloc] init]];
+    [_levels addObject:[[DHLevelMakeCompass alloc] init]];
+    [_levels addObject:[[DHLevelLineCopyOnLine alloc] init]];
+    [_levels addObject:[[DHLevelNonEquiTri alloc] init]];
+    [_levels addObject:[[DHLevelCopyAngle alloc] init]];
+    [_levels addObject:[[DHLevelCircleCenter alloc] init]];
+    [_levels addObject:[[DHLevelMakeTangent alloc] init]];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear results" style:UIBarButtonItemStylePlain target:self action:@selector(clearLevelResults)];
 }
@@ -84,7 +86,14 @@
     
     id<DHLevel> level = [_levels objectAtIndex:indexPath.row];
     
-    cell.textLabel.text = [level title];
+    NSString* title;
+    if (indexPath.row == 0) {
+        title = @"Tutorial";
+    } else if (indexPath.row > 0) {
+        title = [NSString stringWithFormat:@"Challenge %d", indexPath.row];
+    }
+    
+    cell.textLabel.text = title;
     cell.detailTextLabel.text = [level subTitle];
     cell.imageView.image = nil;
     
@@ -98,14 +107,17 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString * storyboardName = @"Main";
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
-    DHLevelViewController * vc = [storyboard instantiateViewControllerWithIdentifier:@"GeometryView"];
-    
+    NSString* storyboardName = @"Main";
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+    DHLevelViewController* vc = [storyboard instantiateViewControllerWithIdentifier:@"GeometryView"];
+    UITableViewCell* cell = [self tableView:tableView cellForRowAtIndexPath:indexPath];
     id<DHLevel> level = [self levelForIndexPath:indexPath];
     
     if (level) {
         vc.currentLevel = level;
+        vc.levelArray = _levels;
+        vc.levelIndex = indexPath.row;
+        vc.title = cell.textLabel.text;
         [self.navigationController pushViewController:vc animated:YES];
     }
     

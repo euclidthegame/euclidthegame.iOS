@@ -19,6 +19,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    UIPinchGestureRecognizer* pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchAction:)];
+    [self.view addGestureRecognizer:pinch];
 }
 
 - (void)didReceiveMemoryWarning
@@ -51,6 +53,11 @@
     for (UITouch* touch in touches) {
         [_currentTool touchEnded:touch];
     }
+}
+
+- (void)pinchAction:(UIPinchGestureRecognizer*)sender
+{
+    NSLog(@"Scale: %f", sender.scale);
 }
 
 #pragma mark Layout/appereance

@@ -10,11 +10,6 @@
 
 @implementation DHLevelTutorial
 
-- (NSString*)title
-{
-    return @"Tutorial";
-}
-
 - (NSString*)subTitle
 {
     return @"Learn the basics";
@@ -23,6 +18,12 @@
 - (NSString*)levelDescription
 {
     return @"Create 5 points";
+}
+
+- (DHToolsAvailable)availableTools
+{
+    return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
+            DHCircleToolAvailable | DHMoveToolAvailable);
 }
 
 - (void)setUpLevel:(NSMutableArray *)geometricObjects

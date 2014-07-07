@@ -11,7 +11,6 @@
 
 @interface DHLevelEquiTri : NSObject <DHLevel>
 
-- (NSString*)title;
 - (NSString*)levelDescription;
 - (void)setUpLevel:(NSMutableArray *)geometricObjects;
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;

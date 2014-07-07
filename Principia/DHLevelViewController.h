@@ -18,16 +18,26 @@
 
 @property (nonatomic, weak) IBOutlet UISegmentedControl* toolControl;
 @property (nonatomic, strong) IBOutlet UIView* levelCompletionMessage;
+@property (nonatomic, strong) IBOutlet UILabel* levelCompletionMessageAdditional;
+@property (nonatomic, strong) IBOutlet UIButton* nextChallengeButton;
 @property (nonatomic, weak) IBOutlet UILabel* toolInstruction;
 @property (nonatomic, weak) IBOutlet UILabel* levelInstruction;
+@property (nonatomic, weak) IBOutlet UILabel* movesLabel;
 @property (nonatomic, weak) IBOutlet DHGeometryView* geometryView;
+
 @property (nonatomic, weak) DHGeometryViewController* geometryViewController;
+@property (nonatomic, strong) NSMutableArray* levelArray;
+@property (nonatomic) NSUInteger levelIndex;
+@property (nonatomic) NSUInteger levelMoves;
 
-- (void)resetGeometricObjects;
+- (void)resetLevel;
 
-//DHGeometryToolDelegate functions
+- (IBAction)loadNextLevel:(id)sender;
+- (IBAction)hideCompletionMessage:(id)sender;
+
+// Geometry tool delegate methods
 - (NSArray*)geometryObjects;
 - (void)toolTipDidChange:(NSString *)currentTip;
-- (void)addNewGeometricObject:(id)object;
+- (void)addGeometricObject:(id)object;
 
 @end

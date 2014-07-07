@@ -18,6 +18,12 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
     DHIntersectToolAvailable = 1 << 4,
     DHMidpointToolAvailable = 1 << 5,
     DHMoveToolAvailable = 1 << 6,
+    DHTriangleToolAvailable = 1 << 7,
+    DHBisectToolAvailable = 1 << 8,
+    DHPerpendicularToolAvailable = 1 << 9,
+    DHParallelToolAvailable = 1 << 10,
+    DHTranslateToolAvailable = 1 << 11,
+    DHCompassToolAvailable = 1 << 12,
     DHAllToolsAvailable = NSUIntegerMax
 };
 
@@ -25,7 +31,7 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 @protocol DHGeometryToolDelegate <NSObject>
 - (NSArray*)geometryObjects;
 - (void)toolTipDidChange:(NSString*)currentTip;
-- (void)addNewGeometricObject:(id)object;
+- (void)addGeometricObject:(id)object;
 @end
 
 
@@ -44,6 +50,10 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 - (void)touchBegan:(UITouch*)touch;
 - (void)touchMoved:(UITouch*)touch;
 - (void)touchEnded:(UITouch*)touch;
+
+@property (nonatomic, weak) DHPoint* point;
+@property (nonatomic) CGPoint touchStart;
+
 @end
 
 
@@ -105,4 +115,67 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 - (void)touchEnded:(UITouch*)touch;
 
 @property (nonatomic, weak) DHPoint* startPoint;
+@end
+
+@interface DHTriangleTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
+@property (nonatomic, weak) DHPoint* startPoint;
+@end
+
+
+@interface DHBisectTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
+@property (nonatomic, weak) DHLineObject* firstLine;
+@end
+
+
+@interface DHPerpendicularTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
+@property (nonatomic, weak) DHLineObject* line;
+@end
+
+@interface DHParallelTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
+@property (nonatomic, weak) DHLineObject* line;
+@end
+
+@interface DHTranslateSegmentTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
+@property (nonatomic, weak) DHLineSegment* segment;
+@end
+
+@interface DHCompassTool : NSObject <DHGeometryTool>
+@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+- (NSString*)initialToolTip;
+- (void)touchBegan:(UITouch*)touch;
+- (void)touchMoved:(UITouch*)touch;
+- (void)touchEnded:(UITouch*)touch;
+
+@property (nonatomic, weak) DHPoint* firstPoint;
+@property (nonatomic, weak) DHPoint* secondPoint;
 @end

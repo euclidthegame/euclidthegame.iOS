@@ -12,5 +12,7 @@
 @interface DHGeometryView : UIView
 
 @property (nonatomic, strong) NSMutableArray* geometricObjects;
+@property (nonatomic) CGFloat geometryScale;
+@property (nonatomic) CGPoint geometryOffset;
 
 @end

@@ -21,7 +21,6 @@
     self = [super init];
     
     if (self) {
-        _label = [DHGeometricObjectLabeler nextLabel];
     }
     
     return self;
@@ -33,7 +32,6 @@
     
     if (self) {
         _position = CGPointMake(x, y);
-        _label = [DHGeometricObjectLabeler nextLabel];
     }
     
     return self;
@@ -71,26 +69,51 @@
         NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:10],
                                      NSParagraphStyleAttributeName: paragraphStyle};
         CGSize textSize = [self.label sizeWithAttributes:attributes];
-        CGRect labelRect = CGRectMake(self.position.x - textSize.width*0.5f,
-                                      self.position.y - pointWidth*0.5f - 5 - textSize.height,
+        CGRect labelRect = CGRectMake(self.position.x - textSize.width*0.5f + 7,
+                                      self.position.y - pointWidth*0.5f - 4 - textSize.height,
                                       textSize.width, textSize.height);
         [self.label drawInRect:labelRect withAttributes:attributes];
-
     }
 }
 @end
 
-@implementation DHLine
-- (CGFloat)length
-{
-    return DistanceBetweenPoints(_start.position, _end.position);
-}
+
+@implementation DHLineObject
 - (CGVector)vector
 {
-    return CGVectorMake(_end.position.x - _start.position.x, _end.position.y - _start.position.y);
+    return CGVectorMake(self.end.position.x - self.start.position.x, self.end.position.y - self.start.position.y);
 }
 - (void)drawInContext:(CGContextRef)context
 {
+}
+@end
+
+@implementation DHLineSegment
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.tMin = 0.0;
+        self.tMax = 1.0;
+    }
+    return self;
+}
+- (CGFloat)length
+{
+    return DistanceBetweenPoints(self.start.position, self.end.position);
+}
+
+- (void)drawInContext:(CGContextRef)context
+{
+    /*assert(self.start.position.x == self.start.position.x);
+    assert(self.start.position.y == self.start.position.y);
+    assert(self.end.position.x == self.end.position.x);
+    assert(self.end.position.y == self.end.position.y);*/
+
+    if (self.start.position.x != self.start.position.x) return;
+    if (self.start.position.y != self.start.position.y) return;
+    if (self.end.position.x != self.end.position.x) return;
+    if (self.end.position.y != self.end.position.y) return;
     //CGFloat pointWidth = 10.0f;
     
     CGContextSetLineWidth(context, 1.0);
@@ -162,23 +185,9 @@
 {
     CGPoint intersection = CGPointMake(NAN,NAN);
     
-    CGPoint p1 = self.l1.start.position;
-    CGPoint p2 = self.l1.end.position;
-    CGPoint p3 = self.l2.start.position;
-    CGPoint p4 = self.l2.end.position;
-    
-    // Ensure intersection through checking winding of triangles
-    CGFloat a1 = Signed2DTriArea(p1, p2, p4);
-    CGFloat a2 = Signed2DTriArea(p1, p2, p3);
-    if (a1 * a2 < 0) {
-        CGFloat a3 = Signed2DTriArea(p3, p4, p1);
-        CGFloat a4 = a3 + a2 - a1;
-        
-        if (a3 * a4 < 0.0f) {
-            CGFloat t = a3 / (a3 - a4);
-            intersection.x = p1.x + t * (p2.x - p1.x);
-            intersection.y = p1.y + t * (p2.y - p1.y);
-        }
+    DHIntersectionResult r  = IntersectionTestLineLine(self.l1, self.l2);
+    if (r.intersect) {
+        intersection = r.intersectionPoint;
     }
     
     return intersection;
@@ -213,6 +222,20 @@
 }
 @end
 
+@implementation DHTrianglePoint
+- (void)drawInContext:(CGContextRef)context
+{
+    [super drawInContext:context];
+}
+- (CGPoint)position
+{
+    CGPoint p = MidPointFromPoints(self.start.position, self.end.position);
+    CGVector baseVector = CGVectorBetweenPoints(self.start.position, self.end.position);
+    CGVector hDir = CGVectorNormalize(CGVectorMakePerpendicular(baseVector));
+    CGVector h = CGVectorMultiplyByScalar(hDir, sqrt(3)*0.5*CGVectorLength(baseVector));
+    return CGPointMake(p.x - h.dx, p.y - h.dy);
+}
+@end
 
 @implementation DHPointOnLine
 - (void)drawInContext:(CGContextRef)context
@@ -229,6 +252,15 @@
 
 
 @implementation DHRay
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.tMin = 0.0;
+        self.tMax = INFINITY;// 1000.0;
+    }
+    return self;
+}
 - (void)drawInContext:(CGContextRef)context
 {
     CGContextSetLineWidth(context, 1.0);
@@ -236,11 +268,281 @@
     CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
     
     CGPoint endPoint;
-    endPoint.x = self.start.position.x + 1000*(self.direction.position.x - self.start.position.x);
-    endPoint.y = self.start.position.y + 1000*(self.direction.position.y - self.start.position.y);
+    endPoint.x = self.start.position.x + 1000*(self.end.position.x - self.start.position.x);
+    endPoint.y = self.start.position.y + 1000*(self.end.position.y - self.start.position.y);
     
     CGContextMoveToPoint(context, self.start.position.x, self.start.position.y);
     CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
     CGContextStrokePath(context);
+}
+@end
+
+@implementation DHLine
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.tMin = -INFINITY;// 1000.0;
+        self.tMax = INFINITY; //1000.0;
+    }
+    return self;
+}
+- (void)drawInContext:(CGContextRef)context
+{
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+
+    CGPoint startPoint;
+    startPoint.x = self.start.position.x - 1000*(self.end.position.x - self.start.position.x);
+    startPoint.y = self.start.position.y - 1000*(self.end.position.y - self.start.position.y);
+    
+    CGPoint endPoint;
+    endPoint.x = self.start.position.x + 1000*(self.end.position.x - self.start.position.x);
+    endPoint.y = self.start.position.y + 1000*(self.end.position.y - self.start.position.y);
+    
+    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
+    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
+    CGContextStrokePath(context);
+}
+@end
+
+
+@implementation DHBisectLine
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.tMin = -INFINITY;// 1000.0;
+        self.tMax = INFINITY; //1000.0;
+    }
+    return self;
+}
+- (DHPoint*)start
+{
+    DHLine* l1 = [[DHLine alloc] init];
+    l1.start = self.line1.start;
+    l1.end = self.line1.end;
+    DHLine* l2 = [[DHLine alloc] init];
+    l2.start = self.line2.start;
+    l2.end = self.line2.end;
+    
+    DHIntersectionResult r = IntersectionTestLineLine(l1, l2);
+    if (r.intersect) {
+        return [[DHPoint alloc] initWithPositionX:r.intersectionPoint.x andY:r.intersectionPoint.y];
+    }
+    
+    return nil;
+}
+- (DHPoint*)end
+{
+    CGVector v1 = CGVectorNormalize(self.line1.vector);
+    CGVector v2 = CGVectorNormalize(self.line2.vector);
+    
+    DHPoint* start = self.start;
+    DHPoint* end = [[DHPoint alloc] init];
+    
+    end.position = CGPointMake(start.position.x + v1.dx + v2.dx, start.position.y + v1.dy + v2.dy);
+    
+    if (start) {
+        return end;
+    }
+    
+    return nil;
+}
+- (void)drawInContext:(CGContextRef)context
+{
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+    
+    CGPoint p1 = self.start.position;
+    CGPoint p2 = self.end.position;
+    CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(p1, p2));
+    
+    CGPoint startPoint;
+    startPoint.x = p1.x - 1000*dir.dx;
+    startPoint.y = p1.y - 1000*dir.dy;
+    
+    CGPoint endPoint;
+    endPoint.x = p1.x + 1000*dir.dx;
+    endPoint.y = p1.y + 1000*dir.dy;
+    
+    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
+    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
+    CGContextStrokePath(context);
+}
+@end
+
+
+@implementation DHPerpendicularLine
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.tMin = -INFINITY;// 1000.0;
+        self.tMax = INFINITY; //1000.0;
+    }
+    return self;
+}
+- (DHPoint*)start
+{
+    return self.point;
+}
+- (DHPoint*)end
+{
+    if (self.line == nil || self.point == nil) {
+        return nil;
+    }
+    
+    CGVector v = CGVectorNormalize(CGVectorMakePerpendicular(self.line.vector));
+    
+    DHPoint* start = self.start;
+    DHPoint* end = [[DHPoint alloc] init];
+    
+    end.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
+    
+    return end;
+}
+- (void)drawInContext:(CGContextRef)context
+{
+    if (self.start.position.x != self.start.position.x) return;
+    if (self.start.position.y != self.start.position.y) return;
+    if (self.end.position.x != self.end.position.x) return;
+    if (self.end.position.y != self.end.position.y) return;
+    
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+    
+    CGPoint p1 = self.start.position;
+    CGPoint p2 = self.end.position;
+    CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(p1, p2));
+    
+    CGPoint startPoint;
+    startPoint.x = p1.x - 1000*dir.dx;
+    startPoint.y = p1.y - 1000*dir.dy;
+    
+    CGPoint endPoint;
+    endPoint.x = p1.x + 1000*dir.dx;
+    endPoint.y = p1.y + 1000*dir.dy;
+    
+    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
+    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
+    CGContextStrokePath(context);
+}
+@end
+
+
+@implementation DHParallelLine
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.tMin = -INFINITY;// 1000.0;
+        self.tMax = INFINITY; //1000.0;
+    }
+    return self;
+}
+- (DHPoint*)start
+{
+    return self.point;
+}
+- (DHPoint*)end
+{
+    if (self.line == nil || self.point == nil) {
+        return nil;
+    }
+    
+    CGVector v = CGVectorNormalize(self.line.vector);
+    
+    DHPoint* start = self.start;
+    DHPoint* end = [[DHPoint alloc] init];
+    
+    end.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
+    
+    return end;
+}
+- (void)drawInContext:(CGContextRef)context
+{
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+    
+    CGPoint p1 = self.start.position;
+    CGPoint p2 = self.end.position;
+    CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(p1, p2));
+    
+    CGPoint startPoint;
+    startPoint.x = p1.x - 1000*dir.dx;
+    startPoint.y = p1.y - 1000*dir.dy;
+    
+    CGPoint endPoint;
+    endPoint.x = p1.x + 1000*dir.dx;
+    endPoint.y = p1.y + 1000*dir.dy;
+    
+    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
+    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
+    CGContextStrokePath(context);
+}
+@end
+
+
+@implementation DHTranslatedLine
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.tMin = 0;
+        self.tMax = 1;
+    }
+    return self;
+}
+- (DHPoint*)start
+{
+    return self.point;
+}
+- (DHPoint*)end
+{
+    if (self.line == nil || self.point == nil) {
+        return nil;
+    }
+    
+    CGVector v = self.line.vector;
+    
+    DHPoint* start = self.start;
+    DHPoint* end = [[DHPoint alloc] init];
+    
+    end.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
+    
+    return end;
+}
+- (void)drawInContext:(CGContextRef)context
+{
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+    
+    CGPoint p1 = self.start.position;
+    CGPoint p2 = self.end.position;
+    
+    CGPoint startPoint = p1;
+    CGPoint endPoint = p2;
+    
+    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
+    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
+    CGContextStrokePath(context);
+}
+@end
+
+@implementation DHTranslatedPoint
+- (void)drawInContext:(CGContextRef)context
+{
+    
+}
+- (CGPoint)position
+{
+    CGVector translation = CGVectorBetweenPoints(self.translationStart.position, self.translationEnd.position);
+    return CGPointMake(self.startOfTranslation.position.x + translation.dx, self.startOfTranslation.position.y + translation.dy);
 }
 @end

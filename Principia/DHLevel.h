@@ -14,7 +14,6 @@
 @protocol DHLevel <NSObject>
 
 @required
-- (NSString*)title;
 - (NSString*)subTitle;
 - (NSString*)levelDescription;
 - (void)setUpLevel:(NSMutableArray*)geometricObjects;
@@ -22,5 +21,6 @@
 
 @optional
 - (DHToolsAvailable)availableTools;
+- (NSString*)additionalCompletionMessage;
 
 @end

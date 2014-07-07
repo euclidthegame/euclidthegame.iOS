@@ -10,9 +10,20 @@
 #define Principia_DHLevels_h
 
 #import "DHLevelTutorial.h"
-#import "DHLevel1.h"
 #import "DHLevelEquiTri.h"
-#import "DHLevel3.h"
-#import "DHLevel3.h"
+#import "DHLevelMidPoint.h"
+#import "DHLevelBisect.h"
+#import "DHLevelPerpendicular.h"
+#import "DHLevelPerpendicularB.h"
+#import "DHLevelParallellLines.h"
+#import "DHLevelLineCopy.h"
+#import "DHLevelLineCopy2.h"
+#import "DHLevelMakeCompass.h"
+#import "DHLevelLineCopyOnLine.h"
+#import "DHLevelNonEquiTri.h"
+#import "DHLevelCopyAngle.h"
+#import "DHLevelCircleCenter.h"
+#import "DHLevelMakeTangent.h"
+
 
 #endif

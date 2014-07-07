@@ -85,6 +85,38 @@
 }
 - (void)drawInContext:(CGContextRef)context
 {
+    // Avoid CG-errors by exiting early if positions are not valid numbers
+    CGPoint start = self.start.position;
+    CGPoint end = self.end.position;
+    
+    if (start.x != start.x) return;
+    if (start.y != start.y) return;
+    if (end.x != end.x) return;
+    if (end.y != end.y) return;
+
+    CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(start, end));
+    if (self.tMin == -INFINITY) {
+        start.x = start.x - 1000*dir.dx;
+        start.y = start.y - 1000*dir.dy;
+    }
+    if (self.tMax == INFINITY) {
+        end.x = end.x + 1000*dir.dx;
+        end.y = end.y + 1000*dir.dy;
+    }
+    
+    if (self.highlighted) {
+        CGContextSetLineWidth(context, 3.0);
+        CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+        CGContextSetRGBStrokeColor(context, 1.0, 0.0, 0.0, 1.0);
+    } else {
+        CGContextSetLineWidth(context, 1.0);
+        CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+        CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+    }
+    
+    CGContextMoveToPoint(context, start.x, start.y);
+    CGContextAddLineToPoint(context, end.x, end.y);
+    CGContextStrokePath(context);
 }
 @end
 
@@ -101,28 +133,6 @@
 - (CGFloat)length
 {
     return DistanceBetweenPoints(self.start.position, self.end.position);
-}
-
-- (void)drawInContext:(CGContextRef)context
-{
-    /*assert(self.start.position.x == self.start.position.x);
-    assert(self.start.position.y == self.start.position.y);
-    assert(self.end.position.x == self.end.position.x);
-    assert(self.end.position.y == self.end.position.y);*/
-
-    if (self.start.position.x != self.start.position.x) return;
-    if (self.start.position.y != self.start.position.y) return;
-    if (self.end.position.x != self.end.position.x) return;
-    if (self.end.position.y != self.end.position.y) return;
-    //CGFloat pointWidth = 10.0f;
-    
-    CGContextSetLineWidth(context, 1.0);
-    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
-
-    CGContextMoveToPoint(context, self.start.position.x, self.start.position.y);
-    CGContextAddLineToPoint(context, self.end.position.x, self.end.position.y);
-    CGContextStrokePath(context);
 }
 @end
 
@@ -261,20 +271,6 @@
     }
     return self;
 }
-- (void)drawInContext:(CGContextRef)context
-{
-    CGContextSetLineWidth(context, 1.0);
-    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
-    
-    CGPoint endPoint;
-    endPoint.x = self.start.position.x + 1000*(self.end.position.x - self.start.position.x);
-    endPoint.y = self.start.position.y + 1000*(self.end.position.y - self.start.position.y);
-    
-    CGContextMoveToPoint(context, self.start.position.x, self.start.position.y);
-    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
-    CGContextStrokePath(context);
-}
 @end
 
 @implementation DHLine
@@ -286,24 +282,6 @@
         self.tMax = INFINITY; //1000.0;
     }
     return self;
-}
-- (void)drawInContext:(CGContextRef)context
-{
-    CGContextSetLineWidth(context, 1.0);
-    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
-
-    CGPoint startPoint;
-    startPoint.x = self.start.position.x - 1000*(self.end.position.x - self.start.position.x);
-    startPoint.y = self.start.position.y - 1000*(self.end.position.y - self.start.position.y);
-    
-    CGPoint endPoint;
-    endPoint.x = self.start.position.x + 1000*(self.end.position.x - self.start.position.x);
-    endPoint.y = self.start.position.y + 1000*(self.end.position.y - self.start.position.y);
-    
-    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
-    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
-    CGContextStrokePath(context);
 }
 @end
 
@@ -350,28 +328,6 @@
     
     return nil;
 }
-- (void)drawInContext:(CGContextRef)context
-{
-    CGContextSetLineWidth(context, 1.0);
-    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
-    
-    CGPoint p1 = self.start.position;
-    CGPoint p2 = self.end.position;
-    CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(p1, p2));
-    
-    CGPoint startPoint;
-    startPoint.x = p1.x - 1000*dir.dx;
-    startPoint.y = p1.y - 1000*dir.dy;
-    
-    CGPoint endPoint;
-    endPoint.x = p1.x + 1000*dir.dx;
-    endPoint.y = p1.y + 1000*dir.dy;
-    
-    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
-    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
-    CGContextStrokePath(context);
-}
 @end
 
 
@@ -403,33 +359,6 @@
     end.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
     
     return end;
-}
-- (void)drawInContext:(CGContextRef)context
-{
-    if (self.start.position.x != self.start.position.x) return;
-    if (self.start.position.y != self.start.position.y) return;
-    if (self.end.position.x != self.end.position.x) return;
-    if (self.end.position.y != self.end.position.y) return;
-    
-    CGContextSetLineWidth(context, 1.0);
-    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
-    
-    CGPoint p1 = self.start.position;
-    CGPoint p2 = self.end.position;
-    CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(p1, p2));
-    
-    CGPoint startPoint;
-    startPoint.x = p1.x - 1000*dir.dx;
-    startPoint.y = p1.y - 1000*dir.dy;
-    
-    CGPoint endPoint;
-    endPoint.x = p1.x + 1000*dir.dx;
-    endPoint.y = p1.y + 1000*dir.dy;
-    
-    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
-    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
-    CGContextStrokePath(context);
 }
 @end
 
@@ -463,28 +392,6 @@
     
     return end;
 }
-- (void)drawInContext:(CGContextRef)context
-{
-    CGContextSetLineWidth(context, 1.0);
-    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
-    
-    CGPoint p1 = self.start.position;
-    CGPoint p2 = self.end.position;
-    CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(p1, p2));
-    
-    CGPoint startPoint;
-    startPoint.x = p1.x - 1000*dir.dx;
-    startPoint.y = p1.y - 1000*dir.dy;
-    
-    CGPoint endPoint;
-    endPoint.x = p1.x + 1000*dir.dx;
-    endPoint.y = p1.y + 1000*dir.dy;
-    
-    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
-    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
-    CGContextStrokePath(context);
-}
 @end
 
 
@@ -516,22 +423,6 @@
     end.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
     
     return end;
-}
-- (void)drawInContext:(CGContextRef)context
-{
-    CGContextSetLineWidth(context, 1.0);
-    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
-    
-    CGPoint p1 = self.start.position;
-    CGPoint p2 = self.end.position;
-    
-    CGPoint startPoint = p1;
-    CGPoint endPoint = p2;
-    
-    CGContextMoveToPoint(context, startPoint.x, startPoint.y);
-    CGContextAddLineToPoint(context, endPoint.x, endPoint.y);
-    CGContextStrokePath(context);
 }
 @end
 

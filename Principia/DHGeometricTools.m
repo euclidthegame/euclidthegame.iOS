@@ -607,7 +607,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
 @implementation DHBisectTool
 - (NSString*)initialToolTip
 {
-    return @"Tap two lines, rays or line segments";
+    return @"Tap two lines, rays or line segments (or three points) that define an angle to create its bisector";
 }
 - (void)touchBegan:(UITouch*)touch
 {

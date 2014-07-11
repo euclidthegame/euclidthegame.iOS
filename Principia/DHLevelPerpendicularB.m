@@ -57,10 +57,10 @@
     l1.start = p1;
     l1.end = p2;
     
+    [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];
     [geometricObjects addObject:p2];
     [geometricObjects addObject:p3];
-    [geometricObjects addObject:l1];
     
     _pointC = p3;
     _lineAB = l1;

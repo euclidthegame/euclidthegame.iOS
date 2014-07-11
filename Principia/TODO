@@ -13,9 +13,6 @@ Make point tool points snap to objects if close enough?
 Add ability to draw line with one swipe, create/connect to point on touch start and end
 Make bisect tool allow tapping three points as well
 
-- Build all levels
-Build level 25
-
 - Other
 Lock levels until previous has been beaten
 Add playground mode with all tools unlocked

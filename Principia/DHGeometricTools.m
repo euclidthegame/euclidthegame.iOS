@@ -622,35 +622,69 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
-
-    DHLineObject* line = FindLineClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
-    if (line) {
-        if (self.firstLine && line != self.firstLine) {
-            DHBisectLine* bl = [[DHBisectLine alloc] init];
-            bl.line1 = self.firstLine;
-            bl.line2 = line;
-            
-            //if (IntersectionTestLineLine(self.firstLine, line).intersect) {
+    
+    // If no first point has been tapped, first try to see if the tap is close to a line
+    if (self.firstPoint == nil) {
+        DHLineObject* line = FindLineClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+        if (line) {
+            if (self.firstLine && line != self.firstLine) {
+                DHBisectLine* bl = [[DHBisectLine alloc] init];
+                bl.line1 = self.firstLine;
+                bl.line2 = line;
+                
+                //if (IntersectionTestLineLine(self.firstLine, line).intersect) {
                 DHIntersectionPointLineLine* p = [[DHIntersectionPointLineLine alloc] init];
                 p.l1 = self.firstLine;
                 p.l2 = line;
                 DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] init];
                 perpLine.line = bl;
                 perpLine.point = p;
-            //}
-            [self.delegate addGeometricObjects:@[bl, perpLine]];
-            
-            self.firstLine.highlighted = false;
-            self.firstLine = nil;
-            [self.delegate toolTipDidChange:self.initialToolTip];
-        } else {
-            self.firstLine = line;
-            line.highlighted = true;
-            [self.delegate toolTipDidChange:@"Tap on a second line to create a line bisecting the angle between it and the first"];
-            [touch.view setNeedsDisplay];
+                //}
+                [self.delegate addGeometricObjects:@[bl, perpLine]];
+                
+                self.firstLine.highlighted = false;
+                self.firstLine = nil;
+                [self.delegate toolTipDidChange:self.initialToolTip];
+            } else if (self.firstLine == nil) {
+                self.firstLine = line;
+                line.highlighted = true;
+                [self.delegate toolTipDidChange:@"Tap on a second line to create a line bisecting the angle between it and the first"];
+                [touch.view setNeedsDisplay];
+            }
+        } else if (self.firstLine == nil) {
+            DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+            if (point) {
+                self.firstPoint = point;
+                point.highlighted = true;
+                [self.delegate toolTipDidChange:@"Tap on a second point to mark the corner of the angle"];
+                [touch.view setNeedsDisplay];
+            }
+        }
+    } else {
+        DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+        if (point) {
+            if (self.secondPoint == nil) {
+                self.secondPoint = point;
+                point.highlighted = true;
+                [self.delegate toolTipDidChange:@"Tap on a third point to define the angle and create the bisector"];
+                [touch.view setNeedsDisplay];
+            } else {
+                DHBisectLine* bl = [[DHBisectLine alloc] init];
+                bl.line1 = [[DHLine alloc] initWithStart:self.secondPoint andEnd:self.firstPoint];
+                bl.line2 = [[DHLine alloc] initWithStart:self.secondPoint andEnd:point];
+                
+                [self.delegate addGeometricObjects:@[bl]];
+                
+                self.firstPoint.highlighted = false;
+                self.firstPoint = nil;
+                self.secondPoint.highlighted = false;
+                self.secondPoint = nil;
+                [self.delegate toolTipDidChange:self.initialToolTip];
+            }
         }
     }
 }
+
 - (void)dealloc
 {
     if (self.firstLine) {

@@ -95,6 +95,8 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 @interface DHBisectTool : NSObject <DHGeometryTool>
 @property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
 @property (nonatomic, weak) DHLineObject* firstLine;
+@property (nonatomic, weak) DHPoint* firstPoint;
+@property (nonatomic, weak) DHPoint* secondPoint;
 @end
 
 

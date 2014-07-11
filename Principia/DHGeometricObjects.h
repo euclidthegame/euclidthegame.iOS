@@ -117,8 +117,8 @@
 
 
 @interface DHBisectLine : DHLineObject
-@property (nonatomic, weak) DHLineObject* line1;
-@property (nonatomic, weak) DHLineObject* line2;
+@property (nonatomic, strong) DHLineObject* line1;
+@property (nonatomic, strong) DHLineObject* line2;
 @end
 
 

@@ -1,6 +1,6 @@
 //
 //  DHLevelLineCopy.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-05.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -29,6 +29,17 @@
     return @"Construct a line segment with the same length and same direction as line segment AB but with starting point C";
 }
 
+- (NSString *)additionalCompletionMessage
+{
+    return (@"You unlocked a new tool: Translating lines! Note that this new tool won't work when all points "
+            @"lay on the same line. Enhance your new tool in Level 8.");
+}
+
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 3;
+}
+
 - (DHToolsAvailable)availableTools
 {
     return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
@@ -36,7 +47,7 @@
             DHBisectToolAvailable | DHPerpendicularToolAvailable | DHParallelToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:180 andY:400];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:230 andY:100];
@@ -46,13 +57,26 @@
     l1.start = p1;
     l1.end = p2;
     
+    [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];
     [geometricObjects addObject:p2];
     [geometricObjects addObject:p3];
-    [geometricObjects addObject:l1];
     
     _pointC = p3;
     _lineAB = l1;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHTranslatedPoint* p = [[DHTranslatedPoint alloc] init];
+    p.startOfTranslation = _pointC;
+    p.translationStart = _lineAB.start;
+    p.translationEnd = _lineAB.end;
+    
+    DHLineSegment* l = [[DHLineSegment alloc] initWithStart:_pointC andEnd:p];
+    
+    [objects insertObject:l atIndex:0];
+    [objects addObject:p];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

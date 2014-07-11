@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		683D9682196BEC680057B62D /* DHLevelTriIncircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9681196BEC680057B62D /* DHLevelTriIncircle.m */; };
+		683D9685196D2A390057B62D /* DHLevelTriCircumcircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9684196D2A390057B62D /* DHLevelTriCircumcircle.m */; };
+		683D9688196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9687196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m */; };
+		683D968B196D465E0057B62D /* DHLevelCircleToTangent.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D968A196D465E0057B62D /* DHLevelCircleToTangent.m */; };
 		684708AC196731C000C1FA83 /* DHLevelPerpendicularB.m in Sources */ = {isa = PBXBuildFile; fileRef = 684708AB196731C000C1FA83 /* DHLevelPerpendicularB.m */; };
 		684708AF1967496600C1FA83 /* DHLevelParallellLines.m in Sources */ = {isa = PBXBuildFile; fileRef = 684708AE1967496600C1FA83 /* DHLevelParallellLines.m */; };
 		684708B21968112200C1FA83 /* DHLevelLineCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 684708B11968112200C1FA83 /* DHLevelLineCopy.m */; };
@@ -17,6 +21,15 @@
 		686014DB1969D3CE0004DD1E /* DHLevelCopyAngle.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014DA1969D3CE0004DD1E /* DHLevelCopyAngle.m */; };
 		686014DE1969DFE70004DD1E /* DHLevelCircleCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014DD1969DFE70004DD1E /* DHLevelCircleCenter.m */; };
 		686014E11969E6920004DD1E /* DHLevelMakeTangent.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014E01969E6920004DD1E /* DHLevelMakeTangent.m */; };
+		6872A7CF196DD2BB00823AF9 /* DHLevelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */; };
+		6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */; };
+		6872A7D5196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D4196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m */; };
+		6872A7D8196FE25300823AF9 /* DHLevelHexagon.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D7196FE25300823AF9 /* DHLevelHexagon.m */; };
+		6872A7DB197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7DA197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.m */; };
+		6872A7DE197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7DD197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m */; };
+		6872A7E119702A1700823AF9 /* DHLevelPentagon.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7E019702A1700823AF9 /* DHLevelPentagon.m */; };
+		68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */; };
+		68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */; };
 		68F0A9C819587AEC00A97B86 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
 		68F0A9CA19587AEC00A97B86 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */; };
 		68F0A9CC19587AEC00A97B86 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
@@ -57,6 +70,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		683D9680196BEC680057B62D /* DHLevelTriIncircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTriIncircle.h; sourceTree = "<group>"; };
+		683D9681196BEC680057B62D /* DHLevelTriIncircle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelTriIncircle.m; sourceTree = "<group>"; };
+		683D9683196D2A390057B62D /* DHLevelTriCircumcircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTriCircumcircle.h; sourceTree = "<group>"; };
+		683D9684196D2A390057B62D /* DHLevelTriCircumcircle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelTriCircumcircle.m; sourceTree = "<group>"; };
+		683D9686196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelCircleSegmentCutoff.h; sourceTree = "<group>"; };
+		683D9687196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelCircleSegmentCutoff.m; sourceTree = "<group>"; };
+		683D9689196D465E0057B62D /* DHLevelCircleToTangent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelCircleToTangent.h; sourceTree = "<group>"; };
+		683D968A196D465E0057B62D /* DHLevelCircleToTangent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelCircleToTangent.m; sourceTree = "<group>"; };
 		684708AA196731C000C1FA83 /* DHLevelPerpendicularB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelPerpendicularB.h; sourceTree = "<group>"; };
 		684708AB196731C000C1FA83 /* DHLevelPerpendicularB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelPerpendicularB.m; sourceTree = "<group>"; };
 		684708AD1967496600C1FA83 /* DHLevelParallellLines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelParallellLines.h; sourceTree = "<group>"; };
@@ -77,6 +98,24 @@
 		686014DD1969DFE70004DD1E /* DHLevelCircleCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelCircleCenter.m; sourceTree = "<group>"; };
 		686014DF1969E6920004DD1E /* DHLevelMakeTangent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelMakeTangent.h; sourceTree = "<group>"; };
 		686014E01969E6920004DD1E /* DHLevelMakeTangent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelMakeTangent.m; sourceTree = "<group>"; };
+		6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelInfoViewController.h; sourceTree = "<group>"; };
+		6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelInfoViewController.m; sourceTree = "<group>"; };
+		6872A7D0196E548F00823AF9 /* DHGeometricTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGeometricTransform.h; sourceTree = "<group>"; };
+		6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGeometricTransform.m; sourceTree = "<group>"; };
+		6872A7D3196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelCircleTangentFromPoint.h; sourceTree = "<group>"; };
+		6872A7D4196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelCircleTangentFromPoint.m; sourceTree = "<group>"; };
+		6872A7D6196FE25300823AF9 /* DHLevelHexagon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelHexagon.h; sourceTree = "<group>"; };
+		6872A7D7196FE25300823AF9 /* DHLevelHexagon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelHexagon.m; sourceTree = "<group>"; };
+		6872A7D9197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTwoCirclesOuterTangent.h; sourceTree = "<group>"; };
+		6872A7DA197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelTwoCirclesOuterTangent.m; sourceTree = "<group>"; };
+		6872A7DC197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTwoCirclesInnerTangent.h; sourceTree = "<group>"; };
+		6872A7DD197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelTwoCirclesInnerTangent.m; sourceTree = "<group>"; };
+		6872A7DF19702A1700823AF9 /* DHLevelPentagon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelPentagon.h; sourceTree = "<group>"; };
+		6872A7E019702A1700823AF9 /* DHLevelPentagon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelPentagon.m; sourceTree = "<group>"; };
+		68D0F619196D576700C4D617 /* DHLevelThreeCircles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelThreeCircles.h; sourceTree = "<group>"; };
+		68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelThreeCircles.m; sourceTree = "<group>"; };
+		68D0F61C196DAF8C00C4D617 /* DHLevelSegmentInThree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSegmentInThree.h; sourceTree = "<group>"; };
+		68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSegmentInThree.m; sourceTree = "<group>"; };
 		68F0A9C419587AEC00A97B86 /* Euclid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Euclid.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68F0A9C719587AEC00A97B86 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -268,6 +307,28 @@
 				686014DD1969DFE70004DD1E /* DHLevelCircleCenter.m */,
 				686014DF1969E6920004DD1E /* DHLevelMakeTangent.h */,
 				686014E01969E6920004DD1E /* DHLevelMakeTangent.m */,
+				683D9680196BEC680057B62D /* DHLevelTriIncircle.h */,
+				683D9681196BEC680057B62D /* DHLevelTriIncircle.m */,
+				683D9683196D2A390057B62D /* DHLevelTriCircumcircle.h */,
+				683D9684196D2A390057B62D /* DHLevelTriCircumcircle.m */,
+				683D9686196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.h */,
+				683D9687196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m */,
+				683D9689196D465E0057B62D /* DHLevelCircleToTangent.h */,
+				683D968A196D465E0057B62D /* DHLevelCircleToTangent.m */,
+				68D0F619196D576700C4D617 /* DHLevelThreeCircles.h */,
+				68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */,
+				68D0F61C196DAF8C00C4D617 /* DHLevelSegmentInThree.h */,
+				68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */,
+				6872A7D3196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.h */,
+				6872A7D4196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m */,
+				6872A7D6196FE25300823AF9 /* DHLevelHexagon.h */,
+				6872A7D7196FE25300823AF9 /* DHLevelHexagon.m */,
+				6872A7D9197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.h */,
+				6872A7DA197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.m */,
+				6872A7DC197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.h */,
+				6872A7DD197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m */,
+				6872A7DF19702A1700823AF9 /* DHLevelPentagon.h */,
+				6872A7E019702A1700823AF9 /* DHLevelPentagon.m */,
 				68F0AA1A195B256300A97B86 /* DHLevelSquare.h */,
 				68F0AA1B195B256B00A97B86 /* DHLevelSquare.m */,
 			);
@@ -290,6 +351,8 @@
 				68F0AA061959FBB000A97B86 /* DHMathCGVector.h */,
 				68F0A9FF1958C5AB00A97B86 /* DHGeometricObjects.h */,
 				68F0AA001958C5AB00A97B86 /* DHGeometricObjects.m */,
+				6872A7D0196E548F00823AF9 /* DHGeometricTransform.h */,
+				6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */,
 				68F0AA461964889C00A97B86 /* DHGeometricObjectLabeler.h */,
 				68F0AA471964889C00A97B86 /* DHGeometricObjectLabeler.m */,
 			);
@@ -307,6 +370,8 @@
 				68F0A9DD19587AEC00A97B86 /* DHGeometryViewController.m */,
 				68F0A9FC1958BDD500A97B86 /* DHGeometryView.h */,
 				68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */,
+				6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */,
+				6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */,
 			);
 			name = "Views & View Controllers";
 			sourceTree = "<group>";
@@ -410,6 +475,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68F0AA15195A92A700A97B86 /* DHLevelSelectionViewController.m in Sources */,
+				683D9682196BEC680057B62D /* DHLevelTriIncircle.m in Sources */,
 				68F0AA011958C5AB00A97B86 /* DHGeometricObjects.m in Sources */,
 				68F0A9D819587AEC00A97B86 /* DHAppDelegate.m in Sources */,
 				686014DB1969D3CE0004DD1E /* DHLevelCopyAngle.m in Sources */,
@@ -418,17 +484,29 @@
 				68F0AA3C1961DE5100A97B86 /* DHLevelTutorial.m in Sources */,
 				684708BE19693C0700C1FA83 /* DHLevelNonEquiTri.m in Sources */,
 				684708B81968A68500C1FA83 /* DHLevelMakeCompass.m in Sources */,
+				6872A7DE197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m in Sources */,
 				68F0A9FE1958BDD500A97B86 /* DHGeometryView.m in Sources */,
+				683D9688196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m in Sources */,
 				68F0AA25195CBCA200A97B86 /* DHLevelViewController.m in Sources */,
+				6872A7D8196FE25300823AF9 /* DHLevelHexagon.m in Sources */,
 				684708B21968112200C1FA83 /* DHLevelLineCopy.m in Sources */,
 				68F0A9D419587AEC00A97B86 /* main.m in Sources */,
 				68F0AA481964889C00A97B86 /* DHGeometricObjectLabeler.m in Sources */,
+				683D9685196D2A390057B62D /* DHLevelTriCircumcircle.m in Sources */,
+				68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */,
+				6872A7DB197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.m in Sources */,
 				686014E11969E6920004DD1E /* DHLevelMakeTangent.m in Sources */,
 				684708B51968A07D00C1FA83 /* DHLevelLineCopy2.m in Sources */,
 				68F0AA421963E10C00A97B86 /* DHLevelBisect.m in Sources */,
 				68F0AA04195969A300A97B86 /* DHGeometricTools.m in Sources */,
+				6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */,
 				684708AC196731C000C1FA83 /* DHLevelPerpendicularB.m in Sources */,
 				68F0AA2A195E00D800A97B86 /* DHLevelMidPoint.m in Sources */,
+				6872A7CF196DD2BB00823AF9 /* DHLevelInfoViewController.m in Sources */,
+				68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */,
+				6872A7E119702A1700823AF9 /* DHLevelPentagon.m in Sources */,
+				683D968B196D465E0057B62D /* DHLevelCircleToTangent.m in Sources */,
+				6872A7D5196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m in Sources */,
 				684708BB196903F500C1FA83 /* DHLevelLineCopyOnLine.m in Sources */,
 				68F0AA3F1961F3B000A97B86 /* DHLevelResults.m in Sources */,
 				68F0AA1C195B256B00A97B86 /* DHLevelSquare.m in Sources */,

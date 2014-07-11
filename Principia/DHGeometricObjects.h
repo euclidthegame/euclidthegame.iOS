@@ -1,6 +1,6 @@
 //
 //  DHGeometricObjects.h
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-23.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 @import CoreGraphics;
+#import "DHGeometricTransform.h"
 
 @protocol DHGeometricObject <NSObject>
-- (void)drawInContext:(CGContextRef)context;
+- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform;
 @end
 
 
@@ -28,8 +29,8 @@
 
 
 @interface DHLineObject : DHGeometricObject <DHGeometricObject>
-@property (nonatomic, weak) DHPoint* start;
-@property (nonatomic, weak) DHPoint* end;
+@property (nonatomic, strong) DHPoint* start;
+@property (nonatomic, strong) DHPoint* end;
 @property (nonatomic, readonly) CGVector vector;
 @property (nonatomic) CGFloat tMin;
 @property (nonatomic) CGFloat tMax;
@@ -38,21 +39,25 @@
 
 @interface DHLineSegment : DHLineObject <DHGeometricObject>
 @property (nonatomic, readonly) CGFloat length;
+- (instancetype)initWithStart:(DHPoint*)start andEnd:(DHPoint*)end;
 @end
 
 
 @interface DHLine : DHLineObject <DHGeometricObject>
+- (instancetype)initWithStart:(DHPoint*)start andEnd:(DHPoint*)end;
 @end
 
 
 @interface DHRay : DHLineObject <DHGeometricObject>
+- (instancetype)initWithStart:(DHPoint*)start andEnd:(DHPoint*)end;
 @end
 
 
 @interface DHCircle : DHGeometricObject <DHGeometricObject>
-@property (nonatomic, weak) DHPoint* center;
+@property (nonatomic, strong) DHPoint* center;
 @property (nonatomic, strong) DHPoint* pointOnRadius;
 @property (nonatomic, readonly) CGFloat radius;
+- (instancetype)initWithCenter:(DHPoint*)center andPointOnRadius:(DHPoint*)pointOnRadius;
 @end
 
 
@@ -66,9 +71,10 @@
 
 
 @interface DHIntersectionPointLineLine : DHPoint
-@property (nonatomic) DHLineObject* l1;
-@property (nonatomic) DHLineObject* l2;
+@property (nonatomic,strong) DHLineObject* l1;
+@property (nonatomic,strong) DHLineObject* l2;
 
+- (instancetype)initWithLine:(DHLineObject*)l1 andLine:(DHLineObject*)l2;
 - (CGPoint)position;
 @end
 
@@ -98,6 +104,7 @@
 @interface DHTrianglePoint : DHPoint
 @property (nonatomic) DHPoint* start;
 @property (nonatomic) DHPoint* end;
+- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2;
 - (CGPoint)position;
 @end
 
@@ -116,17 +123,12 @@
 
 
 @interface DHPerpendicularLine : DHLineObject
-@property (nonatomic, weak) DHLineObject* line;
-@property (nonatomic, weak) DHPoint* point;
+@property (nonatomic, strong) DHLineObject* line;
+@property (nonatomic, strong) DHPoint* point;
 @end
 
 @interface DHParallelLine : DHLineObject
 @property (nonatomic, weak) DHLineObject* line;
-@property (nonatomic, weak) DHPoint* point;
-@end
-
-@interface DHTranslatedLine : DHLineObject
-@property (nonatomic, weak) DHLineSegment* line;
 @property (nonatomic, weak) DHPoint* point;
 @end
 

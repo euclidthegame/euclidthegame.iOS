@@ -1,6 +1,6 @@
 //
 //  DHLevels.h
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-25.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -24,6 +24,16 @@
 #import "DHLevelCopyAngle.h"
 #import "DHLevelCircleCenter.h"
 #import "DHLevelMakeTangent.h"
-
+#import "DHLevelTriIncircle.h"
+#import "DHLevelTriCircumcircle.h"
+#import "DHLevelCircleSegmentCutoff.h"
+#import "DHLevelCircleToTangent.h"
+#import "DHLevelThreeCircles.h"
+#import "DHLevelSegmentInThree.h"
+#import "DHLevelCircleTangentFromPoint.h"
+#import "DHLevelHexagon.h"
+#import "DHLevelTwoCirclesOuterTangent.h"
+#import "DHLevelTwoCirclesInnerTangent.h"
+#import "DHLevelPentagon.h"
 
 #endif

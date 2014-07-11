@@ -1,6 +1,6 @@
 //
 //  DHLevelNonEquiTri.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-06.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -38,40 +38,54 @@
             DHCompassToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 4;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:250 andY:200];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:400 andY:200];
     DHPoint* pC = [[DHPoint alloc] initWithPositionX:100 andY:170];
-    DHPoint* pD = [[DHPoint alloc] initWithPositionX:150 andY:100];
+    DHPoint* pD = [[DHPoint alloc] initWithPositionX:140 andY:110];
     DHPoint* pE = [[DHPoint alloc] initWithPositionX:120 andY:230];
     DHPoint* pF = [[DHPoint alloc] initWithPositionX:180 andY:300];
     
-    DHLineSegment* lAB = [[DHLineSegment alloc] init];
-    lAB.start = pA;
-    lAB.end = pB;
+    DHLineSegment* lAB = [[DHLineSegment alloc] initWithStart:pA andEnd:pB];
+    DHLineSegment* lCD = [[DHLineSegment alloc] initWithStart:pC andEnd:pD];
+    DHLineSegment* lEF = [[DHLineSegment alloc] initWithStart:pE andEnd:pF];
     
-    DHLineSegment* lCD = [[DHLineSegment alloc] init];
-    lCD.start = pC;
-    lCD.end = pD;
-
-    DHLineSegment* lEF = [[DHLineSegment alloc] init];
-    lEF.start = pE;
-    lEF.end = pF;
-    
-    [geometricObjects addObject:pA];
-    [geometricObjects addObject:pB];
-    [geometricObjects addObject:pC];
-    [geometricObjects addObject:pD];
-    [geometricObjects addObject:pE];
-    [geometricObjects addObject:pF];
-    [geometricObjects addObject:lAB];
-    [geometricObjects addObject:lCD];
-    [geometricObjects addObject:lEF];
+    [geometricObjects addObjectsFromArray:@[lAB, lCD, lEF, pA, pB, pC, pD, pE, pF]];
     
     _lineAB = lAB;
     _lineCD = lCD;
     _lineEF = lEF;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHCircle* c1 = [[DHCircle alloc] init];
+    c1.center = _lineAB.start;
+    c1.pointOnRadius = [[DHPoint alloc] initWithPositionX:_lineAB.start.position.x + _lineCD.length
+                                                     andY:_lineAB.start.position.y];
+
+    DHCircle* c2 = [[DHCircle alloc] init];
+    c2.center = _lineAB.end;
+    c2.pointOnRadius = [[DHPoint alloc] initWithPositionX:_lineAB.end.position.x - _lineEF.length
+                                                     andY:_lineAB.end.position.y];
+    
+    DHIntersectionPointCircleCircle* p = [[DHIntersectionPointCircleCircle alloc] init];
+    p.c1 = c1;
+    p.c2 = c2;
+    p.onPositiveY = YES;
+    
+    DHLineSegment* l1 = [[DHLineSegment alloc] initWithStart:_lineAB.start andEnd:p];
+    DHLineSegment* l2 = [[DHLineSegment alloc] initWithStart:_lineAB.end andEnd:p];
+    
+    [objects insertObject:l1 atIndex:0];
+    [objects insertObject:l2 atIndex:0];
+    [objects addObject:p];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
@@ -99,7 +113,7 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    for (int index2 = 1; index2 < geometricObjects.count-1; ++index2) {
+    for (int index2 = 0; index2 < geometricObjects.count-1; ++index2) {
         id object2 = [geometricObjects objectAtIndex:index2];
         if ([[object2 class] isSubclassOfClass:[DHLineSegment class]] == NO) continue;
         if (object2 == _lineAB || object2 == _lineCD || object2 == _lineEF) continue;
@@ -118,7 +132,7 @@
             
             CGFloat lengthCD = _lineCD.length;
             CGFloat lengthEF = _lineEF.length;
-            
+
             BOOL correctLengthCD = CGFloatsEqualWithinEpsilon(length2, lengthCD) || CGFloatsEqualWithinEpsilon(length3, lengthCD);
             BOOL correctLengthEF = CGFloatsEqualWithinEpsilon(length2, lengthEF) || CGFloatsEqualWithinEpsilon(length3, lengthEF);
             

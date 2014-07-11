@@ -1,6 +1,6 @@
 //
 //  DHAppDelegate.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-23.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -13,6 +13,10 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    //[self.window setTintColor:[UIColor colorWithRed:255/255.0 green:204/255.0 blue:0/255.0 alpha:1]];
+    [self.window setTintColor:[UIColor colorWithRed:238/255.0 green:194/255.0 blue:16/255.0 alpha:1]];
+    
     return YES;
 }
 							

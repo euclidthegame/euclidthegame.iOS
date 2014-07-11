@@ -1,6 +1,6 @@
 //
 //  DHLevelResults.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-30.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -9,6 +9,7 @@
 #import "DHLevelResults.h"
 
 NSString * const kLevelResultKeyCompleted = @"Completed";
+NSString * const kLevelResultKeyMinimumMoves = @"MinimumMoves";
 
 static NSMutableDictionary* s_LevelResults;
 
@@ -72,13 +73,24 @@ static NSMutableDictionary* s_LevelResults;
     [self saveLevelResults];
 }
 
-+ (void)newResult:(NSDictionary*)result forLevel:(NSString*)level
++ (void)newResult:(NSMutableDictionary*)result forLevel:(NSString*)level
 {
     NSMutableDictionary* results = [self mutableLevelResults];
     NSDictionary* previousResult = [results objectForKey:level];
     if (previousResult) {
         // Change
         [results removeObjectForKey:level];
+        
+        // Ensure new result does not downgrade previous
+        NSNumber* completed = [previousResult objectForKey:kLevelResultKeyCompleted];
+        NSNumber* minimumMoves = [previousResult objectForKey:kLevelResultKeyMinimumMoves];
+        if (completed.boolValue) {
+            [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyCompleted];
+        }
+        if (minimumMoves.boolValue) {
+            [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyMinimumMoves];
+        }
+        
         [results setObject:result forKey:level];
     } else {
         [results setObject:result forKey:level];

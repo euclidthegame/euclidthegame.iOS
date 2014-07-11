@@ -1,6 +1,6 @@
 //
 //  DHLevelLineCopyOnLine.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-06.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -29,6 +29,11 @@
     return (@"Construct a new point E on the line segment CD such that CE has the same length as AB");
 }
 
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 1;
+}
+
 - (DHToolsAvailable)availableTools
 {
     return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
@@ -37,7 +42,7 @@
             DHCompassToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:100 andY:300];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:200 andY:400];
@@ -52,15 +57,23 @@
     lCD.start = pC;
     lCD.end = pD;
     
+    [geometricObjects addObject:lAB];
+    [geometricObjects addObject:lCD];
     [geometricObjects addObject:pA];
     [geometricObjects addObject:pB];
     [geometricObjects addObject:pC];
     [geometricObjects addObject:pD];
-    [geometricObjects addObject:lAB];
-    [geometricObjects addObject:lCD];
     
     _lineAB = lAB;
     _lineCD = lCD;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHPoint* p = [[DHPoint alloc] initWithPositionX:_lineCD.start.position.x+_lineAB.length
+                                               andY:_lineCD.start.position.y];
+    
+    [objects addObject:p];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

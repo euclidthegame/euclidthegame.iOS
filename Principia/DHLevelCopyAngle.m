@@ -1,6 +1,6 @@
 //
 //  DHLevelCopyAngle.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-06.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -40,12 +40,17 @@
             DHCompassToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 4;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:100 andY:150];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:210 andY:100];
     DHPoint* pC = [[DHPoint alloc] initWithPositionX:200 andY:150];
-    DHPoint* pD = [[DHPoint alloc] initWithPositionX:150 andY:300];
+    DHPoint* pD = [[DHPoint alloc] initWithPositionX:150 andY:250];
     DHPoint* pHidden = [[DHPoint alloc] initWithPositionX:250 andY:400];
     
     DHLineSegment* lAB = [[DHLineSegment alloc] init];
@@ -60,19 +65,34 @@
     lFromD.start = pD;
     lFromD.end = pHidden;
     
+    [geometricObjects addObject:lAB];
+    [geometricObjects addObject:lAC];
+    [geometricObjects addObject:lFromD];
     [geometricObjects addObject:pA];
     [geometricObjects addObject:pB];
     [geometricObjects addObject:pC];
     [geometricObjects addObject:pD];
-    [geometricObjects addObject:lAB];
-    [geometricObjects addObject:lAC];
-    [geometricObjects addObject:lFromD];
-    
+
     _lineAB = lAB;
     _lineAC = lAC;
     _pointD = pD;
     _pointHidden = pHidden;
     _rayD = lFromD;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    CGVector vAB = _lineAB.vector;
+    CGVector vAC = _lineAC.vector;
+    
+    CGFloat angle = CGVectorAngleBetween(vAB, vAC);
+    CGVector vDE = CGVectorRotateByAngle(CGVectorNormalize(_rayD.vector), -angle);
+    
+    DHPoint* p = [[DHPoint alloc] initWithPositionX:_pointD.position.x + 100*vDE.dx
+                                               andY:_pointD.position.y + 100*vDE.dy];
+    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_pointD andEnd:p];
+    
+    [objects insertObject:r atIndex:0];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

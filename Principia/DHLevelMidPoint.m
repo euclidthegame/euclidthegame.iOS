@@ -1,6 +1,6 @@
 //
 //  DHLevel3.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-25.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -39,7 +39,12 @@
             DHCircleToolAvailable | DHMoveToolAvailable | DHTriangleToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 3;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:300];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:300];
@@ -47,11 +52,19 @@
     l1.start = p1;
     l1.end = p2;
     
+    [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];
     [geometricObjects addObject:p2];
-    [geometricObjects addObject:l1];
     
     _initialLine = l1;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHMidPoint* mid = [[DHMidPoint alloc] init];
+    mid.start = _initialLine.start;
+    mid.end = _initialLine.end;
+    [objects addObject:mid];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

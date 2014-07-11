@@ -1,6 +1,6 @@
 //
 //  DHLevel5.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-02.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -29,13 +29,23 @@
     return @"Create a line segment that bisects (divides in half) the angle between segments AB and AC";
 }
 
+- (NSString *)additionalCompletionMessage
+{
+    return @"You unlocked a new tool: Constructing a bisector!";
+}
+
 - (DHToolsAvailable)availableTools
 {
     return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
             DHCircleToolAvailable | DHMoveToolAvailable | DHTriangleToolAvailable | DHMidpointToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 3;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:300 andY:300];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:500 andY:300];
@@ -49,14 +59,28 @@
     l2.start = p1;
     l2.end = p3;
     
+    [geometricObjects addObject:l1];
+    [geometricObjects addObject:l2];
     [geometricObjects addObject:p1];
     [geometricObjects addObject:p2];
     [geometricObjects addObject:p3];
-    [geometricObjects addObject:l1];
-    [geometricObjects addObject:l2];
     
     _lineAB = l1;
     _lineAC = l2;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHBisectLine* bline = [[DHBisectLine alloc] init];
+    bline.line1 = _lineAB;
+    bline.line2 = _lineAC;
+    
+    CGVector bpointVec = bline.vector;
+    CGPoint bpointPos = CGPointMake(_lineAB.start.position.x + bpointVec.dx*100, _lineAB.start.position.y + bpointVec.dy*100);
+    DHPoint* bpoint = [[DHPoint alloc] initWithPositionX:bpointPos.x andY:bpointPos.y];
+    DHLineSegment* bseg = [[DHLineSegment alloc] initWithStart:_lineAB.start andEnd:bpoint];
+    
+    [objects insertObject:bseg atIndex:0];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

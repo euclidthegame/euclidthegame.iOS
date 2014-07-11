@@ -1,6 +1,6 @@
 //
 //  DHLevelParallellLines.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-04.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -11,8 +11,8 @@
 #import "DHGeometricObjects.h"
 
 @interface DHLevelParallellLines () {
-    DHPoint* _pointC;
-    DHLine* _lineAB;
+    DHPoint* _pointB;
+    DHLine* _lineA;
 }
 
 @end
@@ -26,7 +26,17 @@
 
 - (NSString*)levelDescription
 {
-    return @"Construct line through point B parallell to the given line through A";
+    return @"Construct a line through point B parallell to the given line through A";
+}
+
+- (NSString *)additionalCompletionMessage
+{
+    return @"You have unlocked a new tool: Constructing parallel lines!";
+}
+
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 2;
 }
 
 - (DHToolsAvailable)availableTools
@@ -36,7 +46,7 @@
             DHBisectToolAvailable | DHPerpendicularToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:300];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:300];
@@ -46,13 +56,22 @@
     l1.start = p1;
     l1.end = p2;
     
-    [geometricObjects addObject:p1];
-    [geometricObjects addObject:p2];
-    [geometricObjects addObject:p3];
     [geometricObjects addObject:l1];
+    [geometricObjects addObject:p1];
+    //[geometricObjects addObject:p2];
+    [geometricObjects addObject:p3];
     
-    _pointC = p3;
-    _lineAB = l1;
+    _pointB = p3;
+    _lineA = l1;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHParallelLine* l = [[DHParallelLine alloc] init];
+    l.line = _lineA;
+    l.point = _pointB;
+    
+    [objects insertObject:l atIndex:0];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
@@ -64,16 +83,16 @@
     }
     
     // Move A and B and ensure solution holds
-    CGPoint pointA = _lineAB.start.position;
-    CGPoint pointB = _lineAB.end.position;
+    CGPoint pointA = _lineA.start.position;
+    CGPoint pointB = _lineA.end.position;
     
-    _lineAB.start.position = CGPointMake(280, 300);
-    _lineAB.end.position = CGPointMake(480, 400);
+    _lineA.start.position = CGPointMake(280, 300);
+    _lineA.end.position = CGPointMake(480, 400);
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
-    _lineAB.start.position = pointA;
-    _lineAB.end.position = pointB;
+    _lineA.start.position = pointA;
+    _lineA.end.position = pointB;
     
     return complete;
 }
@@ -85,9 +104,9 @@
         if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         
         DHLineObject* l = object;
-        if ((l.start == _pointC || l.end == _pointC) == NO) continue;
+        if ((l.start == _pointB || l.end == _pointB) == NO) continue;
         
-        CGVector bc = CGVectorNormalize(_lineAB.vector);
+        CGVector bc = CGVectorNormalize(_lineA.vector);
         
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
         if (fabs(lDotBC) > 1 - 0.000001) {

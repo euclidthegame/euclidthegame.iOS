@@ -1,6 +1,6 @@
 //
 //  DHLevel.h
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-24.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -16,11 +16,13 @@
 @required
 - (NSString*)subTitle;
 - (NSString*)levelDescription;
-- (void)setUpLevel:(NSMutableArray*)geometricObjects;
+- (void)createInitialObjects:(NSMutableArray*)geometricObjects;
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;
+- (NSUInteger)minimumNumberOfMoves;
 
 @optional
 - (DHToolsAvailable)availableTools;
 - (NSString*)additionalCompletionMessage;
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects;
 
 @end

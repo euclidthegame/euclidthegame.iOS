@@ -1,6 +1,6 @@
 //
 //  DHViewController.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-23.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -10,7 +10,10 @@
 #import "DHGeometryView.h"
 #import "DHMath.h"
 
-@interface DHGeometryViewController ()
+@interface DHGeometryViewController () {
+    CGFloat _lastScale;
+    CGPoint _lastPoint;
+}
 @end
 
 @implementation DHGeometryViewController
@@ -19,8 +22,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UIPinchGestureRecognizer* pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchAction:)];
-    [self.view addGestureRecognizer:pinch];
 }
 
 - (void)didReceiveMemoryWarning
@@ -38,6 +39,42 @@
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    if ([_currentTool class] == [DHZoomPanTool class]) {
+        NSArray *allTouches = [[event allTouches] allObjects];
+        if ([allTouches count] == 2) {
+            UITouch *touchA = [allTouches objectAtIndex:0];
+            UITouch *touchB = [allTouches objectAtIndex:1];
+            
+            CGPoint pointA_ = [touchA locationInView:self.view];
+            CGPoint pointA = [touchA previousLocationInView:self.view];
+            
+            CGPoint pointB_ = [touchB locationInView:self.view];
+            CGPoint pointB = [touchB previousLocationInView:self.view];
+            
+            // First, move A to A’ by using a Translation with vector AA’, B is also moved to B1
+            CGPoint vectorAA_ = CGPointMake(pointA_.x - pointA.x, pointA_.y - pointA.y);
+            [self.geometryView.geoViewTransform offsetWithVector:vectorAA_];
+            
+            // Calculate B1
+            CGPoint pointB1 = CGPointMake(pointB.x + vectorAA_.x, pointB.y + vectorAA_.y);
+            
+            // Second, move B1 to B2 by using a resize with origin in A’, scale A’B'/A’B1
+            CGFloat scale = DistanceBetweenPoints(pointA_, pointB_) / DistanceBetweenPoints(pointA_, pointB1);
+            [self.geometryView.geoViewTransform zoomAtPoint:pointA_ scale:scale];
+            
+            // Finally, use a Rotation with origin A’, angle (AB, A’B') to make vector A’B2 to same direction with A’B',
+            // B2 is moved to B’
+            CGVector vectorAB = CGVectorBetweenPoints(pointA, pointB);
+            CGVector vectorA_B_ = CGVectorBetweenPoints(pointA_, pointB_);
+            CGFloat rotation = CGVectorAngleBetween(vectorAB, vectorA_B_);
+            
+            [self.geometryView.geoViewTransform rotateBy:rotation];
+            
+            [self.view setNeedsDisplay];
+        }
+        
+        return;
+    }
     for (UITouch* touch in touches) {
         [_currentTool touchMoved:touch];
     }
@@ -53,11 +90,6 @@
     for (UITouch* touch in touches) {
         [_currentTool touchEnded:touch];
     }
-}
-
-- (void)pinchAction:(UIPinchGestureRecognizer*)sender
-{
-    NSLog(@"Scale: %f", sender.scale);
 }
 
 #pragma mark Layout/appereance

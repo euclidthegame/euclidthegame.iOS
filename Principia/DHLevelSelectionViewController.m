@@ -1,6 +1,6 @@
 //
 //  DHLevelSelectionViewController.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-25.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -53,12 +53,23 @@
     [_levels addObject:[[DHLevelCopyAngle alloc] init]];
     [_levels addObject:[[DHLevelCircleCenter alloc] init]];
     [_levels addObject:[[DHLevelMakeTangent alloc] init]];
+    [_levels addObject:[[DHLevelTriIncircle alloc] init]];
+    [_levels addObject:[[DHLevelTriCircumcircle alloc] init]];
+    [_levels addObject:[[DHLevelCircleSegmentCutoff alloc] init]];
+    [_levels addObject:[[DHLevelCircleToTangent alloc] init]];
+    [_levels addObject:[[DHLevelThreeCircles alloc] init]];
+    [_levels addObject:[[DHLevelSegmentInThree alloc] init]];
+    [_levels addObject:[[DHLevelCircleTangentFromPoint alloc] init]];
+    [_levels addObject:[[DHLevelHexagon alloc] init]];
+    [_levels addObject:[[DHLevelTwoCirclesOuterTangent alloc] init]];
+    [_levels addObject:[[DHLevelTwoCirclesInnerTangent alloc] init]];
+    [_levels addObject:[[DHLevelPentagon alloc] init]];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear results" style:UIBarButtonItemStylePlain target:self action:@selector(clearLevelResults)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
-{
+{    
     [self.tableView reloadData];
 }
 
@@ -81,7 +92,6 @@
     
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
-        //cell.imageView.image = [UIImage imageNamed:@"Checkbox"];
     }
     
     id<DHLevel> level = [_levels objectAtIndex:indexPath.row];
@@ -90,7 +100,7 @@
     if (indexPath.row == 0) {
         title = @"Tutorial";
     } else if (indexPath.row > 0) {
-        title = [NSString stringWithFormat:@"Challenge %d", indexPath.row];
+        title = [NSString stringWithFormat:@"Level %ld", (long)indexPath.row];
     }
     
     cell.textLabel.text = title;
@@ -100,7 +110,14 @@
     NSDictionary* levelResult = [_levelResults objectForKey:NSStringFromClass([level class])];
     if (levelResult) {
         NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-        if (completed.boolValue) cell.imageView.image = [UIImage imageNamed:@"Checkbox"];
+        NSNumber* minimumMoves = [levelResult objectForKey:kLevelResultKeyMinimumMoves];
+        if (minimumMoves.boolValue) {
+            cell.imageView.image = [[UIImage imageNamed:@"resultStar"]
+                                    imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        } else if (completed.boolValue) {
+            cell.imageView.image = [[UIImage imageNamed:@"Checkbox"]
+                                    imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        }
     }
     return cell;
 }

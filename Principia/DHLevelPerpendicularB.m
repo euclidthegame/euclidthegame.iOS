@@ -1,6 +1,6 @@
 //
 //  DHLevelPerpendicularB.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-04.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -27,7 +27,17 @@
 
 - (NSString*)levelDescription
 {
-    return @"Construct a line segment perpendicular to the line AB through point C";
+    return @"Construct a line (segment) perpendicular to the line AB through point C";
+}
+
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 2;
+}
+
+- (NSString *)additionalCompletionMessage
+{
+    return @"You unlocked a new tool: Constructing perpendicular lines!";
 }
 
 - (DHToolsAvailable)availableTools
@@ -37,7 +47,7 @@
             DHBisectToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:300];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:300];
@@ -54,6 +64,16 @@
     
     _pointC = p3;
     _lineAB = l1;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHLineSegment* r = [[DHLineSegment alloc] init];
+    r.start = _pointC;
+    DHPoint* pend = [[DHPoint alloc] initWithPositionX:_pointC.position.x andY:_lineAB.start.position.y];
+    r.end = pend;
+    
+    [objects insertObject:r atIndex:0];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

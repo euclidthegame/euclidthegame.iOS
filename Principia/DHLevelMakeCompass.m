@@ -1,6 +1,6 @@
 //
 //  DHLevelMakeCompass.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-05.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -29,6 +29,11 @@
     return (@"Construct a circle with radius equal to line segment AB and center C");
 }
 
+- (NSString *)additionalCompletionMessage
+{
+    return (@"You unlocked a new tool: Compass!");
+}
+
 - (DHToolsAvailable)availableTools
 {
     return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
@@ -36,7 +41,12 @@
             DHBisectToolAvailable | DHPerpendicularToolAvailable | DHParallelToolAvailable | DHTranslateToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 2;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:180 andY:250];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:250 andY:150];
@@ -46,13 +56,25 @@
     l1.start = p1;
     l1.end = p2;
 
+    [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];
     [geometricObjects addObject:p2];
     [geometricObjects addObject:p3];
-    [geometricObjects addObject:l1];
     
     _pointC = p3;
     _lineAB = l1;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHTranslatedPoint* p = [[DHTranslatedPoint alloc] init];
+    p.startOfTranslation = _pointC;
+    p.translationStart = _lineAB.start;
+    p.translationEnd = _lineAB.end;
+    
+    DHCircle* c = [[DHCircle alloc] initWithCenter:_pointC andPointOnRadius:p];
+    
+    [objects insertObject:c atIndex:0];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

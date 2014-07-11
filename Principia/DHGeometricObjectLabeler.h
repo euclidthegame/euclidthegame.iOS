@@ -1,6 +1,6 @@
 //
 //  DHGeometricObjectLabeler.h
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-02.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -10,7 +10,7 @@
 
 @interface DHGeometricObjectLabeler : NSObject
 
-+ (NSString*)nextLabel;
-+ (void)reset;
+- (NSString*)nextLabel;
+- (void)reset;
 
 @end

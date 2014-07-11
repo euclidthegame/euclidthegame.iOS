@@ -1,6 +1,6 @@
 //
 //  DHLevelLineCopy2.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-05.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -21,7 +21,7 @@
 
 - (NSString*)subTitle
 {
-    return @"Copy again";
+    return @"Straight translation";
 }
 
 - (NSString*)levelDescription
@@ -30,14 +30,25 @@
             @"but with starting point C");
 }
 
+- (NSString *)additionalCompletionMessage
+{
+    return (@"You enhanced your tool: Translating lines!");
+}
+
 - (DHToolsAvailable)availableTools
 {
     return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
             DHCircleToolAvailable | DHMoveToolAvailable | DHTriangleToolAvailable | DHMidpointToolAvailable |
-            DHBisectToolAvailable | DHPerpendicularToolAvailable | DHParallelToolAvailable | DHTranslateToolAvailable);
+            DHBisectToolAvailable | DHPerpendicularToolAvailable | DHParallelToolAvailable |
+            DHTranslateToolAvailable_Weak);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 2;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:180 andY:200];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:330 andY:150];
@@ -50,13 +61,26 @@
     p3.line = l1;
     p3.tValue = 1.5;
     
+    [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];
     [geometricObjects addObject:p2];
     [geometricObjects addObject:p3];
-    [geometricObjects addObject:l1];
     
     _pointC = p3;
     _lineAB = l1;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHTranslatedPoint* p = [[DHTranslatedPoint alloc] init];
+    p.startOfTranslation = _pointC;
+    p.translationStart = _lineAB.start;
+    p.translationEnd = _lineAB.end;
+    
+    DHLineSegment* l = [[DHLineSegment alloc] initWithStart:_pointC andEnd:p];
+    
+    [objects insertObject:l atIndex:0];
+    [objects addObject:p];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

@@ -1,6 +1,6 @@
 //
 //  DHLevel6.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-02.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -38,7 +38,12 @@
             DHBisectToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 3;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPointOnLine* p1 = [[DHPointOnLine alloc] init];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:200 andY:300];
@@ -51,15 +56,23 @@
     p1.line = l1;
     p1.tValue = 0.75;
     
-    [geometricObjects addObject:p1];
-    //[geometricObjects addObject:p2];
-    //[geometricObjects addObject:p3];
     [geometricObjects addObject:l1];
+    [geometricObjects addObject:p1];
     
     _pointA = p1;
     _lineBC = l1;
     _pointHidden1 = p2;
     _pointHidden2 = p3;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHRay* r = [[DHRay alloc] init];
+    r.start = _pointA;
+    DHPoint* pend = [[DHPoint alloc] initWithPositionX:_pointA.position.x andY:_pointA.position.y-10];
+    r.end = pend;
+    
+    [objects insertObject:r atIndex:0];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

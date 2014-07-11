@@ -1,6 +1,6 @@
 //
 //  DHLevelCircleCenter.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-06.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -29,6 +29,11 @@
     return (@"Construct a point in the center of the given circle");
 }
 
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 3;
+}
+
 - (DHToolsAvailable)availableTools
 {
     return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
@@ -37,7 +42,7 @@
             DHCompassToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:200 andY:200];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:300 andY:200];
@@ -50,6 +55,11 @@
     
     _pointC = pA;
     _pointR = pB;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    [objects addObject:_pointC];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

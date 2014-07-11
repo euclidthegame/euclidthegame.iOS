@@ -1,6 +1,6 @@
 //
 //  DHMathCGVector.h
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-24.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -48,6 +48,12 @@ CG_INLINE CGFloat CGVectorAngleBetween(CGVector vector1, CGVector vector2);
 
 /* Calculate the angle of `vector` */
 CG_INLINE CGFloat CGVectorAngle(CGVector vector);
+
+/* Rotates the vector by angle */
+CG_INLINE CGVector CGVectorRotateByAngle(CGVector vector, CGFloat angle);
+
+/* Calculate new point translated by vector */
+CG_INLINE CGPoint CGPointFromPointByAddingVector(CGPoint p, CGVector v);
 
 /* Calculate the dot product of two vectors */
 CG_INLINE CGFloat CGVectorDotProduct(CGVector vector1, CGVector vector2);
@@ -200,6 +206,22 @@ CG_INLINE bool CGVectorEqualToVector(CGVector vector1, CGVector vector2)
 CG_INLINE bool CGVectorPerpendicularToVector(CGVector vector1, CGVector vector2)
 {
     return CGVectorDotProduct(vector1, vector2) == 0;
+}
+
+CG_INLINE CGVector CGVectorRotateByAngle(CGVector vector, CGFloat angle)
+{
+    CGVector result;
+    result.dx = vector.dx * cos(angle) - vector.dy * sin(angle);
+    result.dy = vector.dx * sin(angle) + vector.dy * cos(angle);
+    return result;
+}
+
+CG_INLINE CGPoint CGPointFromPointByAddingVector(CGPoint p, CGVector v)
+{
+    CGPoint result;
+    result.x = p.x + v.dx;
+    result.y = p.y + v.dy;
+    return result;
 }
 
 #endif

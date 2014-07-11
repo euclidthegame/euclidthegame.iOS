@@ -1,34 +1,30 @@
 Todo:
-Fix bisect line tool to provide perpendicular lines as well
-Fix Challenge 8 so that line can not be translated due to being on the same line
-Add target number of moves per level and change icon to star/medal
+
+- General app
 Create app icon
 Create launch screens
-Add all completion messages (new tools etc.)
-Show special completion message for final level
-Show total number of moves vs. target on solution screen
-Implement pan/zoom (two finges?)
-
-Build tutorial
-Build level 15
-Build level 16
-Build level 17
-Build level 18
-Build level 19
-Build level 20
-Build level 21
-Build level 22
-Build level 23
-Build level 24
-Build level 25
-
-Make point tool points snap to objects if close enough
-Differentiate between movable and other points when drawing them
-Add ability to draw line from anywhere, create point of not found near taps
-Add ability to draw line with one swipe, create/connect to point on touch start and end
-Add highlight functionality to lines
-Lock levels until previous has been beaten
-Add playground mode with all tools unlocked
-
 Implement Game Center-functionality with achievement for all levels and all levels with stars/gold medals
 Add non-retina versions of tool icons
+Test iPhone interface
+
+- Tool handling
+Fix bisect line tool to provide right angle and provide perpendicular lines as well if lines intersect
+Make point tool points snap to objects if close enough?
+Add ability to draw line with one swipe, create/connect to point on touch start and end
+Make bisect tool allow tapping three points as well
+
+- Build all levels
+Build level 25
+
+- Other
+Lock levels until previous has been beaten
+Add playground mode with all tools unlocked
+Show total number of moves vs. target on solution screen
+Implement well done messages as the solution is gradually found
+Implement hint-system?
+Implement notice to user that solution is OK in special case but not general
+
+Confirm level 23 minimum moves? Actually 5 in web? 6 in this due to no point on circle B without line+intersect?
+Confirm level 24 minimum moves? 7 in this due to no point on circle A without line+intersect?
+
+- Done:

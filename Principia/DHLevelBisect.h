@@ -1,6 +1,6 @@
 //
 //  DHLevel5.h
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-02.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -12,7 +12,7 @@
 @interface DHLevelBisect : NSObject <DHLevel>
 
 - (NSString*)levelDescription;
-- (void)setUpLevel:(NSMutableArray *)geometricObjects;
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects;
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;
 
 @end

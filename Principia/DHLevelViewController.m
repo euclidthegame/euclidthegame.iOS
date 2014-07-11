@@ -1,6 +1,6 @@
 //
 //  DHLevelViewController.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-26.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -11,6 +11,8 @@
 #import "DHMath.h"
 #import "DHLevelResults.h"
 #import "DHGeometricObjectLabeler.h"
+#import "DHLevelInfoViewController.h"
+#import "DHGeometricTransform.h"
 
 @interface DHLevelViewController () {
     NSMutableArray* _geometricObjects;
@@ -18,6 +20,12 @@
     NSMutableArray* _geometricObjectsForRedo;
     id<DHGeometryTool> _currentTool;
     NSMutableArray* _tools;
+    UIView* _levelInfoView;
+    DHGeometricObjectLabeler* _objectLabeler;
+    
+    UIBarButtonItem* _undoButton;
+    UIBarButtonItem* _redoButton;
+    UIBarButtonItem* _resetButton;
 }
 
 @end
@@ -32,10 +40,11 @@
 	// Do any additional setup after loading the view, typically from a nib.
     _geometricObjects = [[NSMutableArray alloc] init];
     self.geometryView.geometricObjects = _geometricObjects;
-    self.geometryView.geometryScale = 1.0;
 
     _geometricObjectsForUndo = [[NSMutableArray alloc] init];
     _geometricObjectsForRedo = [[NSMutableArray alloc] init];
+    
+    _objectLabeler = [[DHGeometricObjectLabeler alloc] init];
     
     _tools = [[NSMutableArray alloc] init];
     
@@ -59,6 +68,10 @@
                                                                        action:@selector(redoMove)];
     self.navigationItem.rightBarButtonItem = resetButtonItem;
     self.navigationItem.rightBarButtonItems = @[resetButtonItem, separator, redoButtonItem, undoButtonItem];
+    _undoButton = undoButtonItem;
+    _redoButton = redoButtonItem;
+    _resetButton = resetButtonItem;
+    
     _levelInstruction.layer.cornerRadius = 10.0f;
     [self resetLevel];
     
@@ -70,24 +83,46 @@
     self.levelCompletionMessage.layer.shadowRadius = 10.0;
     [self.levelCompletionMessage removeFromSuperview];
     
+    UITapGestureRecognizer* gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showDetailedLevelInstruction:)];
+    [self.levelObjectiveView setUserInteractionEnabled:YES];
+    [self.levelObjectiveView addGestureRecognizer:gesture];
+    
     [self setupForLevel];
 }
 
 - (void)setupForLevel
 {
+    self.firstMoveMade = NO;
+
     if (self.levelIndex == 0) {
         self.title = @"Tutorial";
     } else if (self.levelIndex > 0) {
-        self.title = [NSString stringWithFormat:@"Challenge %d", self.levelIndex];
+        self.title = [NSString stringWithFormat:@"Level %lu", (unsigned long)self.levelIndex];
     }
     
-    _levelInstruction.text = [@"Challenge objective: " stringByAppendingString:[_currentLevel levelDescription]];
-
+    NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
+    _levelInstruction.text = levelInstruction;
+    /*NSMutableAttributedString* levelInstructionAttributed = [[[NSAttributedString alloc]
+                                                             initWithData:[levelInstruction
+                                                                                 dataUsingEncoding:NSUTF8StringEncoding]
+                                     options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                               NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}
+                          documentAttributes:nil error:nil] mutableCopy];
+    [levelInstructionAttributed beginEditing];
+    NSRange range;
+    range.location = 0;
+    range.length = 5;
+    [levelInstructionAttributed addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:16] range:range];
+    [levelInstructionAttributed endEditing];
+    _levelInstruction.attributedText = levelInstructionAttributed;*/
+    
     [self setupTools];
     _currentTool = [[DHPointTool alloc] init];
     _currentTool.delegate = self;
     self.geometryViewController.currentTool = _currentTool;
     _toolInstruction.text = _currentTool.initialToolTip;
+    
+    [self showDetailedLevelInstruction:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -99,33 +134,58 @@
 #pragma mark Helper functions for managing geometric objects
 - (void)addGeometricObject:(id)object
 {
-    if ([_geometricObjectsForRedo containsObject:object]) {
-        // Added from redo, do nothing
-    } else {
-        // New item, clear redo-list
+    [self addGeometricObjects:@[object]];
+}
+- (void)addGeometricObjects:(NSArray*)objects
+{
+    self.firstMoveMade = YES;
+    BOOL countMove = NO;
+
+    if ([_geometricObjectsForRedo containsObject:objects] == NO) {
+        // New item(s), clear redo-list
         [_geometricObjectsForRedo removeAllObjects];
+        _redoButton.enabled = false;
     }
+    [_geometricObjectsForUndo addObject:objects];
+    _undoButton.enabled = true;
     
-    if ([[object class] isSubclassOfClass:[DHPoint class]]) {
-        DHPoint* p = object;
-        if (p.label == nil) {
-            p.label = [DHGeometricObjectLabeler nextLabel];
+    for (id object in objects) {
+        // Sort objects to ensure points are last in the array to be drawn last
+        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+            DHPoint* p = object;
+            if (p.label == nil) {
+                p.label = [_objectLabeler nextLabel];
+            }
+            [_geometricObjects addObject:object];
+            if ([[object class] isSubclassOfClass:[DHMidPoint class]]) {
+                countMove = YES;
+            }
+        } else {
+            countMove = YES;
+            [_geometricObjects insertObject:object atIndex:0];
         }
-        [_geometricObjects addObject:object];
-    } else {
-        [_geometricObjects insertObject:object atIndex:0];
-        self.levelMoves++;
-        self.movesLabel.text = [NSString stringWithFormat:@"Moves: %d", self.levelMoves];
     }
-    
-    [_geometricObjectsForUndo addObject:object];
+
+    if (countMove) {
+        self.levelMoves++;
+        self.movesLabel.text = [NSString stringWithFormat:@"Moves: %lu", (unsigned long)self.levelMoves];
+    }
     
     [self.geometryView setNeedsDisplay];
     
     // Test if level matches completion objective
-    if ([_currentLevel isLevelComplete:_geometricObjects] && self.levelCompletionMessage.superview == nil) {
+    if (self.levelCompleted == NO && [_currentLevel isLevelComplete:_geometricObjects])
+    {
+        self.levelCompleted = YES;
         NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
         [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyCompleted];
+
+        if ([_currentLevel respondsToSelector:@selector(minimumNumberOfMoves)]) {
+            if (self.levelMoves <= [_currentLevel minimumNumberOfMoves]) {
+                [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyMinimumMoves];
+            }
+        }
+        
         [DHLevelResults newResult:result forLevel:NSStringFromClass([_currentLevel class])];
         [self showLevelCompleteMessage];
     }
@@ -133,22 +193,31 @@
 
 - (void)resetLevel
 {
-    [DHGeometricObjectLabeler reset];
+    [_objectLabeler reset];
     [_geometricObjects removeAllObjects];
     
+    [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
+    [self.geometryView.geoViewTransform setScale:1];
+    [self.geometryView.geoViewTransform setRotation:0];
+    
     NSMutableArray* levelObjects = [[NSMutableArray alloc] init];
-    [_currentLevel setUpLevel:levelObjects];
+    [_currentLevel createInitialObjects:levelObjects];
     for (id object in levelObjects) {
         [self addGeometricObject:object];
     }
  
+    self.levelCompleted = NO;
     self.levelMoves = 0;
-    self.movesLabel.text = [NSString stringWithFormat:@"Moves: %d", self.levelMoves];
+    self.movesLabel.text = [NSString stringWithFormat:@"Moves: %lu", (unsigned long)self.levelMoves];
     [_geometricObjectsForRedo removeAllObjects];
     [_geometricObjectsForUndo removeAllObjects];
     
     [self.geometryView setNeedsDisplay];
     [self.levelCompletionMessage removeFromSuperview];
+    
+    // Disable undo/redo button
+    _redoButton.enabled = false;
+    _undoButton.enabled = false;
 }
 
 #pragma mark Layout/appereance
@@ -170,91 +239,83 @@
     if ([_currentLevel respondsToSelector:@selector(availableTools)]) {
         availableTools = [_currentLevel availableTools];
     }
+
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolZoomPan"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHZoomPanTool class]];
     
-    BOOL toolText = NO;
-    
-    if (availableTools & DHPointToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Point" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPoint"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHPointTool class]];
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPoint"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHPointTool class]];
+    if ((availableTools & DHPointToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
 
-    if (availableTools & DHIntersectToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Intersect" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolIntersect"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHIntersectTool class]];
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolIntersect"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHIntersectTool class]];
+    if ((availableTools & DHIntersectToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
     
-    if (availableTools & DHLineToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Line" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolLine"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHLineTool class]];
-    }
-    
-    if (availableTools & DHRayToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Ray" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolRay"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHRayTool class]];
-    }
-    
-    if (availableTools & DHCircleToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Circle" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolCircle"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHCircleTool class]];
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolLine"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHLineTool class]];
+    if ((availableTools & DHLineToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
 
-    if (availableTools & DHTriangleToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Triangle" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTriangle"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHTriangleTool class]];
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolRay"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHRayTool class]];
+    if ((availableTools & DHRayToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
     
-    if (availableTools & DHMidpointToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Midpoint" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolMidpoint"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHMidPointTool class]];
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolCircle"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHCircleTool class]];
+    if ((availableTools & DHCircleToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
 
-    if (availableTools & DHBisectToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Bisect" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolBisect"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHBisectTool class]];
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTriangle"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHTriangleTool class]];
+    if ((availableTools & DHTriangleToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
 
-    if (availableTools & DHPerpendicularToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Perp." atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPerpendicular"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHPerpendicularTool class]];
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolMidpoint"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHMidPointTool class]];
+    if ((availableTools & DHMidpointToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
 
-    if (availableTools & DHParallelToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Para." atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolParallel"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHParallelTool class]];
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolBisect"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHBisectTool class]];
+    if ((availableTools & DHBisectToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
 
-    if (availableTools & DHTranslateToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Trans." atIndex:index++ animated:NO];
-        if(!toolText) {
-            [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTranslateSegment"]
-                                         atIndex:index++ animated:NO];
-        }
-        [_tools addObject:[DHTranslateSegmentTool class]];
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPerpendicular"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHPerpendicularTool class]];
+    if ((availableTools & DHPerpendicularToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+    }
+
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolParallel"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHParallelTool class]];
+    if ((availableTools & DHParallelToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+    }
+
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTranslateSegment"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHTranslateSegmentTool class]];
+    if ((availableTools & DHTranslateToolAvailable || availableTools & DHTranslateToolAvailable_Weak) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+    }
+
+    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolCompass"] atIndex:index++ animated:NO];
+    [_tools addObject:[DHCompassTool class]];
+    if ((availableTools & DHCompassToolAvailable) == NO) {
+        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
     
-    if (availableTools & DHCompassToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Compass" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolCompass"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHCompassTool class]];
-    }
-    
-    /*if (availableTools & DHMoveToolAvailable) {
-        if(toolText) [_toolControl insertSegmentWithTitle:@"Move" atIndex:index++ animated:NO];
-        if(!toolText) [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPoint"] atIndex:index++ animated:NO];
-        [_tools addObject:[DHMoveTool class]];
-    }*/
-    
-    _toolControl.selectedSegmentIndex = 0;
+    _toolControl.selectedSegmentIndex = 1;
 
 }
 
@@ -266,7 +327,18 @@
     self.geometryViewController.currentTool = _currentTool;
     _toolInstruction.text = [_currentTool initialToolTip];
     _currentTool.delegate = self;
-    [self.view setNeedsDisplay];
+    [self.geometryView setNeedsDisplay];
+    
+    DHToolsAvailable availableTools = DHAllToolsAvailable;
+    if ([_currentLevel respondsToSelector:@selector(availableTools)]) {
+        availableTools = [_currentLevel availableTools];
+    }
+    if (availableTools & DHTranslateToolAvailable_Weak && availableTools != DHAllToolsAvailable) {
+        if ([_currentTool class] == [DHTranslateSegmentTool class]) {
+            DHTranslateSegmentTool* tool = _currentTool;
+            tool.disableWhenOnSameLine = YES;
+        }
+    }
 }
 
 #pragma mark Geometry tool delegate methods
@@ -278,22 +350,37 @@
 {
     _toolInstruction.text = currentTip;
 }
+- (DHGeometricTransform*)geoViewTransform
+{
+    return self.geometryView.geoViewTransform;
+}
 
 #pragma mark - Undo/Redo
 - (void)undoMove
 {
-    id objectToUndo = [_geometricObjectsForUndo lastObject];
-    if (!objectToUndo) {
+    id objectsToUndo = [_geometricObjectsForUndo lastObject];
+    if (!objectsToUndo) {
         return;
     }
     
-    [_geometricObjects removeObject:objectToUndo];
-    [_geometricObjectsForUndo removeObject:objectToUndo];
-    [_geometricObjectsForRedo addObject:objectToUndo];
-
-    if ([[objectToUndo class] isSubclassOfClass:[DHPoint class]] == NO) {
+    BOOL undoMove = NO;
+    for (id object in objectsToUndo) {
+        [_geometricObjects removeObject:object];
+        if ([[object class] isSubclassOfClass:[DHPoint class]] == NO ||
+            [[object class] isSubclassOfClass:[DHMidPoint class]]) {
+            undoMove = YES;
+        }
+    }
+    if (undoMove) {
         self.levelMoves--;
-        self.movesLabel.text = [NSString stringWithFormat:@"Moves: %d", self.levelMoves];
+        self.movesLabel.text = [NSString stringWithFormat:@"Moves: %lu", (unsigned long)self.levelMoves];
+    }
+    [_geometricObjectsForUndo removeObject:objectsToUndo];
+    [_geometricObjectsForRedo addObject:objectsToUndo];
+    _redoButton.enabled = true;
+    
+    if (_geometricObjectsForUndo.count == 0) {
+        _undoButton.enabled = false;
     }
     
     [self.geometryView setNeedsDisplay];
@@ -306,9 +393,13 @@
         return;
     }
     
-    [self addGeometricObject:objectToRedo];
+    [self addGeometricObjects:objectToRedo];
 
     [_geometricObjectsForRedo removeObject:objectToRedo];
+    if (_geometricObjectsForRedo.count == 0) {
+        _redoButton.enabled = false;
+    }
+    
 }
 
 #pragma mark Other
@@ -324,10 +415,33 @@
 
 - (void)showLevelCompleteMessage
 {
-    self.levelCompletionMessageAdditional.text = @"";
+    NSMutableString* completionMessageText = [[NSMutableString alloc] init];
+    
     if ([_currentLevel respondsToSelector:@selector(additionalCompletionMessage)]) {
-        self.levelCompletionMessageAdditional.text = [_currentLevel additionalCompletionMessage];
+        [completionMessageText appendString:[_currentLevel additionalCompletionMessage]];
     }
+    
+    if ([_currentLevel respondsToSelector:@selector(minimumNumberOfMoves)] &&
+        self.levelMoves <= [_currentLevel minimumNumberOfMoves])
+    {
+        if (completionMessageText.length > 0) {
+            [completionMessageText appendString:@"\n\n"];
+        }
+        [completionMessageText appendString:@"Perfect! You completed this level using the minimum number of moves!"];
+    }
+    
+    if (completionMessageText.length == 0) {
+        [completionMessageText appendString:@"You completed the level, but it can be done with fewer moves. Keep trying!"];
+    }
+    
+    if (self.levelIndex >= self.levelArray.count - 1) {
+        self.nextChallengeButton.hidden = YES;
+        [completionMessageText appendString:@"\n\nEuclid would be proud of you. You completed ALL levels !!!"];
+    } else {
+        self.nextChallengeButton.hidden = NO;
+    }
+    
+    self.levelCompletionMessageAdditional.text = completionMessageText;
     
     self.levelCompletionMessage.alpha = 0;
     [self.view addSubview:self.levelCompletionMessage];
@@ -360,6 +474,345 @@
     [self.levelCompletionMessage removeFromSuperview];
 }
 
+- (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point
+{
+    UILabel* label = [[UILabel alloc] init];
+    label.alpha = 0;
+    label.text = message;
+    label.textColor = [UIColor redColor];
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    
+    NSDictionary* attributes = @{NSFontAttributeName: label.font,
+                                 NSParagraphStyleAttributeName: paragraphStyle};
+    CGSize textSize = [message sizeWithAttributes:attributes];
+    
+    CGRect frame = label.frame;
+    frame.origin = CGPointMake(point.x - textSize.width*0.5, point.y - 20 - textSize.height);
+    frame.size = textSize;
+    label.frame = frame;
+    [self.geometryView addSubview:label];
+    [UIView animateWithDuration:1.0
+                          delay:0.0
+                        options: UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         label.alpha = 1;
+                     }
+                     completion:^(BOOL finished){
+                         [UIView animateWithDuration:1.0
+                                               delay:0.5
+                                             options: UIViewAnimationOptionCurveEaseIn
+                                          animations:^{
+                                              label.alpha = 0;
+                                          }
+                                          completion:^(BOOL finished){
+                                              [label removeFromSuperview];
+                                          }];
+                     }];
+    
+}
 
+- (void)showDetailedLevelInstruction:(id)sender
+{
+    if (_levelInfoView != nil) {
+        return;
+    }
+    
+    const CGFloat levelInfoViewSize = 660.0;
+
+    UIView* background = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2000, 2000)];
+    background.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];
+    [self.view addSubview:background];
+    _levelInfoView = background;
+    
+    UIView* detailedInstructionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    UIButton* startButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    UILabel* titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    UILabel* objectiveLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    UILabel* showAgainLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    UILabel* solutionPreviewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    DHGeometryView* geoView = [[DHGeometryView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+
+    [startButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [titleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [objectiveLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [geoView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [detailedInstructionView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [solutionPreviewLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [showAgainLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    detailedInstructionView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1.0];
+
+    [background addSubview:detailedInstructionView];
+    [detailedInstructionView addSubview:startButton];
+    [detailedInstructionView addSubview:titleLabel];
+    [detailedInstructionView addSubview:objectiveLabel];
+    [detailedInstructionView addSubview:geoView];
+    [detailedInstructionView addSubview:solutionPreviewLabel];
+    [detailedInstructionView addSubview:showAgainLabel];
+    
+    [startButton addTarget:self action:@selector(hideDetailedLevelInstruction)
+                             forControlEvents:UIControlEventTouchUpInside];
+    
+    if (self.firstMoveMade == 0) {
+        [startButton setTitle:@"Begin" forState:UIControlStateNormal];
+    } else {
+        [startButton setTitle:@"Continue" forState:UIControlStateNormal];
+    }
+    
+    startButton.titleLabel.font = [UIFont boldSystemFontOfSize:17];
+    
+    titleLabel.text = [self.title stringByAppendingString:@" - Objective"];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.textColor = [UIColor darkGrayColor];
+    titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
+
+    solutionPreviewLabel.text = @"Solution preview:";
+    solutionPreviewLabel.textColor = [UIColor darkGrayColor];
+    solutionPreviewLabel.font = [UIFont boldSystemFontOfSize:16.0];
+
+    showAgainLabel.text = @"(Tap the objective description above the drawing area at any time to show this again)";
+    showAgainLabel.textAlignment = NSTextAlignmentCenter;
+    showAgainLabel.textColor = [UIColor grayColor];
+    showAgainLabel.font = [UIFont systemFontOfSize:14.0];
+
+    objectiveLabel.text = [_currentLevel levelDescription];
+    objectiveLabel.textColor = [UIColor darkGrayColor];
+    objectiveLabel.font = [UIFont systemFontOfSize:16.0];
+    objectiveLabel.numberOfLines = 0;
+    [objectiveLabel setLineBreakMode:NSLineBreakByWordWrapping];
+    
+    // Constraints for pop-up view
+    
+    // Width constraint
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:detailedInstructionView
+                                                       attribute:NSLayoutAttributeWidth
+                                                       relatedBy:NSLayoutRelationEqual
+                                                          toItem:nil
+                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                      multiplier:1.0
+                                                        constant:levelInfoViewSize]];
+    
+    // Height constraint
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:levelInfoViewSize]];
+    
+    // Center horizontally
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    
+    // Center vertically
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeCenterY
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterY
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+
+    // Constraints for title label
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:levelInfoViewSize]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
+                                                          attribute:NSLayoutAttributeTop
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeTop
+                                                         multiplier:1.0
+                                                           constant:20.0]];
+
+    // Constraints for objective label
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:objectiveLabel
+                                                          attribute:NSLayoutAttributeLeft
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeLeft
+                                                         multiplier:1.0
+                                                           constant:20.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:objectiveLabel
+                                                          attribute:NSLayoutAttributeRight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeRight
+                                                         multiplier:1.0
+                                                           constant:-20.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:objectiveLabel
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:objectiveLabel
+                                                          attribute:NSLayoutAttributeTop
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:titleLabel
+                                                          attribute:NSLayoutAttributeBottom
+                                                         multiplier:1.0
+                                                           constant:8.0]];
+
+    // Constraints for start button
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:startButton
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:startButton
+                                                          attribute:NSLayoutAttributeBottom
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeBottom
+                                                         multiplier:1.0
+                                                           constant:-8.0]];
+
+    // Constraints for "Show again" label
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:showAgainLabel
+                                                          attribute:NSLayoutAttributeLeft
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeLeft
+                                                         multiplier:1.0
+                                                           constant:20.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:showAgainLabel
+                                                          attribute:NSLayoutAttributeRight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeRight
+                                                         multiplier:1.0
+                                                           constant:-20.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:showAgainLabel
+                                                          attribute:NSLayoutAttributeBottom
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:startButton
+                                                          attribute:NSLayoutAttributeTop
+                                                         multiplier:1.0
+                                                           constant:-8.0]];
+    
+    
+    // Constraints for "Solution preview" label
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:solutionPreviewLabel
+                                                          attribute:NSLayoutAttributeLeft
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeLeft
+                                                         multiplier:1.0
+                                                           constant:20.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:solutionPreviewLabel
+                                                          attribute:NSLayoutAttributeRight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeRight
+                                                         multiplier:1.0
+                                                           constant:-20.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:solutionPreviewLabel
+                                                          attribute:NSLayoutAttributeTop
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:objectiveLabel
+                                                          attribute:NSLayoutAttributeBottom
+                                                         multiplier:1.0
+                                                           constant:15.0]];
+    
+    // Constraints for geo view
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:geoView
+                                                          attribute:NSLayoutAttributeLeft
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeLeft
+                                                         multiplier:1.0
+                                                           constant:20.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:geoView
+                                                          attribute:NSLayoutAttributeRight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:detailedInstructionView
+                                                          attribute:NSLayoutAttributeRight
+                                                         multiplier:1.0
+                                                           constant:-20.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:geoView
+                                                          attribute:NSLayoutAttributeTop
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:solutionPreviewLabel
+                                                          attribute:NSLayoutAttributeBottom
+                                                         multiplier:1.0
+                                                           constant:8.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:geoView
+                                                          attribute:NSLayoutAttributeBottom
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:showAgainLabel
+                                                          attribute:NSLayoutAttributeTop
+                                                         multiplier:1.0
+                                                           constant:-8.0]];
+    
+    
+    detailedInstructionView.layer.cornerRadius = 10.0;
+    detailedInstructionView.layer.shadowColor = [UIColor blackColor].CGColor;
+    detailedInstructionView.layer.shadowOffset = CGSizeMake(5, 5);
+    detailedInstructionView.layer.shadowOpacity = 0.5;
+    detailedInstructionView.layer.shadowRadius = 10.0;
+    
+    geoView.hideBorder = YES;
+    geoView.keepContentCenteredAndZoomedIn = YES;
+    geoView.backgroundColor = [UIColor whiteColor];
+    
+    if ([_currentLevel respondsToSelector:@selector(createSolutionPreviewObjects:)]) {
+        id<DHLevel> level = [[[_currentLevel class] alloc] init];
+
+        NSMutableArray* objects = [[NSMutableArray alloc] init];
+        [level createInitialObjects:objects];
+        
+        DHGeometricObjectLabeler* labeler = [[DHGeometricObjectLabeler alloc] init];
+        for (id object in objects) {
+            if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+                DHPoint* p = object;
+                p.label = [labeler nextLabel];
+            }
+        }
+        
+        [level createSolutionPreviewObjects:objects];
+        geoView.geometricObjects = objects;
+        
+    }
+    
+    [geoView setNeedsDisplay];
+    
+    _resetButton.enabled = NO;
+    _undoButton.enabled = NO;
+    _redoButton.enabled = NO;
+}
+
+- (void)hideDetailedLevelInstruction
+{
+    _resetButton.enabled = YES;
+    if (_geometricObjectsForUndo.count > 0) _undoButton.enabled = YES;
+    if (_geometricObjectsForRedo.count > 0) _redoButton.enabled = YES;
+
+    [_levelInfoView removeFromSuperview];
+    _levelInfoView = nil;
+}
 
 @end

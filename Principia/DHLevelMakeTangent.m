@@ -1,6 +1,6 @@
 //
 //  DHLevelMakeTangent.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-06.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -38,7 +38,12 @@
             DHCompassToolAvailable);
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 2;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:200 andY:200];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:300 andY:220];
@@ -50,9 +55,19 @@
     [geometricObjects addObject:circle];
     [geometricObjects addObject:pA];
     [geometricObjects addObject:pB];
-    
+ 
     _pointA = pA;
     _pointB = pB;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_pointA andEnd:_pointB];
+    DHPerpendicularLine* pl = [[DHPerpendicularLine alloc] init];
+    pl.line = r;
+    pl.point = _pointB;
+    
+    [objects insertObject:pl atIndex:0];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

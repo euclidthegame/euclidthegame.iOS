@@ -1,6 +1,6 @@
 //
 //  DHGeometricObjects.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-23.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -9,6 +9,19 @@
 #import "DHGeometricObjects.h"
 #import "DHMath.h"
 #import "DHGeometricObjectLabeler.h"
+
+typedef struct DHColor_s {
+    CGFloat r;
+    CGFloat g;
+    CGFloat b;
+    CGFloat a;
+} DHColor;
+
+static const DHColor kPointColor = {130/255.0, 130/255.0, 130/255.0, 1.0};
+static const DHColor kPointColorFixed = {20/255.0, 20/255.0, 20/255.0, 1.0};
+static const DHColor kPointColorHighlighted = {0/255.0, 0/255.0, 0/255.0, 1.0};
+static const DHColor kLineColor = {255/255.0, 204/255.0, 0/255.0, 1.0};
+static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0};
 
 @implementation DHGeometricObject
 
@@ -36,25 +49,34 @@
     
     return self;
 }
-- (void)drawInContext:(CGContextRef)context
+- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
     CGFloat pointWidth = 10.0f;
-    CGRect rect = CGRectMake(self.position.x - pointWidth*0.5f, self.position.y - pointWidth*0.5f, pointWidth, pointWidth);
-
+    CGPoint position = [transform geoToView:self.position];
+    CGRect rect = CGRectMake(position.x - pointWidth*0.5f, position.y - pointWidth*0.5f, pointWidth, pointWidth);
+    
     CGContextSaveGState(context);
     
     if (self.highlighted) {
         CGSize shadowSize = CGSizeMake(0, 0);
-        CGContextSetShadow(context, shadowSize, 10.0f);
+        //CGContextSetShadow(context, shadowSize, 8.0f);
+        CGColorRef shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.9].CGColor;
+        CGContextSetShadowWithColor (context, shadowSize, 5.0f, shadowColor);
         CGContextSetLineWidth(context, 1.0);
-        CGContextSetRGBFillColor(context, 1.0, 0.1, 0.1, 1.0);
-        CGContextSetRGBStrokeColor(context, 0.4, 0.1, 0.1, 1.0);
+        CGContextSetRGBFillColor(context, kPointColorHighlighted.r, kPointColorHighlighted.g,
+                                 kPointColorHighlighted.b, kPointColorHighlighted.a);
+        CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
         CGContextFillEllipseInRect(context, rect);
         
     } else {
         CGContextSetLineWidth(context, 1.0);
-        CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-        CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+        if (self.class == [DHPoint class]) {
+            CGContextSetRGBFillColor(context, kPointColor.r, kPointColor.g, kPointColor.b, kPointColor.a);
+        } else {
+            CGContextSetRGBFillColor(context, kPointColorFixed.r, kPointColorFixed.g,
+                                     kPointColorFixed.b, kPointColorFixed.a);
+        }
+        CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
         CGContextFillEllipseInRect(context, rect);
     }
     
@@ -69,8 +91,8 @@
         NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:10],
                                      NSParagraphStyleAttributeName: paragraphStyle};
         CGSize textSize = [self.label sizeWithAttributes:attributes];
-        CGRect labelRect = CGRectMake(self.position.x - textSize.width*0.5f + 7,
-                                      self.position.y - pointWidth*0.5f - 4 - textSize.height,
+        CGRect labelRect = CGRectMake(position.x - textSize.width*0.5f + 7,
+                                      position.y - pointWidth*0.5f - 4 - textSize.height,
                                       textSize.width, textSize.height);
         [self.label drawInRect:labelRect withAttributes:attributes];
     }
@@ -83,7 +105,7 @@
 {
     return CGVectorMake(self.end.position.x - self.start.position.x, self.end.position.y - self.start.position.y);
 }
-- (void)drawInContext:(CGContextRef)context
+- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
     // Avoid CG-errors by exiting early if positions are not valid numbers
     CGPoint start = self.start.position;
@@ -94,6 +116,9 @@
     if (end.x != end.x) return;
     if (end.y != end.y) return;
 
+    start = [transform geoToView:start];
+    end = [transform geoToView:end];
+    
     CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(start, end));
     if (self.tMin == -INFINITY) {
         start.x = start.x - 1000*dir.dx;
@@ -107,11 +132,12 @@
     if (self.highlighted) {
         CGContextSetLineWidth(context, 3.0);
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-        CGContextSetRGBStrokeColor(context, 1.0, 0.0, 0.0, 1.0);
+        CGContextSetRGBStrokeColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
+                                   kLineColorHighlighted.b, kLineColorHighlighted.a);
     } else {
         CGContextSetLineWidth(context, 1.0);
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-        CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+        CGContextSetRGBStrokeColor(context, kLineColor.r, kLineColor.g, kLineColor.b, kLineColor.a);
     }
     
     CGContextMoveToPoint(context, start.x, start.y);
@@ -130,6 +156,15 @@
     }
     return self;
 }
+- (instancetype)initWithStart:(DHPoint *)start andEnd:(DHPoint *)end
+{
+    self = [self init];
+    if (self) {
+        self.start = start;
+        self.end = end;
+    }
+    return self;
+}
 - (CGFloat)length
 {
     return DistanceBetweenPoints(self.start.position, self.end.position);
@@ -137,14 +172,25 @@
 @end
 
 @implementation DHCircle
-- (void)drawInContext:(CGContextRef)context
+- (instancetype)initWithCenter:(DHPoint*)center andPointOnRadius:(DHPoint*)pointOnRadius
 {
-    CGFloat radius = self.radius;
-    CGRect rect = CGRectMake(_center.position.x - radius, _center.position.y - radius, radius*2, radius*2);
+    self = [super init];
+    if (self) {
+        self.center = center;
+        self.pointOnRadius = pointOnRadius;
+    }
+    return self;
+
+}
+- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
+{
+    CGFloat radius = self.radius * [transform scale];
+    CGPoint position = [transform geoToView:self.center.position];
     
+    CGRect rect = CGRectMake(position.x - radius, position.y - radius, radius*2, radius*2);    
     CGContextSetLineWidth(context, 1.0);
     CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 1.0, 1.0);
+    CGContextSetRGBStrokeColor(context, kLineColor.r, kLineColor.g, kLineColor.b, kLineColor.a);
     CGContextStrokeEllipseInRect(context, rect);
 }
 
@@ -156,9 +202,9 @@
 
 
 @implementation DHIntersectionPointCircleCircle
-- (void)drawInContext:(CGContextRef)context
+- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
-    [super drawInContext:context];
+    [super drawInContext:context withTransform:transform];
 }
 
 - (CGPoint)position
@@ -186,11 +232,15 @@
 
 
 @implementation DHIntersectionPointLineLine
-- (void)drawInContext:(CGContextRef)context
+- (instancetype)initWithLine:(DHLineObject*)l1 andLine:(DHLineObject*)l2
 {
-    [super drawInContext:context];
+    self = [super init];
+    if (self) {
+        self.l1 = l1;
+        self.l2 = l2;
+    }
+    return self;
 }
-
 - (CGPoint)position
 {
     CGPoint intersection = CGPointMake(NAN,NAN);
@@ -207,14 +257,9 @@
 
 
 @implementation DHIntersectionPointLineCircle
-- (void)drawInContext:(CGContextRef)context
-{
-    [super drawInContext:context];
-}
-
 - (CGPoint)position
 {
-    DHIntersectionResult result = DoLineAndCircleIntersect(_l, _c, _preferEnd);
+    DHIntersectionResult result = IntersectionTestLineCircle(_l, _c, _preferEnd);
     return result.intersectionPoint;
 }
 
@@ -222,10 +267,6 @@
 
 
 @implementation DHMidPoint
-- (void)drawInContext:(CGContextRef)context
-{
-    [super drawInContext:context];
-}
 - (CGPoint)position
 {
     return MidPointFromPoints(self.start.position, self.end.position);
@@ -233,9 +274,14 @@
 @end
 
 @implementation DHTrianglePoint
-- (void)drawInContext:(CGContextRef)context
+- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2
 {
-    [super drawInContext:context];
+    self = [super init];
+    if (self) {
+        _start = p1;
+        _end = p2;
+    }
+    return self;
 }
 - (CGPoint)position
 {
@@ -248,10 +294,6 @@
 @end
 
 @implementation DHPointOnLine
-- (void)drawInContext:(CGContextRef)context
-{
-    [super drawInContext:context];
-}
 - (CGPoint)position
 {
     CGPoint p1 = self.line.start.position;
@@ -271,6 +313,16 @@
     }
     return self;
 }
+- (instancetype)initWithStart:(DHPoint *)start andEnd:(DHPoint *)end
+{
+    self = [self init];
+    if (self) {
+        self.start = start;
+        self.end = end;
+    }
+    return self;
+}
+
 @end
 
 @implementation DHLine
@@ -283,6 +335,16 @@
     }
     return self;
 }
+- (instancetype)initWithStart:(DHPoint *)start andEnd:(DHPoint *)end
+{
+    self = [self init];
+    if (self) {
+        self.start = start;
+        self.end = end;
+    }
+    return self;
+}
+
 @end
 
 
@@ -318,15 +380,13 @@
     CGVector v2 = CGVectorNormalize(self.line2.vector);
     
     DHPoint* start = self.start;
-    DHPoint* end = [[DHPoint alloc] init];
-    
-    end.position = CGPointMake(start.position.x + v1.dx + v2.dx, start.position.y + v1.dy + v2.dy);
-    
-    if (start) {
-        return end;
+    if (!start) {
+        return nil;
     }
     
-    return nil;
+    DHPoint* end = [[DHPoint alloc] init];
+    end.position = CGPointMake(start.position.x + v1.dx + v2.dx, start.position.y + v1.dy + v2.dy);
+    return end;
 }
 @end
 
@@ -395,42 +455,7 @@
 @end
 
 
-@implementation DHTranslatedLine
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        self.tMin = 0;
-        self.tMax = 1;
-    }
-    return self;
-}
-- (DHPoint*)start
-{
-    return self.point;
-}
-- (DHPoint*)end
-{
-    if (self.line == nil || self.point == nil) {
-        return nil;
-    }
-    
-    CGVector v = self.line.vector;
-    
-    DHPoint* start = self.start;
-    DHPoint* end = [[DHPoint alloc] init];
-    
-    end.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
-    
-    return end;
-}
-@end
-
 @implementation DHTranslatedPoint
-- (void)drawInContext:(CGContextRef)context
-{
-    
-}
 - (CGPoint)position
 {
     CGVector translation = CGVectorBetweenPoints(self.translationStart.position, self.translationEnd.position);

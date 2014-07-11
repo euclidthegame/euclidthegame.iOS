@@ -1,6 +1,6 @@
 //
 //  DHLevel3.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-25.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -17,11 +17,6 @@
 
 @implementation DHLevelSquare
 
-- (NSString*)title
-{
-    return @"Challenge 3";
-}
-
 - (NSString*)subTitle
 {
     return @"Squares";
@@ -32,7 +27,12 @@
     return @"Create 4 lines forming a square whose diagonal is equal to the radius of the circle";
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 6;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHCircle* c = [[DHCircle alloc] init];
     _initialCircle = c;

@@ -1,6 +1,6 @@
 //
 //  DHGeometricObjectLabeler.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-07-02.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -8,35 +8,50 @@
 
 #import "DHGeometricObjectLabeler.h"
 
-static char labelLetter = 'A';
-static int labelNumber = 0;
+
+@interface DHGeometricObjectLabeler () {
+    char _labelLetter;
+    int _labelNumber;
+}
+
+@end
 
 @implementation DHGeometricObjectLabeler
 
-+ (NSString*)nextLabel
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        _labelLetter = 'A';
+        _labelNumber = 0;
+    }
+    return self;
+}
+
+- (NSString*)nextLabel
 {
     NSString* label;
     
-    if (labelNumber == 0) {
-        label = [NSString stringWithFormat:@"%c", labelLetter];
+    if (_labelNumber == 0) {
+        label = [NSString stringWithFormat:@"%c", _labelLetter];
     } else {
-        label = [NSString stringWithFormat:@"%c%d", labelLetter, labelNumber];
+        label = [NSString stringWithFormat:@"%c%d", _labelLetter, _labelNumber];
     }
     
-    if (labelLetter == 'Z') {
-        labelLetter = 'A';
-        ++labelNumber;
+    if (_labelLetter == 'Z') {
+        _labelLetter = 'A';
+        ++_labelNumber;
     } else {
-        ++labelLetter;
+        ++_labelLetter;
     }
     
     return label;
 }
 
-+ (void)reset
+- (void)reset
 {
-    labelLetter = 'A';
-    labelNumber = 0;
+    _labelLetter = 'A';
+    _labelNumber = 0;
 }
 
 @end

@@ -1,6 +1,6 @@
 //
 //  DHLevel2.m
-//  Principia
+//  Euclid
 //
 //  Created by David Hallgren on 2014-06-25.
 //  Copyright (c) 2014 David Hallgren. All rights reserved.
@@ -37,7 +37,12 @@
     return @"You unlocked a new tool: Constructing equilateral triangles!";
 }
 
-- (void)setUpLevel:(NSMutableArray *)geometricObjects
+- (NSUInteger)minimumNumberOfMoves
+{
+    return 4;
+}
+
+- (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:400];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:400];
@@ -45,11 +50,23 @@
     l1.start = p1;
     l1.end = p2;
     
+    [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];
     [geometricObjects addObject:p2];
-    [geometricObjects addObject:l1];
     
     _lineAB = l1;
+}
+
+- (void)createSolutionPreviewObjects:(NSMutableArray*)objects
+{
+    DHPoint* pC = [[DHPoint alloc] initWithPositionX:380 andY:400-(sqrt(3)/2*_lineAB.length)];
+    [objects addObject:pC];
+    
+    DHLineSegment* sAC = [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:pC];
+    [objects insertObject:sAC atIndex:0];
+
+    DHLineSegment* sBC = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pC];
+    [objects insertObject:sBC atIndex:0];    
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
@@ -113,9 +130,7 @@
                 
                 // Ensure all lines are connected and of same length
                 BOOL connected = AreLinesConnected(l1,l2) && AreLinesConnected(l2,l3) && AreLinesConnected(l3,l1);
-                if (connected &&
-                    CGFloatsEqualWithinEpsilon(length1, length2) &&
-                    CGFloatsEqualWithinEpsilon(length2, length3)) {
+                if (connected && fabs(length1 - length2) < 0.01 && fabs(length2 - length3) < 0.01) {
                     return YES;
                 }
             }

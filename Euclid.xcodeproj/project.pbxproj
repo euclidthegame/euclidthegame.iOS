@@ -643,6 +643,7 @@
 				GCC_PREFIX_HEADER = "Principia/Euclid-Prefix.pch";
 				INFOPLIST_FILE = "Principia/Euclid-Info.plist";
 				PRODUCT_NAME = Euclid;
+				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -656,6 +657,7 @@
 				GCC_PREFIX_HEADER = "Principia/Euclid-Prefix.pch";
 				INFOPLIST_FILE = "Principia/Euclid-Info.plist";
 				PRODUCT_NAME = Euclid;
+				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

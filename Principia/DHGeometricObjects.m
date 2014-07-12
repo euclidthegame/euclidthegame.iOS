@@ -371,7 +371,11 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 
 @end
 
-
+@interface DHBisectLine (){
+    DHPoint* _startPointCache;
+    DHPoint* _endPointCache;
+}
+@end
 @implementation DHBisectLine
 - (instancetype)init
 {
@@ -379,6 +383,8 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     if (self) {
         self.tMin = -INFINITY;// 1000.0;
         self.tMax = INFINITY; //1000.0;
+        _startPointCache = [[DHPoint alloc] initWithPositionX:NAN andY:NAN];
+        _endPointCache = [[DHPoint alloc] initWithPositionX:NAN andY:NAN];
     }
     return self;
 }
@@ -388,13 +394,10 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     if (self.line1.start == self.line2.start || self.line1.start == self.line2.end) return self.line1.start;
     if (self.line1.end == self.line2.start || self.line1.end == self.line2.end) return self.line1.end;
     
-    // No shared point, so extend both lines infinitely and find their intersection to use as start of bisector
-    //DHLine* l1 = [[DHLine alloc] initWithStart:self.line1.start andEnd:self.line1.end];
-    //DHLine* l2 = [[DHLine alloc] initWithStart:self.line2.start andEnd:self.line2.end];
-    
     DHIntersectionResult r = IntersectionTestLineLine(self.line1, self.line2);
     if (r.intersect) {
-        return [[DHPoint alloc] initWithPositionX:r.intersectionPoint.x andY:r.intersectionPoint.y];
+        _startPointCache.position = r.intersectionPoint;
+        return _startPointCache;
     }
     
     return nil;
@@ -417,13 +420,15 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         v2.dy = -v2.dy;
     }
     
-    DHPoint* end = [[DHPoint alloc] init];
-    end.position = CGPointMake(startPos.x + v1.dx + v2.dx, startPos.y + v1.dy + v2.dy);
-    return end;
+    _endPointCache.position = CGPointMake(startPos.x + v1.dx + v2.dx, startPos.y + v1.dy + v2.dy);
+    return _endPointCache;
 }
 @end
 
-
+@interface DHPerpendicularLine () {
+    DHPoint* _endPointCache;
+}
+@end
 @implementation DHPerpendicularLine
 - (instancetype)init
 {
@@ -431,6 +436,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     if (self) {
         self.tMin = -INFINITY;// 1000.0;
         self.tMax = INFINITY; //1000.0;
+        _endPointCache = [[DHPoint alloc] initWithPositionX:NAN andY:NAN];
     }
     return self;
 }
@@ -447,11 +453,9 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     CGVector v = CGVectorNormalize(CGVectorMakePerpendicular(self.line.vector));
     
     DHPoint* start = self.start;
-    DHPoint* end = [[DHPoint alloc] init];
+    _endPointCache.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
     
-    end.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
-    
-    return end;
+    return _endPointCache;
 }
 @end
 

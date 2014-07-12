@@ -374,6 +374,10 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 @interface DHBisectLine (){
     DHPoint* _startPointCache;
     DHPoint* _endPointCache;
+    CGPoint _line1StartCache;
+    CGPoint _line1EndCache;
+    CGPoint _line2StartCache;
+    CGPoint _line2EndCache;
 }
 @end
 @implementation DHBisectLine
@@ -385,6 +389,10 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         self.tMax = INFINITY; //1000.0;
         _startPointCache = [[DHPoint alloc] initWithPositionX:NAN andY:NAN];
         _endPointCache = [[DHPoint alloc] initWithPositionX:NAN andY:NAN];
+        _line1StartCache = CGPointMake(NAN, NAN);
+        _line1EndCache = CGPointMake(NAN, NAN);
+        _line2StartCache = CGPointMake(NAN, NAN);
+        _line2EndCache = CGPointMake(NAN, NAN);
     }
     return self;
 }
@@ -394,9 +402,21 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     if (self.line1.start == self.line2.start || self.line1.start == self.line2.end) return self.line1.start;
     if (self.line1.end == self.line2.start || self.line1.end == self.line2.end) return self.line1.end;
     
+    // If lines have not moved since caching intersection point, no need to recalculate intersection
+    if (CGPointEqualToPoint(_line1StartCache, self.line1.start.position) &&
+        CGPointEqualToPoint(_line1EndCache, self.line1.end.position) &&
+        CGPointEqualToPoint(_line2StartCache, self.line2.start.position) &&
+        CGPointEqualToPoint(_line2EndCache, self.line2.end.position)) {
+        return _startPointCache;
+    }
+    
     DHIntersectionResult r = IntersectionTestLineLine(self.line1, self.line2);
     if (r.intersect) {
         _startPointCache.position = r.intersectionPoint;
+        _line1StartCache = self.line1.start.position;
+        _line1EndCache = self.line1.end.position;
+        _line2StartCache = self.line2.start.position;
+        _line2EndCache = self.line2.end.position;
         return _startPointCache;
     }
     

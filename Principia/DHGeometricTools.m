@@ -755,16 +755,9 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
                 bl.line1 = self.firstLine;
                 bl.line2 = line;
                 
-                // Create an intersection point and perpendicular line to bisector located at that point
-                // Note: This line should only be visible if the lines actually intersect, but this is
-                // handled by the point object so that if two lines that currenly do not intersect are moved
-                // it becomes visible again
-                DHIntersectionPointLineLine* p = [[DHIntersectionPointLineLine alloc] init];
-                p.l1 = self.firstLine;
-                p.l2 = line;
                 DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] init];
                 perpLine.line = bl;
-                perpLine.point = p;
+                perpLine.point = bl.start;
                 [self.delegate addGeometricObjects:@[bl, perpLine]];
                 
                 self.firstLine.highlighted = false;
@@ -790,12 +783,9 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
                 bl.line1 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:self.firstPoint];
                 bl.line2 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:point];
                 bl.fixedDirection = YES;
-                DHIntersectionPointLineLine* p = [[DHIntersectionPointLineLine alloc] init];
-                p.l1 = bl.line1;
-                p.l2 = bl.line2;
                 DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] init];
                 perpLine.line = bl;
-                perpLine.point = p;
+                perpLine.point = bl.start;
                 
                 [self.delegate addGeometricObjects:@[bl, perpLine]];
                 

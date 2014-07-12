@@ -143,7 +143,9 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
-    if (point && [point class] == [DHPoint class]) {
+    if (point && ([point class] == [DHPoint class] ||
+                  [point class] == [DHPointOnLine class] ||
+                  [point class] == [DHPointOnCircle class]) ) {
         self.point = point;
         self.point.highlighted = YES;
         self.touchStart = touchPoint;
@@ -154,7 +156,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
 }
 - (void)touchMoved:(UITouch*)touch
 {
-    if (self.point) {
+    if (self.point && [self.point class] == [DHPoint class]) {
         CGPoint touchPointInView = [touch locationInView:touch.view];
         CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
         
@@ -163,6 +165,34 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
         previousPosition.y = previousPosition.y + touchPoint.y - self.touchStart.y;
         self.point.position = previousPosition;
         self.touchStart = touchPoint;
+        [touch.view setNeedsDisplay];
+    }
+    if (self.point && [self.point class] == [DHPointOnLine class]) {
+        CGPoint touchPointInView = [touch locationInView:touch.view];
+        CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
+        DHPointOnLine* pLine = (DHPointOnLine*)self.point;
+        CGPoint closestPointOnLine = ClosestPointOnLineFromPosition(touchPoint, pLine.line);
+        CGFloat tValue = CGVectorDotProduct(pLine.line.vector, CGVectorBetweenPoints(pLine.line.start.position, closestPointOnLine))/CGVectorDotProduct(pLine.line.vector, pLine.line.vector);
+        
+        pLine.tValue = tValue;
+        
+        [touch.view setNeedsDisplay];
+    }
+    if (self.point && [self.point class] == [DHPointOnCircle class]) {
+        CGPoint touchPointInView = [touch locationInView:touch.view];
+        CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
+
+        DHPointOnCircle* pCircle = (DHPointOnCircle*)self.point;
+        DHCircle* circle = pCircle.circle;
+        
+        CGVector vCenterTouchPoint = CGVectorBetweenPoints(circle.center.position, touchPoint);
+        CGFloat angle = CGVectorAngleBetween(vCenterTouchPoint, CGVectorMake(1, 0));
+        
+        if (touchPoint.y < circle.center.position.y) {
+            angle = 2*M_PI - angle;
+        }
+        
+        pCircle.angle = angle;
         [touch.view setNeedsDisplay];
     }
     

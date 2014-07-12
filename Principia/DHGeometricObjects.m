@@ -70,7 +70,9 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         
     } else {
         CGContextSetLineWidth(context, 1.0);
-        if (self.class == [DHPoint class]) {
+        if (self.class == [DHPoint class] ||
+            self.class == [DHPointOnCircle class] ||
+            self.class == [DHPointOnLine class]) {
             CGContextSetRGBFillColor(context, kPointColor.r, kPointColor.g, kPointColor.b, kPointColor.a);
         } else {
             CGContextSetRGBFillColor(context, kPointColorFixed.r, kPointColorFixed.g,

@@ -387,10 +387,10 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     if (self.line1.end == self.line2.start || self.line1.end == self.line2.end) return self.line1.end;
     
     // No shared point, so extend both lines infinitely and find their intersection to use as start of bisector
-    DHLine* l1 = [[DHLine alloc] initWithStart:self.line1.start andEnd:self.line1.end];
-    DHLine* l2 = [[DHLine alloc] initWithStart:self.line2.start andEnd:self.line2.end];
+    //DHLine* l1 = [[DHLine alloc] initWithStart:self.line1.start andEnd:self.line1.end];
+    //DHLine* l2 = [[DHLine alloc] initWithStart:self.line2.start andEnd:self.line2.end];
     
-    DHIntersectionResult r = IntersectionTestLineLine(l1, l2);
+    DHIntersectionResult r = IntersectionTestLineLine(self.line1, self.line2);
     if (r.intersect) {
         return [[DHPoint alloc] initWithPositionX:r.intersectionPoint.x andY:r.intersectionPoint.y];
     }

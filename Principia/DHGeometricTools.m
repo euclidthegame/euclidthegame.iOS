@@ -715,6 +715,11 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
         // Give some preference to points in distance comparison to make them easier to hit
         if (line && (distLine < distPoint-10)) {
             if (self.firstLine && line != self.firstLine) {
+                DHIntersectionResult r = IntersectionTestLineLine(self.firstLine, line);
+                if (r.intersect == NO) {
+                    return;
+                }
+                
                 DHBisectLine* bl = [[DHBisectLine alloc] init];
                 bl.line1 = self.firstLine;
                 bl.line2 = line;
@@ -737,7 +742,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
             } else if (self.firstLine == nil) {
                 self.firstLine = line;
                 line.highlighted = true;
-                [self.delegate toolTipDidChange:@"Tap on a second line to create a line bisecting the angle between it and the first"];
+                [self.delegate toolTipDidChange:@"Tap on a second line intersecting/connect to the first to create the bisector"];
                 [touch.view setNeedsDisplay];
             }
         } else if (self.firstLine == nil) {
@@ -761,8 +766,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
                 bl.line1 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:self.firstPoint];
                 bl.line2 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:point];
                 bl.fixedDirection = YES;
+                DHIntersectionPointLineLine* p = [[DHIntersectionPointLineLine alloc] init];
+                p.l1 = bl.line1;
+                p.l2 = bl.line2;
+                DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] init];
+                perpLine.line = bl;
+                perpLine.point = p;
                 
-                [self.delegate addGeometricObjects:@[bl]];
+                [self.delegate addGeometricObjects:@[bl, perpLine]];
                 
                 self.firstPoint.highlighted = false;
                 self.firstPoint = nil;

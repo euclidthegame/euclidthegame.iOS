@@ -151,7 +151,6 @@
 		68F0AA19195A983D00A97B86 /* DHLevels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHLevels.h; sourceTree = "<group>"; };
 		68F0AA1A195B256300A97B86 /* DHLevelSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSquare.h; sourceTree = "<group>"; };
 		68F0AA1B195B256B00A97B86 /* DHLevelSquare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSquare.m; sourceTree = "<group>"; };
-		68F0AA1D195C2D3C00A97B86 /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; name = TODO; path = Principia/TODO; sourceTree = "<group>"; };
 		68F0AA23195CBCA200A97B86 /* DHLevelViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelViewController.h; sourceTree = "<group>"; };
 		68F0AA24195CBCA200A97B86 /* DHLevelViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelViewController.m; sourceTree = "<group>"; };
 		68F0AA28195E00CF00A97B86 /* DHLevelMidPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelMidPoint.h; sourceTree = "<group>"; };
@@ -195,7 +194,6 @@
 		68F0A9BB19587AEC00A97B86 = {
 			isa = PBXGroup;
 			children = (
-				68F0AA1D195C2D3C00A97B86 /* TODO */,
 				68F0A9CD19587AEC00A97B86 /* Euclid */,
 				68F0A9EC19587AEC00A97B86 /* EuclidTests */,
 				68F0A9C619587AEC00A97B86 /* Frameworks */,

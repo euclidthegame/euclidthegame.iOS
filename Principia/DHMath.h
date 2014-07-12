@@ -100,6 +100,18 @@ static DHIntersectionResult IntersectionTestLineLine(DHLineObject* l1, DHLineObj
     DHIntersectionResult result;
     result.intersectionPoint.x = NAN;
     result.intersectionPoint.y = NAN;
+
+    // Fast out if the lines already share a point
+    if (l1.start == l2.start || l1.start == l2.end) {
+        result.intersect = YES;
+        result.intersectionPoint = l1.start.position;
+        return result;
+    }
+    if (l1.end == l2.start || l1.end == l2.end) {
+        result.intersect = YES;
+        result.intersectionPoint = l1.end.position;
+        return result;
+    }
     
     CGPoint pA = l1.start.position;
     CGPoint pB = l1.end.position;

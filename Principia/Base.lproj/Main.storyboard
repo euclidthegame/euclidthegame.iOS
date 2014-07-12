@@ -63,7 +63,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2ux-1M-Bze">
-                                <rect key="frame" x="0.0" y="60" width="768" height="868"/>
+                                <rect key="frame" x="0.0" y="60" width="768" height="869"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -71,7 +71,7 @@
                                 </connections>
                             </containerView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="99O-ka-blD">
-                                <rect key="frame" x="20" y="962" width="728" height="48"/>
+                                <rect key="frame" x="20" y="964" width="728" height="49"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="mhl-2u-Btf"/>
@@ -87,7 +87,7 @@
                                 </segments>
                             </segmentedControl>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tool instructions" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bks-Fo-Osy">
-                                <rect key="frame" x="332" y="937" width="109" height="17"/>
+                                <rect key="frame" x="330" y="937" width="109" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -115,7 +115,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tbY-LX-K8w" userLabel="LevelComplete" colorLabel="IBBuiltInLabel-Green">
-                                <rect key="frame" x="56" y="403" width="660" height="215"/>
+                                <rect key="frame" x="54" y="405" width="660" height="215"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="✓" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sfo-dU-DWe">
@@ -189,7 +189,7 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Moves: 0 " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cqv-aF-aQU">
-                                <rect key="frame" x="701" y="65" width="63" height="17"/>
+                                <rect key="frame" x="699" y="65" width="63" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -263,7 +263,7 @@
                         <viewControllerLayoutGuide type="bottom" id="HDT-v8-cr9"/>
                     </layoutGuides>
                     <view key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="redraw" id="sze-H7-LD8" customClass="DHGeometryView">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="868"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="869"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>

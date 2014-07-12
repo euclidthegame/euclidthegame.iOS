@@ -107,9 +107,14 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 }
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
+    // Exit early if for some reason the line is no longer valid
+    DHPoint* lineStart = self.start;
+    DHPoint* lineEnd = self.end;
+    if (lineStart == nil || lineEnd == nil) return;
+    
     // Avoid CG-errors by exiting early if positions are not valid numbers
-    CGPoint start = self.start.position;
-    CGPoint end = self.end.position;
+    CGPoint start = lineStart.position;
+    CGPoint end = lineEnd.position;
     
     if (start.x != start.x) return;
     if (start.y != start.y) return;
@@ -121,12 +126,20 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     
     CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(start, end));
     if (self.tMin == -INFINITY) {
-        start.x = start.x - 1000*dir.dx;
-        start.y = start.y - 1000*dir.dy;
+        if (dir.dx == 0) {
+            start.y = 0;
+        } else {
+            start.x = start.x - 10000*dir.dx;
+            start.y = start.y - 10000*dir.dy;
+        }
     }
     if (self.tMax == INFINITY) {
-        end.x = end.x + 1000*dir.dx;
-        end.y = end.y + 1000*dir.dy;
+        if (dir.dx == 0) {
+            end.y = 10000.0;
+        } else {
+            end.x = end.x + 10000*dir.dx;
+            end.y = end.y + 10000*dir.dy;
+        }
     }
     
     if (self.highlighted) {
@@ -360,12 +373,13 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 }
 - (DHPoint*)start
 {
-    DHLine* l1 = [[DHLine alloc] init];
-    l1.start = self.line1.start;
-    l1.end = self.line1.end;
-    DHLine* l2 = [[DHLine alloc] init];
-    l2.start = self.line2.start;
-    l2.end = self.line2.end;
+    // First, check if the assigned lines share a point, if so, use it
+    if (self.line1.start == self.line2.start || self.line1.start == self.line2.end) return self.line1.start;
+    if (self.line1.end == self.line2.start || self.line1.end == self.line2.end) return self.line1.end;
+    
+    // No shared point, so extend both lines infinitely and find their intersection to use as start of bisector
+    DHLine* l1 = [[DHLine alloc] initWithStart:self.line1.start andEnd:self.line1.end];
+    DHLine* l2 = [[DHLine alloc] initWithStart:self.line2.start andEnd:self.line2.end];
     
     DHIntersectionResult r = IntersectionTestLineLine(l1, l2);
     if (r.intersect) {
@@ -376,16 +390,24 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 }
 - (DHPoint*)end
 {
-    CGVector v1 = CGVectorNormalize(self.line1.vector);
-    CGVector v2 = CGVectorNormalize(self.line2.vector);
-    
     DHPoint* start = self.start;
     if (!start) {
         return nil;
     }
     
+    CGPoint startPos = start.position;
+    CGVector v1 = CGVectorNormalize(self.line1.vector);
+    CGVector v2 = CGVectorNormalize(self.line2.vector);
+    
+    // Always use the smallest angle for the bisector and let the perpendicular line also added by the
+    // Bisector-tool be other if the lines intersect
+    if (CGVectorDotProduct(v1, v2) < 0) {
+        v2.dx = -v2.dx;
+        v2.dy = -v2.dy;
+    }
+    
     DHPoint* end = [[DHPoint alloc] init];
-    end.position = CGPointMake(start.position.x + v1.dx + v2.dx, start.position.y + v1.dy + v2.dy);
+    end.position = CGPointMake(startPos.x + v1.dx + v2.dx, startPos.y + v1.dy + v2.dy);
     return end;
 }
 @end

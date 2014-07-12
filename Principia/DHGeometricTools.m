@@ -632,14 +632,16 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
                 bl.line1 = self.firstLine;
                 bl.line2 = line;
                 
-                //if (IntersectionTestLineLine(self.firstLine, line).intersect) {
+                // Create an intersection point and perpendicular line to bisector located at that point
+                // Note: This line should only be visible if the lines actually intersect, but this is
+                // handled by the point object so that if two lines that currenly do not intersect are moved
+                // it becomes visible again
                 DHIntersectionPointLineLine* p = [[DHIntersectionPointLineLine alloc] init];
                 p.l1 = self.firstLine;
                 p.l2 = line;
                 DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] init];
                 perpLine.line = bl;
                 perpLine.point = p;
-                //}
                 [self.delegate addGeometricObjects:@[bl, perpLine]];
                 
                 self.firstLine.highlighted = false;

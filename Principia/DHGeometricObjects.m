@@ -401,7 +401,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     
     // Always use the smallest angle for the bisector and let the perpendicular line also added by the
     // Bisector-tool be other if the lines intersect
-    if (CGVectorDotProduct(v1, v2) < 0) {
+    if (CGVectorDotProduct(v1, v2) < 0 && !self.fixedDirection) {
         v2.dx = -v2.dx;
         v2.dy = -v2.dy;
     }

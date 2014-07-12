@@ -622,11 +622,17 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
+    NSArray* objects = self.delegate.geometryObjects;
     
-    // If no first point has been tapped, first try to see if the tap is close to a line
+    // If no first point has been tapped, look for closest line or point
     if (self.firstPoint == nil) {
-        DHLineObject* line = FindLineClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
-        if (line) {
+        DHLineObject* line = FindLineClosestToPoint(touchPoint, objects, kClosestTapLimit / geoViewScale);
+        DHPoint* point = FindPointClosestToPoint(touchPoint, objects, kClosestTapLimit / geoViewScale);
+        
+        CGFloat distPoint = (point == nil? CGFLOAT_MAX : DistanceBetweenPoints(touchPoint, point.position));
+        CGFloat distLine = (line == nil? CGFLOAT_MAX : DistanceFromPositionToLine(touchPoint, line));
+        
+        if (line && (distLine < distPoint)) {
             if (self.firstLine && line != self.firstLine) {
                 DHBisectLine* bl = [[DHBisectLine alloc] init];
                 bl.line1 = self.firstLine;
@@ -654,7 +660,6 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
                 [touch.view setNeedsDisplay];
             }
         } else if (self.firstLine == nil) {
-            DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
             if (point) {
                 self.firstPoint = point;
                 point.highlighted = true;
@@ -672,8 +677,9 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
                 [touch.view setNeedsDisplay];
             } else {
                 DHBisectLine* bl = [[DHBisectLine alloc] init];
-                bl.line1 = [[DHLine alloc] initWithStart:self.secondPoint andEnd:self.firstPoint];
-                bl.line2 = [[DHLine alloc] initWithStart:self.secondPoint andEnd:point];
+                bl.line1 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:self.firstPoint];
+                bl.line2 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:point];
+                bl.fixedDirection = YES;
                 
                 [self.delegate addGeometricObjects:@[bl]];
                 

@@ -119,6 +119,7 @@
 @interface DHBisectLine : DHLineObject
 @property (nonatomic, strong) DHLineObject* line1;
 @property (nonatomic, strong) DHLineObject* line2;
+@property (nonatomic) BOOL fixedDirection;
 @end
 
 

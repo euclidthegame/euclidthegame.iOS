@@ -44,6 +44,41 @@ static CGFloat DistanceBetweenPoints(CGPoint a, CGPoint b)
     return ({CGFloat d1 = a.x - b.x, d2 = a.y - b.y; sqrt(d1 * d1 + d2 * d2); });
 }
 
+static CGFloat DistanceFromPositionToLine(CGPoint position, DHLineObject* line)
+{
+    //float minimum_distance(vec2 v, vec2 w, vec2 p) {
+    
+    CGPoint p1 = line.start.position;
+    CGPoint p2 = line.end.position;
+    
+    CGVector aToB = CGVectorBetweenPoints(line.start.position, line.end.position);
+    const CGFloat l2 = CGVectorDotProduct(aToB, aToB); // Length squared
+    if (l2 == 0.0) {
+        // If zero length line, return distance to start/end
+        if ([line class] == [DHLineSegment class]) {
+            return DistanceBetweenPoints(position, line.start.position);
+        }
+        // Degenerate case if ray or line
+        return NAN;
+    }
+    
+    // Consider the line extending the segment, parameterized as v + t (w - v).
+    // We find projection of point p onto the line.
+    // It falls where t = [(p-a) . (b-a)] / |w-v|^2
+    CGVector vecAP = CGVectorBetweenPoints(line.start.position, position);
+    const CGFloat t = CGVectorDotProduct(vecAP, aToB) / l2;
+    if (t < line.tMin) return DistanceBetweenPoints(position, line.start.position);
+    else if (t > line.tMax) return DistanceBetweenPoints(position, line.end.position);
+    
+    CGPoint closestPoint;
+    
+    closestPoint.x = p1.x + t * (p2.x - p1.x);  // Projection falls on the segment
+    closestPoint.y = p1.y + t * (p2.y - p1.y);  // Projection falls on the segment
+    
+    return DistanceBetweenPoints(position, closestPoint);
+}
+
+
 static CGFloat DistanceFromPointToLine(DHPoint* point, DHLineObject* line)
 {
     //float minimum_distance(vec2 v, vec2 w, vec2 p) {

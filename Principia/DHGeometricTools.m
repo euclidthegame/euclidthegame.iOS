@@ -739,11 +739,12 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
         DHLineObject* line = FindLineClosestToPoint(touchPoint, objects, kClosestTapLimit / geoViewScale);
         DHPoint* point = FindPointClosestToPoint(touchPoint, objects, kClosestTapLimit / geoViewScale);
         
-        CGFloat distPoint = (point == nil? CGFLOAT_MAX : DistanceBetweenPoints(touchPoint, point.position));
-        CGFloat distLine = (line == nil? CGFLOAT_MAX : DistanceFromPositionToLine(touchPoint, line));
-
-        // Give some preference to points in distance comparison to make them easier to hit
-        if (line && (distLine < distPoint-10)) {
+        if (point && self.firstLine == nil) {
+            self.firstPoint = point;
+            point.highlighted = true;
+            [self.delegate toolTipDidChange:@"Tap on a second point to mark the corner of the angle"];
+            [touch.view setNeedsDisplay];
+        } else if (line) {
             if (self.firstLine && line != self.firstLine) {
                 DHIntersectionResult r = IntersectionTestLineLine(self.firstLine, line);
                 if (r.intersect == NO) {
@@ -773,13 +774,6 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
                 self.firstLine = line;
                 line.highlighted = true;
                 [self.delegate toolTipDidChange:@"Tap on a second line intersecting/connect to the first to create the bisector"];
-                [touch.view setNeedsDisplay];
-            }
-        } else if (self.firstLine == nil) {
-            if (point) {
-                self.firstPoint = point;
-                point.highlighted = true;
-                [self.delegate toolTipDidChange:@"Tap on a second point to mark the corner of the angle"];
                 [touch.view setNeedsDisplay];
             }
         }

@@ -309,12 +309,29 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 @implementation DHPointOnLine
 - (CGPoint)position
 {
+    if (self.line == nil) {
+        return CGPointMake(NAN, NAN);
+    }
+    
     CGPoint p1 = self.line.start.position;
     CGPoint p2 = self.line.end.position;
     return CGPointMake(p1.x + self.tValue * (p2.x - p1.x), p1.y + self.tValue * (p2.y - p1.y));
 }
 @end
 
+@implementation DHPointOnCircle
+- (CGPoint)position
+{
+    if (self.circle == nil) {
+        return CGPointMake(NAN, NAN);
+    }
+    
+    CGPoint center = self.circle.center.position;
+    CGPoint onRadius = CGPointMake(center.x + self.circle.radius, center.y);
+    CGVector toPoint = CGVectorRotateByAngle(CGVectorBetweenPoints(center, onRadius), self.angle);
+    return CGPointFromPointByAddingVector(center, toPoint);
+}
+@end
 
 @implementation DHRay
 - (instancetype)init

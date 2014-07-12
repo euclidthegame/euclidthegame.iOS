@@ -38,10 +38,52 @@ static BOOL CGFloatsEqualWithinEpsilon(CGFloat a, CGFloat b)
     return NO;
 }
 
+static CGFloat DistanceBetweenPoints(CGPoint a, CGPoint b);
+
+#pragma mark - Closest position on object functions
+static CGPoint ClosestPointOnLineFromPosition(CGPoint position, DHLineObject* line)
+{
+    CGPoint p1 = line.start.position;
+    CGPoint p2 = line.end.position;
+    
+    CGVector aToB = CGVectorBetweenPoints(line.start.position, line.end.position);
+    const CGFloat l2 = CGVectorDotProduct(aToB, aToB); // Length squared
+    if (l2 == 0.0) {
+        // If zero length line, return start/end
+        if ([line class] == [DHLineSegment class]) {
+            return line.start.position;
+        }
+        // Degenerate case if ray or line
+        return CGPointMake(NAN, NAN);
+    }
+    
+    // Consider the line extending the segment, parameterized as v + t (w - v).
+    // We find projection of point p onto the line.
+    // It falls where t = [(p-a) . (b-a)] / |w-v|^2
+    CGVector vecAP = CGVectorBetweenPoints(line.start.position, position);
+    const CGFloat t = CGVectorDotProduct(vecAP, aToB) / l2;
+    if (t < line.tMin) return line.start.position;
+    else if (t > line.tMax) return line.end.position;
+    
+    CGPoint closestPoint;
+    
+    closestPoint.x = p1.x + t * (p2.x - p1.x);  // Projection falls on the segment
+    closestPoint.y = p1.y + t * (p2.y - p1.y);  // Projection falls on the segment
+    
+    return closestPoint;
+}
+
 #pragma mark - Distance functions
 static CGFloat DistanceBetweenPoints(CGPoint a, CGPoint b)
 {
     return ({CGFloat d1 = a.x - b.x, d2 = a.y - b.y; sqrt(d1 * d1 + d2 * d2); });
+}
+
+static CGFloat DistanceFromPositionToCircle(CGPoint position, DHCircle* circle)
+{
+    CGFloat distanceToCenter = DistanceBetweenPoints(position, circle.center.position);
+    CGFloat distanceToCircle = distanceToCenter - circle.radius;
+    return distanceToCircle;
 }
 
 static CGFloat DistanceFromPositionToLine(CGPoint position, DHLineObject* line)

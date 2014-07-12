@@ -115,6 +115,12 @@
 - (CGPoint)position;
 @end
 
+@interface DHPointOnCircle : DHPoint
+@property (nonatomic, weak) DHCircle* circle;
+@property (nonatomic) CGFloat angle; // Angle of rotation from positive x-axis to point
+- (CGPoint)position;
+@end
+
 
 @interface DHBisectLine : DHLineObject
 @property (nonatomic, strong) DHLineObject* line1;

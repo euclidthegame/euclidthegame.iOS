@@ -169,6 +169,8 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
 }
 - (void)touchEnded:(UITouch*)touch
 {
+    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
+
     if (self.point) {
         self.point.highlighted = NO;
         self.point = nil;
@@ -178,9 +180,65 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
         CGPoint touchPointInView = [touch locationInView:touch.view];
         CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
         
-        DHPoint* point = [[DHPoint alloc] init];
-        point.position = touchPoint;
-        [self.delegate addGeometricObject:point];
+        // Check if there are any objects to snap to nearby
+        NSArray* nearObjects = FindIntersectablesNearPoint(touchPoint, self.delegate.geometryObjects,
+                                                           kClosestTapLimit / geoViewScale);
+        id<DHGeometricObject> closestObject = nil;
+        CGFloat closestDistance = CGFLOAT_MAX;
+        
+        if (nearObjects.count > 0) {
+            for (id object in nearObjects) {
+                if ([[object class] isSubclassOfClass:[DHLineObject class]]) {
+                    CGFloat dist = DistanceFromPositionToLine(touchPoint, object);
+                    if (dist < closestDistance) {
+                        closestDistance = dist;
+                        closestObject = object;
+                    }
+                }
+                if ([[object class] isSubclassOfClass:[DHCircle class]]) {
+                    CGFloat dist = DistanceFromPositionToCircle(touchPoint, object);
+                    if (dist < closestDistance) {
+                        closestDistance = dist;
+                        closestObject = object;
+                    }
+                }
+            }
+        }
+        
+        // If a close object to snap to was found, create a point fixed to the object, else a free point
+        if (closestObject != nil) {
+            if ([[closestObject class] isSubclassOfClass:[DHLineObject class]]) {
+                DHLineObject* line = closestObject;
+                
+                CGPoint closestPointOnLine = ClosestPointOnLineFromPosition(touchPoint, line);
+                CGFloat tValue = CGVectorDotProduct(line.vector, CGVectorBetweenPoints(line.start.position, closestPointOnLine))/CGVectorDotProduct(line.vector, line.vector);
+                
+                DHPointOnLine* point = [[DHPointOnLine alloc] init];
+                point.line = line;
+                point.tValue = tValue;
+                [self.delegate addGeometricObject:point];
+            }
+            if ([[closestObject class] isSubclassOfClass:[DHCircle class]]) {
+                DHCircle* circle = closestObject;
+                
+                CGVector vCenterTouchPoint = CGVectorBetweenPoints(circle.center.position, touchPoint);
+                CGFloat angle = CGVectorAngleBetween(vCenterTouchPoint, CGVectorMake(1, 0));
+                
+                if (touchPoint.y < circle.center.position.y) {
+                    angle = 2*M_PI - angle;
+                }
+                
+                DHPointOnCircle* point = [[DHPointOnCircle alloc] init];
+                point.circle = circle;
+                point.angle = angle;
+                [self.delegate addGeometricObject:point];
+
+            }
+        } else {
+            DHPoint* point = [[DHPoint alloc] init];
+            point.position = touchPoint;
+            [self.delegate addGeometricObject:point];
+        }
     }
 }
 - (void)dealloc

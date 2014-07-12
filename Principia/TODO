@@ -10,7 +10,6 @@ Test iPhone interface
 - Tool handling
 Make point tool points snap to objects if close enough?
 Add ability to draw line with one swipe, create/connect to point on touch start and end
-Make bisector tool go with closest object rather than prefer lines over points 
 
 - Other
 Lock levels until previous has been beaten

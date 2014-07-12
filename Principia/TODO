@@ -8,7 +8,6 @@ Add non-retina versions of tool icons
 Test iPhone interface
 
 - Tool handling
-Make point tool points snap to objects if close enough?
 Add ability to draw line with one swipe, create/connect to point on touch start and end
 
 - Other

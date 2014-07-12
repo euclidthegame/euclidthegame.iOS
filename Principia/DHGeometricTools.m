@@ -711,8 +711,9 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
         
         CGFloat distPoint = (point == nil? CGFLOAT_MAX : DistanceBetweenPoints(touchPoint, point.position));
         CGFloat distLine = (line == nil? CGFLOAT_MAX : DistanceFromPositionToLine(touchPoint, line));
-        
-        if (line && (distLine < distPoint)) {
+
+        // Give some preference to points in distance comparison to make them easier to hit
+        if (line && (distLine < distPoint-10)) {
             if (self.firstLine && line != self.firstLine) {
                 DHBisectLine* bl = [[DHBisectLine alloc] init];
                 bl.line1 = self.firstLine;

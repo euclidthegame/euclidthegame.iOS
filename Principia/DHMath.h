@@ -82,7 +82,7 @@ static CGFloat DistanceBetweenPoints(CGPoint a, CGPoint b)
 static CGFloat DistanceFromPositionToCircle(CGPoint position, DHCircle* circle)
 {
     CGFloat distanceToCenter = DistanceBetweenPoints(position, circle.center.position);
-    CGFloat distanceToCircle = distanceToCenter - circle.radius;
+    CGFloat distanceToCircle = fabs(distanceToCenter - circle.radius);
     return distanceToCircle;
 }
 

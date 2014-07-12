@@ -184,7 +184,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
         NSArray* nearObjects = FindIntersectablesNearPoint(touchPoint, self.delegate.geometryObjects,
                                                            kClosestTapLimit / geoViewScale);
         id<DHGeometricObject> closestObject = nil;
-        CGFloat closestDistance = CGFLOAT_MAX;
+        CGFloat closestDistance = kClosestTapLimit / geoViewScale;
         
         if (nearObjects.count > 0) {
             for (id object in nearObjects) {
@@ -354,7 +354,34 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
 }
 @end
 
-NSMutableArray* intersectionPoints(CGPoint touchPoints, NSArray* nearObjects)
+
+@implementation DHIntersectTool
+- (NSString*)initialToolTip
+{
+    return @"Tap on any intersection between two lines/circles to add a new point";
+}
+- (void)touchBegan:(UITouch*)touch
+{
+    
+}
+- (void)touchMoved:(UITouch*)touch
+{
+    
+}
+- (void)touchEnded:(UITouch*)touch
+{
+    CGPoint touchPointInView = [touch locationInView:touch.view];
+    CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
+    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
+    DHPoint* intersectionPoint = [self findClosestUniqueIntersectionPointNear:touchPoint
+                                                                      objects:self.delegate.geometryObjects
+                                                                    viewScale:geoViewScale];
+    if (intersectionPoint) {
+        [self.delegate addGeometricObject:intersectionPoint];
+    }
+}
+
+- (NSMutableArray*)findAllIntersectionPointsNear:(CGPoint)touchPoints withObjects:(NSArray*)nearObjects
 {
     NSMutableArray* intersectionPoints = [[NSMutableArray alloc] init];
     
@@ -456,13 +483,14 @@ NSMutableArray* intersectionPoints(CGPoint touchPoints, NSArray* nearObjects)
     return intersectionPoints;
 }
 
-DHPoint* FindPointAtIntersection(CGPoint point, NSArray* geometricObjects, CGFloat geoViewScale)
+- (DHPoint*)findClosestUniqueIntersectionPointNear:(CGPoint)point objects:(NSArray*)geometricObjects
+                                         viewScale:(CGFloat)geoViewScale
 {
     NSArray* nearObjects = FindIntersectablesNearPoint(point, geometricObjects, kClosestTapLimit / geoViewScale);
     if (nearObjects.count < 2) {
         return nil;
     }
-    NSMutableArray* intersections = intersectionPoints(point, nearObjects);
+    NSMutableArray* intersections = [self findAllIntersectionPointsNear:point withObjects:nearObjects];
     
     if (intersections.count < 1) {
         return nil;
@@ -490,29 +518,6 @@ DHPoint* FindPointAtIntersection(CGPoint point, NSArray* geometricObjects, CGFlo
     return closestPoint;
 }
 
-@implementation DHIntersectTool
-- (NSString*)initialToolTip
-{
-    return @"Tap on any intersection between two lines/circles to add a new point";
-}
-- (void)touchBegan:(UITouch*)touch
-{
-    
-}
-- (void)touchMoved:(UITouch*)touch
-{
-    
-}
-- (void)touchEnded:(UITouch*)touch
-{
-    CGPoint touchPointInView = [touch locationInView:touch.view];
-    CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
-    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
-    DHPoint* intersectionPoint = FindPointAtIntersection(touchPoint, self.delegate.geometryObjects,geoViewScale);
-    if (intersectionPoint) {
-        [self.delegate addGeometricObject:intersectionPoint];
-    }
-}
 
 @end
 

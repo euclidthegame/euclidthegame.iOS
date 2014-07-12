@@ -118,7 +118,7 @@
         CGFloat lCP = CGVectorLength(vCP);
         CGFloat lAB = CGVectorLength(vAB);
         
-        if (fabs(dotProd) > 1 - 0.000001 && CGFloatsEqualWithinEpsilon(lCP, lAB)) {
+        if (fabs(dotProd) > 1 - 0.000001 && fabs(lCP - lAB) < 0.01) {
             return YES;
         }
     }

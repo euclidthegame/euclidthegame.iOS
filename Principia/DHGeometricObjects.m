@@ -126,20 +126,12 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     
     CGVector dir = CGVectorNormalize(CGVectorBetweenPoints(start, end));
     if (self.tMin == -INFINITY) {
-        if (dir.dx == 0) {
-            start.y = 0;
-        } else {
-            start.x = start.x - 10000*dir.dx;
-            start.y = start.y - 10000*dir.dy;
-        }
+        start.x = start.x - 10000*dir.dx;
+        start.y = start.y - 10000*dir.dy;
     }
     if (self.tMax == INFINITY) {
-        if (dir.dx == 0) {
-            end.y = 10000.0;
-        } else {
-            end.x = end.x + 10000*dir.dx;
-            end.y = end.y + 10000*dir.dy;
-        }
+        end.x = end.x + 10000*dir.dx;
+        end.y = end.y + 10000*dir.dy;
     }
     
     if (self.highlighted) {

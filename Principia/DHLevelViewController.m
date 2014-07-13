@@ -117,11 +117,6 @@
     _levelInstruction.attributedText = levelInstructionAttributed;*/
     
     [self setupTools];
-    _currentTool = [[DHPointTool alloc] init];
-    _currentTool.delegate = self;
-    self.geometryViewController.currentTool = _currentTool;
-    _toolInstruction.text = _currentTool.initialToolTip;
-    
     [self showDetailedLevelInstruction:nil];
 }
 
@@ -315,7 +310,10 @@
         [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
     
-    _toolControl.selectedSegmentIndex = 1;
+    _toolControl.selectedSegmentIndex = 0;
+    _currentTool = [[DHZoomPanTool alloc] init];
+    self.geometryViewController.currentTool = _currentTool;
+    _toolInstruction.text = [_currentTool initialToolTip];
 
 }
 

@@ -14,5 +14,8 @@
 static const NSUInteger kDHGameModeNormal = 0;
 static const NSUInteger kDHGameModeMinimumMoves = 1;
 static const NSUInteger kDHGameModePrimitiveOnly = 2;
+static const NSUInteger kDHGameModePrimitiveOnlyMinimumMoves = 3;
+static const NSUInteger kDHGameModeTutorial = 4;
+static const NSUInteger kDHGameModePlayground = 5;
 
 #endif

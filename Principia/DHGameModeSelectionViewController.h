@@ -18,10 +18,13 @@
 @property (nonatomic, weak) IBOutlet UIView* gameMode2View;
 @property (nonatomic, weak) IBOutlet UIView* gameMode3View;
 @property (nonatomic, weak) IBOutlet UIView* gameMode4View;
+@property (nonatomic, weak) IBOutlet UIView* gameMode5View;
+@property (nonatomic, weak) IBOutlet UIView* gameMode6View;
 
 @property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode1PercentComplete;
 @property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode2PercentComplete;
 @property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode3PercentComplete;
+@property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode4PercentComplete;
 
 
 @end

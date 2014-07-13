@@ -95,12 +95,12 @@
 {
     self.firstMoveMade = NO;
 
-    if (self.levelIndex == 0) {
+    if (self.currentGameMode == kDHGameModeTutorial) {
         self.title = @"Tutorial";
-    } else if (self.levelIndex == NSUIntegerMax) {
+    } else if (self.currentGameMode == kDHGameModePlayground) {
         self.title = @"Playground";        
-    } else if (self.levelIndex > 0) {
-        self.title = [NSString stringWithFormat:@"Level %lu", (unsigned long)self.levelIndex];
+    } else {
+        self.title = [NSString stringWithFormat:@"Level %lu", (unsigned long)(self.levelIndex+1)];
     }
     
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
@@ -178,11 +178,11 @@
         NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
         [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyCompleted];
 
-        if ([_currentLevel respondsToSelector:@selector(minimumNumberOfMoves)]) {
+        /*if ([_currentLevel respondsToSelector:@selector(minimumNumberOfMoves)]) {
             if (self.levelMoves <= [_currentLevel minimumNumberOfMoves]) {
                 [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyMinimumMoves];
             }
-        }
+        }*/
         
         NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%d", self.currentGameMode];
         [DHLevelResults newResult:result forLevel:resultKey];
@@ -429,24 +429,28 @@
         [completionMessageText appendString:[_currentLevel additionalCompletionMessage]];
     }
     
-    if ([_currentLevel respondsToSelector:@selector(minimumNumberOfMoves)] &&
+    /*if ([_currentLevel respondsToSelector:@selector(minimumNumberOfMoves)] &&
         self.levelMoves <= [_currentLevel minimumNumberOfMoves])
     {
         if (completionMessageText.length > 0) {
             [completionMessageText appendString:@"\n\n"];
         }
         [completionMessageText appendString:@"Perfect! You completed this level using the minimum number of moves!"];
-    }
+    }*/
     
-    if (completionMessageText.length == 0) {
+    /*if (completionMessageText.length == 0) {
         [completionMessageText appendString:@"You completed the level, but it can be done with fewer moves. Keep trying!"];
-    }
+    }*/
     
-    if (self.levelIndex >= self.levelArray.count - 1) {
+    if (self.currentGameMode == kDHGameModeTutorial) {
         self.nextChallengeButton.hidden = YES;
-        [completionMessageText appendString:@"\n\nEuclid would be proud of you. You completed ALL levels !!!"];
     } else {
-        self.nextChallengeButton.hidden = NO;
+        if (self.levelIndex >= self.levelArray.count - 1) {
+            self.nextChallengeButton.hidden = YES;
+            [completionMessageText appendString:@"\n\nEuclid would be proud of you. You completed ALL levels !!!"];
+        } else {
+            self.nextChallengeButton.hidden = NO;
+        }
     }
     
     self.levelCompletionMessageAdditional.text = completionMessageText;

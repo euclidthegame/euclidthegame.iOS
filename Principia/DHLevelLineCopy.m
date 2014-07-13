@@ -39,6 +39,10 @@
 {
     return 3;
 }
+- (NSUInteger)minimumNumberOfMovesPrimitiveOnly
+{
+    return 6;
+}
 
 - (DHToolsAvailable)availableTools
 {

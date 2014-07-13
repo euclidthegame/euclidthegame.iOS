@@ -24,5 +24,6 @@
 - (DHToolsAvailable)availableTools;
 - (NSString*)additionalCompletionMessage;
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects;
+- (NSUInteger)minimumNumberOfMovesPrimitiveOnly;
 
 @end

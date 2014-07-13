@@ -92,7 +92,7 @@
 {
     [super viewDidLoad];
     
-    UITapGestureRecognizer* tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode1)];
+    UITapGestureRecognizer* tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadTutorial)];
     [self.gameMode1View addGestureRecognizer:tap1];
     self.gameMode1View.backgroundColor = [UIColor whiteColor];
     self.gameMode1View.layer.cornerRadius = 8.0;
@@ -102,7 +102,7 @@
     self.gameMode1View.layer.shadowRadius = 8.0;
     self.gameMode1PercentComplete.layer.cornerRadius = 8.0;
     
-    UITapGestureRecognizer* tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode2)];
+    UITapGestureRecognizer* tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode1)];
     [self.gameMode2View addGestureRecognizer:tap2];
     self.gameMode2View.backgroundColor = [UIColor whiteColor];
     self.gameMode2View.layer.cornerRadius = 8.0;
@@ -111,7 +111,7 @@
     self.gameMode2View.layer.shadowOpacity = 0.5;
     self.gameMode2View.layer.shadowRadius = 8.0;
 
-    UITapGestureRecognizer* tap3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode3)];
+    UITapGestureRecognizer* tap3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode2)];
     [self.gameMode3View addGestureRecognizer:tap3];
     self.gameMode3View.backgroundColor = [UIColor whiteColor];
     self.gameMode3View.layer.cornerRadius = 8.0;
@@ -120,12 +120,33 @@
     self.gameMode3View.layer.shadowOpacity = 0.5;
     self.gameMode3View.layer.shadowRadius = 8.0;
 
+    UITapGestureRecognizer* tap4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode3)];
+    [self.gameMode4View addGestureRecognizer:tap4];
     self.gameMode4View.backgroundColor = [UIColor whiteColor];
     self.gameMode4View.layer.cornerRadius = 8.0;
     self.gameMode4View.layer.shadowColor = [UIColor blackColor].CGColor;
     self.gameMode4View.layer.shadowOffset = CGSizeMake(3, 3);
     self.gameMode4View.layer.shadowOpacity = 0.5;
     self.gameMode4View.layer.shadowRadius = 8.0;
+
+    UITapGestureRecognizer* tap5 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode4)];
+    [self.gameMode5View addGestureRecognizer:tap5];
+    self.gameMode5View.backgroundColor = [UIColor whiteColor];
+    self.gameMode5View.layer.cornerRadius = 8.0;
+    self.gameMode5View.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.gameMode5View.layer.shadowOffset = CGSizeMake(3, 3);
+    self.gameMode5View.layer.shadowOpacity = 0.5;
+    self.gameMode5View.layer.shadowRadius = 8.0;
+
+    UITapGestureRecognizer* tap6 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadPlayground)];
+    [self.gameMode6View addGestureRecognizer:tap6];
+    self.gameMode6View.backgroundColor = [UIColor whiteColor];
+    self.gameMode6View.layer.cornerRadius = 8.0;
+    self.gameMode6View.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.gameMode6View.layer.shadowOffset = CGSizeMake(3, 3);
+    self.gameMode6View.layer.shadowOpacity = 0.5;
+    self.gameMode6View.layer.shadowRadius = 8.0;
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -138,6 +159,8 @@
     NSUInteger levelsCompleteGameModeNormal = 0;
     NSUInteger levelsCompleteGameModeMinimumMoves = 0;
     NSUInteger levelsCompleteGameModePrimitiveOnly = 0;
+    NSUInteger levelsCompleteGameModePrimitiveOnlyMinimumMoves = 0;
+    
     for (id level in levels) {
         NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModeNormal];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
@@ -168,10 +191,21 @@
             }
         }
     }
+    for (id level in levels) {
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModePrimitiveOnlyMinimumMoves];
+        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
+        if (levelResult) {
+            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
+            if (completed.boolValue) {
+                ++levelsCompleteGameModePrimitiveOnlyMinimumMoves;
+            }
+        }
+    }
 
     self.gameMode1PercentComplete.percentComplete = levelsCompleteGameModeNormal*1.0/levels.count;
     self.gameMode2PercentComplete.percentComplete = levelsCompleteGameModeMinimumMoves*1.0/levels.count;
     self.gameMode3PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnly*1.0/levels.count;
+    self.gameMode4PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnlyMinimumMoves*1.0/levels.count;
 }
 
 - (void)didReceiveMemoryWarning
@@ -185,17 +219,9 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"LoadPlayground"]) {
-        DHLevelViewController* vc = [segue destinationViewController];
-        vc.currentLevel = [[DHLevelPlayground alloc] init];
-        vc.levelArray = nil;
-        vc.levelIndex = NSUIntegerMax;
-        vc.title = @"Playground";
-    }
     if ([segue.identifier isEqualToString:@"ShowLevelSelection"]) {
         DHLevelSelectionViewController* vc = [segue destinationViewController];
         vc.currentGameMode = [sender unsignedIntegerValue];
-        NSLog(@"%@", sender);
     }
 }
 
@@ -218,6 +244,35 @@
 - (void)selectGameMode3
 {
     [self performSegueWithIdentifier:@"ShowLevelSelection" sender:[NSNumber numberWithUnsignedInteger:kDHGameModePrimitiveOnly]];
+}
+- (void)selectGameMode4
+{
+    [self performSegueWithIdentifier:@"ShowLevelSelection"
+                              sender:[NSNumber numberWithUnsignedInteger:kDHGameModePrimitiveOnlyMinimumMoves]];
+}
+- (void)loadPlayground
+{
+    NSString* storyboardName = @"Main";
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+    DHLevelViewController* vc = [storyboard instantiateViewControllerWithIdentifier:@"GeometryView"];
+    vc.currentLevel = [[DHLevelPlayground alloc] init];
+    vc.levelArray = nil;
+    vc.levelIndex = 0;
+    vc.title = @"Playground";
+    vc.currentGameMode = kDHGameModePlayground;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+- (void)loadTutorial
+{
+    NSString* storyboardName = @"Main";
+    UIStoryboard* storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+    DHLevelViewController* vc = [storyboard instantiateViewControllerWithIdentifier:@"GeometryView"];
+    vc.currentLevel = [[DHLevelTutorial alloc] init];
+    vc.levelArray = nil;
+    vc.levelIndex = NSUIntegerMax;
+    vc.title = @"Tutorial";
+    vc.currentGameMode = kDHGameModeTutorial;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 @end

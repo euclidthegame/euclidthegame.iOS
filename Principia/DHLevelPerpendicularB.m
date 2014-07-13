@@ -34,6 +34,10 @@
 {
     return 2;
 }
+- (NSUInteger)minimumNumberOfMovesPrimitiveOnly
+{
+    return 3;
+}
 
 - (NSString *)additionalCompletionMessage
 {

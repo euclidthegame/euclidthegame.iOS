@@ -18,7 +18,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Play");
+    return (@"None, simply enjoy geometric beauty!");
 }
 
 - (DHToolsAvailable)availableTools

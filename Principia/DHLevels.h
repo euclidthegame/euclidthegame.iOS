@@ -37,7 +37,6 @@
 #import "DHLevelPentagon.h"
 
 static void FillLevelArray(NSMutableArray* array) {
-    [array addObject:[[DHLevelTutorial alloc] init]];
     [array addObject:[[DHLevelEquiTri alloc] init]];
     [array addObject:[[DHLevelMidPoint alloc] init]];
     [array addObject:[[DHLevelBisect alloc] init]];

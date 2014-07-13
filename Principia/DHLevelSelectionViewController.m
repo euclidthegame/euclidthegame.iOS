@@ -70,12 +70,7 @@
     
     id<DHLevel> level = [_levels objectAtIndex:indexPath.row];
     
-    NSString* title;
-    if (indexPath.row == 0) {
-        title = @"Tutorial";
-    } else if (indexPath.row > 0) {
-        title = [NSString stringWithFormat:@"Level %ld", (long)indexPath.row];
-    }
+    NSString* title = [NSString stringWithFormat:@"Level %ld", (long)(indexPath.row+1)];
     
     cell.textLabel.text = title;
     cell.detailTextLabel.text = [level subTitle];

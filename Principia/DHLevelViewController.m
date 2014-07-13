@@ -96,6 +96,8 @@
 
     if (self.levelIndex == 0) {
         self.title = @"Tutorial";
+    } else if (self.levelIndex == NSUIntegerMax) {
+        self.title = @"Playground";        
     } else if (self.levelIndex > 0) {
         self.title = [NSString stringWithFormat:@"Level %lu", (unsigned long)self.levelIndex];
     }
@@ -515,6 +517,9 @@
 - (void)showDetailedLevelInstruction:(id)sender
 {
     if (_levelInfoView != nil) {
+        return;
+    }
+    if ([_currentLevel respondsToSelector:@selector(createSolutionPreviewObjects:)] == NO) {
         return;
     }
     

@@ -21,6 +21,8 @@
 		686014DB1969D3CE0004DD1E /* DHLevelCopyAngle.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014DA1969D3CE0004DD1E /* DHLevelCopyAngle.m */; };
 		686014DE1969DFE70004DD1E /* DHLevelCircleCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014DD1969DFE70004DD1E /* DHLevelCircleCenter.m */; };
 		686014E11969E6920004DD1E /* DHLevelMakeTangent.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014E01969E6920004DD1E /* DHLevelMakeTangent.m */; };
+		686622401972A7AB004DCFAC /* DHGameModeSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6866223F1972A7AB004DCFAC /* DHGameModeSelectionViewController.m */; };
+		686622431972B78E004DCFAC /* DHLevelPlayground.m in Sources */ = {isa = PBXBuildFile; fileRef = 686622421972B78E004DCFAC /* DHLevelPlayground.m */; };
 		6872A7CF196DD2BB00823AF9 /* DHLevelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */; };
 		6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */; };
 		6872A7D5196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D4196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m */; };
@@ -98,6 +100,10 @@
 		686014DD1969DFE70004DD1E /* DHLevelCircleCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelCircleCenter.m; sourceTree = "<group>"; };
 		686014DF1969E6920004DD1E /* DHLevelMakeTangent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelMakeTangent.h; sourceTree = "<group>"; };
 		686014E01969E6920004DD1E /* DHLevelMakeTangent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelMakeTangent.m; sourceTree = "<group>"; };
+		6866223E1972A7AB004DCFAC /* DHGameModeSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGameModeSelectionViewController.h; sourceTree = "<group>"; };
+		6866223F1972A7AB004DCFAC /* DHGameModeSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGameModeSelectionViewController.m; sourceTree = "<group>"; };
+		686622411972B78E004DCFAC /* DHLevelPlayground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelPlayground.h; sourceTree = "<group>"; };
+		686622421972B78E004DCFAC /* DHLevelPlayground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelPlayground.m; sourceTree = "<group>"; };
 		6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelInfoViewController.h; sourceTree = "<group>"; };
 		6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelInfoViewController.m; sourceTree = "<group>"; };
 		6872A7D0196E548F00823AF9 /* DHGeometricTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGeometricTransform.h; sourceTree = "<group>"; };
@@ -327,6 +333,8 @@
 				6872A7DD197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m */,
 				6872A7DF19702A1700823AF9 /* DHLevelPentagon.h */,
 				6872A7E019702A1700823AF9 /* DHLevelPentagon.m */,
+				686622411972B78E004DCFAC /* DHLevelPlayground.h */,
+				686622421972B78E004DCFAC /* DHLevelPlayground.m */,
 				68F0AA1A195B256300A97B86 /* DHLevelSquare.h */,
 				68F0AA1B195B256B00A97B86 /* DHLevelSquare.m */,
 			);
@@ -360,6 +368,8 @@
 		68F0AA20195C377000A97B86 /* Views & View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				6866223E1972A7AB004DCFAC /* DHGameModeSelectionViewController.h */,
+				6866223F1972A7AB004DCFAC /* DHGameModeSelectionViewController.m */,
 				68F0AA13195A92A700A97B86 /* DHLevelSelectionViewController.h */,
 				68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */,
 				68F0AA23195CBCA200A97B86 /* DHLevelViewController.h */,
@@ -489,6 +499,7 @@
 				6872A7D8196FE25300823AF9 /* DHLevelHexagon.m in Sources */,
 				684708B21968112200C1FA83 /* DHLevelLineCopy.m in Sources */,
 				68F0A9D419587AEC00A97B86 /* main.m in Sources */,
+				686622431972B78E004DCFAC /* DHLevelPlayground.m in Sources */,
 				68F0AA481964889C00A97B86 /* DHGeometricObjectLabeler.m in Sources */,
 				683D9685196D2A390057B62D /* DHLevelTriCircumcircle.m in Sources */,
 				68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */,
@@ -510,6 +521,7 @@
 				68F0AA1C195B256B00A97B86 /* DHLevelSquare.m in Sources */,
 				68F0AA18195A96D500A97B86 /* DHLevelEquiTri.m in Sources */,
 				684708AF1967496600C1FA83 /* DHLevelParallellLines.m in Sources */,
+				686622401972A7AB004DCFAC /* DHGameModeSelectionViewController.m in Sources */,
 				68F0AA45196420C700A97B86 /* DHLevelPerpendicular.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

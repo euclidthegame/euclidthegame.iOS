@@ -109,6 +109,143 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     return foundObjects;
 }
 
+NSMutableArray* intersectionPoints(CGPoint touchPoints, NSArray* nearObjects)
+{
+    NSMutableArray* intersectionPoints = [[NSMutableArray alloc] init];
+    
+    for (int index1 = 0; index1 < nearObjects.count-1; ++index1) {
+        for (int index2 = index1+1; index2 < nearObjects.count; ++index2) {
+            id object1 = [nearObjects objectAtIndex:index1];
+            id object2 = [nearObjects objectAtIndex:index2];
+            
+            // Circle/circle intersection
+            if ([[object1 class] isSubclassOfClass:[DHCircle class]] &&
+                [[object2 class] isSubclassOfClass:[DHCircle class]]) {
+                DHCircle* c1 = object1;
+                DHCircle* c2 = object2;
+                
+                if (DoCirclesIntersect(c1, c2)) {
+                    { // First variant
+                        DHIntersectionPointCircleCircle* iPoint = [[DHIntersectionPointCircleCircle alloc] init];
+                        iPoint.c1 = c1;
+                        iPoint.c2 = c2;
+                        iPoint.onPositiveY = false;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                    { // Second variant
+                        DHIntersectionPointCircleCircle* iPoint = [[DHIntersectionPointCircleCircle alloc] init];
+                        iPoint.c1 = c1;
+                        iPoint.c2 = c2;
+                        iPoint.onPositiveY = true;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                }
+            }
+            
+            // Line/line intersection
+            if ([[object1 class] isSubclassOfClass:[DHLineObject class]] &&
+                [[object2 class] isSubclassOfClass:[DHLineObject class]]) {
+                DHLineObject* l1 = object1;
+                DHLineObject* l2 = object2;
+                
+                DHIntersectionResult r = IntersectionTestLineLine(l1, l2);
+                if (r.intersect) {
+                    DHIntersectionPointLineLine* iPoint = [[DHIntersectionPointLineLine alloc] init];
+                    iPoint.l1 = l1;
+                    iPoint.l2 = l2;
+                    [intersectionPoints addObject:iPoint];
+                }
+            }
+            
+            // Line/circle intersection
+            if ([[object1 class] isSubclassOfClass:[DHLineObject class]] &&
+                [[object2 class] isSubclassOfClass:[DHCircle class]]) {
+                DHLineObject* l = object1;
+                DHCircle* c = object2;
+                
+                DHIntersectionResult result = IntersectionTestLineCircle(l, c, NO);
+                if (result.intersect) {
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = NO;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = YES;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                }
+            }
+            if ([[object1 class] isSubclassOfClass:[DHCircle class]] &&
+                [[object2 class] isSubclassOfClass:[DHLineObject class]]) {
+                DHCircle* c = object1;
+                DHLineObject* l = object2;
+                
+                DHIntersectionResult result = IntersectionTestLineCircle(l, c, NO);
+                if (result.intersect) {
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = NO;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = YES;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    return intersectionPoints;
+}
+
+DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObjects, CGFloat geoViewScale)
+{
+    NSArray* nearObjects = FindIntersectablesNearPoint(point, geometricObjects, kClosestTapLimit / geoViewScale);
+    if (nearObjects.count < 2) {
+        return nil;
+    }
+    NSMutableArray* intersections = intersectionPoints(point, nearObjects);
+    
+    if (intersections.count < 1) {
+        return nil;
+    }
+    
+    // Found closest point
+    CGFloat closestDistance = CGFLOAT_MAX;
+    DHPoint* closestPoint = nil;
+    for (DHPoint* iPoint in intersections) {
+        CGFloat distance = DistanceBetweenPoints(point, iPoint.position);
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestPoint = iPoint;
+        }
+    }
+    // check if point at intersection already exists, if so, don't create new one
+    CGPoint newPoint = [closestPoint position];
+    DHPoint* oldPoint = FindPointClosestToPoint(newPoint, geometricObjects, kClosestTapLimit / geoViewScale);
+    CGPoint oldPointPos = [oldPoint position];
+    if ((newPoint.x == oldPointPos.x) && (newPoint.y == oldPointPos.y))
+    {
+        return nil;
+    }
+    
+    return closestPoint;
+}
+
+
 @implementation DHZoomPanTool
 - (NSString *)initialToolTip
 {
@@ -300,7 +437,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
 
-    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+    //prefers normal point selection above automatic intersection
+    if (intersectionPoint && !(point)) {
+        [self.delegate addGeometricObject:intersectionPoint];
+        point = intersectionPoint;
+    }
+    
     if (point == nil) {
         return;
     }
@@ -355,8 +499,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
-
-    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+    //prefer point selection above automatic intersection
+    if (intersectionPoint && !(point)) {
+        [self.delegate addGeometricObject:intersectionPoint];
+        point = intersectionPoint;
+    }
+    
     if (point) {
         if (self.center && point != self.center) {
             DHCircle* circle = [[DHCircle alloc] init];
@@ -376,6 +526,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
         }
     }
 }
+
 - (void)dealloc
 {
     if (self.center) {
@@ -403,155 +554,13 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
-    DHPoint* intersectionPoint = [self findClosestUniqueIntersectionPointNear:touchPoint
-                                                                      objects:self.delegate.geometryObjects
-                                                                    viewScale:geoViewScale];
+    DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
     if (intersectionPoint) {
         [self.delegate addGeometricObject:intersectionPoint];
     }
 }
 
-- (NSMutableArray*)findAllIntersectionPointsNear:(CGPoint)touchPoints withObjects:(NSArray*)nearObjects
-{
-    NSMutableArray* intersectionPoints = [[NSMutableArray alloc] init];
-    
-    for (int index1 = 0; index1 < nearObjects.count-1; ++index1) {
-        for (int index2 = index1+1; index2 < nearObjects.count; ++index2) {
-            id object1 = [nearObjects objectAtIndex:index1];
-            id object2 = [nearObjects objectAtIndex:index2];
-            
-            // Circle/circle intersection
-            if ([[object1 class] isSubclassOfClass:[DHCircle class]] &&
-                [[object2 class] isSubclassOfClass:[DHCircle class]]) {
-                DHCircle* c1 = object1;
-                DHCircle* c2 = object2;
-                
-                if (DoCirclesIntersect(c1, c2)) {
-                    { // First variant
-                        DHIntersectionPointCircleCircle* iPoint = [[DHIntersectionPointCircleCircle alloc] init];
-                        iPoint.c1 = c1;
-                        iPoint.c2 = c2;
-                        iPoint.onPositiveY = false;
-                        [intersectionPoints addObject:iPoint];
-                    }
-                    { // Second variant
-                        DHIntersectionPointCircleCircle* iPoint = [[DHIntersectionPointCircleCircle alloc] init];
-                        iPoint.c1 = c1;
-                        iPoint.c2 = c2;
-                        iPoint.onPositiveY = true;
-                        [intersectionPoints addObject:iPoint];
-                    }
-                }
-            }
-            
-            // Line/line intersection
-            if ([[object1 class] isSubclassOfClass:[DHLineObject class]] &&
-                [[object2 class] isSubclassOfClass:[DHLineObject class]]) {
-                DHLineObject* l1 = object1;
-                DHLineObject* l2 = object2;
-                
-                DHIntersectionResult r = IntersectionTestLineLine(l1, l2);
-                if (r.intersect) {
-                    DHIntersectionPointLineLine* iPoint = [[DHIntersectionPointLineLine alloc] init];
-                    iPoint.l1 = l1;
-                    iPoint.l2 = l2;
-                    [intersectionPoints addObject:iPoint];
-                }
-            }
-            
-            // Line/circle intersection
-            if ([[object1 class] isSubclassOfClass:[DHLineObject class]] &&
-                [[object2 class] isSubclassOfClass:[DHCircle class]]) {
-                DHLineObject* l = object1;
-                DHCircle* c = object2;
-                
-                DHIntersectionResult result = IntersectionTestLineCircle(l, c, NO);
-                if (result.intersect) {
-                    {
-                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
-                        iPoint.l = l;
-                        iPoint.c = c;
-                        iPoint.preferEnd = NO;
-                        [intersectionPoints addObject:iPoint];
-                    }
-                    {
-                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
-                        iPoint.l = l;
-                        iPoint.c = c;
-                        iPoint.preferEnd = YES;
-                        [intersectionPoints addObject:iPoint];
-                    }
-                }
-            }
-            if ([[object1 class] isSubclassOfClass:[DHCircle class]] &&
-                [[object2 class] isSubclassOfClass:[DHLineObject class]]) {
-                DHCircle* c = object1;
-                DHLineObject* l = object2;
-                
-                DHIntersectionResult result = IntersectionTestLineCircle(l, c, NO);
-                if (result.intersect) {
-                    {
-                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
-                        iPoint.l = l;
-                        iPoint.c = c;
-                        iPoint.preferEnd = NO;
-                        [intersectionPoints addObject:iPoint];
-                    }
-                    {
-                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
-                        iPoint.l = l;
-                        iPoint.c = c;
-                        iPoint.preferEnd = YES;
-                        [intersectionPoints addObject:iPoint];
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    return intersectionPoints;
-}
-
-- (DHPoint*)findClosestUniqueIntersectionPointNear:(CGPoint)point objects:(NSArray*)geometricObjects
-                                         viewScale:(CGFloat)geoViewScale
-{
-    NSArray* nearObjects = FindIntersectablesNearPoint(point, geometricObjects, kClosestTapLimit / geoViewScale);
-    if (nearObjects.count < 2) {
-        return nil;
-    }
-    NSMutableArray* intersections = [self findAllIntersectionPointsNear:point withObjects:nearObjects];
-    
-    if (intersections.count < 1) {
-        return nil;
-    }
-    
-    // Found closest point
-    CGFloat closestDistance = CGFLOAT_MAX;
-    DHPoint* closestPoint = nil;
-    for (DHPoint* iPoint in intersections) {
-        CGFloat distance = DistanceBetweenPoints(point, iPoint.position);
-        if (distance < closestDistance) {
-            closestDistance = distance;
-            closestPoint = iPoint;
-        }
-    }
-    // check if point at intersection already exists, if so, don't create new one
-    CGPoint newPoint = [closestPoint position];
-    DHPoint* oldPoint = FindPointClosestToPoint(newPoint, geometricObjects, kClosestTapLimit / geoViewScale);
-    CGPoint oldPointPos = [oldPoint position];
-    if ((newPoint.x == oldPointPos.x) && (newPoint.y == oldPointPos.y))
-    {
-        return nil;
-    }
-    
-    return closestPoint;
-}
-
-
 @end
-
-
 @implementation DHMidPointTool
 - (NSString*)initialToolTip
 {
@@ -570,8 +579,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
-
-    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+    //prefers normal point selection above automatic intersection
+    if (intersectionPoint && !(point)) {
+        [self.delegate addGeometricObject:intersectionPoint];
+        point = intersectionPoint;
+    }
+    
     if (point) {
         if (self.startPoint && point != self.startPoint) {
             DHMidPoint* midPoint = [[DHMidPoint alloc] init];
@@ -629,7 +644,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
 
-    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+    //prefers point selection above automatic intersection
+    if (intersectionPoint && !(point)) {
+        [self.delegate addGeometricObject:intersectionPoint];
+        point = intersectionPoint;
+    }
+    
     if (point) {
         if (self.startPoint && point != self.startPoint) {
             DHRay* line = [[DHRay alloc] init];
@@ -677,7 +699,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
    
-    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+    //prefers normal point selection above automatic intersection
+    if (intersectionPoint && !(point)) {
+        [self.delegate addGeometricObject:intersectionPoint];
+        point = intersectionPoint;
+    }
+    
     if (point) {
         if (self.startPoint && point != self.startPoint) {
             DHTrianglePoint* triPoint = [[DHTrianglePoint alloc] init];
@@ -837,7 +866,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
         }
     } else {
         
-        DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+        DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+        DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+        //prefers normal point selection above automatic intersection
+        if (intersectionPoint && !(point)) {
+            [self.delegate addGeometricObject:intersectionPoint];
+            point = intersectionPoint;
+        }
+        
         
         if (point) {
             DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] init];
@@ -889,7 +925,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
         }
     } else {
         
-        DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+        DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+        DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+        //prefers normal point selection above automatic intersection
+        if (intersectionPoint && !(point)) {
+            [self.delegate addGeometricObject:intersectionPoint];
+            point = intersectionPoint;
+        }
+        
         
         if (point) {
             DHParallelLine* paraLine = [[DHParallelLine alloc] init];
@@ -940,7 +983,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
             [touch.view setNeedsDisplay];
         }
     } else {
-        DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+        DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+        DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+        //prefers normal point selection above automatic intersection
+        if (intersectionPoint && !(point)) {
+            [self.delegate addGeometricObject:intersectionPoint];
+            point = intersectionPoint;
+        }
+        
         
         if (point == nil) {
             return;
@@ -999,8 +1049,14 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
 
-    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects,
-                                             kClosestTapLimit / geoViewScale);
+    DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+    //prefers normal point selection above automatic intersection
+    if (intersectionPoint && !(point)) {
+        [self.delegate addGeometricObject:intersectionPoint];
+        point = intersectionPoint;
+    }
+    
     
     if (point) {
         if (self.firstPoint) {

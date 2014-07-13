@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface DHLevelSelectionViewController : UITableViewController
+@property (nonatomic) NSUInteger currentGameMode;
 
 @end

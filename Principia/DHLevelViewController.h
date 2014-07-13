@@ -33,6 +33,8 @@
 @property (nonatomic) BOOL firstMoveMade;
 @property (nonatomic) BOOL levelCompleted;
 
+@property (nonatomic) NSUInteger currentGameMode;
+
 - (void)resetLevel;
 
 - (IBAction)loadNextLevel:(id)sender;

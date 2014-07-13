@@ -13,6 +13,7 @@
 #import "DHGeometricObjectLabeler.h"
 #import "DHLevelInfoViewController.h"
 #import "DHGeometricTransform.h"
+#import "DHGameModes.h"
 
 @interface DHLevelViewController () {
     NSMutableArray* _geometricObjects;
@@ -183,7 +184,8 @@
             }
         }
         
-        [DHLevelResults newResult:result forLevel:NSStringFromClass([_currentLevel class])];
+        NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%d", self.currentGameMode];
+        [DHLevelResults newResult:result forLevel:resultKey];
         [self showLevelCompleteMessage];
     }
 }
@@ -236,6 +238,11 @@
     if ([_currentLevel respondsToSelector:@selector(availableTools)]) {
         availableTools = [_currentLevel availableTools];
     }
+    
+    if (self.currentGameMode == kDHGameModePrimitiveOnly) {
+        availableTools = (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
+                          DHCircleToolAvailable);
+    }
 
     [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolZoomPan"] atIndex:index++ animated:NO];
     [_tools addObject:[DHZoomPanTool class]];
@@ -270,48 +277,49 @@
         [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
 
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTriangle"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHTriangleTool class]];
-    if ((availableTools & DHTriangleToolAvailable) == NO) {
-        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+    if (self.currentGameMode != kDHGameModePrimitiveOnly) {
+        [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTriangle"] atIndex:index++ animated:NO];
+        [_tools addObject:[DHTriangleTool class]];
+        if ((availableTools & DHTriangleToolAvailable) == NO) {
+            [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+        }
+        
+        [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolMidpoint"] atIndex:index++ animated:NO];
+        [_tools addObject:[DHMidPointTool class]];
+        if ((availableTools & DHMidpointToolAvailable) == NO) {
+            [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+        }
+        
+        [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolBisect"] atIndex:index++ animated:NO];
+        [_tools addObject:[DHBisectTool class]];
+        if ((availableTools & DHBisectToolAvailable) == NO) {
+            [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+        }
+        
+        [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPerpendicular"] atIndex:index++ animated:NO];
+        [_tools addObject:[DHPerpendicularTool class]];
+        if ((availableTools & DHPerpendicularToolAvailable) == NO) {
+            [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+        }
+        
+        [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolParallel"] atIndex:index++ animated:NO];
+        [_tools addObject:[DHParallelTool class]];
+        if ((availableTools & DHParallelToolAvailable) == NO) {
+            [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+        }
+        
+        [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTranslateSegment"] atIndex:index++ animated:NO];
+        [_tools addObject:[DHTranslateSegmentTool class]];
+        if ((availableTools & DHTranslateToolAvailable || availableTools & DHTranslateToolAvailable_Weak) == NO) {
+            [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+        }
+        
+        [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolCompass"] atIndex:index++ animated:NO];
+        [_tools addObject:[DHCompassTool class]];
+        if ((availableTools & DHCompassToolAvailable) == NO) {
+            [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
+        }
     }
-
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolMidpoint"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHMidPointTool class]];
-    if ((availableTools & DHMidpointToolAvailable) == NO) {
-        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
-    }
-
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolBisect"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHBisectTool class]];
-    if ((availableTools & DHBisectToolAvailable) == NO) {
-        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
-    }
-
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPerpendicular"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHPerpendicularTool class]];
-    if ((availableTools & DHPerpendicularToolAvailable) == NO) {
-        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
-    }
-
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolParallel"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHParallelTool class]];
-    if ((availableTools & DHParallelToolAvailable) == NO) {
-        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
-    }
-
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTranslateSegment"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHTranslateSegmentTool class]];
-    if ((availableTools & DHTranslateToolAvailable || availableTools & DHTranslateToolAvailable_Weak) == NO) {
-        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
-    }
-
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolCompass"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHCompassTool class]];
-    if ((availableTools & DHCompassToolAvailable) == NO) {
-        [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
-    }
-    
     _toolControl.selectedSegmentIndex = 0;
     _currentTool = [[DHZoomPanTool alloc] init];
     self.geometryViewController.currentTool = _currentTool;

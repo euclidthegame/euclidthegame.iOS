@@ -36,4 +36,33 @@
 #import "DHLevelTwoCirclesInnerTangent.h"
 #import "DHLevelPentagon.h"
 
+static void FillLevelArray(NSMutableArray* array) {
+    [array addObject:[[DHLevelTutorial alloc] init]];
+    [array addObject:[[DHLevelEquiTri alloc] init]];
+    [array addObject:[[DHLevelMidPoint alloc] init]];
+    [array addObject:[[DHLevelBisect alloc] init]];
+    [array addObject:[[DHLevelPerpendicular alloc] init]];
+    [array addObject:[[DHLevelPerpendicularB alloc] init]];
+    [array addObject:[[DHLevelParallellLines alloc] init]];
+    [array addObject:[[DHLevelLineCopy alloc] init]];
+    [array addObject:[[DHLevelLineCopy2 alloc] init]];
+    [array addObject:[[DHLevelMakeCompass alloc] init]];
+    [array addObject:[[DHLevelLineCopyOnLine alloc] init]];
+    [array addObject:[[DHLevelNonEquiTri alloc] init]];
+    [array addObject:[[DHLevelCopyAngle alloc] init]];
+    [array addObject:[[DHLevelCircleCenter alloc] init]];
+    [array addObject:[[DHLevelMakeTangent alloc] init]];
+    [array addObject:[[DHLevelTriIncircle alloc] init]];
+    [array addObject:[[DHLevelTriCircumcircle alloc] init]];
+    [array addObject:[[DHLevelCircleSegmentCutoff alloc] init]];
+    [array addObject:[[DHLevelCircleToTangent alloc] init]];
+    [array addObject:[[DHLevelThreeCircles alloc] init]];
+    [array addObject:[[DHLevelSegmentInThree alloc] init]];
+    [array addObject:[[DHLevelCircleTangentFromPoint alloc] init]];
+    [array addObject:[[DHLevelHexagon alloc] init]];
+    [array addObject:[[DHLevelTwoCirclesOuterTangent alloc] init]];
+    [array addObject:[[DHLevelTwoCirclesInnerTangent alloc] init]];
+    [array addObject:[[DHLevelPentagon alloc] init]];
+}
+
 #endif

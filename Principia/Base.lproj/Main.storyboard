@@ -267,16 +267,13 @@
                                 <rect key="frame" x="60" y="439" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RqK-gb-kpC">
+                                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RqK-gb-kpC">
                                         <rect key="frame" x="20" y="25" width="132" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                         <state key="normal" title="The Elements">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <connections>
-                                            <segue destination="taf-kY-eNe" kind="push" id="QY6-nV-iPv"/>
-                                        </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Complete geometric challenges and unlock new tools." lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="272" translatesAutoresizingMaskIntoConstraints="NO" id="LjZ-cD-9EO">
                                         <rect key="frame" x="226" y="24" width="272" height="41"/>
@@ -308,15 +305,12 @@
                                     <constraint firstAttribute="height" constant="89" id="YG2-I8-5hf"/>
                                     <constraint firstItem="RqK-gb-kpC" firstAttribute="leading" secondItem="ABq-xw-SHb" secondAttribute="leading" constant="20" id="wRB-ZP-ZUT"/>
                                 </constraints>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="wZn-nI-vsF" appends="YES" id="yaT-jv-bSv"/>
-                                </connections>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vsY-Tg-X0y">
                                 <rect key="frame" x="60" y="560" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oHU-tN-cAD">
+                                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oHU-tN-cAD">
                                         <rect key="frame" x="20" y="25" width="130" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
@@ -354,15 +348,12 @@
                                     <constraint firstItem="oHU-tN-cAD" firstAttribute="leading" secondItem="vsY-Tg-X0y" secondAttribute="leading" constant="20" id="x5h-8L-Bdp"/>
                                     <constraint firstAttribute="width" constant="648" id="ynW-wp-Pw1"/>
                                 </constraints>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="wZn-nI-vsF" appends="YES" id="61z-vn-bIf"/>
-                                </connections>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cr8-Ea-dzt">
                                 <rect key="frame" x="60" y="681" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g0R-uJ-N7a">
+                                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g0R-uJ-N7a">
                                         <rect key="frame" x="20" y="25" width="123" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
@@ -400,15 +391,12 @@
                                     <constraint firstItem="LLB-uF-ybr" firstAttribute="top" secondItem="Cr8-Ea-dzt" secondAttribute="top" id="jcB-aJ-jgT"/>
                                     <constraint firstAttribute="centerY" secondItem="g0R-uJ-N7a" secondAttribute="centerY" id="nCT-D5-Idj"/>
                                 </constraints>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="wZn-nI-vsF" appends="YES" id="LEg-bl-lyR"/>
-                                </connections>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxx-Wr-Kg5">
                                 <rect key="frame" x="60" y="802" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vMp-7f-LkT">
+                                    <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vMp-7f-LkT">
                                         <rect key="frame" x="20" y="25" width="110" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
@@ -475,14 +463,10 @@
                         <outlet property="gameMode3PercentComplete" destination="LLB-uF-ybr" id="bpM-Hx-Elg"/>
                         <outlet property="gameMode3View" destination="Cr8-Ea-dzt" id="Wpa-PX-tvF"/>
                         <outlet property="gameMode4View" destination="Bxx-Wr-Kg5" id="nW0-gg-ZAu"/>
+                        <segue destination="taf-kY-eNe" kind="push" identifier="ShowLevelSelection" id="fCc-qv-lTO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HkK-8y-Jrg" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="wZn-nI-vsF" userLabel="Level selection">
-                    <connections>
-                        <segue destination="taf-kY-eNe" kind="push" identifier="LevelSelection" id="5IZ-4W-AAz"/>
-                    </connections>
-                </tapGestureRecognizer>
                 <tapGestureRecognizer id="OWM-mF-pKE" userLabel="Load playground">
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="push" identifier="LoadPlayground" id="eAh-9q-mj9"/>
@@ -541,7 +525,4 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
-    <inferredMetricsTieBreakers>
-        <segue reference="QY6-nV-iPv"/>
-    </inferredMetricsTieBreakers>
 </document>

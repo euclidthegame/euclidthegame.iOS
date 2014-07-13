@@ -37,33 +37,7 @@
     
     // Create levels array
     _levels = [[NSMutableArray alloc] init];
-    
-    [_levels addObject:[[DHLevelTutorial alloc] init]];
-    [_levels addObject:[[DHLevelEquiTri alloc] init]];
-    [_levels addObject:[[DHLevelMidPoint alloc] init]];
-    [_levels addObject:[[DHLevelBisect alloc] init]];
-    [_levels addObject:[[DHLevelPerpendicular alloc] init]];
-    [_levels addObject:[[DHLevelPerpendicularB alloc] init]];
-    [_levels addObject:[[DHLevelParallellLines alloc] init]];
-    [_levels addObject:[[DHLevelLineCopy alloc] init]];
-    [_levels addObject:[[DHLevelLineCopy2 alloc] init]];
-    [_levels addObject:[[DHLevelMakeCompass alloc] init]];
-    [_levels addObject:[[DHLevelLineCopyOnLine alloc] init]];
-    [_levels addObject:[[DHLevelNonEquiTri alloc] init]];
-    [_levels addObject:[[DHLevelCopyAngle alloc] init]];
-    [_levels addObject:[[DHLevelCircleCenter alloc] init]];
-    [_levels addObject:[[DHLevelMakeTangent alloc] init]];
-    [_levels addObject:[[DHLevelTriIncircle alloc] init]];
-    [_levels addObject:[[DHLevelTriCircumcircle alloc] init]];
-    [_levels addObject:[[DHLevelCircleSegmentCutoff alloc] init]];
-    [_levels addObject:[[DHLevelCircleToTangent alloc] init]];
-    [_levels addObject:[[DHLevelThreeCircles alloc] init]];
-    [_levels addObject:[[DHLevelSegmentInThree alloc] init]];
-    [_levels addObject:[[DHLevelCircleTangentFromPoint alloc] init]];
-    [_levels addObject:[[DHLevelHexagon alloc] init]];
-    [_levels addObject:[[DHLevelTwoCirclesOuterTangent alloc] init]];
-    [_levels addObject:[[DHLevelTwoCirclesInnerTangent alloc] init]];
-    [_levels addObject:[[DHLevelPentagon alloc] init]];
+    FillLevelArray(_levels);
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear results" style:UIBarButtonItemStylePlain target:self action:@selector(clearLevelResults)];
 }
@@ -107,14 +81,11 @@
     cell.detailTextLabel.text = [level subTitle];
     cell.imageView.image = nil;
     
-    NSDictionary* levelResult = [_levelResults objectForKey:NSStringFromClass([level class])];
+    NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", self.currentGameMode];
+    NSDictionary* levelResult = [_levelResults objectForKey:resultKey];
     if (levelResult) {
         NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-        NSNumber* minimumMoves = [levelResult objectForKey:kLevelResultKeyMinimumMoves];
-        if (minimumMoves.boolValue) {
-            cell.imageView.image = [[UIImage imageNamed:@"resultStar"]
-                                    imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        } else if (completed.boolValue) {
+        if (completed.boolValue) {
             cell.imageView.image = [[UIImage imageNamed:@"Checkbox"]
                                     imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         }
@@ -135,6 +106,7 @@
         vc.levelArray = _levels;
         vc.levelIndex = indexPath.row;
         vc.title = cell.textLabel.text;
+        vc.currentGameMode = self.currentGameMode;
         [self.navigationController pushViewController:vc animated:YES];
     }
     

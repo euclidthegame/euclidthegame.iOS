@@ -104,6 +104,7 @@
 		6866223F1972A7AB004DCFAC /* DHGameModeSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGameModeSelectionViewController.m; sourceTree = "<group>"; };
 		686622411972B78E004DCFAC /* DHLevelPlayground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelPlayground.h; sourceTree = "<group>"; };
 		686622421972B78E004DCFAC /* DHLevelPlayground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelPlayground.m; sourceTree = "<group>"; };
+		6866224419730417004DCFAC /* DHGameModes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHGameModes.h; sourceTree = "<group>"; };
 		6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelInfoViewController.h; sourceTree = "<group>"; };
 		6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelInfoViewController.m; sourceTree = "<group>"; };
 		6872A7D0196E548F00823AF9 /* DHGeometricTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGeometricTransform.h; sourceTree = "<group>"; };
@@ -368,6 +369,7 @@
 		68F0AA20195C377000A97B86 /* Views & View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				6866224419730417004DCFAC /* DHGameModes.h */,
 				6866223E1972A7AB004DCFAC /* DHGameModeSelectionViewController.h */,
 				6866223F1972A7AB004DCFAC /* DHGameModeSelectionViewController.m */,
 				68F0AA13195A92A700A97B86 /* DHLevelSelectionViewController.h */,

@@ -8,8 +8,11 @@
 
 #import "DHGameModeSelectionViewController.h"
 #import "DHLevelViewController.h"
+#import "DHLevelSelectionViewController.h"
 #import "DHLevelPlayground.h"
 #import "DHLevelResults.h"
+#import "DHLevels.h"
+#import "DHGameModes.h"
 
 @implementation DHGameModePercentCompleteView
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -89,6 +92,8 @@
 {
     [super viewDidLoad];
     
+    UITapGestureRecognizer* tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode1)];
+    [self.gameMode1View addGestureRecognizer:tap1];
     self.gameMode1View.backgroundColor = [UIColor whiteColor];
     self.gameMode1View.layer.cornerRadius = 8.0;
     self.gameMode1View.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -96,8 +101,9 @@
     self.gameMode1View.layer.shadowOpacity = 0.5;
     self.gameMode1View.layer.shadowRadius = 8.0;
     self.gameMode1PercentComplete.layer.cornerRadius = 8.0;
-    self.gameMode1PercentComplete.percentComplete = 0.6;
     
+    UITapGestureRecognizer* tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode2)];
+    [self.gameMode2View addGestureRecognizer:tap2];
     self.gameMode2View.backgroundColor = [UIColor whiteColor];
     self.gameMode2View.layer.cornerRadius = 8.0;
     self.gameMode2View.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -105,6 +111,8 @@
     self.gameMode2View.layer.shadowOpacity = 0.5;
     self.gameMode2View.layer.shadowRadius = 8.0;
 
+    UITapGestureRecognizer* tap3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode3)];
+    [self.gameMode3View addGestureRecognizer:tap3];
     self.gameMode3View.backgroundColor = [UIColor whiteColor];
     self.gameMode3View.layer.cornerRadius = 8.0;
     self.gameMode3View.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -118,8 +126,52 @@
     self.gameMode4View.layer.shadowOffset = CGSizeMake(3, 3);
     self.gameMode4View.layer.shadowOpacity = 0.5;
     self.gameMode4View.layer.shadowRadius = 8.0;
+}
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSMutableArray* levels = [[NSMutableArray alloc] initWithCapacity:30];
+    FillLevelArray(levels);
     
+    NSDictionary* levelResults = [DHLevelResults levelResults];
+    
+    NSUInteger levelsCompleteGameModeNormal = 0;
+    NSUInteger levelsCompleteGameModeMinimumMoves = 0;
+    NSUInteger levelsCompleteGameModePrimitiveOnly = 0;
+    for (id level in levels) {
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModeNormal];
+        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
+        if (levelResult) {
+            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
+            if (completed.boolValue) {
+                ++levelsCompleteGameModeNormal;
+            }
+        }
+    }
+    for (id level in levels) {
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModeMinimumMoves];
+        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
+        if (levelResult) {
+            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
+            if (completed.boolValue) {
+                ++levelsCompleteGameModeMinimumMoves;
+            }
+        }
+    }
+    for (id level in levels) {
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModePrimitiveOnly];
+        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
+        if (levelResult) {
+            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
+            if (completed.boolValue) {
+                ++levelsCompleteGameModePrimitiveOnly;
+            }
+        }
+    }
+
+    self.gameMode1PercentComplete.percentComplete = levelsCompleteGameModeNormal*1.0/levels.count;
+    self.gameMode2PercentComplete.percentComplete = levelsCompleteGameModeMinimumMoves*1.0/levels.count;
+    self.gameMode3PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnly*1.0/levels.count;
 }
 
 - (void)didReceiveMemoryWarning
@@ -130,7 +182,6 @@
 
 
 #pragma mark - Navigation
-
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -141,6 +192,11 @@
         vc.levelIndex = NSUIntegerMax;
         vc.title = @"Playground";
     }
+    if ([segue.identifier isEqualToString:@"ShowLevelSelection"]) {
+        DHLevelSelectionViewController* vc = [segue destinationViewController];
+        vc.currentGameMode = [sender unsignedIntegerValue];
+        NSLog(@"%@", sender);
+    }
 }
 
 
@@ -150,8 +206,18 @@
     return YES;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+#pragma mark - Select game modes
+- (void)selectGameMode1
 {
+    [self performSegueWithIdentifier:@"ShowLevelSelection" sender:[NSNumber numberWithUnsignedInteger:kDHGameModeNormal]];
+}
+- (void)selectGameMode2
+{
+    [self performSegueWithIdentifier:@"ShowLevelSelection" sender:[NSNumber numberWithUnsignedInteger:kDHGameModeMinimumMoves]];
+}
+- (void)selectGameMode3
+{
+    [self performSegueWithIdentifier:@"ShowLevelSelection" sender:[NSNumber numberWithUnsignedInteger:kDHGameModePrimitiveOnly]];
 }
 
 @end

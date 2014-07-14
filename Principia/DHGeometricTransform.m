@@ -45,6 +45,14 @@
 - (void)setScale:(CGFloat)scale
 {
     _geoTransformScale = scale;
+    // Cap the scale to between 0.1x and 2x
+    if (_geoTransformScale > 2) {
+        _geoTransformScale = 2;
+    }
+    if (_geoTransformScale < 0.1) {
+        _geoTransformScale = 0.1;
+    }
+    
 }
 
 - (CGPoint)viewToGeo:(CGPoint)point
@@ -63,6 +71,14 @@
     CGPoint centerInGeo = [self viewToGeo:center];
     
     _geoTransformScale *= scale;
+    
+    // Cap the scale to between 0.1x and 2x
+    if (_geoTransformScale > 2) {
+        _geoTransformScale = 2;
+    }
+    if (_geoTransformScale < 0.1) {
+        _geoTransformScale = 0.1;
+    }
     
     CGPoint centerAfterZoom = [self geoToView:centerInGeo];
     

@@ -89,8 +89,12 @@
         CGFloat scaleX = (geoViewSize.width-30) / (maxX - minX);
         CGFloat scaleY = (geoViewSize.height-30) / (maxY - minY);
         CGFloat scale = MIN(scaleX, scaleY);
+        // Cap the scale to between 0.1x and 2x
         if (scale > 2) {
             scale = 2;
+        }
+        if (scale < 0.1) {
+            scale = 0.1;
         }
         
         [self.geoViewTransform setScale:scale];

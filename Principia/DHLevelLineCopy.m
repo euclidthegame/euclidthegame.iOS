@@ -57,9 +57,7 @@
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:230 andY:100];
     DHPoint* p3 = [[DHPoint alloc] initWithPositionX:350 andY:450];
     
-    DHLineSegment* l1 = [[DHLineSegment alloc] init];
-    l1.start = p1;
-    l1.end = p2;
+    DHLineSegment* l1 = [[DHLineSegment alloc] initWithStart:p1 andEnd:p2];
     
     [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];
@@ -95,8 +93,8 @@
     CGPoint pointA = _lineAB.start.position;
     CGPoint pointB = _lineAB.end.position;
     
-    _lineAB.start.position = CGPointMake(200, 300);
-    _lineAB.end.position = CGPointMake(220, 150);
+    _lineAB.start.position = CGPointMake(pointA.x+1, pointA.y+2);
+    _lineAB.end.position = CGPointMake(pointB.x-3, pointB.y-4);
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
@@ -119,10 +117,14 @@
         CGVector vAB = _lineAB.vector;
         CGFloat dotProd = CGVectorDotProduct(CGVectorNormalize(vCP), CGVectorNormalize(vAB));
         
+        // Ensure C-to-point is parallell with AB
+        if ((fabs(dotProd) > 1 - 0.001) == NO) continue;
+        
         CGFloat lCP = CGVectorLength(vCP);
         CGFloat lAB = CGVectorLength(vAB);
         
-        if (fabs(dotProd) > 1 - 0.001 && fabs(lCP - lAB) < 0.01) {
+        // Ensure distance C-to-point is equal to length of AB
+        if (fabs(lCP - lAB) < 0.01) {
             return YES;
         }
     }

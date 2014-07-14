@@ -63,7 +63,7 @@
     
     DHPointOnLine* p3 = [[DHPointOnLine alloc] init];
     p3.line = l1;
-    p3.tValue = 1.5;
+    p3.tValue = 1.4;
     
     [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];

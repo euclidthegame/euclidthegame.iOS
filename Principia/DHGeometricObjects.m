@@ -216,9 +216,12 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 
 - (CGPoint)position
 {
-    CGFloat d = DistanceBetweenPoints(_c1.center.position, _c2.center.position);
-    CGFloat dx = _c2.center.position.x - _c1.center.position.x;
-    CGFloat dy = _c2.center.position.y - _c1.center.position.y;
+    CGPoint c1CenterPos = self.c1.center.position;
+    CGPoint c2CenterPos = self.c2.center.position;
+    
+    CGFloat d = DistanceBetweenPoints(c1CenterPos, c2CenterPos);
+    CGFloat dx = c2CenterPos.x - c1CenterPos.x;
+    CGFloat dy = c2CenterPos.y - c1CenterPos.y;
     CGVector vx = CGVectorMake(dx/d, dy/d);
     CGVector vy = CGVectorMake(-vx.dy, vx.dx);
     
@@ -232,7 +235,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         y = -y;
     }
     
-    return CGPointMake(_c1.center.position.x + x * vx.dx + y * vy.dx, _c1.center.position.y + x * vx.dy + y * vy.dy);
+    return CGPointMake(c1CenterPos.x + x * vx.dx + y * vy.dx, c1CenterPos.y + x * vx.dy + y * vy.dy);
 }
 
 @end

@@ -102,9 +102,10 @@
         self.title = [NSString stringWithFormat:@"Level %lu", (unsigned long)(self.levelIndex+1)];
     }
     
-    if ((self.currentGameMode == kDHGameModeMinimumMoves ||
-         self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves)
-        && [_currentLevel respondsToSelector:@selector(minimumNumberOfMovesPrimitiveOnly)]) {
+    if (self.currentGameMode == kDHGameModeMinimumMoves) {
+        self.maxNumberOfMoves = [_currentLevel minimumNumberOfMoves];
+        self.movesLeftLabel.hidden = NO;
+    } else if (self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves) {
         self.maxNumberOfMoves = [_currentLevel minimumNumberOfMovesPrimitiveOnly];
         self.movesLeftLabel.hidden = NO;
     } else {

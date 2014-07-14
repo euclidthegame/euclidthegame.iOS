@@ -113,7 +113,7 @@
         CGVector bc = CGVectorNormalize(_lineA.vector);
         
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
-        if (fabs(lDotBC) > 1 - 0.000001) {
+        if (fabs(lDotBC) > 1 - 0.0001) {
             return YES;
         }
     }

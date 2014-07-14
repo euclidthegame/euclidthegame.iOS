@@ -245,7 +245,7 @@
     NSUInteger levelsCompleteGameModePrimitiveOnlyMinimumMoves = 0;
     
     for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModeNormal];
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormal];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
         if (levelResult) {
             NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
@@ -255,7 +255,7 @@
         }
     }
     for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModeMinimumMoves];
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeMinimumMoves];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
         if (levelResult) {
             NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
@@ -265,7 +265,7 @@
         }
     }
     for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModePrimitiveOnly];
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnly];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
         if (levelResult) {
             NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
@@ -275,7 +275,7 @@
         }
     }
     for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModePrimitiveOnlyMinimumMoves];
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnlyMinimumMoves];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
         if (levelResult) {
             NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];

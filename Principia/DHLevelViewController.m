@@ -216,7 +216,7 @@
             }
         }*/
         
-        NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%d", self.currentGameMode];
+        NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%lu", (unsigned long)self.currentGameMode];
         [DHLevelResults newResult:result forLevel:resultKey];
         [self showLevelCompleteMessage];
     }

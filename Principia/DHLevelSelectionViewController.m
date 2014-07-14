@@ -75,7 +75,7 @@
     cell.detailTextLabel.text = [level subTitle];
     cell.imageView.image = nil;
     
-    NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", self.currentGameMode];
+    NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)self.currentGameMode];
     NSDictionary* levelResult = [_levelResults objectForKey:resultKey];
     if (levelResult) {
         NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];

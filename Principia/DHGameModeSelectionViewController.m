@@ -148,65 +148,15 @@
     self.gameMode6View.layer.shadowOpacity = 0.5;
     self.gameMode6View.layer.shadowRadius = 8.0;
 
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset progress"
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(clearLevelResults)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSMutableArray* levels = [[NSMutableArray alloc] initWithCapacity:30];
-    FillLevelArray(levels);
-    
-    NSDictionary* levelResults = [DHLevelResults levelResults];
-    
-    NSUInteger levelsCompleteGameModeNormal = 0;
-    NSUInteger levelsCompleteGameModeMinimumMoves = 0;
-    NSUInteger levelsCompleteGameModePrimitiveOnly = 0;
-    NSUInteger levelsCompleteGameModePrimitiveOnlyMinimumMoves = 0;
-    
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModeNormal];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModeNormal;
-            }
-        }
-    }
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModeMinimumMoves];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModeMinimumMoves;
-            }
-        }
-    }
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModePrimitiveOnly];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModePrimitiveOnly;
-            }
-        }
-    }
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModePrimitiveOnlyMinimumMoves];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModePrimitiveOnlyMinimumMoves;
-            }
-        }
-    }
-
-    self.gameMode1PercentComplete.percentComplete = levelsCompleteGameModeNormal*1.0/levels.count;
-    self.gameMode2PercentComplete.percentComplete = levelsCompleteGameModeMinimumMoves*1.0/levels.count;
-    self.gameMode3PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnly*1.0/levels.count;
-    self.gameMode4PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnlyMinimumMoves*1.0/levels.count;
+    [self loadProgressData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -274,6 +224,71 @@
     vc.title = @"Tutorial";
     vc.currentGameMode = kDHGameModeTutorial;
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark - Other
+- (void)clearLevelResults
+{
+    [DHLevelResults clearLevelResults];
+    [self loadProgressData];
+}
+- (void)loadProgressData
+{
+    NSMutableArray* levels = [[NSMutableArray alloc] initWithCapacity:30];
+    FillLevelArray(levels);
+    
+    NSDictionary* levelResults = [DHLevelResults levelResults];
+    
+    NSUInteger levelsCompleteGameModeNormal = 0;
+    NSUInteger levelsCompleteGameModeMinimumMoves = 0;
+    NSUInteger levelsCompleteGameModePrimitiveOnly = 0;
+    NSUInteger levelsCompleteGameModePrimitiveOnlyMinimumMoves = 0;
+    
+    for (id level in levels) {
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModeNormal];
+        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
+        if (levelResult) {
+            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
+            if (completed.boolValue) {
+                ++levelsCompleteGameModeNormal;
+            }
+        }
+    }
+    for (id level in levels) {
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModeMinimumMoves];
+        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
+        if (levelResult) {
+            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
+            if (completed.boolValue) {
+                ++levelsCompleteGameModeMinimumMoves;
+            }
+        }
+    }
+    for (id level in levels) {
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModePrimitiveOnly];
+        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
+        if (levelResult) {
+            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
+            if (completed.boolValue) {
+                ++levelsCompleteGameModePrimitiveOnly;
+            }
+        }
+    }
+    for (id level in levels) {
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%d", kDHGameModePrimitiveOnlyMinimumMoves];
+        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
+        if (levelResult) {
+            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
+            if (completed.boolValue) {
+                ++levelsCompleteGameModePrimitiveOnlyMinimumMoves;
+            }
+        }
+    }
+    
+    self.gameMode1PercentComplete.percentComplete = levelsCompleteGameModeNormal*1.0/levels.count;
+    self.gameMode2PercentComplete.percentComplete = levelsCompleteGameModeMinimumMoves*1.0/levels.count;
+    self.gameMode3PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnly*1.0/levels.count;
+    self.gameMode4PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnlyMinimumMoves*1.0/levels.count;
 }
 
 @end

@@ -267,7 +267,7 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Euclid: The Game" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="elH-q6-ObI">
-                                <rect key="frame" x="323" y="155" width="387" height="68"/>
+                                <rect key="frame" x="312" y="155" width="387" height="68"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoSCITCTT-Book" family="Bodoni 72 Smallcaps" pointSize="56"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -333,6 +333,13 @@
                                             <constraint firstAttribute="height" constant="89" id="rsQ-ym-BKI"/>
                                         </constraints>
                                     </view>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Difficulty: Normal" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IGK-L3-H12">
+                                        <rect key="frame" x="42" y="64" width="89" height="14"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
@@ -343,6 +350,8 @@
                                     <constraint firstItem="kb5-DF-XAg" firstAttribute="leading" secondItem="vsY-Tg-X0y" secondAttribute="leading" constant="226" id="CJn-b3-Ips"/>
                                     <constraint firstAttribute="trailing" secondItem="iDu-g8-gtS" secondAttribute="trailing" id="FdS-qH-g7F"/>
                                     <constraint firstAttribute="centerY" secondItem="kb5-DF-XAg" secondAttribute="centerY" id="KeQ-QB-e0R"/>
+                                    <constraint firstItem="IGK-L3-H12" firstAttribute="leading" secondItem="vsY-Tg-X0y" secondAttribute="leading" constant="42" id="MgT-fp-lII"/>
+                                    <constraint firstItem="IGK-L3-H12" firstAttribute="top" secondItem="oHU-tN-cAD" secondAttribute="bottom" id="TqY-cQ-IpO"/>
                                     <constraint firstAttribute="centerY" secondItem="oHU-tN-cAD" secondAttribute="centerY" id="bWW-42-Xyo"/>
                                     <constraint firstItem="oHU-tN-cAD" firstAttribute="leading" secondItem="vsY-Tg-X0y" secondAttribute="leading" constant="20" id="x5h-8L-Bdp"/>
                                     <constraint firstAttribute="width" constant="648" id="ynW-wp-Pw1"/>
@@ -353,10 +362,10 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g0R-uJ-N7a">
-                                        <rect key="frame" x="20" y="25" width="130" height="39"/>
+                                        <rect key="frame" x="20" y="25" width="121" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
-                                        <state key="normal" title="&quot;Few moves&quot;">
+                                        <state key="normal" title="Perfectionist">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
@@ -376,6 +385,13 @@
                                             <constraint firstAttribute="width" constant="142" id="9o8-sO-1RB"/>
                                         </constraints>
                                     </view>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Difficulty: Hard" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lBD-SZ-1KE">
+                                        <rect key="frame" x="42" y="64" width="76" height="14"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
@@ -384,11 +400,13 @@
                                     <constraint firstAttribute="width" constant="648" id="KG8-Tm-rdt"/>
                                     <constraint firstItem="xxm-Bd-FiK" firstAttribute="leading" secondItem="Cr8-Ea-dzt" secondAttribute="leading" constant="226" id="MHh-dg-K9V"/>
                                     <constraint firstItem="g0R-uJ-N7a" firstAttribute="leading" secondItem="Cr8-Ea-dzt" secondAttribute="leading" constant="20" id="Nsg-Le-vcE"/>
+                                    <constraint firstItem="lBD-SZ-1KE" firstAttribute="top" secondItem="g0R-uJ-N7a" secondAttribute="bottom" id="OUp-OY-LBD"/>
                                     <constraint firstAttribute="trailing" secondItem="Cnz-wn-Cnf" secondAttribute="trailing" id="RfI-y1-Xvr"/>
                                     <constraint firstAttribute="centerY" secondItem="xxm-Bd-FiK" secondAttribute="centerY" id="SpM-ep-QsT"/>
                                     <constraint firstAttribute="height" constant="89" id="V8B-zk-yie"/>
                                     <constraint firstAttribute="trailing" secondItem="xxm-Bd-FiK" secondAttribute="trailing" constant="150" id="b57-2m-LcC"/>
                                     <constraint firstAttribute="centerY" secondItem="g0R-uJ-N7a" secondAttribute="centerY" id="nCT-D5-Idj"/>
+                                    <constraint firstItem="lBD-SZ-1KE" firstAttribute="leading" secondItem="Cr8-Ea-dzt" secondAttribute="leading" constant="42" id="tsG-yK-2Gg"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxx-Wr-Kg5">
@@ -396,10 +414,10 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vMp-7f-LkT">
-                                        <rect key="frame" x="20" y="25" width="123" height="39"/>
+                                        <rect key="frame" x="20" y="25" width="108" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
-                                        <state key="normal" title="&quot;Old school&quot;">
+                                        <state key="normal" title="Old School">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
@@ -419,6 +437,13 @@
                                             <constraint firstAttribute="width" constant="142" id="mTQ-0J-cgC"/>
                                         </constraints>
                                     </view>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Difficulty: Harder" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hnv-Pc-MLu">
+                                        <rect key="frame" x="42" y="64" width="78" height="12"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
@@ -426,7 +451,9 @@
                                     <constraint firstAttribute="centerY" secondItem="vMp-7f-LkT" secondAttribute="centerY" id="8zN-iO-4MP"/>
                                     <constraint firstAttribute="centerY" secondItem="X35-lb-ufn" secondAttribute="centerY" id="A8D-xG-UVu"/>
                                     <constraint firstItem="LLB-uF-ybr" firstAttribute="top" secondItem="Bxx-Wr-Kg5" secondAttribute="top" id="H7Z-2Q-cdc"/>
+                                    <constraint firstItem="hnv-Pc-MLu" firstAttribute="top" secondItem="vMp-7f-LkT" secondAttribute="bottom" id="HiX-zf-dTV"/>
                                     <constraint firstAttribute="height" constant="89" id="Ieg-of-m0J"/>
+                                    <constraint firstItem="hnv-Pc-MLu" firstAttribute="leading" secondItem="Bxx-Wr-Kg5" secondAttribute="leading" constant="42" id="YU6-bQ-Bzk"/>
                                     <constraint firstItem="X35-lb-ufn" firstAttribute="leading" secondItem="Bxx-Wr-Kg5" secondAttribute="leading" constant="226" id="cTH-I8-QAh"/>
                                     <constraint firstItem="vMp-7f-LkT" firstAttribute="leading" secondItem="Bxx-Wr-Kg5" secondAttribute="leading" constant="20" id="emf-ck-Swm"/>
                                     <constraint firstAttribute="width" constant="648" id="qGd-2l-BBE"/>
@@ -439,10 +466,10 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ro4-1M-EOU">
-                                        <rect key="frame" x="20" y="25" width="118" height="39"/>
+                                        <rect key="frame" x="20" y="25" width="100" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
-                                        <state key="normal" title="&quot;Hard Core&quot;">
+                                        <state key="normal" title="Hard Core">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
@@ -462,15 +489,24 @@
                                             <constraint firstAttribute="width" constant="142" id="dII-ET-BZk"/>
                                         </constraints>
                                     </view>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Difficulty: Insane" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cSQ-DI-rXc">
+                                        <rect key="frame" x="42" y="64" width="85" height="14"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <constraints>
+                                    <constraint firstItem="cSQ-DI-rXc" firstAttribute="top" secondItem="ro4-1M-EOU" secondAttribute="bottom" id="3s9-FH-M22"/>
                                     <constraint firstAttribute="width" constant="648" id="BrP-8L-m0D"/>
                                     <constraint firstAttribute="centerY" secondItem="ro4-1M-EOU" secondAttribute="centerY" id="Myb-ky-uGF"/>
                                     <constraint firstAttribute="trailing" secondItem="540-bc-eej" secondAttribute="trailing" constant="150" id="TNu-pz-ZxD"/>
                                     <constraint firstItem="ro4-1M-EOU" firstAttribute="leading" secondItem="k82-Ms-g7n" secondAttribute="leading" constant="20" id="W50-Vq-lTf"/>
                                     <constraint firstAttribute="trailing" secondItem="fMi-Ro-xIL" secondAttribute="trailing" id="Y5v-lN-DM0"/>
+                                    <constraint firstItem="cSQ-DI-rXc" firstAttribute="leading" secondItem="k82-Ms-g7n" secondAttribute="leading" constant="42" id="Z7Z-Ha-BNx"/>
                                     <constraint firstAttribute="centerY" secondItem="540-bc-eej" secondAttribute="centerY" id="aZb-1v-y6k"/>
                                     <constraint firstItem="fMi-Ro-xIL" firstAttribute="top" secondItem="k82-Ms-g7n" secondAttribute="top" id="jvS-QD-b47"/>
                                     <constraint firstItem="540-bc-eej" firstAttribute="leading" secondItem="k82-Ms-g7n" secondAttribute="leading" constant="226" id="keX-ae-bec"/>
@@ -533,7 +569,7 @@
                             <constraint firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="h3e-qm-s7o"/>
                             <constraint firstAttribute="centerX" secondItem="Cr8-Ea-dzt" secondAttribute="centerX" id="hnd-wM-4hU"/>
                             <constraint firstAttribute="centerX" secondItem="qtQ-VX-LXh" secondAttribute="centerX" id="iIa-Wc-bXg"/>
-                            <constraint firstItem="elH-q6-ObI" firstAttribute="leading" secondItem="cI1-my-sfW" secondAttribute="trailing" constant="26" id="iJE-e2-weM"/>
+                            <constraint firstItem="elH-q6-ObI" firstAttribute="leading" secondItem="cI1-my-sfW" secondAttribute="trailing" constant="15" id="iJE-e2-weM"/>
                             <constraint firstAttribute="centerX" secondItem="vsY-Tg-X0y" secondAttribute="centerX" id="r3F-8O-GU9"/>
                             <constraint firstItem="Cr8-Ea-dzt" firstAttribute="top" secondItem="vsY-Tg-X0y" secondAttribute="bottom" constant="20" id="vP7-7v-fCX"/>
                             <constraint firstAttribute="centerX" secondItem="su9-Tg-XSX" secondAttribute="centerX" id="vj7-07-fJt"/>

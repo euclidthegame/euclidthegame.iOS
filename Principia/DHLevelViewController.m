@@ -489,6 +489,10 @@
         }
     }
     
+    if (completionMessageText.length == 0) {
+        [completionMessageText setString:@"Well done, you completed the level!"];
+    }
+    
     self.levelCompletionMessageAdditional.text = completionMessageText;
     
     // Fade in the completion pop-up

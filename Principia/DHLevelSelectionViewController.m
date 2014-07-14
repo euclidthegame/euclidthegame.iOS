@@ -39,7 +39,6 @@
     _levels = [[NSMutableArray alloc] init];
     FillLevelArray(_levels);
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear results" style:UIBarButtonItemStylePlain target:self action:@selector(clearLevelResults)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -112,13 +111,6 @@
     id<DHLevel> level = [[[[_levels objectAtIndex:indexPath.row] class] alloc] init];
 
     return level;
-}
-
-- (void)clearLevelResults
-{
-    [DHLevelResults clearLevelResults];
-    _levelResults = [DHLevelResults levelResults];
-    [self.tableView reloadData];
 }
 
 #pragma mark Layout/appereance

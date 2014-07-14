@@ -74,7 +74,6 @@
     _resetButton = resetButtonItem;
     
     _levelInstruction.layer.cornerRadius = 10.0f;
-    [self resetLevel];
     
     // Set up completion message
     self.levelCompletionMessage.layer.cornerRadius = 10.0;
@@ -103,6 +102,16 @@
         self.title = [NSString stringWithFormat:@"Level %lu", (unsigned long)(self.levelIndex+1)];
     }
     
+    if ((self.currentGameMode == kDHGameModeMinimumMoves ||
+         self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves)
+        && [_currentLevel respondsToSelector:@selector(minimumNumberOfMovesPrimitiveOnly)]) {
+        self.maxNumberOfMoves = [_currentLevel minimumNumberOfMovesPrimitiveOnly];
+        self.movesLeftLabel.hidden = NO;
+    } else {
+        self.maxNumberOfMoves = 0;
+        self.movesLeftLabel.hidden = YES;
+    }
+    
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
     /*NSMutableAttributedString* levelInstructionAttributed = [[[NSAttributedString alloc]
@@ -121,6 +130,7 @@
     
     [self setupTools];
     [self showDetailedLevelInstruction:nil];
+    [self resetLevel];
 }
 
 - (void)didReceiveMemoryWarning
@@ -139,6 +149,19 @@
     self.firstMoveMade = YES;
     BOOL countMove = NO;
 
+    for (id object in objects) {
+        if ([[object class] isSubclassOfClass:[DHMidPoint class]] ||
+            [[object class] isSubclassOfClass:[DHPoint class]] == NO) {
+            countMove = YES;
+        }
+    }
+    if (countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0) {
+        [self.geometryView setNeedsDisplay];
+        [self showTemporaryMessage:@"Sorry, out of moves, undo or reset the level"
+                           atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)];
+        return;
+    }
+    
     if ([_geometricObjectsForRedo containsObject:objects] == NO) {
         // New item(s), clear redo-list
         [_geometricObjectsForRedo removeAllObjects];
@@ -167,6 +190,15 @@
     if (countMove) {
         self.levelMoves++;
         self.movesLabel.text = [NSString stringWithFormat:@"Moves: %lu", (unsigned long)self.levelMoves];
+        if (self.maxNumberOfMoves > 0) {
+            self.movesLeftLabel.text = [NSString stringWithFormat:@"Moves left: %lu",
+                                    (unsigned long)(self.maxNumberOfMoves - self.levelMoves)];
+            if (self.maxNumberOfMoves - self.levelMoves == 0) {
+                self.movesLeftLabel.textColor = [UIColor redColor];
+            } else {
+                self.movesLeftLabel.textColor = [UIColor darkGrayColor];
+            }
+        }
     }
     
     [self.geometryView setNeedsDisplay];
@@ -210,6 +242,11 @@
     self.movesLabel.text = [NSString stringWithFormat:@"Moves: %lu", (unsigned long)self.levelMoves];
     [_geometricObjectsForRedo removeAllObjects];
     [_geometricObjectsForUndo removeAllObjects];
+    if (self.maxNumberOfMoves > 0) {
+        self.movesLeftLabel.text = [NSString stringWithFormat:@"Moves left: %lu",
+                                (unsigned long)(self.maxNumberOfMoves - self.levelMoves)];
+        self.movesLeftLabel.textColor = [UIColor darkGrayColor];
+    }
     
     [self.geometryView setNeedsDisplay];
     [self.levelCompletionMessage removeFromSuperview];
@@ -277,7 +314,8 @@
         [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
 
-    if (self.currentGameMode != kDHGameModePrimitiveOnly) {
+    if (self.currentGameMode != kDHGameModePrimitiveOnly &&
+        self.currentGameMode != kDHGameModePrimitiveOnlyMinimumMoves) {
         [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTriangle"] atIndex:index++ animated:NO];
         [_tools addObject:[DHTriangleTool class]];
         if ((availableTools & DHTriangleToolAvailable) == NO) {
@@ -382,6 +420,11 @@
     if (undoMove) {
         self.levelMoves--;
         self.movesLabel.text = [NSString stringWithFormat:@"Moves: %lu", (unsigned long)self.levelMoves];
+        if (self.maxNumberOfMoves > 0) {
+            self.movesLeftLabel.text = [NSString stringWithFormat:@"Moves left: %lu",
+                                    (unsigned long)(self.maxNumberOfMoves - self.levelMoves)];
+            self.movesLeftLabel.textColor = [UIColor darkGrayColor];
+        }
     }
     [_geometricObjectsForUndo removeObject:objectsToUndo];
     [_geometricObjectsForRedo addObject:objectsToUndo];
@@ -424,27 +467,20 @@
 - (void)showLevelCompleteMessage
 {
     NSMutableString* completionMessageText = [[NSMutableString alloc] init];
-    
-    if ([_currentLevel respondsToSelector:@selector(additionalCompletionMessage)]) {
-        [completionMessageText appendString:[_currentLevel additionalCompletionMessage]];
+
+    // Only display messages about unlocking tools in non-primitive only game modes
+    if (self.currentGameMode == kDHGameModeNormal || self.currentGameMode == kDHGameModeMinimumMoves) {
+        if ([_currentLevel respondsToSelector:@selector(additionalCompletionMessage)]) {
+            [completionMessageText setString:[_currentLevel additionalCompletionMessage]];
+        }
     }
     
-    /*if ([_currentLevel respondsToSelector:@selector(minimumNumberOfMoves)] &&
-        self.levelMoves <= [_currentLevel minimumNumberOfMoves])
-    {
-        if (completionMessageText.length > 0) {
-            [completionMessageText appendString:@"\n\n"];
-        }
-        [completionMessageText appendString:@"Perfect! You completed this level using the minimum number of moves!"];
-    }*/
-    
-    /*if (completionMessageText.length == 0) {
-        [completionMessageText appendString:@"You completed the level, but it can be done with fewer moves. Keep trying!"];
-    }*/
-    
     if (self.currentGameMode == kDHGameModeTutorial) {
+        // Special message for tutorial
+        [completionMessageText setString:@"Well done! You are now ready to begin with Level 1."];
         self.nextChallengeButton.hidden = YES;
     } else {
+        // If this is the last level, show special completion message and hide the "Next level" button
         if (self.levelIndex >= self.levelArray.count - 1) {
             self.nextChallengeButton.hidden = YES;
             [completionMessageText appendString:@"\n\nEuclid would be proud of you. You completed ALL levels !!!"];
@@ -455,6 +491,7 @@
     
     self.levelCompletionMessageAdditional.text = completionMessageText;
     
+    // Fade in the completion pop-up
     self.levelCompletionMessage.alpha = 0;
     [self.view addSubview:self.levelCompletionMessage];
     [UIView animateWithDuration:1.0
@@ -475,7 +512,6 @@
         id<DHLevel> nextLevel = [[[[self.levelArray objectAtIndex:self.levelIndex] class] alloc] init];
         if (nextLevel) {
             _currentLevel = nextLevel;
-            [self resetLevel];
             [self setupForLevel];
         }
     }

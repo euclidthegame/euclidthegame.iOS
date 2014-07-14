@@ -24,12 +24,15 @@
 @property (nonatomic, weak) IBOutlet UILabel* toolInstruction;
 @property (nonatomic, weak) IBOutlet UILabel* levelInstruction;
 @property (nonatomic, weak) IBOutlet UILabel* movesLabel;
+@property (nonatomic, weak) IBOutlet UILabel* movesLeftLabel;
 @property (nonatomic, weak) IBOutlet DHGeometryView* geometryView;
 
 @property (nonatomic, weak) DHGeometryViewController* geometryViewController;
 @property (nonatomic, strong) NSMutableArray* levelArray;
 @property (nonatomic) NSUInteger levelIndex;
 @property (nonatomic) NSUInteger levelMoves;
+@property (nonatomic) NSUInteger maxNumberOfMoves;
+
 @property (nonatomic) BOOL firstMoveMade;
 @property (nonatomic) BOOL levelCompleted;
 

@@ -68,6 +68,7 @@
     } else {
         _percentComplete = percentComplete;
     }
+    [self setNeedsDisplay];
 }
 
 @end

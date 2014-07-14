@@ -225,27 +225,32 @@
 
 - (void)resetLevel
 {
-    [_objectLabeler reset];
-    [_geometricObjects removeAllObjects];
     
     [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
     [self.geometryView.geoViewTransform setScale:1];
     [self.geometryView.geoViewTransform setRotation:0];
 
-    // Must be reset twice, to avoid bug with running out of moves when loading new objects
-    self.levelMoves = 0;
-    
+    [_objectLabeler reset];
+    [_geometricObjects removeAllObjects];
+
     NSMutableArray* levelObjects = [[NSMutableArray alloc] init];
     [_currentLevel createInitialObjects:levelObjects];
     for (id object in levelObjects) {
-        [self addGeometricObject:object];
+        // Sort objects to ensure points are last in the array to be drawn last
+        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+            DHPoint* p = object;
+            if (p.label == nil) {
+                p.label = [_objectLabeler nextLabel];
+            }
+            [_geometricObjects addObject:object];
+        } else {
+            [_geometricObjects insertObject:object atIndex:0];
+        }
     }
  
     self.levelCompleted = NO;
     self.levelMoves = 0;
     self.movesLabel.text = [NSString stringWithFormat:@"Moves: %lu", (unsigned long)self.levelMoves];
-    [_geometricObjectsForRedo removeAllObjects];
-    [_geometricObjectsForUndo removeAllObjects];
     if (self.maxNumberOfMoves > 0) {
         self.movesLeftLabel.text = [NSString stringWithFormat:@"Moves left: %lu",
                                 (unsigned long)(self.maxNumberOfMoves - self.levelMoves)];
@@ -254,6 +259,9 @@
     
     [self.geometryView setNeedsDisplay];
     [self.levelCompletionMessage removeFromSuperview];
+
+    [_geometricObjectsForRedo removeAllObjects];
+    [_geometricObjectsForUndo removeAllObjects];
     
     // Disable undo/redo button
     _redoButton.enabled = false;

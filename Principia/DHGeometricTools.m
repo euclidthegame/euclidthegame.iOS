@@ -420,7 +420,7 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
 @implementation DHLineSegmentTool
 - (NSString*)initialToolTip
 {
-    return @"Tap on a point to mark the start of a new line";
+    return @"Tap on a point to mark the start of a new line segment";
 }
 - (void)touchBegan:(UITouch*)touch
 {
@@ -468,7 +468,7 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
     } else {
         self.startPoint = point;
         point.highlighted = true;
-        [self.delegate toolTipDidChange:@"Tap on a second point to mark the end the line"];
+        [self.delegate toolTipDidChange:@"Tap on a second point to mark the end the line segment"];
         [touch.view setNeedsDisplay];
     }
 }

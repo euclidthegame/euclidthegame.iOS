@@ -112,6 +112,8 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 
 @interface DHTranslateSegmentTool : NSObject <DHGeometryTool>
 @property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
+@property (nonatomic, weak) DHPoint* start;
+@property (nonatomic, weak) DHPoint* end;
 @property (nonatomic, weak) DHLineSegment* segment;
 @property (nonatomic) BOOL disableWhenOnSameLine;
 @end

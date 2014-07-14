@@ -266,6 +266,10 @@
     // Disable undo/redo button
     _redoButton.enabled = false;
     _undoButton.enabled = false;
+    
+    // Reset current tool
+    _currentTool = [[[_currentTool class] alloc] init];
+    self.toolInstruction.text = [_currentTool initialToolTip];
 }
 
 #pragma mark Layout/appereance

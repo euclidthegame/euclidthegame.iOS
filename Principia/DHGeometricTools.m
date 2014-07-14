@@ -958,7 +958,7 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
 @implementation DHTranslateSegmentTool
 - (NSString*)initialToolTip
 {
-    return @"Tap a line segment you wish to translate";
+    return @"Tap two points or a line segment you wish to translate";
 }
 - (void)touchBegan:(UITouch*)touch
 {
@@ -973,24 +973,49 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
+    const CGFloat tapLimitInGeo = kClosestTapLimit / geoViewScale;
 
-    if (self.segment == nil) {
-        DHLineSegment* line = FindLineSegmentClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
-        if (line) {
-            self.segment = line;
-            self.segment.highlighted = YES;
-            [self.delegate toolTipDidChange:@"Tap on a point that should be the starting point of the translated segment"];
-            [touch.view setNeedsDisplay];
-        }
-    } else {
-        DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    if (self.start == nil || self.end == nil) {
+        DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, tapLimitInGeo);
         DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
-        //prefers normal point selection above automatic intersection
+        // Prefers normal point selection above automatic intersection
         if (intersectionPoint && !(point)) {
             [self.delegate addGeometricObject:intersectionPoint];
             point = intersectionPoint;
         }
+        if (point && self.start == nil) {
+            self.start = point;
+            self.start.highlighted = YES;
+            [self.delegate toolTipDidChange:@"Tap on a second point to define the line segment to be translated"];
+            [touch.view setNeedsDisplay];
+            return;
+        }
+        if (point && self.end == nil) {
+            self.end = point;
+            self.end.highlighted = YES;
+            [self.delegate toolTipDidChange:@"Tap on a point to define the starting point of the translated segment"];
+            [touch.view setNeedsDisplay];
+            return;
+        }
         
+        DHLineSegment* line = FindLineSegmentClosestToPoint(touchPoint, self.delegate.geometryObjects, tapLimitInGeo);
+        if (line) {
+            self.segment = line;
+            self.start = line.start;
+            self.end = line.end;
+            self.segment.highlighted = YES;
+            [self.delegate toolTipDidChange:@"Tap on a point that should be the starting point of the translated segment"];
+            [touch.view setNeedsDisplay];
+            return;
+        }
+    } else {
+        DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, tapLimitInGeo);
+        DHPoint* intersectionPoint = findClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+        // Prefers normal point selection above automatic intersection
+        if (intersectionPoint && !(point)) {
+            [self.delegate addGeometricObject:intersectionPoint];
+            point = intersectionPoint;
+        }
         
         if (point == nil) {
             return;
@@ -1010,22 +1035,26 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         
         DHTranslatedPoint* translatedPoint = [[DHTranslatedPoint alloc] init];
         translatedPoint.startOfTranslation = point;
-        translatedPoint.translationStart = self.segment.start;
-        translatedPoint.translationEnd = self.segment.end;
+        translatedPoint.translationStart = self.start;
+        translatedPoint.translationEnd = self.end;
         
         DHLineSegment* transLine = [[DHLineSegment alloc] initWithStart:point andEnd:translatedPoint];
         [self.delegate addGeometricObjects:@[translatedPoint, transLine]];
         
         self.segment.highlighted = NO;
+        self.start.highlighted = NO;
+        self.end.highlighted = NO;
+        self.start = nil;
+        self.end = nil;
         self.segment = nil;
         [self.delegate toolTipDidChange:self.initialToolTip];
     }
 }
 - (void)dealloc
 {
-    if (self.segment) {
-        self.segment.highlighted = NO;
-    }
+    self.segment.highlighted = NO;
+    self.start.highlighted = NO;
+    self.end.highlighted = NO;
 }
 @end
 

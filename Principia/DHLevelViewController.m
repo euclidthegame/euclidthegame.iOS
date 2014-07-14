@@ -293,7 +293,7 @@
     }
     
     if (self.currentGameMode == kDHGameModePrimitiveOnly) {
-        availableTools = (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
+        availableTools = (DHPointToolAvailable | DHIntersectToolAvailable | DHLineSegmentToolAvailable | DHLineToolAvailable |
                           DHCircleToolAvailable);
     }
 
@@ -313,14 +313,14 @@
     }
     
     [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolLine"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHLineTool class]];
-    if ((availableTools & DHLineToolAvailable) == NO) {
+    [_tools addObject:[DHLineSegmentTool class]];
+    if ((availableTools & DHLineSegmentToolAvailable) == NO) {
         [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
 
     [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolRay"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHRayTool class]];
-    if ((availableTools & DHRayToolAvailable) == NO) {
+    [_tools addObject:[DHLineTool class]];
+    if ((availableTools & DHLineToolAvailable) == NO) {
         [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
     }
     

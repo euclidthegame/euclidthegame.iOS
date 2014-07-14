@@ -27,8 +27,8 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a line segment from A to B and a ray from C through D. "
-            @"Construct a point at the intersection of AB and the ray. "
+    return (@"Construct a line segment from A to B and a line through C and D. "
+            @"Construct a point at the intersection of AB and the line. "
             @"Construct two circles with centers E and F, both with radius EF.");
 }
 
@@ -39,7 +39,7 @@
 
 - (DHToolsAvailable)availableTools
 {
-    return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
+    return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineSegmentToolAvailable | DHLineToolAvailable |
             DHCircleToolAvailable | DHMoveToolAvailable);
 }
 
@@ -97,12 +97,12 @@
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
 {
     BOOL segmentAB = NO;
-    BOOL rayCD = NO;
+    BOOL lineCD = NO;
     BOOL circleEF = NO;
     BOOL circleFE = NO;
     BOOL intersectionPoint = NO;
     DHLineSegment* lAB = nil;
-    DHRay* rCD = nil;
+    DHLine* lCD = nil;
     
     
     for (id object in geometricObjects) {
@@ -116,12 +116,12 @@
     }
 
     for (id object in geometricObjects) {
-        if ([object class] != [DHRay class]) continue;
-        DHRay* ray = object;
-        if ((ray.start == _pointC || ray.end == _pointC) &&
-            (ray.start == _pointD || ray.end == _pointD)) {
-            rayCD = YES;
-            rCD = ray;
+        if ([object class] != [DHLine class]) continue;
+        DHLine* line = object;
+        if ((line.start == _pointC || line.end == _pointC) &&
+            (line.start == _pointD || line.end == _pointD)) {
+            lineCD = YES;
+            lCD = line;
         }
     }
 
@@ -135,12 +135,12 @@
     for (id object in geometricObjects) {
         if ([object class] != [DHIntersectionPointLineLine class]) continue;
         DHIntersectionPointLineLine* point = object;
-        if ((point.l1 == lAB || point.l2 == lAB) && (point.l1 == rCD || point.l2 == rCD)) {
+        if ((point.l1 == lAB || point.l2 == lAB) && (point.l1 == lCD || point.l2 == lCD)) {
             intersectionPoint = YES;
         }
     }
     
-    if (segmentAB && rayCD && circleEF && circleFE && intersectionPoint) {
+    if (segmentAB && lineCD && circleEF && circleFE && intersectionPoint) {
         return YES;
     }
     

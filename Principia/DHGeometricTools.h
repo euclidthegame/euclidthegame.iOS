@@ -13,8 +13,8 @@
 typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 {
     DHPointToolAvailable = 1 << 0,
-    DHLineToolAvailable = 1 << 1,
-    DHRayToolAvailable = 1 << 2,
+    DHLineSegmentToolAvailable = 1 << 1,
+    DHLineToolAvailable = 1 << 2,
     DHCircleToolAvailable = 1 << 3,
     DHIntersectToolAvailable = 1 << 4,
     DHMidpointToolAvailable = 1 << 5,
@@ -60,7 +60,7 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 @end
 
 
-@interface DHLineTool : NSObject <DHGeometryTool>
+@interface DHLineSegmentTool : NSObject <DHGeometryTool>
 @property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
@@ -81,7 +81,7 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
 
-@interface DHRayTool : NSObject <DHGeometryTool>
+@interface DHLineTool : NSObject <DHGeometryTool>
 @property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
 @property (nonatomic, weak) DHPoint* startPoint;
 @end

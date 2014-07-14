@@ -35,7 +35,7 @@
 
 - (DHToolsAvailable)availableTools
 {
-    return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineToolAvailable | DHRayToolAvailable |
+    return (DHPointToolAvailable | DHIntersectToolAvailable | DHLineSegmentToolAvailable | DHLineToolAvailable |
             DHCircleToolAvailable | DHMoveToolAvailable | DHTriangleToolAvailable);
 }
 

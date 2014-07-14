@@ -417,7 +417,7 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
 @end
 
 
-@implementation DHLineTool
+@implementation DHLineSegmentTool
 - (NSString*)initialToolTip
 {
     return @"Tap on a point to mark the start of a new line";
@@ -625,10 +625,10 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
 @end
 
 
-@implementation DHRayTool
+@implementation DHLineTool
 - (NSString*)initialToolTip
 {
-    return @"Tap on a point to mark the start of a new ray";
+    return @"Tap on a point to mark the first of two points needed to define a line";
 }
 - (void)touchBegan:(UITouch*)touch
 {
@@ -654,7 +654,7 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
     
     if (point) {
         if (self.startPoint && point != self.startPoint) {
-            DHRay* line = [[DHRay alloc] init];
+            DHLine* line = [[DHLine alloc] init];
             line.start = self.startPoint;
             line.end = point;
             
@@ -666,7 +666,7 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         } else {
             self.startPoint = point;
             point.highlighted = true;
-            [self.delegate toolTipDidChange:@"Tap on a second point that the ray will pass through"];
+            [self.delegate toolTipDidChange:@"Tap on a second point that the line will pass through"];
             [touch.view setNeedsDisplay];
         }
     }

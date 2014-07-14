@@ -93,8 +93,8 @@
     CGPoint pointA = _lineAB.start.position;
     CGPoint pointB = _lineAB.end.position;
     
-    _lineAB.start.position = CGPointMake(200, 300);
-    _lineAB.end.position = CGPointMake(220, 150);
+    _lineAB.start.position = CGPointMake(190, 245);
+    _lineAB.end.position = CGPointMake(240, 130);
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
@@ -115,7 +115,7 @@
         
         CGFloat l = _lineAB.length;
         CGFloat r = circle.radius;
-        if (CGFloatsEqualWithinEpsilon(l, r)) {
+        if (fabs(l - r) < 0.01) {
             return YES;
         }
     }

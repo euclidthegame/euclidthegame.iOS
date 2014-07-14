@@ -123,10 +123,12 @@
         CGVector vAB = _lineAB.vector;
         CGFloat dotProd = CGVectorDotProduct(CGVectorNormalize(vCP), CGVectorNormalize(vAB));
         
+        if (!(dotProd > 1 - 0.001)) continue;
+        
         CGFloat lCP = CGVectorLength(vCP);
         CGFloat lAB = CGVectorLength(vAB);
-        
-        if (dotProd > 1 - 0.0001 && CGFloatsEqualWithinEpsilon(lCP, lAB)) {
+        CGFloat lengthDiff = fabs(lCP - lAB);
+        if (lengthDiff < 0.01) {
             return YES;
         }
     }

@@ -90,8 +90,8 @@
     CGPoint pointA = _lineA.start.position;
     CGPoint pointB = _lineA.end.position;
     
-    _lineA.start.position = CGPointMake(280, 300);
-    _lineA.end.position = CGPointMake(480, 400);
+    _lineA.start.position = CGPointMake(280, 310);
+    _lineA.end.position = CGPointMake(480, 320);
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
@@ -108,12 +108,13 @@
         if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         
         DHLineObject* l = object;
-        if ((l.start == _pointB || l.end == _pointB) == NO) continue;
-        
         CGVector bc = CGVectorNormalize(_lineA.vector);
         
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
-        if (fabs(lDotBC) > 1 - 0.0001) {
+        if (!(fabs(lDotBC) > 1 - 0.001)) continue;
+        
+        CGFloat dist = DistanceFromPointToLine(_pointB, l);
+        if (dist < 0.01) {
             return YES;
         }
     }

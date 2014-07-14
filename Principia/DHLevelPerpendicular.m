@@ -28,7 +28,7 @@
 
 - (NSString*)levelDescription
 {
-    return @"Create a line segment with A as one of its end points that is perpendicular to the given line";
+    return @"Create a line (segment) on A that is perpendicular to the given line";
 }
 
 - (DHToolsAvailable)availableTools

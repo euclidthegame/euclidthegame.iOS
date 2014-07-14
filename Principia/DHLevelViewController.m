@@ -230,6 +230,9 @@
     [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
     [self.geometryView.geoViewTransform setScale:1];
     [self.geometryView.geoViewTransform setRotation:0];
+
+    // Must be reset twice, to avoid bug with running out of moves when loading new objects
+    self.levelMoves = 0;
     
     NSMutableArray* levelObjects = [[NSMutableArray alloc] init];
     [_currentLevel createInitialObjects:levelObjects];

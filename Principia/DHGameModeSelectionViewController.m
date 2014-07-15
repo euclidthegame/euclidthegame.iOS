@@ -30,8 +30,14 @@
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 1.0/self.contentScaleFactor);
-    CGContextSetRGBFillColor(context, 0.5, 0.5, 0.5, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 1.0);
+    
+    if (self.percentComplete == 1.0) {
+        CGContextSetRGBFillColor(context, 238/255.0, 194/255.0, 16/255.0, 1.0);
+        CGContextSetRGBStrokeColor(context, 238/255.0, 194/255.0, 16/255.0, 1.0);
+    } else {
+        CGContextSetRGBFillColor(context, 0.5, 0.5, 0.5, 1.0);
+        CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 1.0);
+    }
     
     if (self.percentComplete > 0) {
         CGContextMoveToPoint(context, pieChartCenter.x, pieChartCenter.y);
@@ -42,6 +48,18 @@
     
     CGContextStrokeEllipseInRect(context, CGRectMake(pieChartCenter.x-pieChartRadius, pieChartCenter.y-pieChartRadius,
                                                      pieChartRadius*2, pieChartRadius*2));
+    
+    if (self.percentComplete == 1.0) {
+        // Draw checkmark
+        CGContextSetLineWidth(context, 3.0);
+        CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
+
+        CGContextMoveToPoint(context, pieChartCenter.x - pieChartRadius*0.5, pieChartCenter.y);
+        CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7, pieChartCenter.y + 7);
+        CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7 + 14, pieChartCenter.y + 7 - 14);
+        CGContextDrawPath(context, kCGPathStroke);
+    }
+    
     
     // Draw percent complete text
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];

@@ -191,8 +191,15 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 }
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
-    CGFloat radius = self.radius * [transform scale];
-    CGPoint position = [transform geoToView:self.center.position];
+    CGFloat geoRadius = self.radius;
+    CGPoint geoCenterPosition = self.center.position;
+    
+    if (isnan(geoRadius) || isnan(geoCenterPosition.x) || isnan(geoCenterPosition.y)) {
+        return;
+    }
+    
+    CGFloat radius = geoRadius * [transform scale];
+    CGPoint position = [transform geoToView:geoCenterPosition];
     
     CGRect rect = CGRectMake(position.x - radius, position.y - radius, radius*2, radius*2);    
     CGContextSetLineWidth(context, 1.0);
@@ -218,15 +225,21 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 {
     CGPoint c1CenterPos = self.c1.center.position;
     CGPoint c2CenterPos = self.c2.center.position;
-    
-    CGFloat d = DistanceBetweenPoints(c1CenterPos, c2CenterPos);
-    CGFloat dx = c2CenterPos.x - c1CenterPos.x;
-    CGFloat dy = c2CenterPos.y - c1CenterPos.y;
-    CGVector vx = CGVectorMake(dx/d, dy/d);
-    CGVector vy = CGVectorMake(-vx.dy, vx.dx);
-    
     CGFloat r1 = _c1.radius;
     CGFloat r2 = _c2.radius;
+
+    if (isnan(r1) || isnan(r2) || isnan(c1CenterPos.x) || isnan(c1CenterPos.y) ||
+        isnan(c2CenterPos.x) || isnan(c2CenterPos.y)) {
+        return CGPointMake(NAN, NAN);
+    }
+    
+    CGFloat d = DistanceBetweenPoints(c1CenterPos, c2CenterPos);
+    if (d == 0) {
+        return CGPointMake(NAN, NAN);
+    }
+    
+    CGVector vC1ToC2 = CGVectorMultiplyByScalar(CGVectorBetweenPoints(c1CenterPos, c2CenterPos), 1/d);
+    CGVector vy = CGVectorMakePerpendicular(vC1ToC2);
 
     CGFloat x = (d*d + r1*r1 - r2*r2)/(2*d);
     CGFloat y = sqrt(r1*r1 - x*x);
@@ -235,7 +248,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         y = -y;
     }
     
-    return CGPointMake(c1CenterPos.x + x * vx.dx + y * vy.dx, c1CenterPos.y + x * vx.dy + y * vy.dy);
+    return CGPointMake(c1CenterPos.x + x * vC1ToC2.dx + y * vy.dx, c1CenterPos.y + x * vC1ToC2.dy + y * vy.dy);
 }
 
 @end
@@ -277,6 +290,15 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 
 
 @implementation DHMidPoint
+- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2
+{
+    self = [super init];
+    if (self) {
+        _start = p1;
+        _end = p2;
+    }
+    return self;
+}
 - (CGPoint)position
 {
     return MidPointFromPoints(self.start.position, self.end.position);

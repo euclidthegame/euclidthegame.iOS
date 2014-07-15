@@ -51,11 +51,25 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
-    DHPoint* pA = [[DHPoint alloc] initWithPositionX:80 andY:190];
+    DHPoint* pAStart = [[DHPoint alloc] initWithPositionX:50 andY:190];
     DHPoint* pA1 = [[DHPoint alloc] initWithPositionX:210 andY:120];
     DHPoint* pA2 = [[DHPoint alloc] initWithPositionX:200 andY:190];
-    DHPoint* pB = [[DHPoint alloc] initWithPositionX:170 andY:250];
+    DHMidPoint* pAEndTemp1 = [[DHMidPoint alloc] initWithPoint1:pA1 andPoint2:pA2];
+    CGVector pARange = CGVectorMultiplyByScalar(CGVectorBetweenPoints(pAStart.position, pAEndTemp1.position),0.8);
+    CGPoint pAEndPoint = CGPointFromPointByAddingVector(pAStart.position, pARange);
+    DHPoint* pAEnd = [[DHPoint alloc] initWithPositionX:pAEndPoint.x andY:pAEndPoint.y];
+    
+    DHLineSegment* pALine = [[DHLineSegment alloc] initWithStart:pAStart andEnd:pAEnd];
+    DHPointOnLine* pA = [[DHPointOnLine alloc] init];
+    pA.tValue = 0.2;
+    pA.line = pALine;
+    
     DHPoint* pB1 = [[DHPoint alloc] initWithPositionX:250 andY:400];
+    DHPoint* pB2 = [[DHPoint alloc] initWithPositionX:250 andY:300];
+    DHCircle* cB = [[DHCircle alloc] initWithCenter:pB1 andPointOnRadius:pB2];
+    DHPointOnCircle* pB = [[DHPointOnCircle alloc] init];
+    pB.circle = cB;
+    pB.angle = (2*0.65)*M_PI;
     
     DHRay* lA1 = [[DHRay alloc] initWithStart:pA andEnd:pA1];
     DHRay* lA2 = [[DHRay alloc] initWithStart:pA andEnd:pA2];

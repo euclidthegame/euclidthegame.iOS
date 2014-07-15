@@ -232,8 +232,8 @@ static DHIntersectionResult IntersectionTestLineCircle(DHLineObject* line, DHCir
     CGFloat b = CGVectorDotProduct(m, d);
     CGFloat c = CGVectorDotProduct(m, m) - r*r;
     
-    //Exit if r's origin outside s (c > 0) and r pointing away from s (b > 0)
-    if (c > 0.0 && b > 0) return result;
+    //Exit if line's origin outside circle (c > 0) and line pointing away from s (b > 0) and line is ray or segment
+    //if (c > 0.0 && b > 0 && line.tMin == 0) return result;
     
     CGFloat discr = b*b - c;
     

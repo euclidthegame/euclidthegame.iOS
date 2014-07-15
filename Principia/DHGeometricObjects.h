@@ -95,6 +95,7 @@
 
 
 @interface DHMidPoint : DHPoint
+- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2;
 @property (nonatomic) DHPoint* start;
 @property (nonatomic) DHPoint* end;
 - (CGPoint)position;
@@ -110,13 +111,13 @@
 
 
 @interface DHPointOnLine : DHPoint
-@property (nonatomic, weak) DHLineObject* line;
+@property (nonatomic, strong) DHLineObject* line;
 @property (nonatomic) CGFloat tValue; // Value between 0 and 1 indicating distance from start to end
 - (CGPoint)position;
 @end
 
 @interface DHPointOnCircle : DHPoint
-@property (nonatomic, weak) DHCircle* circle;
+@property (nonatomic, strong) DHCircle* circle;
 @property (nonatomic) CGFloat angle; // Angle of rotation from positive x-axis to point
 - (CGPoint)position;
 @end
@@ -135,8 +136,8 @@
 @end
 
 @interface DHParallelLine : DHLineObject
-@property (nonatomic, weak) DHLineObject* line;
-@property (nonatomic, weak) DHPoint* point;
+@property (nonatomic, strong) DHLineObject* line;
+@property (nonatomic, strong) DHPoint* point;
 @end
 
 

@@ -11,11 +11,11 @@
 #import "DHGeometricObjects.h"
 
 @interface DHLevelCopyAngle () {
-    DHLineSegment* _lineAB;
-    DHLineSegment* _lineAC;
-    DHPoint* _pointD;
+    DHRay* _rayA1;
+    DHRay* _rayA2;
+    DHPoint* _pointB;
     DHPoint* _pointHidden;
-    DHRay* _rayD;
+    DHRay* _rayB;
 }
 
 @end
@@ -29,7 +29,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct an angle at D to the given line equal to the given angle at A");
+    return (@"Construct an angle at B to the given line equal to the given angle at A");
 }
 
 - (DHToolsAvailable)availableTools
@@ -51,50 +51,41 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
-    DHPoint* pA = [[DHPoint alloc] initWithPositionX:100 andY:150];
-    DHPoint* pB = [[DHPoint alloc] initWithPositionX:210 andY:100];
-    DHPoint* pC = [[DHPoint alloc] initWithPositionX:200 andY:150];
-    DHPoint* pD = [[DHPoint alloc] initWithPositionX:150 andY:250];
-    DHPoint* pHidden = [[DHPoint alloc] initWithPositionX:250 andY:400];
+    DHPoint* pA = [[DHPoint alloc] initWithPositionX:80 andY:190];
+    DHPoint* pA1 = [[DHPoint alloc] initWithPositionX:210 andY:120];
+    DHPoint* pA2 = [[DHPoint alloc] initWithPositionX:200 andY:190];
+    DHPoint* pB = [[DHPoint alloc] initWithPositionX:170 andY:250];
+    DHPoint* pB1 = [[DHPoint alloc] initWithPositionX:250 andY:400];
     
-    DHLineSegment* lAB = [[DHLineSegment alloc] init];
-    lAB.start = pA;
-    lAB.end = pB;
+    DHRay* lA1 = [[DHRay alloc] initWithStart:pA andEnd:pA1];
+    DHRay* lA2 = [[DHRay alloc] initWithStart:pA andEnd:pA2];
     
-    DHLineSegment* lAC = [[DHLineSegment alloc] init];
-    lAC.start = pA;
-    lAC.end = pC;
+    DHRay* lFromB = [[DHRay alloc] initWithStart:pB andEnd:pB1];
     
-    DHRay* lFromD = [[DHRay alloc] init];
-    lFromD.start = pD;
-    lFromD.end = pHidden;
-    
-    [geometricObjects addObject:lAB];
-    [geometricObjects addObject:lAC];
-    [geometricObjects addObject:lFromD];
+    [geometricObjects addObject:lA1];
+    [geometricObjects addObject:lA2];
+    [geometricObjects addObject:lFromB];
     [geometricObjects addObject:pA];
     [geometricObjects addObject:pB];
-    [geometricObjects addObject:pC];
-    [geometricObjects addObject:pD];
 
-    _lineAB = lAB;
-    _lineAC = lAC;
-    _pointD = pD;
-    _pointHidden = pHidden;
-    _rayD = lFromD;
+    _rayA1 = lA1;
+    _rayA2 = lA2;
+    _pointB = pB;
+    _pointHidden = pB1;
+    _rayB = lFromB;
 }
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    CGVector vAB = _lineAB.vector;
-    CGVector vAC = _lineAC.vector;
+    CGVector vAB = _rayA1.vector;
+    CGVector vAC = _rayA2.vector;
     
     CGFloat angle = CGVectorAngleBetween(vAB, vAC);
-    CGVector vDE = CGVectorRotateByAngle(CGVectorNormalize(_rayD.vector), -angle);
+    CGVector vDE = CGVectorRotateByAngle(CGVectorNormalize(_rayB.vector), -angle);
     
-    DHPoint* p = [[DHPoint alloc] initWithPositionX:_pointD.position.x + 100*vDE.dx
-                                               andY:_pointD.position.y + 100*vDE.dy];
-    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_pointD andEnd:p];
+    DHPoint* p = [[DHPoint alloc] initWithPositionX:_pointB.position.x + 100*vDE.dx
+                                               andY:_pointB.position.y + 100*vDE.dy];
+    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_pointB andEnd:p];
     
     [objects insertObject:r atIndex:0];
 }
@@ -108,16 +99,16 @@
     }
     
     // Move A and B and ensure solution holds
-    CGPoint pointA = _lineAB.start.position;
-    CGPoint pointB = _lineAB.end.position;
+    CGPoint pointA = _rayA1.start.position;
+    CGPoint pointB = _rayA1.end.position;
     
-    _lineAB.start.position = CGPointMake(pointA.x + 10, pointA.y + 10);
-    _lineAB.end.position = CGPointMake(pointB.x - 15, pointB.y - 15);
+    _rayA1.start.position = CGPointMake(pointA.x + 10, pointA.y + 10);
+    _rayA1.end.position = CGPointMake(pointB.x - 15, pointB.y - 15);
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
-    _lineAB.start.position = pointA;
-    _lineAB.end.position = pointB;
+    _rayA1.start.position = pointA;
+    _rayA1.end.position = pointB;
     
     return complete;
 }
@@ -129,10 +120,10 @@
         if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         
         DHLineObject* l = object;
-        if ((l.start == _pointD || l.end == _pointD) == NO) continue;
+        if ((l.start == _pointB || l.end == _pointB) == NO) continue;
     
-        CGFloat targetAngle = CGVectorAngleBetween(_lineAB.vector, _lineAC.vector);
-        CGFloat angleToDLine = CGVectorAngleBetween(l.vector, _rayD.vector);
+        CGFloat targetAngle = CGVectorAngleBetween(_rayA1.vector, _rayA2.vector);
+        CGFloat angleToDLine = CGVectorAngleBetween(l.vector, _rayB.vector);
         
         if (fabs(fabs(targetAngle) - fabs(angleToDLine)) < 0.0001) {
             return YES;

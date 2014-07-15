@@ -26,7 +26,7 @@
 
 - (NSString*)levelDescription
 {
-    return @"Create a line segment that bisects (divides in half) the angle between segments AB and AC";
+    return @"Create a line (segment) that bisects (divides in half) the angle between segments AB and AC";
 }
 
 - (NSString *)additionalCompletionMessage

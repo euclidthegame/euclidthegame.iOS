@@ -207,7 +207,6 @@ NSMutableArray* intersectionPoints(CGPoint touchPoints, NSArray* nearObjects)
         }
     }
     
-    
     return intersectionPoints;
 }
 

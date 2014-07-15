@@ -51,8 +51,8 @@
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:200 andY:300];
-    DHPoint* pB = [[DHPoint alloc] initWithPositionX:380 andY:300];
-    DHPoint* pRadiusA = [[DHPoint alloc] initWithPositionX:pA.position.x+0 andY:pA.position.y+60];
+    DHPoint* pB = [[DHPoint alloc] initWithPositionX:400 andY:300];
+    DHPoint* pRadiusA = [[DHPoint alloc] initWithPositionX:pA.position.x+0 andY:pA.position.y+80];
     DHPoint* pRadiusB = [[DHPoint alloc] initWithPositionX:pB.position.x+0 andY:pB.position.y-50];
     
     DHCircle* cA = [[DHCircle alloc] initWithCenter:pA andPointOnRadius:pRadiusA];
@@ -113,10 +113,16 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
-    DHRay* r2 = [[DHRay alloc] initWithStart:_pRadiusA andEnd:_pRadiusB];
+    DHLine* l1 = [[DHLine alloc] initWithStart:_circleB.center andEnd:_circleA.center];
+    DHPointOnCircle* p1 = [[DHPointOnCircle alloc] init];
+    p1.circle = _circleA;
+    p1.angle = M_PI_2;
+    DHPointOnCircle* p2 = [[DHPointOnCircle alloc] init];
+    p2.circle = _circleB;
+    p2.angle = -M_PI_2;
+    DHLine* l2 = [[DHLine alloc] initWithStart:p1 andEnd:p2];
     
-    DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];
+    DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:l1 andLine:l2];
     DHMidPoint* mp = [[DHMidPoint alloc] init];
     mp.start = ip1;
     mp.end = _circleA.center;
@@ -131,7 +137,7 @@
     ip3.c1 = c;
     ip3.c2 = _circleA;
     ip3.onPositiveY = YES;
-    
+
     DHLine* tangent1 = [[DHLine alloc] initWithStart:ip1 andEnd:ip2];
     DHLine* tangent2 = [[DHLine alloc] initWithStart:ip1 andEnd:ip3];
     
@@ -140,8 +146,17 @@
         if ([[object1 class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         
         DHLineObject* l1 = object1;
-        CGFloat angleL1Tangent1 = CGVectorAngleBetween(l1.vector, tangent1.vector);
-        CGFloat angleL1Tangent2 = CGVectorAngleBetween(l1.vector, tangent2.vector);
+        CGVector l1Vector = l1.vector;
+        CGVector tangent1Vector = tangent1.vector;
+        CGVector tangent2Vector = tangent2.vector;
+        
+        // Reverse direction if in different directions to only compare angle to 0 instead of also 180 deg. case
+        if (CGVectorDotProduct(l1Vector, tangent1Vector) < 0) {
+            l1Vector.dx = -l1Vector.dx;
+            l1Vector.dy = -l1Vector.dy;
+        }
+        CGFloat angleL1Tangent1 = CGVectorAngleBetween(l1Vector, tangent1Vector);
+        CGFloat angleL1Tangent2 = CGVectorAngleBetween(l1Vector, tangent2Vector);
         
         if (angleL1Tangent1 < 0.01) {
             CGFloat distL1Ip2 = DistanceFromPointToLine(ip2, l1);

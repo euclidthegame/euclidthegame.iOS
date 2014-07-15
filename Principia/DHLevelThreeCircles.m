@@ -49,8 +49,8 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
-    DHPoint* pA = [[DHPoint alloc] initWithPositionX:200 andY:250];
-    DHPoint* pB = [[DHPoint alloc] initWithPositionX:300 andY:250];
+    DHPoint* pA = [[DHPoint alloc] initWithPositionX:300 andY:350];
+    DHPoint* pB = [[DHPoint alloc] initWithPositionX:400 andY:350];
     
     DHLineSegment* lAB = [[DHLineSegment alloc] initWithStart:pA andEnd:pB];
     DHCircle* c1 = [[DHCircle alloc] init];

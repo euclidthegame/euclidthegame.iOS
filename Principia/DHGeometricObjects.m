@@ -228,8 +228,10 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     CGFloat r1 = _c1.radius;
     CGFloat r2 = _c2.radius;
 
-    if (isnan(r1) || isnan(r2) || isnan(c1CenterPos.x) || isnan(c1CenterPos.y) ||
-        isnan(c2CenterPos.x) || isnan(c2CenterPos.y)) {
+    if (isnan(r1) || isnan(r2) ||
+        isnan(c1CenterPos.x) || isnan(c1CenterPos.y) ||
+        isnan(c2CenterPos.x) || isnan(c2CenterPos.y))
+    {
         return CGPointMake(NAN, NAN);
     }
     

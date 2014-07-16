@@ -106,6 +106,8 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    DHPoint* translatedPoint = nil;
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
         if ([[object class]  isSubclassOfClass:[DHPoint class]] == NO) continue;
@@ -125,7 +127,23 @@
         
         // Ensure distance C-to-point is equal to length of AB
         if (fabs(lCP - lAB) < 0.01) {
-            return YES;
+            translatedPoint = p;
+            break; //return YES;
+        }
+    }
+    
+    if (translatedPoint) {
+        // Ensure a line passes through C and Point
+        for (int index = 0; index < geometricObjects.count; ++index) {
+            id object = [geometricObjects objectAtIndex:index];
+            if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
+            
+            DHLineObject* l = object;
+            CGFloat distLC = DistanceFromPointToLine(_pointC, l);
+            CGFloat distLPoint = DistanceFromPointToLine(translatedPoint, l);
+            if (distLC < 0.01 && distLPoint < 0.01) {
+                return YES;
+            }
         }
     }
     

@@ -104,10 +104,12 @@
     
     for (int index1 = 0; index1 < geometricObjects.count-1; ++index1) {
         id object1 = [geometricObjects objectAtIndex:index1];
+        if (object1 == _lAB || object1 == _lAB.start || object1 == _lAB.end) continue;
         if ([[object1 class] isSubclassOfClass:[DHPoint class]] == NO) continue;
         
         for (int index2 = index1+1; index2 < geometricObjects.count; ++index2) {
             id object2 = [geometricObjects objectAtIndex:index2];
+            if (object2 == _lAB || object2 == _lAB.start || object2 == _lAB.end) continue;
             if ([[object2 class] isSubclassOfClass:[DHPoint class]] == NO) continue;
             
             DHPoint* p1 = object1;

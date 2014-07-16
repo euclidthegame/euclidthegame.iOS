@@ -243,10 +243,20 @@ static DHIntersectionResult IntersectionTestLineCircle(DHLineObject* line, DHCir
     // Line found to intersect circle, now compute smallest t value of intersection
     CGFloat t = -b - sqrt(discr);
     
+    // Allow small epsilon two handle precision errors when rays or linesegments originate on circle
+    if (fabs(t) < 0.001) {
+        t = 0;
+    }
+    
     // Check if the t value is within the the line objects allowed values
     if (t < line.tMin || (preferEnd && -b + sqrt(discr) <= line.tMax * l)) {
         // Check if larger t value works
         t = -b + sqrt(discr);
+    }
+
+    // Allow small epsilon two handle precision errors when rays or linesegments originate on circle
+    if (fabs(t - line.tMax * l) < 0.001) {
+        t = line.tMax * l;
     }
     
     if (t > line.tMax * l) {

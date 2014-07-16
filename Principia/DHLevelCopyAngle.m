@@ -42,11 +42,11 @@
 
 - (NSUInteger)minimumNumberOfMoves
 {
-    return 4;
+    return 3;
 }
 - (NSUInteger)minimumNumberOfMovesPrimitiveOnly
 {
-    return 4;
+    return 5;
 }
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
@@ -134,12 +134,22 @@
         if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         
         DHLineObject* l = object;
-        if ((l.start == _pointB || l.end == _pointB) == NO) continue;
-    
+
+        CGFloat distToB = DistanceFromPointToLine(_pointB, l);
+        if (distToB > 0.01) continue;
+        
         CGFloat targetAngle = CGVectorAngleBetween(_rayA1.vector, _rayA2.vector);
         CGFloat angleToDLine = CGVectorAngleBetween(l.vector, _rayB.vector);
         
-        if (fabs(fabs(targetAngle) - fabs(angleToDLine)) < 0.0001) {
+        if (angleToDLine > M_PI) {
+            angleToDLine = 2*M_PI - angleToDLine;
+        }
+        
+        if (fabs(targetAngle - angleToDLine) < 0.0001) {
+            return YES;
+        }
+        
+        if (l.tMin < 0 && fabs(targetAngle - (M_PI - angleToDLine)) < 0.0001) {
             return YES;
         }
     }

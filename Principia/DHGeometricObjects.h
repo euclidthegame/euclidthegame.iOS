@@ -113,6 +113,7 @@
 @interface DHPointOnLine : DHPoint
 @property (nonatomic, strong) DHLineObject* line;
 @property (nonatomic) CGFloat tValue; // Value between 0 and 1 indicating distance from start to end
+- (instancetype)initWithLine:(DHLineObject*)line andTValue:(CGFloat)tValue;
 - (CGPoint)position;
 @end
 

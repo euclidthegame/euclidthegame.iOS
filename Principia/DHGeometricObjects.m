@@ -328,6 +328,15 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 @end
 
 @implementation DHPointOnLine
+- (instancetype)initWithLine:(DHLineObject*)line andTValue:(CGFloat)tValue;
+{
+    self = [super init];
+    if (self) {
+        _line = line;
+        _tValue = tValue;
+    }
+    return self;
+}
 - (CGPoint)position
 {
     if (self.line == nil) {

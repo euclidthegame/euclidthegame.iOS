@@ -11,6 +11,8 @@
 #import "DHGeometricObjects.h"
 
 @interface DHLevelTwoCirclesOuterTangent () {
+    DHPointOnLine* _pA;
+    DHPointOnLine* _pB;
     DHCircle* _circleA;
     DHCircle* _circleB;
     DHPoint* _pRadiusA;
@@ -28,7 +30,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a line (segment) tangent to both circles. Construct a outer tangent line.");
+    return (@"Construct a line (segment) tangent to both circles. Construct an outer tangent line.");
 }
 
 - (DHToolsAvailable)availableTools
@@ -50,10 +52,20 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
-    DHPoint* pA = [[DHPoint alloc] initWithPositionX:200 andY:400];
-    DHPoint* pB = [[DHPoint alloc] initWithPositionX:380 andY:350];
+    // Hidden objects used to restricted allowed movement of initial objects to avoid overlapping configuration
+    DHPoint* pAStart = [[DHPoint alloc] initWithPositionX:170 andY:400];
+    DHPoint* pAEnd = [[DHPoint alloc] initWithPositionX:230 andY:400];
+    DHLineSegment* lA = [[DHLineSegment alloc] initWithStart:pAStart andEnd:pAEnd];
+
+    DHPoint* pBStart = [[DHPoint alloc] initWithPositionX:380 andY:350];
+    DHPoint* pBEnd = [[DHPoint alloc] initWithPositionX:450 andY:300];
+    DHLineSegment* lB = [[DHLineSegment alloc] initWithStart:pBStart andEnd:pBEnd];
+    
+
+    DHPointOnLine* pA = [[DHPointOnLine alloc] initWithLine:lA andTValue:0.5];
+    DHPointOnLine* pB = [[DHPointOnLine alloc] initWithLine:lB andTValue:0];
     DHPoint* pRadiusA = [[DHPoint alloc] initWithPositionX:pA.position.x+40 andY:pA.position.y];
-    DHPoint* pRadiusB = [[DHPoint alloc] initWithPositionX:pB.position.x+80 andY:pB.position.y];
+    DHPoint* pRadiusB = [[DHPoint alloc] initWithPositionX:pB.position.x-80 andY:pB.position.y];
     
     DHCircle* cA = [[DHCircle alloc] initWithCenter:pA andPointOnRadius:pRadiusA];
     DHCircle* cB = [[DHCircle alloc] initWithCenter:pB andPointOnRadius:pRadiusB];
@@ -63,6 +75,8 @@
     [geometricObjects addObject:pA];
     [geometricObjects addObject:pB];
     
+    _pA = pA;
+    _pB = pB;
     _circleA = cA;
     _circleB = cB;
     _pRadiusA = pRadiusA;
@@ -71,8 +85,12 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
+    DHPoint* pOnA = [[DHPoint alloc] initWithPositionX:_circleA.center.position.x
+                                                  andY:(_circleA.center.position.y + _circleA.radius)];
+    DHPoint* pOnB = [[DHPoint alloc] initWithPositionX:_circleB.center.position.x
+                                                  andY:(_circleB.center.position.y + _circleB.radius)];
     DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
-    DHRay* r2 = [[DHRay alloc] initWithStart:_pRadiusB andEnd:_pRadiusA];
+    DHRay* r2 = [[DHRay alloc] initWithStart:pOnB andEnd:pOnA];
 
     DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];
     DHMidPoint* mp = [[DHMidPoint alloc] init];
@@ -97,24 +115,28 @@
     }
     
     // Move A and B and ensure solution holds
-    CGPoint pointA = _circleA.center.position;
-    CGPoint pointB = _circleB.center.position;
+    CGFloat tValueA = _pA.tValue;
+    CGFloat tValueB = _pB.tValue;
     
-    _circleA.center.position = CGPointMake(pointA.x - 2, pointA.y );
-    _circleB.center.position = CGPointMake(pointB.x + 2, pointB.y );
+    _pA.tValue = tValueA + 0.1;
+    _pB.tValue = tValueB + 0.1;
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
-    _circleA.center.position = pointA;
-    _circleB.center.position = pointB;
+    _pA.tValue = tValueA;
+    _pB.tValue = tValueB;
     
     return complete;
 }
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    DHPoint* pOnA = [[DHPoint alloc] initWithPositionX:_circleA.center.position.x
+                                                  andY:(_circleA.center.position.y + _circleA.radius)];
+    DHPoint* pOnB = [[DHPoint alloc] initWithPositionX:_circleB.center.position.x
+                                                  andY:(_circleB.center.position.y + _circleB.radius)];
     DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
-    DHRay* r2 = [[DHRay alloc] initWithStart:_pRadiusB andEnd:_pRadiusA];
+    DHRay* r2 = [[DHRay alloc] initWithStart:pOnB andEnd:pOnA];
     
     DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];
     DHMidPoint* mp = [[DHMidPoint alloc] init];

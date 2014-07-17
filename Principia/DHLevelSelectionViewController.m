@@ -10,6 +10,7 @@
 #import "DHLevelViewController.h"
 #import "DHLevels.h"
 #import "DHLevelResults.h"
+#import "DHIAPManager.h"
 
 @interface DHLevelSelectionViewController () {
     NSDictionary* _levelResults;
@@ -39,6 +40,13 @@
     _levels = [[NSMutableArray alloc] init];
     FillLevelArray(_levels);
     
+    [[DHIAPManager sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
+        if (success) {
+            NSLog(@"%@", products);
+        } else {
+            NSLog(@"Failed to get products");
+        }
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -85,7 +93,7 @@
         }
     }
     
-    if (indexPath.row > 0) {
+    if (indexPath.row > 100) {
         id<DHLevel> previousLevel = [_levels objectAtIndex:indexPath.row-1];
 
         cell.selectionStyle = UITableViewCellSelectionStyleNone;

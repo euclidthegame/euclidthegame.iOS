@@ -262,6 +262,14 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
 {
     
 }
+- (BOOL)active
+{
+    return false;
+}
+- (void)reset
+{
+    
+}
 @end
 
 @implementation DHPointTool
@@ -407,6 +415,15 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         }
     }
 }
+- (BOOL)active
+{
+    return false;
+}
+- (void)reset
+{
+    
+}
+
 - (void)dealloc
 {
     if (self.point) {
@@ -471,10 +488,25 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         [touch.view setNeedsDisplay];
     }
 }
+- (BOOL)active
+{
+    if (self.startPoint) {
+        return YES;
+    }
+    
+    return NO;
+}
+- (void)reset
+{
+    self.startPoint.highlighted = NO;
+    self.startPoint = nil;
+    [self.delegate toolTipDidChange:self.initialToolTip];
+}
+
 - (void)dealloc
 {
     if (self.startPoint) {
-        self.startPoint.highlighted = false;
+        self.startPoint.highlighted = NO;
     }
 }
 @end
@@ -525,11 +557,26 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         }
     }
 }
-
+- (BOOL)active
+{
+    if (self.center) {
+        return YES;
+    }
+    
+    return NO;
+}
+- (void)reset
+{
+    self.center.highlighted = NO;
+    self.center = nil;
+    [self.delegate toolTipDidChange:self.initialToolTip];
+}
 - (void)dealloc
 {
     if (self.center) {
-        self.center.highlighted = false;
+        self.center.highlighted = NO;
+        self.center = nil;
+        [self.delegate toolTipDidChange:self.initialToolTip];
     }
 }
 @end
@@ -558,8 +605,18 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         [self.delegate addGeometricObject:intersectionPoint];
     }
 }
+- (BOOL)active
+{
+    return false;
+}
+- (void)reset
+{
+    
+}
 
 @end
+
+
 @implementation DHMidPointTool
 - (NSString*)initialToolTip
 {
@@ -613,6 +670,21 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
             [self.delegate addGeometricObject:midPoint];
             [self.delegate toolTipDidChange:self.initialToolTip];
         }
+    }
+}
+- (BOOL)active
+{
+    if (self.startPoint) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)reset {
+    if (self.startPoint) {
+        self.startPoint.highlighted = NO;
+        self.startPoint = nil;
+        [self.delegate toolTipDidChange:self.initialToolTip];
     }
 }
 - (void)dealloc
@@ -669,6 +741,19 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
             [touch.view setNeedsDisplay];
         }
     }
+}
+- (BOOL)active
+{
+    if (self.startPoint) {
+        return YES;
+    }
+    return false;
+}
+- (void)reset
+{
+    self.startPoint.highlighted = NO;
+    self.startPoint = nil;
+    [self.delegate toolTipDidChange:self.initialToolTip];
 }
 - (void)dealloc
 {
@@ -733,6 +818,20 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         }
     }
 }
+- (BOOL)active
+{
+    if (self.startPoint) {
+        return YES;
+    }
+    return NO;
+}
+- (void)reset
+{
+    self.startPoint.highlighted = NO;
+    self.startPoint = nil;
+    [self.delegate toolTipDidChange:self.initialToolTip];
+}
+
 - (void)dealloc
 {
     if (self.startPoint) {
@@ -826,12 +925,28 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         }
     }
 }
-
+- (BOOL)active
+{
+    if (self.firstLine || self.firstPoint || self.secondPoint) {
+        return YES;
+    }
+    return false;
+}
+- (void)reset
+{
+    self.firstLine.highlighted = NO;
+    self.firstPoint.highlighted = NO;
+    self.secondPoint.highlighted = NO;
+    self.firstLine = nil;
+    self.firstPoint = nil;
+    self.secondPoint = nil;
+    [self.delegate toolTipDidChange:self.initialToolTip];
+}
 - (void)dealloc
 {
-    if (self.firstLine) {
-        self.firstLine.highlighted = false;
-    }
+    self.firstLine.highlighted = NO;
+    self.firstPoint.highlighted = NO;
+    self.secondPoint.highlighted = NO;
 }
 @end
 
@@ -886,10 +1001,24 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         }
     }
 }
+- (BOOL)active
+{
+    if (self.line) {
+        return YES;
+    }
+    
+    return NO;
+}
+- (void)reset
+{
+    self.line.highlighted = NO;
+    self.line = nil;
+    [self.delegate toolTipDidChange:self.initialToolTip];
+}
 - (void)dealloc
 {
     if (self.line) {
-        self.line.highlighted = false;
+        self.line.highlighted = NO;
     }
 }
 @end
@@ -944,6 +1073,20 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
             [self.delegate toolTipDidChange:self.initialToolTip];
         }
     }
+}
+- (BOOL)active
+{
+    if (self.line) {
+        return YES;
+    }
+    
+    return NO;
+}
+- (void)reset
+{
+    self.line.highlighted = NO;
+    self.line = nil;
+    [self.delegate toolTipDidChange:self.initialToolTip];
 }
 - (void)dealloc
 {
@@ -1049,6 +1192,24 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
         [self.delegate toolTipDidChange:self.initialToolTip];
     }
 }
+- (BOOL)active
+{
+    if (self.segment || self.start || self.end) {
+        return YES;
+    }
+    
+    return NO;
+}
+- (void)reset
+{
+    self.segment.highlighted = NO;
+    self.start.highlighted = NO;
+    self.end.highlighted = NO;
+    self.segment = nil;
+    self.start = nil;
+    self.end = nil;
+    [self.delegate toolTipDidChange:self.initialToolTip];
+}
 - (void)dealloc
 {
     self.segment.highlighted = NO;
@@ -1131,6 +1292,24 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
             [touch.view setNeedsDisplay];
         }
     }
+}
+- (BOOL)active
+{
+    if (self.firstPoint || self.secondPoint || self.radiusSegment) {
+        return YES;
+    }
+    
+    return false;
+}
+- (void)reset
+{
+    self.firstPoint.highlighted = NO;
+    self.secondPoint.highlighted = NO;
+    self.radiusSegment.highlighted = NO;
+    self.firstPoint = nil;
+    self.secondPoint = nil;
+    self.radiusSegment = nil;
+    [self.delegate toolTipDidChange:self.initialToolTip];
 }
 - (void)dealloc
 {

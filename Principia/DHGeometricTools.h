@@ -46,6 +46,8 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 - (void)touchBegan:(UITouch*)touch;
 - (void)touchMoved:(UITouch*)touch;
 - (void)touchEnded:(UITouch*)touch;
+- (BOOL)active;
+- (void)reset;
 @end
 
 

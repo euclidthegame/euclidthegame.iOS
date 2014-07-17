@@ -441,6 +441,12 @@
 #pragma mark - Undo/Redo
 - (void)undoMove
 {
+    if ([_currentTool active]) {
+        [_currentTool reset];
+        [self.geometryView setNeedsDisplay];
+        return;
+    }
+    
     id objectsToUndo = [_geometricObjectsForUndo lastObject];
     if (!objectsToUndo) {
         return;

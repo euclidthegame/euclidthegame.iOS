@@ -14,6 +14,7 @@
 #import "DHLevelInfoViewController.h"
 #import "DHGeometricTransform.h"
 #import "DHGameModes.h"
+#import "DHGameCenterManager.h"
 
 @interface DHLevelViewController () {
     NSMutableArray* _geometricObjects;
@@ -220,6 +221,26 @@
         NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%lu", (unsigned long)self.currentGameMode];
         [DHLevelResults newResult:result forLevel:resultKey];
         [self showLevelCompleteMessage];
+        
+        // If this is the last level, give achievements
+        if (self.levelIndex == self.levelArray.count - 1) {
+            if (self.currentGameMode == kDHGameModeNormal) {
+                [[DHGameCenterManager sharedInstance]
+                 reportAchievementIdentifier:kAchievementID_GameModeNormal_1_25 percentComplete:1.0];
+            }
+            if (self.currentGameMode == kDHGameModeMinimumMoves) {
+                [[DHGameCenterManager sharedInstance]
+                 reportAchievementIdentifier:kAchievementID_GameModeNormalMinimumMoves_1_25 percentComplete:1.0];
+            }
+            if (self.currentGameMode == kDHGameModePrimitiveOnly) {
+                [[DHGameCenterManager sharedInstance]
+                 reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnly_1_25 percentComplete:1.0];
+            }
+            if (self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves) {
+                [[DHGameCenterManager sharedInstance]
+                 reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 percentComplete:1.0];
+            }
+        }
     }
 }
 

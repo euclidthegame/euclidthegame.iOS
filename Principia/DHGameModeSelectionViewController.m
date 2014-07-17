@@ -392,7 +392,20 @@
     
     // Update achievements here if they were not awarded earlier
     if (self.gameMode1PercentComplete.percentComplete == 1.0) {
-        [[DHGameCenterManager sharedInstance] reportAchievementIdentifier:kAchievementID_Euclid_GameModeNormal_1_25 percentComplete:100];
+        [[DHGameCenterManager sharedInstance]
+         reportAchievementIdentifier:kAchievementID_GameModeNormal_1_25 percentComplete:100];
+    }
+    if (self.gameMode2PercentComplete.percentComplete == 1.0) {
+        [[DHGameCenterManager sharedInstance]
+         reportAchievementIdentifier:kAchievementID_GameModeNormalMinimumMoves_1_25 percentComplete:100];
+    }
+    if (self.gameMode3PercentComplete.percentComplete == 1.0) {
+        [[DHGameCenterManager sharedInstance]
+         reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnly_1_25 percentComplete:100];
+    }
+    if (self.gameMode4PercentComplete.percentComplete == 1.0) {
+        [[DHGameCenterManager sharedInstance]
+         reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 percentComplete:100];
     }
 }
 

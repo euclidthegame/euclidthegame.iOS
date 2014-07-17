@@ -11,7 +11,11 @@
 
 
 // Achievement identifiers
-static NSString* const kAchievementID_Euclid_GameModeNormal_1_25 = @"Euclid_GameModeNormal_1_25";
+static NSString* const kAchievementID_GameModeNormal_1_25 = @"Euclid_GameModeNormal_1_25";
+static NSString* const kAchievementID_GameModeNormalMinimumMoves_1_25 = @"Euclid_GameModeNormalMinimumMoves_1_25";
+static NSString* const kAchievementID_GameModePrimitiveOnly_1_25 = @"Euclid_GameModePrimitiveOnly_1_25";
+static NSString* const kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 = @"Euclid_GameModePrimitiveOnlyMinimumMoves_1_25";
+
 
 @protocol DHGameCenterManagerDelegate
 

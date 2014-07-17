@@ -25,6 +25,7 @@
 		686622431972B78E004DCFAC /* DHLevelPlayground.m in Sources */ = {isa = PBXBuildFile; fileRef = 686622421972B78E004DCFAC /* DHLevelPlayground.m */; };
 		6866224619779204004DCFAC /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6866224519779203004DCFAC /* GameKit.framework */; };
 		6866224819779217004DCFAC /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6866224719779217004DCFAC /* StoreKit.framework */; };
+		6866224C197792BC004DCFAC /* DHGameCenterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6866224B197792BC004DCFAC /* DHGameCenterManager.m */; };
 		6872A7CF196DD2BB00823AF9 /* DHLevelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */; };
 		6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */; };
 		6872A7D5196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D4196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m */; };
@@ -109,6 +110,8 @@
 		6866224419730417004DCFAC /* DHGameModes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHGameModes.h; sourceTree = "<group>"; };
 		6866224519779203004DCFAC /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		6866224719779217004DCFAC /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		6866224A197792BC004DCFAC /* DHGameCenterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGameCenterManager.h; sourceTree = "<group>"; };
+		6866224B197792BC004DCFAC /* DHGameCenterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGameCenterManager.m; sourceTree = "<group>"; };
 		6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelInfoViewController.h; sourceTree = "<group>"; };
 		6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelInfoViewController.m; sourceTree = "<group>"; };
 		6872A7D0196E548F00823AF9 /* DHGeometricTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGeometricTransform.h; sourceTree = "<group>"; };
@@ -204,6 +207,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6866224919779248004DCFAC /* Game Center */ = {
+			isa = PBXGroup;
+			children = (
+				6866224A197792BC004DCFAC /* DHGameCenterManager.h */,
+				6866224B197792BC004DCFAC /* DHGameCenterManager.m */,
+			);
+			name = "Game Center";
+			sourceTree = "<group>";
+		};
 		68F0A9BB19587AEC00A97B86 = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +258,7 @@
 				68F0AA1F195C375300A97B86 /* Math & Objects */,
 				68F0AA1E195C373800A97B86 /* Geometric Tools */,
 				68F0AA0A195A184C00A97B86 /* Levels */,
+				6866224919779248004DCFAC /* Game Center */,
 				68F0A9DF19587AEC00A97B86 /* Images.xcassets */,
 				68F0A9CE19587AEC00A97B86 /* Supporting Files */,
 			);
@@ -503,6 +516,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6866224C197792BC004DCFAC /* DHGameCenterManager.m in Sources */,
 				68F0AA15195A92A700A97B86 /* DHLevelSelectionViewController.m in Sources */,
 				683D9682196BEC680057B62D /* DHLevelTriIncircle.m in Sources */,
 				68F0AA011958C5AB00A97B86 /* DHGeometricObjects.m in Sources */,

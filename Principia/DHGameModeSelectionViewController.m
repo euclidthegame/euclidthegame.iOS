@@ -13,6 +13,7 @@
 #import "DHLevelResults.h"
 #import "DHLevels.h"
 #import "DHGameModes.h"
+#import "DHGameCenterManager.h"
 
 @implementation DHGameModePercentCompleteView
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -328,6 +329,7 @@
 - (void)clearLevelResults
 {
     [DHLevelResults clearLevelResults];
+    [[DHGameCenterManager sharedInstance] resetAchievements];
     [self loadProgressData];
 }
 - (void)loadProgressData
@@ -387,6 +389,11 @@
     self.gameMode2PercentComplete.percentComplete = levelsCompleteGameModeMinimumMoves*1.0/levels.count;
     self.gameMode3PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnly*1.0/levels.count;
     self.gameMode4PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnlyMinimumMoves*1.0/levels.count;
+    
+    // Update achievements here if they were not awarded earlier
+    if (self.gameMode1PercentComplete.percentComplete == 1.0) {
+        [[DHGameCenterManager sharedInstance] reportAchievementIdentifier:kAchievementID_Euclid_GameModeNormal_1_25 percentComplete:100];
+    }
 }
 
 @end

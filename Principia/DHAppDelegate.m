@@ -7,6 +7,7 @@
 //
 
 #import "DHAppDelegate.h"
+#import "DHGameCenterManager.h"
 
 @implementation DHAppDelegate
 
@@ -16,6 +17,8 @@
     
     //[self.window setTintColor:[UIColor colorWithRed:255/255.0 green:204/255.0 blue:0/255.0 alpha:1]];
     [self.window setTintColor:[UIColor colorWithRed:238/255.0 green:194/255.0 blue:16/255.0 alpha:1]];
+    
+    [[DHGameCenterManager sharedInstance] authenticateLocalPlayer];
     
     return YES;
 }

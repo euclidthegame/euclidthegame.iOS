@@ -84,6 +84,32 @@
                                     imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         }
     }
+    
+    if (indexPath.row > 0) {
+        id<DHLevel> previousLevel = [_levels objectAtIndex:indexPath.row-1];
+
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.textLabel.enabled = NO;
+        cell.userInteractionEnabled = NO;
+        
+        NSString* previousResultKey = [NSStringFromClass([previousLevel class])
+                                       stringByAppendingFormat:@"/%lu", (unsigned long)self.currentGameMode];
+        NSDictionary* previousLevelResult = [_levelResults objectForKey:previousResultKey];
+        if (previousLevelResult) {
+            NSNumber* completedPrevious = [previousLevelResult objectForKey:kLevelResultKeyCompleted];
+            if (completedPrevious.boolValue) {
+                cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+                cell.textLabel.enabled = YES;
+                cell.userInteractionEnabled = YES;
+            }
+        }
+
+    } else {
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        cell.textLabel.enabled = YES;
+        cell.userInteractionEnabled = YES;
+    }
+    
     return cell;
 }
 

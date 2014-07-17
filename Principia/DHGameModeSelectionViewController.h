@@ -14,6 +14,12 @@
 
 @interface DHGameModeSelectionViewController : UIViewController
 
+@property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *layoutConstraintsPortrait;
+@property (strong, nonatomic) NSMutableArray *layoutConstraintsLandscape;
+
+@property (nonatomic, weak) IBOutlet UIImageView* logoImageView;
+@property (nonatomic, weak) IBOutlet UILabel* logoLabel;
+
 @property (nonatomic, weak) IBOutlet UIView* gameMode1View;
 @property (nonatomic, weak) IBOutlet UIView* gameMode2View;
 @property (nonatomic, weak) IBOutlet UIView* gameMode3View;

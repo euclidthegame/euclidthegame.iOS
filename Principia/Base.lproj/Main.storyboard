@@ -266,7 +266,7 @@
                                     <constraint firstAttribute="width" constant="256" id="P0H-6t-bbR"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Euclid: The Game" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="elH-q6-ObI">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Euclid: The Game" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="28" translatesAutoresizingMaskIntoConstraints="NO" id="elH-q6-ObI">
                                 <rect key="frame" x="312" y="155" width="387" height="68"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="BodoniSvtyTwoSCITCTT-Book" family="Bodoni 72 Smallcaps" pointSize="56"/>
@@ -546,7 +546,7 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select a game mode:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="su9-Tg-XSX">
-                                <rect key="frame" x="303" y="308" width="163" height="21"/>
+                                <rect key="frame" x="303" y="313" width="163" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -555,24 +555,24 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="su9-Tg-XSX" secondAttribute="bottom" constant="20" id="1Oi-O1-mcx"/>
+                            <constraint firstItem="Bxx-Wr-Kg5" firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="0RL-xK-L1H"/>
+                            <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="su9-Tg-XSX" secondAttribute="bottom" constant="15" id="1Oi-O1-mcx"/>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="cI1-my-sfW" secondAttribute="bottom" constant="60" id="7Lb-9k-5AI"/>
                             <constraint firstItem="qtQ-VX-LXh" firstAttribute="top" secondItem="k82-Ms-g7n" secondAttribute="bottom" constant="20" id="8ih-bw-Xjl"/>
                             <constraint firstItem="k82-Ms-g7n" firstAttribute="top" secondItem="Bxx-Wr-Kg5" secondAttribute="bottom" constant="20" id="9qt-Ex-cOT"/>
                             <constraint firstItem="vsY-Tg-X0y" firstAttribute="top" secondItem="ABq-xw-SHb" secondAttribute="bottom" constant="20" id="9s9-PE-XGk"/>
-                            <constraint firstAttribute="centerX" secondItem="Bxx-Wr-Kg5" secondAttribute="centerX" id="KYl-mG-YQt"/>
-                            <constraint firstAttribute="centerX" secondItem="k82-Ms-g7n" secondAttribute="centerX" id="PAk-E9-7OJ"/>
+                            <constraint firstItem="qtQ-VX-LXh" firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="Hn3-d2-3h5"/>
                             <constraint firstItem="Bxx-Wr-Kg5" firstAttribute="top" secondItem="Cr8-Ea-dzt" secondAttribute="bottom" constant="20" id="PX6-dF-0lU"/>
+                            <constraint firstItem="su9-Tg-XSX" firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="RYd-21-rg4"/>
                             <constraint firstItem="elH-q6-ObI" firstAttribute="centerY" secondItem="cI1-my-sfW" secondAttribute="centerY" id="TJe-72-qfg"/>
+                            <constraint firstItem="Cr8-Ea-dzt" firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="TN5-dA-Qzr"/>
                             <constraint firstItem="cI1-my-sfW" firstAttribute="top" secondItem="fuN-8T-jts" secondAttribute="bottom" constant="25" id="dFd-40-8k2"/>
+                            <constraint firstItem="ABq-xw-SHb" firstAttribute="centerX" secondItem="k82-Ms-g7n" secondAttribute="centerX" id="esz-IW-l1t"/>
                             <constraint firstItem="cI1-my-sfW" firstAttribute="leading" secondItem="xhW-aH-Zxh" secondAttribute="leading" constant="41" id="fVm-Ig-nGo"/>
                             <constraint firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="h3e-qm-s7o"/>
-                            <constraint firstAttribute="centerX" secondItem="Cr8-Ea-dzt" secondAttribute="centerX" id="hnd-wM-4hU"/>
-                            <constraint firstAttribute="centerX" secondItem="qtQ-VX-LXh" secondAttribute="centerX" id="iIa-Wc-bXg"/>
+                            <constraint firstItem="ABq-xw-SHb" firstAttribute="centerX" secondItem="vsY-Tg-X0y" secondAttribute="centerX" id="hUp-Vl-v1O"/>
                             <constraint firstItem="elH-q6-ObI" firstAttribute="leading" secondItem="cI1-my-sfW" secondAttribute="trailing" constant="15" id="iJE-e2-weM"/>
-                            <constraint firstAttribute="centerX" secondItem="vsY-Tg-X0y" secondAttribute="centerX" id="r3F-8O-GU9"/>
                             <constraint firstItem="Cr8-Ea-dzt" firstAttribute="top" secondItem="vsY-Tg-X0y" secondAttribute="bottom" constant="20" id="vP7-7v-fCX"/>
-                            <constraint firstAttribute="centerX" secondItem="su9-Tg-XSX" secondAttribute="centerX" id="vj7-07-fJt"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Select game mode" id="gR4-4v-6e5"/>
@@ -587,6 +587,12 @@
                         <outlet property="gameMode4View" destination="Bxx-Wr-Kg5" id="nW0-gg-ZAu"/>
                         <outlet property="gameMode5View" destination="k82-Ms-g7n" id="Cab-3K-y4I"/>
                         <outlet property="gameMode6View" destination="qtQ-VX-LXh" id="8fz-xN-xAY"/>
+                        <outlet property="logoImageView" destination="cI1-my-sfW" id="InF-tV-WIp"/>
+                        <outlet property="logoLabel" destination="elH-q6-ObI" id="l1J-3x-utH"/>
+                        <outletCollection property="layoutConstraintsPortrait" destination="7Lb-9k-5AI" id="bIv-6N-YAo"/>
+                        <outletCollection property="layoutConstraintsPortrait" destination="h3e-qm-s7o" id="9NT-WV-87r"/>
+                        <outletCollection property="layoutConstraintsPortrait" destination="TJe-72-qfg" id="rSD-zt-PNF"/>
+                        <outletCollection property="layoutConstraintsPortrait" destination="iJE-e2-weM" id="Lcr-dB-Gtu"/>
                         <segue destination="taf-kY-eNe" kind="push" identifier="ShowLevelSelection" id="fCc-qv-lTO"/>
                     </connections>
                 </viewController>

@@ -201,6 +201,86 @@
     return YES;
 }
 
+- (void)updateViewConstraints
+{
+    [super updateViewConstraints];
+    [self updateViewConstraintsToOrientation:self.interfaceOrientation];
+}
+
+- (void)updateViewConstraintsToOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    [super updateViewConstraints];
+    
+    //NSDictionary *views = NSDictionaryOfVariableBindings(_green, _orange, _labelContainer, _imageView);
+    if (!self.layoutConstraintsLandscape) {
+        self.layoutConstraintsLandscape = [[NSMutableArray alloc] initWithCapacity:10];
+        
+        // First game mode button
+        [self.layoutConstraintsLandscape addObject:
+         [NSLayoutConstraint constraintWithItem:self.gameMode1View
+                                      attribute:NSLayoutAttributeTop
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.topLayoutGuide
+                                      attribute:NSLayoutAttributeTop
+                                     multiplier:1
+                                       constant:90]];
+        
+        [self.layoutConstraintsLandscape addObject:
+         [NSLayoutConstraint constraintWithItem:self.gameMode1View
+                                      attribute:NSLayoutAttributeRight
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.view
+                                      attribute:NSLayoutAttributeRight
+                                     multiplier:1
+                                       constant:-30]];
+        
+        // Logo
+        [self.layoutConstraintsLandscape addObject:
+         [NSLayoutConstraint constraintWithItem:self.logoLabel
+                                      attribute:NSLayoutAttributeCenterX
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.logoImageView
+                                      attribute:NSLayoutAttributeCenterX
+                                     multiplier:1
+                                       constant:0]];
+        [self.layoutConstraintsLandscape addObject:
+         [NSLayoutConstraint constraintWithItem:self.logoLabel
+                                      attribute:NSLayoutAttributeTop
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.logoImageView
+                                      attribute:NSLayoutAttributeBottom
+                                     multiplier:1
+                                       constant:10]];
+        [self.layoutConstraintsLandscape addObject:
+         [NSLayoutConstraint constraintWithItem:self.logoLabel
+                                      attribute:NSLayoutAttributeWidth
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:nil
+                                      attribute:NSLayoutAttributeNotAnAttribute
+                                     multiplier:1
+                                       constant:self.logoImageView.frame.size.width]];
+        
+    }
+    
+    [self.view removeConstraints:self.layoutConstraintsLandscape];
+    [self.view removeConstraints:self.layoutConstraintsPortrait];
+    
+    if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
+        [self.view addConstraints:self.layoutConstraintsPortrait];
+    } else {
+        [self.view addConstraints:self.layoutConstraintsLandscape];
+    }
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    [self updateViewConstraintsToOrientation:toInterfaceOrientation];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    //[self updateViewConstraints];
+}
+
 #pragma mark - Select game modes
 - (void)selectGameMode1
 {

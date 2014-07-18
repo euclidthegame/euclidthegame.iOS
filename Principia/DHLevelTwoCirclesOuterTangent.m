@@ -120,11 +120,21 @@
     
     _pA.tValue = tValueA + 0.1;
     _pB.tValue = tValueB + 0.1;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
     _pA.tValue = tValueA;
     _pB.tValue = tValueB;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     return complete;
 }

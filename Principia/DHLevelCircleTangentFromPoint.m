@@ -101,11 +101,21 @@
     
     _pointA.position = CGPointMake(pointA.x - 10, pointA.y - 10);
     _circle.center.position = CGPointMake(pointB.x + 10, pointB.y + 10);
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
     _pointA.position = pointA;
     _circle.center.position = pointB;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     return complete;
 }

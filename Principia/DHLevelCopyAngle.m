@@ -118,11 +118,21 @@
     
     _rayA1.start.position = CGPointMake(pointA.x + 10, pointA.y + 10);
     _rayA1.end.position = CGPointMake(pointB.x - 15, pointB.y - 15);
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
     _rayA1.start.position = pointA;
     _rayA1.end.position = pointB;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     return complete;
 }

@@ -94,6 +94,12 @@
         // Switch AB and see if other direction works
         _lineAB.start = pB;
         _lineAB.end = pA;
+        for (id object in geometricObjects) {
+            if ([object respondsToSelector:@selector(updatePosition)]) {
+                [object updatePosition];
+            }
+        }
+        
         complete = [self isLevelCompleteHelper:geometricObjects];
     }
     
@@ -104,6 +110,11 @@
         
         pA.position = CGPointMake(pointA.x - 10, pointA.y - 10);
         pB.position = CGPointMake(pointB.x + 10, pointB.y + 10);
+        for (id object in geometricObjects) {
+            if ([object respondsToSelector:@selector(updatePosition)]) {
+                [object updatePosition];
+            }
+        }
         
         complete = [self isLevelCompleteHelper:geometricObjects];
         
@@ -114,6 +125,11 @@
     // Switch back AB if change to original setup
     _lineAB.start = pA;
     _lineAB.end = pB;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     return complete;
 }

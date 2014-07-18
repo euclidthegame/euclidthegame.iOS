@@ -85,11 +85,21 @@
     
     _initialLine.start.position = CGPointMake(100, 100);
     _initialLine.end.position = CGPointMake(400, 400);
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
     _initialLine.start.position = pointA;
     _initialLine.end.position = pointB;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     return complete;
 }

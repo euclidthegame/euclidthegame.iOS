@@ -98,11 +98,21 @@
     
     _pA.position = CGPointMake(pointA.x - 10, pointA.y - 10);
     _givenLine.start.position = CGPointMake(pointB.x + 10, pointB.y + 10);
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
     _pA.position = pointA;
      _givenLine.start.position = pointB;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     return complete;
 }

@@ -93,11 +93,21 @@
     
     _lineBC.start.position = CGPointMake(100, 100);
     _lineBC.end.position = CGPointMake(400, 400);
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     complete = [self isLevelCompleteHelper:geometricObjects];
 
     _lineBC.start.position = pointB;
     _lineBC.end.position = pointC;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     return complete;
 }

@@ -107,10 +107,20 @@
     CGPoint pointA = _circle.center.position;
     
     _circle.center.position = CGPointMake(pointA.x+3, pointA.y+3 );
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
     _circle.center.position = pointA;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     return complete;
 }

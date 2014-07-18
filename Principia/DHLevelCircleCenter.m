@@ -80,11 +80,21 @@
     
     _pointC.position = CGPointMake(pointA.x - 1, pointA.y - 1);
     _pointR.position = CGPointMake(pointB.x + 1, pointB.y + 1);
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
     _pointC.position = pointA;
     _pointR.position = pointB;
+    for (id object in geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
     
     return complete;
 }

@@ -450,7 +450,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         CGContextSetRGBStrokeColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
                                    kLineColorHighlighted.b, kLineColorHighlighted.a);
     } else if(self.temporary) {
-        float dash[2]={6 ,5};
+        CGFloat dash[2] = {6 ,5};
         CGContextSetLineDash(context,0,dash,2);
         CGContextSetLineWidth(context, 1.0);
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);

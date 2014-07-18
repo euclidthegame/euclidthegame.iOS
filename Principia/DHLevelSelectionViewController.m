@@ -41,13 +41,13 @@
     _levels = [[NSMutableArray alloc] init];
     FillLevelArray(_levels);
     
-    [[DHIAPManager sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
+    /*[[DHIAPManager sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
         if (success) {
             //NSLog(@"%@", products);
         } else {
             //NSLog(@"Failed to get products");
         }
-    }];
+    }];*/
 }
 
 - (void)viewWillAppear:(BOOL)animated

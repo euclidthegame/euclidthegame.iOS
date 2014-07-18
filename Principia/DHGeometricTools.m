@@ -313,6 +313,10 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
         previousPosition.y = previousPosition.y + touchPoint.y - self.touchStart.y;
         self.point.position = previousPosition;
         self.touchStart = touchPoint;
+        
+        // Update position of all other objects
+        [self.delegate updateAllPositions];
+        
         [touch.view setNeedsDisplay];
     }
     if (self.point && [self.point class] == [DHPointOnLine class]) {

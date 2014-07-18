@@ -28,6 +28,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 
 @end
 
+#pragma mark - Point types
 @implementation DHPoint
 - (instancetype) init
 {
@@ -99,8 +100,313 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         [self.label drawInRect:labelRect withAttributes:attributes];
     }
 }
+- (void)updatePosition
+{
+    
+}
+- (CGPoint)position
+{
+    if (!_updatesPositionAutomatically) {
+        [self updatePosition];
+    }
+    
+    return _position;
+}
 @end
 
+
+@implementation DHIntersectionPointCircleCircle
+- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
+{
+    [super drawInContext:context withTransform:transform];
+}
+- (void)setC1:(DHCircle *)c1
+{
+    _c1 = c1;
+    [self updatePosition];
+}
+- (void)setC2:(DHCircle *)c2
+{
+    _c2 = c2;
+    [self updatePosition];
+}
+- (void)setOnPositiveY:(BOOL)onPositiveY
+{
+    _onPositiveY = onPositiveY;
+    [self updatePosition];
+}
+- (void)updatePosition
+{
+    if (!_c1 || !_c2) {
+        self.position = CGPointMake(NAN, NAN);
+        return;
+    }
+    
+    CGPoint c1CenterPos = self.c1.center.position;
+    CGPoint c2CenterPos = self.c2.center.position;
+    CGFloat r1 = _c1.radius;
+    CGFloat r2 = _c2.radius;
+
+    if (isnan(r1) || isnan(r2) ||
+        isnan(c1CenterPos.x) || isnan(c1CenterPos.y) ||
+        isnan(c2CenterPos.x) || isnan(c2CenterPos.y))
+    {
+        self.position = CGPointMake(NAN, NAN);
+        return;
+    }
+    
+    CGFloat d = DistanceBetweenPoints(c1CenterPos, c2CenterPos);
+    if (d == 0) {
+        self.position = CGPointMake(NAN, NAN);
+        return;
+    }
+    
+    CGVector vC1ToC2 = CGVectorMultiplyByScalar(CGVectorBetweenPoints(c1CenterPos, c2CenterPos), 1/d);
+    CGVector vy = CGVectorMakePerpendicular(vC1ToC2);
+
+    CGFloat x = (d*d + r1*r1 - r2*r2)/(2*d);
+    CGFloat y = sqrt(r1*r1 - x*x);
+    
+    if (_onPositiveY) {
+        y = -y;
+    }
+    
+    self.position = CGPointMake(c1CenterPos.x + x * vC1ToC2.dx + y * vy.dx, c1CenterPos.y + x * vC1ToC2.dy + y * vy.dy);
+}
+@end
+
+
+@implementation DHIntersectionPointLineLine
+- (instancetype)initWithLine:(DHLineObject*)l1 andLine:(DHLineObject*)l2
+{
+    self = [super init];
+    if (self) {
+        self.l1 = l1;
+        self.l2 = l2;
+        [self updatePosition];
+    }
+    return self;
+}
+- (void)setL1:(DHLineObject *)l1
+{
+    _l1 = l1;
+    [self updatePosition];
+}
+- (void)setL2:(DHLineObject *)l2
+{
+    _l2 = l2;
+    [self updatePosition];
+}
+- (void)updatePosition
+{
+    CGPoint intersection = CGPointMake(NAN,NAN);
+    
+    if (!_l1 || !_l2) {
+        self.position = intersection;
+        return;
+    }
+    
+    DHIntersectionResult r  = IntersectionTestLineLine(self.l1, self.l2);
+    if (r.intersect) {
+        intersection = r.intersectionPoint;
+    }
+    
+    self.position = intersection;
+}
+@end
+
+
+@implementation DHIntersectionPointLineCircle
+- (void)setL:(DHLineObject *)l
+{
+    _l = l;
+    [self updatePosition];
+}
+- (void)setC:(DHCircle *)c
+{
+    _c = c;
+    [self updatePosition];
+}
+- (void)setPreferEnd:(BOOL)preferEnd
+{
+    _preferEnd = preferEnd;
+    [self updatePosition];
+}
+- (void)updatePosition
+{
+    CGPoint intersection = CGPointMake(NAN,NAN);
+
+    if (!_l || !_c) {
+        self.position = intersection;
+        return;
+    }
+    
+    DHIntersectionResult result = IntersectionTestLineCircle(_l, _c, _preferEnd);
+    if (result.intersect) {
+        intersection = result.intersectionPoint;
+    }
+
+    self.position = intersection;
+}
+@end
+
+
+@implementation DHMidPoint
+- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2
+{
+    self = [super init];
+    if (self) {
+        _start = p1;
+        _end = p2;
+        [self updatePosition];
+    }
+    return self;
+}
+- (void)setStart:(DHPoint *)start
+{
+    _start = start;
+    [self updatePosition];
+}
+- (void)setEnd:(DHPoint *)end
+{
+    _end = end;
+    [self updatePosition];
+}
+-(void)updatePosition
+{
+    if (!_start || !_end) {
+        self.position = CGPointMake(NAN, NAN);
+        return;
+    }
+    
+    self.position = MidPointFromPoints(self.start.position, self.end.position);
+}
+@end
+
+
+@implementation DHTrianglePoint
+- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2
+{
+    self = [super init];
+    if (self) {
+        _start = p1;
+        _end = p2;
+        [self updatePosition];
+    }
+    return self;
+}
+- (void)setStart:(DHPoint *)start
+{
+    _start = start;
+    [self updatePosition];
+}
+- (void)setEnd:(DHPoint *)end
+{
+    _end = end;
+    [self updatePosition];
+}
+- (void)updatePosition
+{
+    if (!_start || !_end) {
+        self.position = CGPointMake(NAN, NAN);
+        return;
+    }
+    
+    CGPoint startPoint = _start.position;
+    CGPoint endPoint = _end.position;
+    
+    CGVector baseVector = CGVectorBetweenPoints(startPoint, endPoint);
+    self.position = CGPointFromPointByAddingVector(startPoint, CGVectorRotateByAngle(baseVector, -M_PI/3));
+}
+@end
+
+
+@implementation DHPointOnLine
+- (instancetype)initWithLine:(DHLineObject*)line andTValue:(CGFloat)tValue;
+{
+    self = [super init];
+    if (self) {
+        _line = line;
+        _tValue = tValue;
+        [self updatePosition];
+    }
+    return self;
+}
+- (void)setLine:(DHLineObject *)line
+{
+    _line = line;
+    [self updatePosition];
+}
+- (void)setTValue:(CGFloat)tValue
+{
+    _tValue = tValue;
+    [self updatePosition];
+}
+- (void)updatePosition
+{
+    if (!self.line) {
+        self.position = CGPointMake(NAN, NAN);
+        return;
+    }
+    
+    CGPoint p1 = self.line.start.position;
+    CGPoint p2 = self.line.end.position;
+    self.position = CGPointMake(p1.x + self.tValue * (p2.x - p1.x), p1.y + self.tValue * (p2.y - p1.y));
+}
+@end
+
+@implementation DHPointOnCircle
+- (void)setCircle:(DHCircle *)circle
+{
+    _circle = circle;
+    [self updatePosition];
+}
+- (void)setAngle:(CGFloat)angle
+{
+    _angle = angle;
+    [self updatePosition];
+}
+- (void)updatePosition
+{
+    if (!self.circle) {
+        self.position = CGPointMake(NAN, NAN);
+        return;
+    }
+    
+    CGPoint center = self.circle.center.position;
+    CGPoint onRadius = CGPointMake(center.x + self.circle.radius, center.y);
+    CGVector toPoint = CGVectorRotateByAngle(CGVectorBetweenPoints(center, onRadius), self.angle);
+    self.position = CGPointFromPointByAddingVector(center, toPoint);
+}
+@end
+
+
+@implementation DHTranslatedPoint
+- (void)setStartOfTranslation:(DHPoint *)startOfTranslation
+{
+    _startOfTranslation = startOfTranslation;
+    [self updatePosition];
+}
+- (void)setTranslationStart:(DHPoint *)translationStart
+{
+    _translationStart = translationStart;
+    [self updatePosition];
+}
+- (void)setTranslationEnd:(DHPoint *)translationEnd
+{
+    _translationEnd = translationEnd;
+    [self updatePosition];
+}
+- (void)updatePosition
+{
+    CGVector translation = CGVectorBetweenPoints(self.translationStart.position, self.translationEnd.position);
+    self.position = CGPointMake(self.startOfTranslation.position.x + translation.dx,
+                                self.startOfTranslation.position.y + translation.dy);
+}
+@end
+
+
+#pragma mark - Line types
 
 @implementation DHLineObject
 - (CGVector)vector
@@ -110,7 +416,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
     CGContextSaveGState(context);
-
+    
     // Exit early if for some reason the line is no longer valid
     DHPoint* lineStart = self.start;
     DHPoint* lineEnd = self.end;
@@ -124,7 +430,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     if (start.y != start.y) return;
     if (end.x != end.x) return;
     if (end.y != end.y) return;
-
+    
     start = [transform geoToView:start];
     end = [transform geoToView:end];
     
@@ -143,7 +449,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
         CGContextSetRGBStrokeColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
                                    kLineColorHighlighted.b, kLineColorHighlighted.a);
-    } if(self.temporary) {
+    } else if(self.temporary) {
         float dash[2]={6 ,5};
         CGContextSetLineDash(context,0,dash,2);
         CGContextSetLineWidth(context, 1.0);
@@ -163,6 +469,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     CGContextRestoreGState(context);
 }
 @end
+
 
 @implementation DHLineSegment
 - (instancetype)init
@@ -189,236 +496,8 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 }
 @end
 
-@implementation DHCircle
-- (instancetype)initWithCenter:(DHPoint*)center andPointOnRadius:(DHPoint*)pointOnRadius
-{
-    self = [super init];
-    if (self) {
-        self.center = center;
-        self.pointOnRadius = pointOnRadius;
-    }
-    return self;
 
-}
-- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
-{
-    CGFloat geoRadius = self.radius;
-    CGPoint geoCenterPosition = self.center.position;
-    
-    if (isnan(geoRadius) || isnan(geoCenterPosition.x) || isnan(geoCenterPosition.y)) {
-        return;
-    }
-    
-    CGFloat radius = geoRadius * [transform scale];
-    CGPoint position = [transform geoToView:geoCenterPosition];
-    
-    CGRect rect = CGRectMake(position.x - radius, position.y - radius, radius*2, radius*2);    
-    CGContextSetLineWidth(context, 1.0);
-    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
-    CGContextSetRGBStrokeColor(context, kLineColor.r, kLineColor.g, kLineColor.b, kLineColor.a);
-    CGContextStrokeEllipseInRect(context, rect);
-}
-
-- (CGFloat)radius
-{
-    return DistanceBetweenPoints(_center.position, _pointOnRadius.position);
-}
-@end
-
-
-@implementation DHIntersectionPointCircleCircle
-- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
-{
-    [super drawInContext:context withTransform:transform];
-}
-
-- (CGPoint)position
-{
-    CGPoint c1CenterPos = self.c1.center.position;
-    CGPoint c2CenterPos = self.c2.center.position;
-    CGFloat r1 = _c1.radius;
-    CGFloat r2 = _c2.radius;
-
-    if (isnan(r1) || isnan(r2) ||
-        isnan(c1CenterPos.x) || isnan(c1CenterPos.y) ||
-        isnan(c2CenterPos.x) || isnan(c2CenterPos.y))
-    {
-        return CGPointMake(NAN, NAN);
-    }
-    
-    CGFloat d = DistanceBetweenPoints(c1CenterPos, c2CenterPos);
-    if (d == 0) {
-        return CGPointMake(NAN, NAN);
-    }
-    
-    CGVector vC1ToC2 = CGVectorMultiplyByScalar(CGVectorBetweenPoints(c1CenterPos, c2CenterPos), 1/d);
-    CGVector vy = CGVectorMakePerpendicular(vC1ToC2);
-
-    CGFloat x = (d*d + r1*r1 - r2*r2)/(2*d);
-    CGFloat y = sqrt(r1*r1 - x*x);
-    
-    if (_onPositiveY) {
-        y = -y;
-    }
-    
-    return CGPointMake(c1CenterPos.x + x * vC1ToC2.dx + y * vy.dx, c1CenterPos.y + x * vC1ToC2.dy + y * vy.dy);
-}
-
-@end
-
-
-@implementation DHIntersectionPointLineLine
-- (instancetype)initWithLine:(DHLineObject*)l1 andLine:(DHLineObject*)l2
-{
-    self = [super init];
-    if (self) {
-        self.l1 = l1;
-        self.l2 = l2;
-    }
-    return self;
-}
-- (CGPoint)position
-{
-    CGPoint intersection = CGPointMake(NAN,NAN);
-    
-    DHIntersectionResult r  = IntersectionTestLineLine(self.l1, self.l2);
-    if (r.intersect) {
-        intersection = r.intersectionPoint;
-    }
-    
-    return intersection;
-}
-
-@end
-
-
-@implementation DHIntersectionPointLineCircle
-- (CGPoint)position
-{
-    DHIntersectionResult result = IntersectionTestLineCircle(_l, _c, _preferEnd);
-    return result.intersectionPoint;
-}
-
-@end
-
-
-@implementation DHMidPoint
-- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2
-{
-    self = [super init];
-    if (self) {
-        _start = p1;
-        _end = p2;
-    }
-    return self;
-}
-- (CGPoint)position
-{
-    return MidPointFromPoints(self.start.position, self.end.position);
-}
-@end
-
-@interface DHTrianglePoint (){
-    CGPoint _startPointCache;
-    CGPoint _endPointCache;
-    CGPoint _positionCache;
-
-}
-@end
-@implementation DHTrianglePoint
-- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2
-{
-    self = [super init];
-    if (self) {
-        _start = p1;
-        _end = p2;
-        _startPointCache = CGPointMake(NAN, NAN);
-        _endPointCache = CGPointMake(NAN, NAN);
-        _positionCache = CGPointMake(NAN, NAN);
-    }
-    return self;
-}
-- (CGPoint)position
-{
-    if (!_start || !_end) {
-        return CGPointMake(NAN, NAN);
-    }
-    
-    // If lines have not moved since caching intersection point, no need to recalculate intersection
-    if (CGPointEqualToPoint(_startPointCache, _start.position) &&
-        CGPointEqualToPoint(_endPointCache, _end.position)) {
-        return _positionCache;
-    }
-    
-    _startPointCache = _start.position;
-    _endPointCache = _end.position;
-    
-    CGVector baseVector = CGVectorBetweenPoints(_startPointCache, _endPointCache);
-    _positionCache = CGPointFromPointByAddingVector(_startPointCache, CGVectorRotateByAngle(baseVector, -M_PI/3));
-    
-    return _positionCache;
-}
-@end
-
-@implementation DHPointOnLine
-- (instancetype)initWithLine:(DHLineObject*)line andTValue:(CGFloat)tValue;
-{
-    self = [super init];
-    if (self) {
-        _line = line;
-        _tValue = tValue;
-    }
-    return self;
-}
-- (CGPoint)position
-{
-    if (self.line == nil) {
-        return CGPointMake(NAN, NAN);
-    }
-    
-    CGPoint p1 = self.line.start.position;
-    CGPoint p2 = self.line.end.position;
-    return CGPointMake(p1.x + self.tValue * (p2.x - p1.x), p1.y + self.tValue * (p2.y - p1.y));
-}
-@end
-
-@implementation DHPointOnCircle
-- (CGPoint)position
-{
-    if (self.circle == nil) {
-        return CGPointMake(NAN, NAN);
-    }
-    
-    CGPoint center = self.circle.center.position;
-    CGPoint onRadius = CGPointMake(center.x + self.circle.radius, center.y);
-    CGVector toPoint = CGVectorRotateByAngle(CGVectorBetweenPoints(center, onRadius), self.angle);
-    return CGPointFromPointByAddingVector(center, toPoint);
-}
-@end
-
-@implementation DHRay
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        self.tMin = 0.0;
-        self.tMax = INFINITY;// 1000.0;
-    }
-    return self;
-}
-- (instancetype)initWithStart:(DHPoint *)start andEnd:(DHPoint *)end
-{
-    self = [self init];
-    if (self) {
-        self.start = start;
-        self.end = end;
-    }
-    return self;
-}
-
-@end
-
-@implementation DHLine
+@implementation DHParallelLine
 - (instancetype)init
 {
     self = [super init];
@@ -428,19 +507,62 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     }
     return self;
 }
-- (instancetype)initWithStart:(DHPoint *)start andEnd:(DHPoint *)end
+- (DHPoint*)start
 {
-    self = [self init];
+    return self.point;
+}
+- (DHPoint*)end
+{
+    if (self.line == nil || self.point == nil) {
+        return nil;
+    }
+    
+    CGVector v = CGVectorNormalize(self.line.vector);
+    
+    DHPoint* start = self.start;
+    DHPoint* end = [[DHPoint alloc] init];
+    
+    end.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
+    
+    return end;
+}
+@end
+
+
+@implementation DHPerpendicularLine {
+    DHPoint* _endPointCache;
+}
+- (instancetype)init
+{
+    self = [super init];
     if (self) {
-        self.start = start;
-        self.end = end;
+        self.tMin = -INFINITY;// 1000.0;
+        self.tMax = INFINITY; //1000.0;
+        _endPointCache = [[DHPoint alloc] initWithPositionX:NAN andY:NAN];
     }
     return self;
 }
-
+- (DHPoint*)start
+{
+    return self.point;
+}
+- (DHPoint*)end
+{
+    if (self.line == nil || self.point == nil) {
+        return nil;
+    }
+    
+    CGVector v = CGVectorNormalize(CGVectorMakePerpendicular(self.line.vector));
+    
+    DHPoint* start = self.start;
+    _endPointCache.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
+    
+    return _endPointCache;
+}
 @end
 
-@interface DHBisectLine (){
+
+@implementation DHBisectLine {
     DHPoint* _startPointCache;
     DHPoint* _endPointCache;
     CGPoint _line1StartCache;
@@ -448,8 +570,6 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     CGPoint _line2StartCache;
     CGPoint _line2EndCache;
 }
-@end
-@implementation DHBisectLine
 - (instancetype)init
 {
     self = [super init];
@@ -514,42 +634,30 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 }
 @end
 
-@interface DHPerpendicularLine () {
-    DHPoint* _endPointCache;
-}
-@end
-@implementation DHPerpendicularLine
+
+@implementation DHRay
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        self.tMin = -INFINITY;// 1000.0;
-        self.tMax = INFINITY; //1000.0;
-        _endPointCache = [[DHPoint alloc] initWithPositionX:NAN andY:NAN];
+        self.tMin = 0.0;
+        self.tMax = INFINITY;// 1000.0;
     }
     return self;
 }
-- (DHPoint*)start
+- (instancetype)initWithStart:(DHPoint *)start andEnd:(DHPoint *)end
 {
-    return self.point;
-}
-- (DHPoint*)end
-{
-    if (self.line == nil || self.point == nil) {
-        return nil;
+    self = [self init];
+    if (self) {
+        self.start = start;
+        self.end = end;
     }
-    
-    CGVector v = CGVectorNormalize(CGVectorMakePerpendicular(self.line.vector));
-    
-    DHPoint* start = self.start;
-    _endPointCache.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
-    
-    return _endPointCache;
+    return self;
 }
 @end
 
 
-@implementation DHParallelLine
+@implementation DHLine
 - (instancetype)init
 {
     self = [super init];
@@ -559,32 +667,50 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     }
     return self;
 }
-- (DHPoint*)start
+- (instancetype)initWithStart:(DHPoint *)start andEnd:(DHPoint *)end
 {
-    return self.point;
-}
-- (DHPoint*)end
-{
-    if (self.line == nil || self.point == nil) {
-        return nil;
+    self = [self init];
+    if (self) {
+        self.start = start;
+        self.end = end;
     }
-    
-    CGVector v = CGVectorNormalize(self.line.vector);
-    
-    DHPoint* start = self.start;
-    DHPoint* end = [[DHPoint alloc] init];
-    
-    end.position = CGPointMake(start.position.x + v.dx, start.position.y + v.dy);
-    
-    return end;
+    return self;
 }
 @end
 
 
-@implementation DHTranslatedPoint
-- (CGPoint)position
+#pragma mark - Cicle
+
+@implementation DHCircle
+- (instancetype)initWithCenter:(DHPoint*)center andPointOnRadius:(DHPoint*)pointOnRadius
 {
-    CGVector translation = CGVectorBetweenPoints(self.translationStart.position, self.translationEnd.position);
-    return CGPointMake(self.startOfTranslation.position.x + translation.dx, self.startOfTranslation.position.y + translation.dy);
+    self = [super init];
+    if (self) {
+        self.center = center;
+        self.pointOnRadius = pointOnRadius;
+    }
+    return self;
+}
+- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
+{
+    CGFloat geoRadius = self.radius;
+    CGPoint geoCenterPosition = self.center.position;
+    
+    if (isnan(geoRadius) || isnan(geoCenterPosition.x) || isnan(geoCenterPosition.y)) {
+        return;
+    }
+    
+    CGFloat radius = geoRadius * [transform scale];
+    CGPoint position = [transform geoToView:geoCenterPosition];
+    
+    CGRect rect = CGRectMake(position.x - radius, position.y - radius, radius*2, radius*2);
+    CGContextSetLineWidth(context, 1.0);
+    CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+    CGContextSetRGBStrokeColor(context, kLineColor.r, kLineColor.g, kLineColor.b, kLineColor.a);
+    CGContextStrokeEllipseInRect(context, rect);
+}
+- (CGFloat)radius
+{
+    return DistanceBetweenPoints(_center.position, _pointOnRadius.position);
 }
 @end

@@ -25,7 +25,9 @@
 @interface DHPoint : DHGeometricObject <DHGeometricObject>
 @property (nonatomic, strong) NSString* label;
 @property (nonatomic) CGPoint position;
+@property (nonatomic) BOOL updatesPositionAutomatically;
 - (instancetype) initWithPositionX:(CGFloat)x andY:(CGFloat)y;
+- (void)updatePosition;
 @end
 
 
@@ -66,8 +68,6 @@
 @property (nonatomic) DHCircle* c1;
 @property (nonatomic) DHCircle* c2;
 @property (nonatomic) BOOL onPositiveY;
-
-- (CGPoint)position;
 @end
 
 
@@ -76,7 +76,6 @@
 @property (nonatomic,strong) DHLineObject* l2;
 
 - (instancetype)initWithLine:(DHLineObject*)l1 andLine:(DHLineObject*)l2;
-- (CGPoint)position;
 @end
 
 
@@ -84,7 +83,6 @@
 @property (nonatomic) DHLineObject* l;
 @property (nonatomic) DHCircle* c;
 @property (nonatomic) BOOL preferEnd;
-- (CGPoint)position;
 @end
 
 
@@ -99,7 +97,6 @@
 - (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2;
 @property (nonatomic) DHPoint* start;
 @property (nonatomic) DHPoint* end;
-- (CGPoint)position;
 @end
 
 
@@ -107,7 +104,6 @@
 @property (nonatomic) DHPoint* start;
 @property (nonatomic) DHPoint* end;
 - (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2;
-- (CGPoint)position;
 @end
 
 
@@ -115,13 +111,11 @@
 @property (nonatomic, strong) DHLineObject* line;
 @property (nonatomic) CGFloat tValue; // Value between 0 and 1 indicating distance from start to end
 - (instancetype)initWithLine:(DHLineObject*)line andTValue:(CGFloat)tValue;
-- (CGPoint)position;
 @end
 
 @interface DHPointOnCircle : DHPoint
 @property (nonatomic, strong) DHCircle* circle;
 @property (nonatomic) CGFloat angle; // Angle of rotation from positive x-axis to point
-- (CGPoint)position;
 @end
 
 

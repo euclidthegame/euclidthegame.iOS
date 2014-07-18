@@ -39,6 +39,7 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 - (void)addTemporaryGeometricObjects:(NSArray*)objects;
 - (void)removeTemporaryGeometricObjects:(NSArray *)objects;
 - (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point;
+- (void)updateAllPositions;
 @end
 
 

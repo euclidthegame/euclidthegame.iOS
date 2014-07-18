@@ -89,14 +89,21 @@
     [self setupForLevel];
 }
 
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark Level related methods
 - (void)setupForLevel
 {
     self.firstMoveMade = NO;
-
+    
     if (self.currentGameMode == kDHGameModeTutorial) {
         self.title = @"Tutorial";
     } else if (self.currentGameMode == kDHGameModePlayground) {
-        self.title = @"Playground";        
+        self.title = @"Playground";
     } else {
         self.title = [NSString stringWithFormat:@"Level %lu", (unsigned long)(self.levelIndex+1)];
     }
@@ -120,10 +127,55 @@
     [self resetLevel];
 }
 
-- (void)didReceiveMemoryWarning
+- (void)resetLevel
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    
+    [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
+    [self.geometryView.geoViewTransform setScale:1];
+    [self.geometryView.geoViewTransform setRotation:0];
+    
+    [_objectLabeler reset];
+    [_geometricObjects removeAllObjects];
+    [_temporaryGeometricObjects removeAllObjects];
+    
+    NSMutableArray* levelObjects = [[NSMutableArray alloc] init];
+    [_currentLevel createInitialObjects:levelObjects];
+    for (id object in levelObjects) {
+        // Sort objects to ensure points are last in the array to be drawn last
+        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+            DHPoint* p = object;
+            if (p.label == nil) {
+                p.label = [_objectLabeler nextLabel];
+            }
+            p.updatesPositionAutomatically = YES;
+            [_geometricObjects addObject:object];
+        } else {
+            [_geometricObjects insertObject:object atIndex:0];
+        }
+    }
+    
+    self.levelCompleted = NO;
+    self.levelMoves = 0;
+    self.movesLabel.text = [NSString stringWithFormat:@"Moves: %lu", (unsigned long)self.levelMoves];
+    if (self.maxNumberOfMoves > 0) {
+        self.movesLeftLabel.text = [NSString stringWithFormat:@"Moves left: %lu",
+                                    (unsigned long)(self.maxNumberOfMoves - self.levelMoves)];
+        self.movesLeftLabel.textColor = [UIColor darkGrayColor];
+    }
+    
+    [self.geometryView setNeedsDisplay];
+    self.levelCompletionMessage.hidden = YES;
+    
+    [_geometricObjectsForRedo removeAllObjects];
+    [_geometricObjectsForUndo removeAllObjects];
+    
+    // Disable undo/redo button
+    _redoButton.enabled = false;
+    _undoButton.enabled = false;
+    
+    // Reset current tool
+    _currentTool = [[[_currentTool class] alloc] init];
+    self.toolInstruction.text = [_currentTool initialToolTip];
 }
 
 #pragma mark Helper functions for managing geometric objects
@@ -164,7 +216,10 @@
             if (p.label == nil) {
                 p.label = [_objectLabeler nextLabel];
             }
+            p.updatesPositionAutomatically = YES;
             [_geometricObjects addObject:object];
+            
+            // Mid point is only point-type counted as a move
             if ([[object class] isSubclassOfClass:[DHMidPoint class]]) {
                 countMove = YES;
             }
@@ -248,56 +303,6 @@
 - (void)removeTemporaryGeometricObjects:(NSArray *)objects
 {
     [_temporaryGeometricObjects removeObjectsInArray:objects];
-}
-
-- (void)resetLevel
-{
-    
-    [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
-    [self.geometryView.geoViewTransform setScale:1];
-    [self.geometryView.geoViewTransform setRotation:0];
-
-    [_objectLabeler reset];
-    [_geometricObjects removeAllObjects];
-    [_temporaryGeometricObjects removeAllObjects];
-
-    NSMutableArray* levelObjects = [[NSMutableArray alloc] init];
-    [_currentLevel createInitialObjects:levelObjects];
-    for (id object in levelObjects) {
-        // Sort objects to ensure points are last in the array to be drawn last
-        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
-            DHPoint* p = object;
-            if (p.label == nil) {
-                p.label = [_objectLabeler nextLabel];
-            }
-            [_geometricObjects addObject:object];
-        } else {
-            [_geometricObjects insertObject:object atIndex:0];
-        }
-    }
- 
-    self.levelCompleted = NO;
-    self.levelMoves = 0;
-    self.movesLabel.text = [NSString stringWithFormat:@"Moves: %lu", (unsigned long)self.levelMoves];
-    if (self.maxNumberOfMoves > 0) {
-        self.movesLeftLabel.text = [NSString stringWithFormat:@"Moves left: %lu",
-                                (unsigned long)(self.maxNumberOfMoves - self.levelMoves)];
-        self.movesLeftLabel.textColor = [UIColor darkGrayColor];
-    }
-    
-    [self.geometryView setNeedsDisplay];
-    self.levelCompletionMessage.hidden = YES;
-
-    [_geometricObjectsForRedo removeAllObjects];
-    [_geometricObjectsForUndo removeAllObjects];
-    
-    // Disable undo/redo button
-    _redoButton.enabled = false;
-    _undoButton.enabled = false;
-    
-    // Reset current tool
-    _currentTool = [[[_currentTool class] alloc] init];
-    self.toolInstruction.text = [_currentTool initialToolTip];
 }
 
 #pragma mark Layout/appereance
@@ -443,6 +448,14 @@
 - (DHGeometricTransform*)geoViewTransform
 {
     return self.geometryView.geoViewTransform;
+}
+- (void)updateAllPositions
+{
+    for (id object in _geometricObjects) {
+        if ([object respondsToSelector:@selector(updatePosition)]) {
+            [object updatePosition];
+        }
+    }
 }
 
 #pragma mark - Undo/Redo

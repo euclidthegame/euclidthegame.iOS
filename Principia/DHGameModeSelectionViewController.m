@@ -24,6 +24,10 @@
     }
     return self;
 }
+- (void)tintColorDidChange
+{
+    [self setNeedsDisplay];
+}
 - (void)drawRect:(CGRect)rect
 {
     const CGPoint pieChartCenter = CGPointMake(self.bounds.size.width*0.5, 40);
@@ -33,8 +37,8 @@
     CGContextSetLineWidth(context, 1.0/self.contentScaleFactor);
     
     if (self.percentComplete == 1.0) {
-        CGContextSetRGBFillColor(context, 238/255.0, 194/255.0, 16/255.0, 1.0);
-        CGContextSetRGBStrokeColor(context, 238/255.0, 194/255.0, 16/255.0, 1.0);
+        CGContextSetFillColorWithColor(context, self.tintColor.CGColor);
+        CGContextSetStrokeColorWithColor(context, self.tintColor.CGColor);
     } else {
         CGContextSetRGBFillColor(context, 0.5, 0.5, 0.5, 1.0);
         CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 1.0);
@@ -407,6 +411,11 @@
         [[DHGameCenterManager sharedInstance]
          reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 percentComplete:100];
     }
+}
+
+- (IBAction)showLeaderboards:(id)sender
+{
+    [[DHGameCenterManager sharedInstance] showLeaderboard];
 }
 
 @end

@@ -18,6 +18,8 @@
 		684708B81968A68500C1FA83 /* DHLevelMakeCompass.m in Sources */ = {isa = PBXBuildFile; fileRef = 684708B71968A68500C1FA83 /* DHLevelMakeCompass.m */; };
 		684708BB196903F500C1FA83 /* DHLevelLineCopyOnLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 684708BA196903F500C1FA83 /* DHLevelLineCopyOnLine.m */; };
 		684708BE19693C0700C1FA83 /* DHLevelNonEquiTri.m in Sources */ = {isa = PBXBuildFile; fileRef = 684708BD19693C0700C1FA83 /* DHLevelNonEquiTri.m */; };
+		6847112619783EE6003B681B /* DHSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6847112519783EE6003B681B /* DHSettingsViewController.m */; };
+		68471129197843D6003B681B /* DHSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 68471128197843D6003B681B /* DHSettings.m */; };
 		686014DB1969D3CE0004DD1E /* DHLevelCopyAngle.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014DA1969D3CE0004DD1E /* DHLevelCopyAngle.m */; };
 		686014DE1969DFE70004DD1E /* DHLevelCircleCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014DD1969DFE70004DD1E /* DHLevelCircleCenter.m */; };
 		686014E11969E6920004DD1E /* DHLevelMakeTangent.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014E01969E6920004DD1E /* DHLevelMakeTangent.m */; };
@@ -98,6 +100,10 @@
 		684708BA196903F500C1FA83 /* DHLevelLineCopyOnLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelLineCopyOnLine.m; sourceTree = "<group>"; };
 		684708BC19693C0700C1FA83 /* DHLevelNonEquiTri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelNonEquiTri.h; sourceTree = "<group>"; };
 		684708BD19693C0700C1FA83 /* DHLevelNonEquiTri.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelNonEquiTri.m; sourceTree = "<group>"; };
+		6847112419783EE6003B681B /* DHSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHSettingsViewController.h; sourceTree = "<group>"; };
+		6847112519783EE6003B681B /* DHSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHSettingsViewController.m; sourceTree = "<group>"; };
+		68471127197843D6003B681B /* DHSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHSettings.h; sourceTree = "<group>"; };
+		68471128197843D6003B681B /* DHSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHSettings.m; sourceTree = "<group>"; };
 		686014D91969D3CE0004DD1E /* DHLevelCopyAngle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelCopyAngle.h; sourceTree = "<group>"; };
 		686014DA1969D3CE0004DD1E /* DHLevelCopyAngle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelCopyAngle.m; sourceTree = "<group>"; };
 		686014DC1969DFE70004DD1E /* DHLevelCircleCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelCircleCenter.h; sourceTree = "<group>"; };
@@ -408,6 +414,10 @@
 				68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */,
 				6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */,
 				6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */,
+				68471127197843D6003B681B /* DHSettings.h */,
+				68471128197843D6003B681B /* DHSettings.m */,
+				6847112419783EE6003B681B /* DHSettingsViewController.h */,
+				6847112519783EE6003B681B /* DHSettingsViewController.m */,
 			);
 			name = "Views & View Controllers";
 			sourceTree = "<group>";
@@ -554,6 +564,7 @@
 				6872A7CF196DD2BB00823AF9 /* DHLevelInfoViewController.m in Sources */,
 				68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */,
 				6872A7E119702A1700823AF9 /* DHLevelPentagon.m in Sources */,
+				6847112619783EE6003B681B /* DHSettingsViewController.m in Sources */,
 				683D968B196D465E0057B62D /* DHLevelCircleToTangent.m in Sources */,
 				6872A7D5196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m in Sources */,
 				684708BB196903F500C1FA83 /* DHLevelLineCopyOnLine.m in Sources */,
@@ -563,6 +574,7 @@
 				684708AF1967496600C1FA83 /* DHLevelParallellLines.m in Sources */,
 				686622401972A7AB004DCFAC /* DHGameModeSelectionViewController.m in Sources */,
 				68F0AA45196420C700A97B86 /* DHLevelPerpendicular.m in Sources */,
+				68471129197843D6003B681B /* DHSettings.m in Sources */,
 				6866224F1977C304004DCFAC /* DHIAPManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

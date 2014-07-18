@@ -43,9 +43,9 @@
             BOOL productPurchased = [[NSUserDefaults standardUserDefaults] boolForKey:productIdentifier];
             if (productPurchased) {
                 [_purchasedProductIdentifiers addObject:productIdentifier];
-                NSLog(@"Previously purchased: %@", productIdentifier);
+                //NSLog(@"Previously purchased: %@", productIdentifier);
             } else {
-                NSLog(@"Not purchased: %@", productIdentifier);
+                //NSLog(@"Not purchased: %@", productIdentifier);
             }
         }
         
@@ -66,16 +66,16 @@
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     
-    NSLog(@"Loaded list of products...");
+    //NSLog(@"Loaded list of products...");
     _productsRequest = nil;
     
     NSArray * skProducts = response.products;
-    for (SKProduct * skProduct in skProducts) {
+    /*for (SKProduct * skProduct in skProducts) {
         NSLog(@"Found product: %@ %@ %0.2f",
               skProduct.productIdentifier,
               skProduct.localizedTitle,
               skProduct.price.floatValue);
-    }
+    }*/
     
     _completionHandler(YES, skProducts);
     _completionHandler = nil;
@@ -84,7 +84,7 @@
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
     
-    NSLog(@"Failed to load list of products.");
+    //NSLog(@"Failed to load list of products.");
     _productsRequest = nil;
     
     _completionHandler(NO, nil);

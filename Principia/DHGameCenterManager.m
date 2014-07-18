@@ -44,7 +44,7 @@
         if (viewController != nil)
         {
             _gcAuthenticationController = viewController;
-            if ([self.delegate showAuthenticationHandler]) {
+            if ([self.delegate showAuthenticationHandler] || YES) {
                 [self showAuthenticationController:[self topViewController]];
             }
         }
@@ -64,23 +64,6 @@
     };
 }
 
-- (void)reportScore:(int64_t)score
-{
-    // Check if Game Center features are enabled, else do nothing
-    if (!_gameCenterAvailable) {
-        return;
-    }
-    
-    NSString* leaderBoardIdentifier = @"FlappySphereLeaderboard";
-    GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier: leaderBoardIdentifier];
-    scoreReporter.value = score;
-    scoreReporter.context = 0;
-    
-    NSArray *scores = @[scoreReporter];
-    [GKScore reportScores:scores withCompletionHandler:^(NSError *error) {
-    }];
-}
-
 - (void)showAuthenticationController:(UIViewController*)parent
 {
     if(_gcAuthenticationController) {
@@ -90,6 +73,23 @@
 }
 
 #pragma mark - Manage leaderboard
+- (void)reportScore:(int64_t)score forLeaderboard:(NSString*)leaderboard
+{
+    // Check if Game Center features are enabled, else do nothing
+    if (!_gameCenterAvailable) {
+        return;
+    }
+    
+    NSString* leaderBoardIdentifier = leaderboard;
+    GKScore *scoreReporter = [[GKScore alloc] initWithLeaderboardIdentifier: leaderBoardIdentifier];
+    scoreReporter.value = score;
+    scoreReporter.context = 0;
+    
+    NSArray *scores = @[scoreReporter];
+    [GKScore reportScores:scores withCompletionHandler:^(NSError *error) {
+    }];
+}
+
 - (void) showLeaderboard
 {
     if (!_gameCenterAvailable) {

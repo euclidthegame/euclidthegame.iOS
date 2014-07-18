@@ -11,6 +11,7 @@
 #import "DHLevels.h"
 #import "DHLevelResults.h"
 #import "DHIAPManager.h"
+#import "DHSettings.h"
 
 @interface DHLevelSelectionViewController () {
     NSDictionary* _levelResults;
@@ -42,9 +43,9 @@
     
     [[DHIAPManager sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
         if (success) {
-            NSLog(@"%@", products);
+            //NSLog(@"%@", products);
         } else {
-            NSLog(@"Failed to get products");
+            //NSLog(@"Failed to get products");
         }
     }];
 }
@@ -93,7 +94,7 @@
         }
     }
     
-    if (indexPath.row > 100) {
+    if (indexPath.row > 0 && [DHSettings allLevelsUnlocked] == NO) {
         id<DHLevel> previousLevel = [_levels objectAtIndex:indexPath.row-1];
 
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -111,7 +112,6 @@
                 cell.userInteractionEnabled = YES;
             }
         }
-
     } else {
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         cell.textLabel.enabled = YES;

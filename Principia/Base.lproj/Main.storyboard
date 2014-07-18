@@ -246,6 +246,41 @@
             </objects>
             <point key="canvasLocation" x="872" y="-144"/>
         </scene>
+        <!--Settings View Controller - Settings-->
+        <scene sceneID="YNc-R4-MI6">
+            <objects>
+                <viewController title="Settings" id="9bD-XV-a7J" customClass="DHSettingsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="kzw-TJ-W3W"/>
+                        <viewControllerLayoutGuide type="bottom" id="KjS-fg-e6e"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8gc-Od-lbP">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wIw-SM-Ffa">
+                                <rect key="frame" x="188" y="99" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </switch>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Unlock all levels" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QPQ-1E-X7c">
+                                <rect key="frame" x="32" y="104" width="130" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Settings" id="1aF-hG-qzg"/>
+                    <connections>
+                        <outlet property="unlockAllLevelsSwitch" destination="wIw-SM-Ffa" id="KU8-fU-i5e"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hjd-5f-ekO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-84" y="-1369"/>
+        </scene>
         <!--Game Mode Selection View Controller - Select a game mode-->
         <scene sceneID="94G-Lf-9cj">
             <objects>
@@ -274,7 +309,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ABq-xw-SHb">
-                                <rect key="frame" x="60" y="349" width="648" height="89"/>
+                                <rect key="frame" x="60" y="329" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RqK-gb-kpC">
@@ -306,7 +341,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vsY-Tg-X0y">
-                                <rect key="frame" x="60" y="458" width="648" height="89"/>
+                                <rect key="frame" x="60" y="438" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oHU-tN-cAD">
@@ -358,7 +393,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cr8-Ea-dzt">
-                                <rect key="frame" x="60" y="567" width="648" height="89"/>
+                                <rect key="frame" x="60" y="547" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g0R-uJ-N7a">
@@ -410,7 +445,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxx-Wr-Kg5">
-                                <rect key="frame" x="60" y="676" width="648" height="89"/>
+                                <rect key="frame" x="60" y="656" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vMp-7f-LkT">
@@ -462,7 +497,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k82-Ms-g7n">
-                                <rect key="frame" x="60" y="785" width="648" height="89"/>
+                                <rect key="frame" x="60" y="765" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ro4-1M-EOU">
@@ -514,7 +549,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qtQ-VX-LXh">
-                                <rect key="frame" x="60" y="894" width="648" height="89"/>
+                                <rect key="frame" x="60" y="874" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aQl-hn-0R1">
@@ -546,18 +581,30 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select a game mode:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="su9-Tg-XSX">
-                                <rect key="frame" x="303" y="313" width="163" height="21"/>
+                                <rect key="frame" x="303" y="295" width="163" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dyj-Cb-jxH">
+                                <rect key="frame" x="255" y="981" width="259" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <state key="normal" title="Leaderboards &amp; Achievements">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="showLeaderboards:" destination="qen-kL-VqZ" eventType="touchUpInside" id="DX5-Jj-NZz"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Bxx-Wr-Kg5" firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="0RL-xK-L1H"/>
-                            <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="su9-Tg-XSX" secondAttribute="bottom" constant="15" id="1Oi-O1-mcx"/>
-                            <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="cI1-my-sfW" secondAttribute="bottom" constant="60" id="7Lb-9k-5AI"/>
+                            <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="su9-Tg-XSX" secondAttribute="bottom" constant="13" id="1Oi-O1-mcx"/>
+                            <constraint firstItem="yZe-1d-8MW" firstAttribute="top" secondItem="dyj-Cb-jxH" secondAttribute="bottom" constant="8" id="7Gc-DL-ZUb"/>
+                            <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="cI1-my-sfW" secondAttribute="bottom" constant="40" id="7Lb-9k-5AI"/>
                             <constraint firstItem="qtQ-VX-LXh" firstAttribute="top" secondItem="k82-Ms-g7n" secondAttribute="bottom" constant="20" id="8ih-bw-Xjl"/>
                             <constraint firstItem="k82-Ms-g7n" firstAttribute="top" secondItem="Bxx-Wr-Kg5" secondAttribute="bottom" constant="20" id="9qt-Ex-cOT"/>
                             <constraint firstItem="vsY-Tg-X0y" firstAttribute="top" secondItem="ABq-xw-SHb" secondAttribute="bottom" constant="20" id="9s9-PE-XGk"/>
@@ -573,9 +620,16 @@
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="centerX" secondItem="vsY-Tg-X0y" secondAttribute="centerX" id="hUp-Vl-v1O"/>
                             <constraint firstItem="elH-q6-ObI" firstAttribute="leading" secondItem="cI1-my-sfW" secondAttribute="trailing" constant="15" id="iJE-e2-weM"/>
                             <constraint firstItem="Cr8-Ea-dzt" firstAttribute="top" secondItem="vsY-Tg-X0y" secondAttribute="bottom" constant="20" id="vP7-7v-fCX"/>
+                            <constraint firstAttribute="centerX" secondItem="dyj-Cb-jxH" secondAttribute="centerX" id="vvz-gw-hod"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Select game mode" id="gR4-4v-6e5"/>
+                    <navigationItem key="navigationItem" title="Select game mode" id="gR4-4v-6e5">
+                        <barButtonItem key="leftBarButtonItem" title="Settings" id="Ttz-NP-xIA">
+                            <connections>
+                                <segue destination="9bD-XV-a7J" kind="push" id="hqp-5r-CNu"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="gameMode1PercentComplete" destination="iDu-g8-gtS" id="kUo-TN-mRD"/>
                         <outlet property="gameMode1View" destination="ABq-xw-SHb" id="Sqy-hH-K1L"/>

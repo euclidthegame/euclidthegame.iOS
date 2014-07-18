@@ -16,6 +16,12 @@ static NSString* const kAchievementID_GameModeNormalMinimumMoves_1_25 = @"Euclid
 static NSString* const kAchievementID_GameModePrimitiveOnly_1_25 = @"Euclid_GameModePrimitiveOnly_1_25";
 static NSString* const kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 = @"Euclid_GameModePrimitiveOnlyMinimumMoves_1_25";
 
+// Leaderboard identifiers
+static NSString* const kLeaderboardID_LevelsCompletedNormal = @"DH.Euclid.LevelsCompleted_Normal";
+static NSString* const kLeaderboardID_LevelsCompletedNormalMinimumMoves = @"DH.Euclid.LevelsCompleted_NormalMinimumMoves";
+static NSString* const kLeaderboardID_LevelsCompletedPrimitiveOnly = @"DH.Euclid.LevelsCompleted_PrimitiveOnly";
+static NSString* const kLeaderboardID_LevelsCompletedPrimitiveOnlyMinimumMoves = @"DH.Euclid.LevelsCompleted_PrimitiveOnlyMinimumMoves";
+static NSString* const kLeaderboardID_LevelsCompletedTotal = @"DH.Euclid.LevelsCompleted_Total";
 
 @protocol DHGameCenterManagerDelegate
 
@@ -34,7 +40,7 @@ static NSString* const kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 = @
 + (DHGameCenterManager *)sharedInstance;
 - (void)authenticateLocalPlayer;
 - (void)showAuthenticationController:(UIViewController*)parent;
-- (void)reportScore:(int64_t)score;
+- (void)reportScore:(int64_t)score forLeaderboard:(NSString*)leaderboard;
 - (void)showLeaderboard;
 
 // Manage achievements

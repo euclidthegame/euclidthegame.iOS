@@ -222,6 +222,19 @@
         [DHLevelResults newResult:result forLevel:resultKey];
         [self showLevelCompleteMessage];
         
+        if (self.currentGameMode == kDHGameModeNormal) {
+            [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedNormal];
+        }
+        if (self.currentGameMode == kDHGameModeMinimumMoves) {
+            [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedNormalMinimumMoves];
+        }
+        if (self.currentGameMode == kDHGameModePrimitiveOnly) {
+            [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedPrimitiveOnly];
+        }
+        if (self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves) {
+            [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedPrimitiveOnlyMinimumMoves];
+        }
+        
         // If this is the last level, give achievements
         if (self.levelIndex == self.levelArray.count - 1) {
             if (self.currentGameMode == kDHGameModeNormal) {

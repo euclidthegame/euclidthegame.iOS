@@ -33,4 +33,6 @@
 @property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode4PercentComplete;
 
 
+- (IBAction)showLeaderboards:(id)sender;
+
 @end

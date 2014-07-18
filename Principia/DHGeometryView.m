@@ -110,6 +110,9 @@
     for (id<DHGeometricObject> object in self.geometricObjects) {
         [object drawInContext:context withTransform:self.geoViewTransform];
     }
+    for (id<DHGeometricObject> object in self.temporaryGeometricObjects) {
+        [object drawInContext:context withTransform:self.geoViewTransform];
+    }
     
     if (!self.hideBorder) {
         CGContextSetLineWidth(context, 1.0/self.contentScaleFactor);

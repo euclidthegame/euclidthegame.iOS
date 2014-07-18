@@ -18,6 +18,7 @@
 @interface DHGeometricObject : NSObject
 @property (nonatomic) NSUInteger id;
 @property (nonatomic) BOOL highlighted;
+@property (nonatomic) BOOL temporary;
 @end
 
 

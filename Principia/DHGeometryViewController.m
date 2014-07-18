@@ -33,7 +33,10 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     for (UITouch* touch in touches) {
-        [_currentTool touchBegan:touch];
+        if ([_currentTool associatedTouch] == 0) {
+            [_currentTool setAssociatedTouch:(intptr_t)touch];
+            [_currentTool touchBegan:touch];
+        }
     }
 }
 
@@ -76,7 +79,9 @@
         return;
     }
     for (UITouch* touch in touches) {
-        [_currentTool touchMoved:touch];
+        if ([_currentTool associatedTouch] == (intptr_t)touch) {
+            [_currentTool touchMoved:touch];
+        }
     }
 }
 
@@ -88,7 +93,10 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     for (UITouch* touch in touches) {
-        [_currentTool touchEnded:touch];
+        if ([_currentTool associatedTouch] == (intptr_t)touch) {
+            [_currentTool touchEnded:touch];
+            [_currentTool setAssociatedTouch:0];
+        }
     }
 }
 

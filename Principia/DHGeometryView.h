@@ -13,6 +13,7 @@
 @interface DHGeometryView : UIView
 
 @property (nonatomic, strong) NSMutableArray* geometricObjects;
+@property (nonatomic, strong) NSMutableArray* temporaryGeometricObjects;
 //@property (nonatomic) CGFloat geometryScale;
 //@property (nonatomic) CGPoint geometryOffset;
 @property (nonatomic) BOOL hideBorder;

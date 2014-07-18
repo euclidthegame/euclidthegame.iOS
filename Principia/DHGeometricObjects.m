@@ -109,6 +109,8 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 }
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
+    CGContextSaveGState(context);
+
     // Exit early if for some reason the line is no longer valid
     DHPoint* lineStart = self.start;
     DHPoint* lineEnd = self.end;
@@ -141,6 +143,13 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
         CGContextSetRGBStrokeColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
                                    kLineColorHighlighted.b, kLineColorHighlighted.a);
+    } if(self.temporary) {
+        float dash[2]={6 ,5};
+        CGContextSetLineDash(context,0,dash,2);
+        CGContextSetLineWidth(context, 1.0);
+        CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+        CGContextSetRGBStrokeColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
+                                   kLineColorHighlighted.b, kLineColorHighlighted.a);
     } else {
         CGContextSetLineWidth(context, 1.0);
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
@@ -150,6 +159,8 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     CGContextMoveToPoint(context, start.x, start.y);
     CGContextAddLineToPoint(context, end.x, end.y);
     CGContextStrokePath(context);
+    
+    CGContextRestoreGState(context);
 }
 @end
 

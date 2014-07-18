@@ -16,8 +16,9 @@
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
 
-@interface DHLevelViewController () {
+@implementation DHLevelViewController {
     NSMutableArray* _geometricObjects;
+    NSMutableArray* _temporaryGeometricObjects;
     NSMutableArray* _geometricObjectsForUndo;
     NSMutableArray* _geometricObjectsForRedo;
     id<DHGeometryTool> _currentTool;
@@ -30,18 +31,15 @@
     UIBarButtonItem* _resetButton;
 }
 
-@end
-
-@implementation DHLevelViewController
-
-
 #pragma mark Life-cycle
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     _geometricObjects = [[NSMutableArray alloc] initWithCapacity:200];
+    _temporaryGeometricObjects = [[NSMutableArray alloc] initWithCapacity:4];
     self.geometryView.geometricObjects = _geometricObjects;
+    self.geometryView.temporaryGeometricObjects = _temporaryGeometricObjects;
 
     _geometricObjectsForUndo = [[NSMutableArray alloc] init];
     _geometricObjectsForRedo = [[NSMutableArray alloc] init];
@@ -238,6 +236,20 @@
     }
 }
 
+- (void)addTemporaryGeometricObjects:(NSArray *)objects
+{
+    for (DHGeometricObject* object in objects) {
+        object.temporary = YES;
+    }
+    
+    [_temporaryGeometricObjects addObjectsFromArray:objects];
+}
+
+- (void)removeTemporaryGeometricObjects:(NSArray *)objects
+{
+    [_temporaryGeometricObjects removeObjectsInArray:objects];
+}
+
 - (void)resetLevel
 {
     
@@ -247,6 +259,7 @@
 
     [_objectLabeler reset];
     [_geometricObjects removeAllObjects];
+    [_temporaryGeometricObjects removeAllObjects];
 
     NSMutableArray* levelObjects = [[NSMutableArray alloc] init];
     [_currentLevel createInitialObjects:levelObjects];

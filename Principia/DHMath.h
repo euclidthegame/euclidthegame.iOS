@@ -79,6 +79,11 @@ static CGFloat DistanceBetweenPoints(CGPoint a, CGPoint b)
     return ({CGFloat d1 = a.x - b.x, d2 = a.y - b.y; sqrt(d1 * d1 + d2 * d2); });
 }
 
+static CGFloat SquaredDistanceBetweenPoints(CGPoint a, CGPoint b)
+{
+    return ({CGFloat d1 = a.x - b.x, d2 = a.y - b.y; d1 * d1 + d2 * d2; });
+}
+
 static CGFloat DistanceFromPositionToCircle(CGPoint position, DHCircle* circle)
 {
     CGFloat distanceToCenter = DistanceBetweenPoints(position, circle.center.position);

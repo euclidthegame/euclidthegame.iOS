@@ -40,7 +40,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    _geometricObjects = [[NSMutableArray alloc] init];
+    _geometricObjects = [[NSMutableArray alloc] initWithCapacity:200];
     self.geometryView.geometricObjects = _geometricObjects;
 
     _geometricObjectsForUndo = [[NSMutableArray alloc] init];
@@ -82,7 +82,7 @@
     self.levelCompletionMessage.layer.shadowOffset = CGSizeMake(5, 5);
     self.levelCompletionMessage.layer.shadowOpacity = 0.5;
     self.levelCompletionMessage.layer.shadowRadius = 10.0;
-    [self.levelCompletionMessage removeFromSuperview];
+    self.levelCompletionMessage.hidden = YES;
     
     UITapGestureRecognizer* gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showDetailedLevelInstruction:)];
     [self.levelObjectiveView setUserInteractionEnabled:YES];
@@ -116,19 +116,6 @@
     
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
-    /*NSMutableAttributedString* levelInstructionAttributed = [[[NSAttributedString alloc]
-                                                             initWithData:[levelInstruction
-                                                                                 dataUsingEncoding:NSUTF8StringEncoding]
-                                     options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                               NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}
-                          documentAttributes:nil error:nil] mutableCopy];
-    [levelInstructionAttributed beginEditing];
-    NSRange range;
-    range.location = 0;
-    range.length = 5;
-    [levelInstructionAttributed addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:16] range:range];
-    [levelInstructionAttributed endEditing];
-    _levelInstruction.attributedText = levelInstructionAttributed;*/
     
     [self setupTools];
     [self showDetailedLevelInstruction:nil];
@@ -211,12 +198,6 @@
         self.levelCompleted = YES;
         NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
         [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyCompleted];
-
-        /*if ([_currentLevel respondsToSelector:@selector(minimumNumberOfMoves)]) {
-            if (self.levelMoves <= [_currentLevel minimumNumberOfMoves]) {
-                [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyMinimumMoves];
-            }
-        }*/
         
         NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%lu", (unsigned long)self.currentGameMode];
         [DHLevelResults newResult:result forLevel:resultKey];
@@ -292,7 +273,7 @@
     }
     
     [self.geometryView setNeedsDisplay];
-    [self.levelCompletionMessage removeFromSuperview];
+    self.levelCompletionMessage.hidden = YES;
 
     [_geometricObjectsForRedo removeAllObjects];
     [_geometricObjectsForUndo removeAllObjects];
@@ -553,7 +534,7 @@
     
     // Fade in the completion pop-up
     self.levelCompletionMessage.alpha = 0;
-    [self.view addSubview:self.levelCompletionMessage];
+    self.levelCompletionMessage.hidden = NO;
     [UIView animateWithDuration:1.0
                           delay:0.0
                         options: UIViewAnimationOptionCurveEaseIn
@@ -579,7 +560,7 @@
 
 - (IBAction)hideCompletionMessage:(id)sender
 {
-    [self.levelCompletionMessage removeFromSuperview];
+    self.levelCompletionMessage.hidden = YES;
 }
 
 - (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point

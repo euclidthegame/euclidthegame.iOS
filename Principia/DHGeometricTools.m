@@ -15,16 +15,17 @@ static const CGFloat kClosestTapLimit = 25.0f;
 DHPoint* FindPointClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
 {
     DHPoint* closestPoint = nil;
-    CGFloat closestPointDistance = maxDistance;
+    //CGFloat closestPointDistance = maxDistance;
+    CGFloat closestPointDistanceSquared = maxDistance*maxDistance;
     
     for (id object in geometricObjects) {
         if ([[object class] isSubclassOfClass:[DHPoint class]]) {
             CGPoint currentPoint = [object position];
-            CGFloat distance = DistanceBetweenPoints(point, currentPoint);
+            CGFloat distance = SquaredDistanceBetweenPoints(point, currentPoint);
             
-            if (distance < closestPointDistance) {
+            if (distance < closestPointDistanceSquared) {
                 closestPoint = object;
-                closestPointDistance = distance;
+                closestPointDistanceSquared = distance;
             }
         }
     }

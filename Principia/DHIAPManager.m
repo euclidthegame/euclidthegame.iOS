@@ -77,7 +77,7 @@
               skProduct.price.floatValue);
     }*/
     
-    _completionHandler(YES, skProducts);
+    if(_completionHandler) _completionHandler(YES, skProducts);
     _completionHandler = nil;
     
 }
@@ -87,7 +87,7 @@
     //NSLog(@"Failed to load list of products.");
     _productsRequest = nil;
     
-    _completionHandler(NO, nil);
+    if(_completionHandler) _completionHandler(NO, nil);
     _completionHandler = nil;
     
 }

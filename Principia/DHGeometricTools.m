@@ -464,13 +464,7 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
     if (point == nil) {
         return;
     }
-    // If no point was found, create a new point at location
-    /*if (point == nil) {
-        point = [[DHPoint alloc] init];
-        point.position = touchPoint;
-        [self.delegate addGeometricObject:point];
-    }*/
-    
+
     if (self.startPoint && point != self.startPoint) {
         DHLineSegment* line = [[DHLineSegment alloc] init];
         line.start = self.startPoint;
@@ -873,8 +867,19 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
             [touch.view setNeedsDisplay];
         } else if (line) {
             if (self.firstLine && line != self.firstLine) {
+                // Ensure the lines intersect
                 DHIntersectionResult r = IntersectionTestLineLine(self.firstLine, line);
                 if (r.intersect == NO) {
+                    [self.delegate showTemporaryMessage:@"The lines must intersect or be connected to define an angle"
+                                                atPoint:touchPointInView];
+                    return;
+                }
+                
+                // Ensure the lines define an angle
+                CGFloat angle = CGVectorAngleBetween(self.firstLine.vector, line.vector);
+                if (angle < 0.0001 || fabs(angle - M_PI) < 0.001) {
+                    [self.delegate showTemporaryMessage:@"The lines can not be parallel to define an angle"
+                                                atPoint:touchPointInView];
                     return;
                 }
                 
@@ -900,12 +905,25 @@ DHPoint* findClosestUniqueIntersectionPoint(CGPoint point, NSArray* geometricObj
     } else {
         DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
         if (point) {
+            if (point == self.firstPoint || point == self.secondPoint) {
+                return;
+            }
             if (self.secondPoint == nil) {
                 self.secondPoint = point;
                 point.highlighted = true;
                 [self.delegate toolTipDidChange:@"Tap on a third point to define the angle and create the bisector"];
                 [touch.view setNeedsDisplay];
             } else {
+                // Ensure the lines define an angle
+                CGVector v1 = CGVectorBetweenPoints(self.secondPoint.position, self.firstPoint.position);
+                CGVector v2 = CGVectorBetweenPoints(self.secondPoint.position, point.position);
+                CGFloat angle = CGVectorAngleBetween(v1, v2);
+                if (angle < 0.0001 || fabs(angle - M_PI) < 0.001) {
+                    [self.delegate showTemporaryMessage:@"The points can not all lie on a line to define an angle"
+                                                atPoint:touchPointInView];
+                    return;
+                }
+                
                 DHBisectLine* bl = [[DHBisectLine alloc] init];
                 bl.line1 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:self.firstPoint];
                 bl.line2 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:point];

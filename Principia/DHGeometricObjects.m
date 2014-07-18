@@ -307,6 +307,13 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
 }
 @end
 
+@interface DHTrianglePoint (){
+    CGPoint _startPointCache;
+    CGPoint _endPointCache;
+    CGPoint _positionCache;
+
+}
+@end
 @implementation DHTrianglePoint
 - (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2
 {
@@ -314,16 +321,31 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     if (self) {
         _start = p1;
         _end = p2;
+        _startPointCache = CGPointMake(NAN, NAN);
+        _endPointCache = CGPointMake(NAN, NAN);
+        _positionCache = CGPointMake(NAN, NAN);
     }
     return self;
 }
 - (CGPoint)position
 {
-    CGPoint p = MidPointFromPoints(self.start.position, self.end.position);
-    CGVector baseVector = CGVectorBetweenPoints(self.start.position, self.end.position);
-    CGVector hDir = CGVectorNormalize(CGVectorMakePerpendicular(baseVector));
-    CGVector h = CGVectorMultiplyByScalar(hDir, sqrt(3)*0.5*CGVectorLength(baseVector));
-    return CGPointMake(p.x - h.dx, p.y - h.dy);
+    if (!_start || !_end) {
+        return CGPointMake(NAN, NAN);
+    }
+    
+    // If lines have not moved since caching intersection point, no need to recalculate intersection
+    if (CGPointEqualToPoint(_startPointCache, _start.position) &&
+        CGPointEqualToPoint(_endPointCache, _end.position)) {
+        return _positionCache;
+    }
+    
+    _startPointCache = _start.position;
+    _endPointCache = _end.position;
+    
+    CGVector baseVector = CGVectorBetweenPoints(_startPointCache, _endPointCache);
+    _positionCache = CGPointFromPointByAddingVector(_startPointCache, CGVectorRotateByAngle(baseVector, -M_PI/3));
+    
+    return _positionCache;
 }
 @end
 

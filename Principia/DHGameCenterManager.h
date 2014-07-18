@@ -23,6 +23,8 @@ static NSString* const kLeaderboardID_LevelsCompletedPrimitiveOnly = @"DH.Euclid
 static NSString* const kLeaderboardID_LevelsCompletedPrimitiveOnlyMinimumMoves = @"DH.Euclid.LevelsCompleted_PrimitiveOnlyMinimumMoves";
 static NSString* const kLeaderboardID_LevelsCompletedTotal = @"DH.Euclid.LevelsCompleted_Total";
 
+extern NSString * const DHGameCenterManagerUserDidAuthenticateNotification;
+
 @protocol DHGameCenterManagerDelegate
 
 - (BOOL)showAuthenticationHandler;

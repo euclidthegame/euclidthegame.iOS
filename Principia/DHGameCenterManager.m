@@ -8,6 +8,9 @@
 
 #import "DHGameCenterManager.h"
 
+
+NSString* const DHGameCenterManagerUserDidAuthenticateNotification = @"DHGameCenterManagerUserDidAuthenticateNotification";
+
 @interface DHGameCenterManager() {
     BOOL _userAuthenticated;
     UIViewController *_gcAuthenticationController;
@@ -54,6 +57,9 @@
             _gameCenterAvailable = YES;
             [self loadAchievements];
             [self.delegate playerDidAuthenticate];
+            
+            NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+            [center postNotificationName:DHGameCenterManagerUserDidAuthenticateNotification object:nil];
         }
         else
         {

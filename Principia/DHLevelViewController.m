@@ -103,7 +103,7 @@
         self.title = [NSString stringWithFormat:@"Level %lu", (unsigned long)(self.levelIndex+1)];
     }
     
-    if (self.currentGameMode == kDHGameModeMinimumMoves) {
+    if (self.currentGameMode == kDHGameModeNormalMinimumMoves) {
         self.maxNumberOfMoves = [_currentLevel minimumNumberOfMoves];
         self.movesLeftLabel.hidden = NO;
     } else if (self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves) {
@@ -225,7 +225,7 @@
         if (self.currentGameMode == kDHGameModeNormal) {
             [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedNormal];
         }
-        if (self.currentGameMode == kDHGameModeMinimumMoves) {
+        if (self.currentGameMode == kDHGameModeNormalMinimumMoves) {
             [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedNormalMinimumMoves];
         }
         if (self.currentGameMode == kDHGameModePrimitiveOnly) {
@@ -241,7 +241,7 @@
                 [[DHGameCenterManager sharedInstance]
                  reportAchievementIdentifier:kAchievementID_GameModeNormal_1_25 percentComplete:1.0];
             }
-            if (self.currentGameMode == kDHGameModeMinimumMoves) {
+            if (self.currentGameMode == kDHGameModeNormalMinimumMoves) {
                 [[DHGameCenterManager sharedInstance]
                  reportAchievementIdentifier:kAchievementID_GameModeNormalMinimumMoves_1_25 percentComplete:1.0];
             }
@@ -525,7 +525,7 @@
     NSMutableString* completionMessageText = [[NSMutableString alloc] init];
 
     // Only display messages about unlocking tools in non-primitive only game modes
-    if (self.currentGameMode == kDHGameModeNormal || self.currentGameMode == kDHGameModeMinimumMoves) {
+    if (self.currentGameMode == kDHGameModeNormal || self.currentGameMode == kDHGameModeNormalMinimumMoves) {
         if ([_currentLevel respondsToSelector:@selector(additionalCompletionMessage)]) {
             [completionMessageText setString:[_currentLevel additionalCompletionMessage]];
         }
@@ -598,7 +598,18 @@
     CGSize textSize = [message sizeWithAttributes:attributes];
     
     CGRect frame = label.frame;
-    frame.origin = CGPointMake(point.x - textSize.width*0.5, point.y - 20 - textSize.height);
+    CGFloat originX = point.x - textSize.width*0.5;
+    if (originX < 0) {
+        originX = 0;
+    }
+    if (originX + textSize.width > self.view.frame.size.width) {
+        originX = self.view.frame.size.width - textSize.width;
+    }
+    CGFloat originY = point.y - 20 - textSize.height;
+    if (originY < self.geometryView.frame.origin.y) {
+        originY = self.geometryView.frame.origin.y;
+    }
+    frame.origin = CGPointMake(originX, originY);
     frame.size = textSize;
     label.frame = frame;
     [self.geometryView addSubview:label];

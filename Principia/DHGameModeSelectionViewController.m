@@ -179,7 +179,26 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    if ([DHGameCenterManager sharedInstance].gameCenterAvailable) {
+        self.gameCenterButton.enabled = YES;
+    } else {
+        self.gameCenterButton.enabled = NO;
+    }
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:DHGameCenterManagerUserDidAuthenticateNotification
+                        object:nil
+                         queue:nil
+                    usingBlock:^(NSNotification *notification)
+    {
+        self.gameCenterButton.enabled = YES;
+    }];
     [self loadProgressData];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning
@@ -293,7 +312,7 @@
 }
 - (void)selectGameMode2
 {
-    [self performSegueWithIdentifier:@"ShowLevelSelection" sender:[NSNumber numberWithUnsignedInteger:kDHGameModeMinimumMoves]];
+    [self performSegueWithIdentifier:@"ShowLevelSelection" sender:[NSNumber numberWithUnsignedInteger:kDHGameModeNormalMinimumMoves]];
 }
 - (void)selectGameMode3
 {
@@ -359,7 +378,7 @@
         }
     }
     for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeMinimumMoves];
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormalMinimumMoves];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
         if (levelResult) {
             NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];

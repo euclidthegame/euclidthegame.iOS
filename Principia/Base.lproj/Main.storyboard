@@ -631,6 +631,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="gameCenterButton" destination="dyj-Cb-jxH" id="qxn-Qx-fg2"/>
                         <outlet property="gameMode1PercentComplete" destination="iDu-g8-gtS" id="kUo-TN-mRD"/>
                         <outlet property="gameMode1View" destination="ABq-xw-SHb" id="Sqy-hH-K1L"/>
                         <outlet property="gameMode2PercentComplete" destination="Cnz-wn-Cnf" id="fjv-DU-3OZ"/>

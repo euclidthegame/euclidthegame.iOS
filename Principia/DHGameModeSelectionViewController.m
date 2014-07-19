@@ -283,15 +283,33 @@
                                      multiplier:1
                                        constant:self.logoImageView.frame.size.width]];
         
-    }
+        // Game center button
+        [self.layoutConstraintsLandscape addObject:
+         [NSLayoutConstraint constraintWithItem:self.gameCenterButton
+                                      attribute:NSLayoutAttributeCenterX
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.logoLabel
+                                      attribute:NSLayoutAttributeCenterX
+                                     multiplier:1
+                                       constant:0]];
+        [self.layoutConstraintsLandscape addObject:
+         [NSLayoutConstraint constraintWithItem:self.gameCenterButton
+                                      attribute:NSLayoutAttributeTop
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.logoLabel
+                                      attribute:NSLayoutAttributeBottom
+                                     multiplier:1
+                                       constant:30]];    }
     
     [self.view removeConstraints:self.layoutConstraintsLandscape];
     [self.view removeConstraints:self.layoutConstraintsPortrait];
     
     if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
         [self.view addConstraints:self.layoutConstraintsPortrait];
+        self.selectGameModelLabel.hidden = NO;
     } else {
         [self.view addConstraints:self.layoutConstraintsLandscape];
+        self.selectGameModelLabel.hidden = YES;
     }
 }
 

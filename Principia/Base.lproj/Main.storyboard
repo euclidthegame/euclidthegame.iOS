@@ -644,10 +644,13 @@
                         <outlet property="gameMode6View" destination="qtQ-VX-LXh" id="8fz-xN-xAY"/>
                         <outlet property="logoImageView" destination="cI1-my-sfW" id="InF-tV-WIp"/>
                         <outlet property="logoLabel" destination="elH-q6-ObI" id="l1J-3x-utH"/>
+                        <outlet property="selectGameModelLabel" destination="su9-Tg-XSX" id="amE-ed-wcZ"/>
                         <outletCollection property="layoutConstraintsPortrait" destination="7Lb-9k-5AI" id="bIv-6N-YAo"/>
                         <outletCollection property="layoutConstraintsPortrait" destination="h3e-qm-s7o" id="9NT-WV-87r"/>
                         <outletCollection property="layoutConstraintsPortrait" destination="TJe-72-qfg" id="rSD-zt-PNF"/>
                         <outletCollection property="layoutConstraintsPortrait" destination="iJE-e2-weM" id="Lcr-dB-Gtu"/>
+                        <outletCollection property="layoutConstraintsPortrait" destination="vvz-gw-hod" id="vYJ-Np-xb0"/>
+                        <outletCollection property="layoutConstraintsPortrait" destination="7Gc-DL-ZUb" id="Bkm-pN-hj2"/>
                         <segue destination="taf-kY-eNe" kind="push" identifier="ShowLevelSelection" id="fCc-qv-lTO"/>
                     </connections>
                 </viewController>

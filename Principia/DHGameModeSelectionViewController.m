@@ -15,6 +15,86 @@
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
 
+@implementation DHGameModeSelectionButton {
+    BOOL _selected;
+    id _target;
+    SEL _action;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        _selected = NO;
+        self.userInteractionEnabled = YES;
+        self.backgroundColor = [UIColor whiteColor];
+        self.layer.cornerRadius = 8.0;
+        self.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.layer.shadowOffset = CGSizeMake(3, 3);
+        self.layer.shadowOpacity = 0.5;
+        self.layer.shadowRadius = 8.0;
+    }
+    return self;
+}
+- (void)setTouchActionWithTarget:(id)target andAction:(SEL)action
+{
+    _target = target;
+    _action = action;
+}
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self select];
+}
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch* touch = [touches anyObject];
+    CGPoint touchPoint = [touch locationInView:self];
+    if(!CGRectContainsPoint(self.bounds, touchPoint)) {
+        [self deselect];
+    } else {
+        if (!_selected) [self select];
+    }
+}
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self deselect];
+}
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if (_selected && _target && _action) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [_target performSelector:_action];
+#pragma clang diagnostic pop
+    }
+    [self deselect];
+}
+- (void)select
+{
+    self.layer.shadowOffset = CGSizeMake(1, 1);
+    self.layer.shadowRadius = 3.0;
+    _selected = YES;
+}
+- (void)deselect
+{
+    if (!_selected) return;
+    
+    _selected = NO;
+    self.layer.shadowOffset = CGSizeMake(3, 3);
+    CABasicAnimation* fadeAnim = [CABasicAnimation animationWithKeyPath:@"shadowRadius"];
+    fadeAnim.fromValue = [NSNumber numberWithFloat:3.0];
+    fadeAnim.toValue = [NSNumber numberWithFloat:8.0];
+    fadeAnim.duration = 0.5;
+    [self.layer addAnimation:fadeAnim forKey:@"shadowRadius"];
+    
+    // Change the actual data value in the layer to the final value.
+    self.layer.shadowRadius = 8.0;
+    
+    //self.layer.shadowRadius = 8.0;
+}
+
+@end
+
 @implementation DHGameModePercentCompleteView
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
@@ -116,60 +196,12 @@
 {
     [super viewDidLoad];
     
-    UITapGestureRecognizer* tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadTutorial)];
-    [self.gameMode1View addGestureRecognizer:tap1];
-    self.gameMode1View.backgroundColor = [UIColor whiteColor];
-    self.gameMode1View.layer.cornerRadius = 8.0;
-    self.gameMode1View.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.gameMode1View.layer.shadowOffset = CGSizeMake(3, 3);
-    self.gameMode1View.layer.shadowOpacity = 0.5;
-    self.gameMode1View.layer.shadowRadius = 8.0;
-    self.gameMode1PercentComplete.layer.cornerRadius = 8.0;
-    
-    UITapGestureRecognizer* tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode1)];
-    [self.gameMode2View addGestureRecognizer:tap2];
-    self.gameMode2View.backgroundColor = [UIColor whiteColor];
-    self.gameMode2View.layer.cornerRadius = 8.0;
-    self.gameMode2View.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.gameMode2View.layer.shadowOffset = CGSizeMake(3, 3);
-    self.gameMode2View.layer.shadowOpacity = 0.5;
-    self.gameMode2View.layer.shadowRadius = 8.0;
-
-    UITapGestureRecognizer* tap3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode2)];
-    [self.gameMode3View addGestureRecognizer:tap3];
-    self.gameMode3View.backgroundColor = [UIColor whiteColor];
-    self.gameMode3View.layer.cornerRadius = 8.0;
-    self.gameMode3View.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.gameMode3View.layer.shadowOffset = CGSizeMake(3, 3);
-    self.gameMode3View.layer.shadowOpacity = 0.5;
-    self.gameMode3View.layer.shadowRadius = 8.0;
-
-    UITapGestureRecognizer* tap4 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode3)];
-    [self.gameMode4View addGestureRecognizer:tap4];
-    self.gameMode4View.backgroundColor = [UIColor whiteColor];
-    self.gameMode4View.layer.cornerRadius = 8.0;
-    self.gameMode4View.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.gameMode4View.layer.shadowOffset = CGSizeMake(3, 3);
-    self.gameMode4View.layer.shadowOpacity = 0.5;
-    self.gameMode4View.layer.shadowRadius = 8.0;
-
-    UITapGestureRecognizer* tap5 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectGameMode4)];
-    [self.gameMode5View addGestureRecognizer:tap5];
-    self.gameMode5View.backgroundColor = [UIColor whiteColor];
-    self.gameMode5View.layer.cornerRadius = 8.0;
-    self.gameMode5View.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.gameMode5View.layer.shadowOffset = CGSizeMake(3, 3);
-    self.gameMode5View.layer.shadowOpacity = 0.5;
-    self.gameMode5View.layer.shadowRadius = 8.0;
-
-    UITapGestureRecognizer* tap6 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadPlayground)];
-    [self.gameMode6View addGestureRecognizer:tap6];
-    self.gameMode6View.backgroundColor = [UIColor whiteColor];
-    self.gameMode6View.layer.cornerRadius = 8.0;
-    self.gameMode6View.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.gameMode6View.layer.shadowOffset = CGSizeMake(3, 3);
-    self.gameMode6View.layer.shadowOpacity = 0.5;
-    self.gameMode6View.layer.shadowRadius = 8.0;
+    [self.gameMode1View setTouchActionWithTarget:self andAction:@selector(loadTutorial)];
+    [self.gameMode2View setTouchActionWithTarget:self andAction:@selector(selectGameMode1)];
+    [self.gameMode3View setTouchActionWithTarget:self andAction:@selector(selectGameMode2)];
+    [self.gameMode4View setTouchActionWithTarget:self andAction:@selector(selectGameMode3)];
+    [self.gameMode5View setTouchActionWithTarget:self andAction:@selector(selectGameMode4)];
+    [self.gameMode6View setTouchActionWithTarget:self andAction:@selector(loadPlayground)];
 
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset progress"
                                                                               style:UIBarButtonItemStylePlain

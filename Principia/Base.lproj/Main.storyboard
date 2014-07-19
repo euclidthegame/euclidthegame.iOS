@@ -308,7 +308,7 @@
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ABq-xw-SHb">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ABq-xw-SHb" customClass="DHGameModeSelectionButton">
                                 <rect key="frame" x="60" y="329" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -340,7 +340,7 @@
                                     <constraint firstItem="RqK-gb-kpC" firstAttribute="leading" secondItem="ABq-xw-SHb" secondAttribute="leading" constant="20" id="wRB-ZP-ZUT"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vsY-Tg-X0y">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vsY-Tg-X0y" customClass="DHGameModeSelectionButton">
                                 <rect key="frame" x="60" y="438" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -392,7 +392,7 @@
                                     <constraint firstAttribute="width" constant="648" id="ynW-wp-Pw1"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cr8-Ea-dzt">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cr8-Ea-dzt" customClass="DHGameModeSelectionButton">
                                 <rect key="frame" x="60" y="547" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -444,7 +444,7 @@
                                     <constraint firstItem="lBD-SZ-1KE" firstAttribute="leading" secondItem="Cr8-Ea-dzt" secondAttribute="leading" constant="42" id="tsG-yK-2Gg"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxx-Wr-Kg5">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxx-Wr-Kg5" customClass="DHGameModeSelectionButton">
                                 <rect key="frame" x="60" y="656" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -496,7 +496,7 @@
                                     <constraint firstAttribute="trailing" secondItem="LLB-uF-ybr" secondAttribute="trailing" id="wKN-c5-SkC"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k82-Ms-g7n">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k82-Ms-g7n" customClass="DHGameModeSelectionButton">
                                 <rect key="frame" x="60" y="765" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -548,7 +548,7 @@
                                     <constraint firstAttribute="height" constant="89" id="vZE-Mw-E64"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qtQ-VX-LXh">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qtQ-VX-LXh" customClass="DHGameModeSelectionButton">
                                 <rect key="frame" x="60" y="874" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>

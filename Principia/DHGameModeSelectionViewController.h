@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@interface DHGameModeSelectionButton : UIView
+- (void)setTouchActionWithTarget:(id)target andAction:(SEL)action;
+@end
+
 @interface DHGameModePercentCompleteView : UIView
 @property (nonatomic) CGFloat percentComplete;
 @end
@@ -22,12 +26,12 @@
 @property (nonatomic, weak) IBOutlet UILabel* selectGameModelLabel;
 @property (nonatomic, weak) IBOutlet UIButton* gameCenterButton;
 
-@property (nonatomic, weak) IBOutlet UIView* gameMode1View;
-@property (nonatomic, weak) IBOutlet UIView* gameMode2View;
-@property (nonatomic, weak) IBOutlet UIView* gameMode3View;
-@property (nonatomic, weak) IBOutlet UIView* gameMode4View;
-@property (nonatomic, weak) IBOutlet UIView* gameMode5View;
-@property (nonatomic, weak) IBOutlet UIView* gameMode6View;
+@property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode1View;
+@property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode2View;
+@property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode3View;
+@property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode4View;
+@property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode5View;
+@property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode6View;
 
 @property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode1PercentComplete;
 @property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode2PercentComplete;

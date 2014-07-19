@@ -314,9 +314,8 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
         self.point.position = previousPosition;
         self.touchStart = touchPoint;
         
-        // Update position of all other objects
+        // Update position of all other objects & redraw
         [self.delegate updateAllPositions];
-        
         [touch.view setNeedsDisplay];
     }
     if (self.point && [self.point class] == [DHPointOnLine class]) {
@@ -328,6 +327,8 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
         
         pLine.tValue = tValue;
         
+        // Update position of all other objects & redraw
+        [self.delegate updateAllPositions];
         [touch.view setNeedsDisplay];
     }
     if (self.point && [self.point class] == [DHPointOnCircle class]) {
@@ -345,6 +346,9 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
         }
         
         pCircle.angle = angle;
+        
+        // Update position of all other objects & redraw
+        [self.delegate updateAllPositions];
         [touch.view setNeedsDisplay];
     }
     

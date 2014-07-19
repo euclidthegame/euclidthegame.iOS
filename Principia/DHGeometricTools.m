@@ -92,8 +92,7 @@ NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, C
     for (id object in geometricObjects) {
         if ([object class] == [DHCircle class]) {
             DHCircle* circle = (DHCircle*)object;
-            CGFloat distanceToCenter = DistanceBetweenPoints(point, circle.center.position);
-            CGFloat distanceToCircle = distanceToCenter - circle.radius;
+            CGFloat distanceToCircle = DistanceFromPositionToCircle(point, circle);
             if (distanceToCircle <= maxDistanceLimit) {
                 [foundObjects addObject:circle];
             }

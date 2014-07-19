@@ -206,7 +206,7 @@
         [_geometricObjectsForRedo removeAllObjects];
         _redoButton.enabled = false;
     }
-    [_geometricObjectsForUndo addObject:objects];
+    [_geometricObjectsForUndo addObject:[objects copy]];
     _undoButton.enabled = true;
     
     for (id object in objects) {

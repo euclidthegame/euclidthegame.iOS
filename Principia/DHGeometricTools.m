@@ -443,6 +443,7 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
 
 @implementation DHLineSegmentTool {
     CGPoint _touchPointInViewStart;
+    DHPoint* _temporaryInitialStartingPoint;
     DHLineSegment* _temporaryLine;
 }
 - (NSString*)initialToolTip
@@ -458,7 +459,14 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
 
     DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
-
+    if (!point) {
+        DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+        if (intersectionPoint) {
+            if (!self.startPoint) _temporaryInitialStartingPoint = intersectionPoint;
+            point = intersectionPoint;
+        }
+    }
+    
     if (!self.startPoint && point) {
         self.startPoint = point;
         point.highlighted = true;
@@ -466,7 +474,11 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
         
         DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
         _temporaryLine = [[DHLineSegment alloc] initWithStart:point andEnd:endPoint];
-        [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
+        if (_temporaryInitialStartingPoint) {
+            [self.delegate addTemporaryGeometricObjects:@[_temporaryLine, _temporaryInitialStartingPoint]];
+        } else {
+            [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
+        }
         [touch.view setNeedsDisplay];
     } else if (self.startPoint) {
         DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
@@ -510,6 +522,7 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
     if (!self.startPoint) {
         return;
     }
+    NSMutableArray* objectsToAdd = [[NSMutableArray alloc] initWithCapacity:3];
     
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
@@ -521,39 +534,44 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
         [self.delegate toolTipDidChange:@"Tap on a second point to mark the end the line segment"];
         [touch.view setNeedsDisplay];
     }
+    if (_temporaryInitialStartingPoint) {
+        [objectsToAdd addObject:_temporaryInitialStartingPoint];
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
+        _temporaryInitialStartingPoint = nil;
+        [touch.view setNeedsDisplay];
+    }
     
     DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
-    BOOL newPoint = NO;
     // Prefer normal point selection above automatic intersection
     if (!point) {
         DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
-        if (intersectionPoint) {
-            newPoint = YES;
+        if (intersectionPoint && !CGPointEqualToPoint(intersectionPoint.position, self.startPoint.position)) {
             point = intersectionPoint;
-        } else {
-            // No point or automatic intersection found, do nothing
-            return;
+            [objectsToAdd addObject:intersectionPoint];
         }
     }
    
-    if (self.startPoint && point != self.startPoint) {
+    if (self.startPoint && point && point != self.startPoint) {
         DHLineSegment* line = [[DHLineSegment alloc] init];
         line.start = self.startPoint;
         line.end = point;
         
+        [objectsToAdd addObject:line];
+        
         self.startPoint.highlighted = false;
         self.startPoint = nil;
         
-        if (newPoint) {
-            [self.delegate addGeometricObjects:@[point, line]];
-        } else {
-            [self.delegate addGeometricObject:line];
-        }
+        [self.delegate addGeometricObjects:objectsToAdd];
+        [objectsToAdd removeAllObjects];
         [self.delegate toolTipDidChange:self.initialToolTip];
-    } else {
-        [self.delegate toolTipDidChange:@"Tap on a second point to mark the end the line segment"];
-        [touch.view setNeedsDisplay];
     }
+    if (objectsToAdd.count > 0) {
+        [self.delegate addGeometricObjects:objectsToAdd];
+    }
+    if (self.startPoint) {
+        [self.delegate toolTipDidChange:@"Tap on a second point to mark the end the line segment"];
+    }
+    [touch.view setNeedsDisplay];
 }
 - (BOOL)active
 {
@@ -565,6 +583,15 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
 }
 - (void)reset
 {
+    if (_temporaryLine) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
+        _temporaryLine = nil;
+    }
+    if (_temporaryInitialStartingPoint) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
+        _temporaryInitialStartingPoint = nil;
+    }
+    
     self.startPoint.highlighted = NO;
     self.startPoint = nil;
     [self.delegate toolTipDidChange:self.initialToolTip];
@@ -573,9 +600,15 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
 
 - (void)dealloc
 {
-    if (self.startPoint) {
-        self.startPoint.highlighted = NO;
+    if (_temporaryLine) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
+        _temporaryLine = nil;
     }
+    if (_temporaryInitialStartingPoint) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
+        _temporaryInitialStartingPoint = nil;
+    }
+    self.startPoint.highlighted = NO;
 }
 @end
 

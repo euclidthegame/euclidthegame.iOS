@@ -22,6 +22,8 @@ static const DHColor kPointColorFixed = {20/255.0, 20/255.0, 20/255.0, 1.0};
 static const DHColor kPointColorHighlighted = {0/255.0, 0/255.0, 0/255.0, 1.0};
 static const DHColor kLineColor = {255/255.0, 204/255.0, 0/255.0, 1.0};
 static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0};
+static const size_t kDashPatternItems = 2;
+static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 
 @implementation DHGeometricObject
 
@@ -450,8 +452,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
         CGContextSetRGBStrokeColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
                                    kLineColorHighlighted.b, kLineColorHighlighted.a);
     } else if(self.temporary) {
-        CGFloat dash[2] = {6 ,5};
-        CGContextSetLineDash(context,0,dash,2);
+        CGContextSetLineDash(context,0,kDashPattern,kDashPatternItems);
         CGContextSetLineWidth(context, 1.0);
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
         CGContextSetRGBStrokeColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
@@ -696,6 +697,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     CGFloat geoRadius = self.radius;
     CGPoint geoCenterPosition = self.center.position;
     
+    // Do nothing if any part of the circle is undefined
     if (isnan(geoRadius) || isnan(geoCenterPosition.x) || isnan(geoCenterPosition.y)) {
         return;
     }
@@ -706,8 +708,7 @@ static const DHColor kLineColorHighlighted = {255/255.0, 149/255.0, 0/255.0, 1.0
     CGRect rect = CGRectMake(position.x - radius, position.y - radius, radius*2, radius*2);
     
     if(self.temporary) {
-        CGFloat dash[2] = {6 ,5};
-        CGContextSetLineDash(context,0,dash,2);
+        CGContextSetLineDash(context,0,kDashPattern,kDashPatternItems);
         CGContextSetLineWidth(context, 1.0);
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
         CGContextSetRGBStrokeColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,

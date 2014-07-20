@@ -13,14 +13,10 @@
 #import "DHIAPManager.h"
 #import "DHSettings.h"
 
-@interface DHLevelSelectionViewController () {
+@implementation DHLevelSelectionViewController {
     NSDictionary* _levelResults;
     NSMutableArray* _levels;
 }
-
-@end
-
-@implementation DHLevelSelectionViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

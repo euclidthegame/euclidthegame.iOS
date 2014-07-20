@@ -9,10 +9,6 @@
 #import "DHSettingsViewController.h"
 #import "DHSettings.h"
 
-@interface DHSettingsViewController ()
-
-@end
-
 @implementation DHSettingsViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

@@ -10,13 +10,10 @@
 #import "DHGeometryView.h"
 #import "DHMath.h"
 
-@interface DHGeometryViewController () {
+@implementation DHGeometryViewController {
     CGFloat _lastScale;
     CGPoint _lastPoint;
 }
-@end
-
-@implementation DHGeometryViewController
 
 #pragma mark Life-cycle
 - (void)viewDidLoad

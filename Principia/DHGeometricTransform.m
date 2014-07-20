@@ -8,15 +8,11 @@
 
 #import "DHGeometricTransform.h"
 
-@interface DHGeometricTransform () {
+@implementation DHGeometricTransform {
     CGFloat _geoTransformScale;
     CGFloat _geoTransformRotation;
     CGPoint _geoTransformOffset;
 }
-@end
-
-
-@implementation DHGeometricTransform
 
 - (id)init
 {

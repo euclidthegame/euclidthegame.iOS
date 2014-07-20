@@ -8,15 +8,10 @@
 
 #import "DHGeometricObjectLabeler.h"
 
-
-@interface DHGeometricObjectLabeler () {
+@implementation DHGeometricObjectLabeler {
     char _labelLetter;
     int _labelNumber;
 }
-
-@end
-
-@implementation DHGeometricObjectLabeler
 
 - (id)init
 {

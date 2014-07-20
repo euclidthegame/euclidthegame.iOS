@@ -272,66 +272,45 @@
         
         // First game mode button
         [self.layoutConstraintsLandscape addObject:
-         [NSLayoutConstraint constraintWithItem:self.gameMode1View
-                                      attribute:NSLayoutAttributeTop
+         [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeTop
                                       relatedBy:NSLayoutRelationEqual
-                                         toItem:self.topLayoutGuide
-                                      attribute:NSLayoutAttributeTop
-                                     multiplier:1
-                                       constant:90]];
+                                         toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop
+                                     multiplier:1 constant:90]];
         
         [self.layoutConstraintsLandscape addObject:
-         [NSLayoutConstraint constraintWithItem:self.gameMode1View
-                                      attribute:NSLayoutAttributeRight
+         [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeRight
                                       relatedBy:NSLayoutRelationEqual
-                                         toItem:self.view
-                                      attribute:NSLayoutAttributeRight
-                                     multiplier:1
-                                       constant:-30]];
+                                         toItem:self.view attribute:NSLayoutAttributeRight
+                                     multiplier:1 constant:-30]];
         
         // Logo
         [self.layoutConstraintsLandscape addObject:
-         [NSLayoutConstraint constraintWithItem:self.logoLabel
-                                      attribute:NSLayoutAttributeCenterX
+         [NSLayoutConstraint constraintWithItem:self.logoLabel attribute:NSLayoutAttributeCenterX
                                       relatedBy:NSLayoutRelationEqual
-                                         toItem:self.logoImageView
-                                      attribute:NSLayoutAttributeCenterX
-                                     multiplier:1
-                                       constant:0]];
+                                         toItem:self.logoImageView attribute:NSLayoutAttributeCenterX
+                                     multiplier:1 constant:0]];
         [self.layoutConstraintsLandscape addObject:
-         [NSLayoutConstraint constraintWithItem:self.logoLabel
-                                      attribute:NSLayoutAttributeTop
+         [NSLayoutConstraint constraintWithItem:self.logoLabel attribute:NSLayoutAttributeTop
                                       relatedBy:NSLayoutRelationEqual
-                                         toItem:self.logoImageView
-                                      attribute:NSLayoutAttributeBottom
-                                     multiplier:1
-                                       constant:10]];
+                                         toItem:self.logoImageView attribute:NSLayoutAttributeBottom
+                                     multiplier:1 constant:10]];
         [self.layoutConstraintsLandscape addObject:
-         [NSLayoutConstraint constraintWithItem:self.logoLabel
-                                      attribute:NSLayoutAttributeWidth
+         [NSLayoutConstraint constraintWithItem:self.logoLabel attribute:NSLayoutAttributeWidth
                                       relatedBy:NSLayoutRelationEqual
-                                         toItem:nil
-                                      attribute:NSLayoutAttributeNotAnAttribute
-                                     multiplier:1
-                                       constant:self.logoImageView.frame.size.width]];
+                                         toItem:nil attribute:NSLayoutAttributeNotAnAttribute
+                                     multiplier:1 constant:self.logoImageView.frame.size.width]];
         
         // Game center button
         [self.layoutConstraintsLandscape addObject:
-         [NSLayoutConstraint constraintWithItem:self.gameCenterButton
-                                      attribute:NSLayoutAttributeCenterX
+         [NSLayoutConstraint constraintWithItem:self.gameCenterButton attribute:NSLayoutAttributeCenterX
                                       relatedBy:NSLayoutRelationEqual
-                                         toItem:self.logoLabel
-                                      attribute:NSLayoutAttributeCenterX
-                                     multiplier:1
-                                       constant:0]];
+                                         toItem:self.logoLabel attribute:NSLayoutAttributeCenterX
+                                     multiplier:1 constant:0]];
         [self.layoutConstraintsLandscape addObject:
-         [NSLayoutConstraint constraintWithItem:self.gameCenterButton
-                                      attribute:NSLayoutAttributeTop
+         [NSLayoutConstraint constraintWithItem:self.gameCenterButton attribute:NSLayoutAttributeTop
                                       relatedBy:NSLayoutRelationEqual
-                                         toItem:self.logoLabel
-                                      attribute:NSLayoutAttributeBottom
-                                     multiplier:1
-                                       constant:30]];    }
+                                         toItem:self.logoLabel attribute:NSLayoutAttributeBottom
+                                     multiplier:1 constant:30]];    }
     
     [self.view removeConstraints:self.layoutConstraintsLandscape];
     [self.view removeConstraints:self.layoutConstraintsPortrait];
@@ -418,7 +397,8 @@
     NSUInteger levelsCompleteGameModePrimitiveOnlyMinimumMoves = 0;
     
     for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormal];
+        NSString* resultKey = [NSStringFromClass([level class])
+                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormal];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
         if (levelResult) {
             NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
@@ -428,7 +408,8 @@
         }
     }
     for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormalMinimumMoves];
+        NSString* resultKey = [NSStringFromClass([level class])
+                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormalMinimumMoves];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
         if (levelResult) {
             NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
@@ -438,7 +419,8 @@
         }
     }
     for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnly];
+        NSString* resultKey = [NSStringFromClass([level class])
+                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnly];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
         if (levelResult) {
             NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
@@ -448,7 +430,8 @@
         }
     }
     for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnlyMinimumMoves];
+        NSString* resultKey = [NSStringFromClass([level class])
+                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnlyMinimumMoves];
         NSDictionary* levelResult = [levelResults objectForKey:resultKey];
         if (levelResult) {
             NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];

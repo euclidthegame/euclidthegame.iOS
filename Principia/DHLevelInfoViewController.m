@@ -8,10 +8,6 @@
 
 #import "DHLevelInfoViewController.h"
 
-@interface DHLevelInfoViewController ()
-
-@end
-
 @implementation DHLevelInfoViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

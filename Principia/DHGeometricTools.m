@@ -618,22 +618,139 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
 @end
 
 
-@implementation DHCircleTool
+@implementation DHCircleTool {
+    CGPoint _touchPointInViewStart;
+    DHPoint* _temporaryCenter;
+    DHCircle* _temporaryCircle;
+}
 - (NSString*)initialToolTip
 {
     return @"Tap on any point to mark the center of a new circle";
 }
 - (void)touchBegan:(UITouch*)touch
 {
+    _touchPointInViewStart = [touch locationInView:touch.view];
     
+    CGPoint touchPointInView = [touch locationInView:touch.view];
+    CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
+    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
+    
+    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    if (!point) {
+        DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+        if (intersectionPoint) {
+            if (!self.center) _temporaryCenter = intersectionPoint;
+            point = intersectionPoint;
+        }
+    }
+    
+    if (!self.center && point) {
+        self.center = point;
+        point.highlighted = true;
+        [self.delegate toolTipDidChange:@"Drag to a point that the circle will pass through"];
+        
+        DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
+        _temporaryCircle = [[DHCircle alloc] initWithCenter:point andPointOnRadius:endPoint];
+        if (_temporaryCenter) {
+            [self.delegate addTemporaryGeometricObjects:@[_temporaryCircle, _temporaryCenter]];
+        } else {
+            [self.delegate addTemporaryGeometricObjects:@[_temporaryCircle]];
+        }
+        [touch.view setNeedsDisplay];
+    } else if (self.center) {
+        DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
+        _temporaryCircle = [[DHCircle alloc] initWithCenter:self.center andPointOnRadius:endPoint];
+        if (point && point != self.center) {
+            _temporaryCircle.pointOnRadius.position = point.position;
+            [self.delegate toolTipDidChange:@"Release to create circle"];
+        } else {
+            _temporaryCircle.pointOnRadius.position = touchPoint;
+            [self.delegate toolTipDidChange:@"Drag to a point that the circle will pass through"];
+        }
+        [self.delegate addTemporaryGeometricObjects:@[_temporaryCircle]];
+        [touch.view setNeedsDisplay];
+    }
 }
 - (void)touchMoved:(UITouch*)touch
 {
+    CGPoint touchPointInView = [touch locationInView:touch.view];
+    CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
+    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
     
+    if (_temporaryCircle) {
+        CGPoint endPoint = touchPoint;
+        DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+        if (!point) {
+            point = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects, geoViewScale);
+        }
+        if (point && point != self.center) {
+            endPoint = point.position;
+            [self.delegate toolTipDidChange:@"Release to create circle"];
+        } else {
+            [self.delegate toolTipDidChange:@"Drag to a point that the circle will pass through"];
+        }
+        _temporaryCircle.pointOnRadius.position = endPoint;
+        [touch.view setNeedsDisplay];
+    }
 }
 - (void)touchEnded:(UITouch*)touch
 {
+    // Do nothing if no start point
+    if (!self.center) {
+        return;
+    }
+    NSMutableArray* objectsToAdd = [[NSMutableArray alloc] initWithCapacity:3];
+    
     CGPoint touchPointInView = [touch locationInView:touch.view];
+    CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
+    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
+    
+    if (_temporaryCircle) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryCircle]];
+        _temporaryCircle = nil;
+        [self.delegate toolTipDidChange:@"Tap on a second point that the circle will pass through"];
+        [touch.view setNeedsDisplay];
+    }
+    if (_temporaryCenter) {
+        [objectsToAdd addObject:_temporaryCenter];
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryCenter]];
+        _temporaryCenter = nil;
+        [touch.view setNeedsDisplay];
+    }
+    
+    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    // Prefer normal point selection above automatic intersection
+    if (!point) {
+        DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+        if (intersectionPoint && !CGPointEqualToPoint(intersectionPoint.position, self.center.position)) {
+            point = intersectionPoint;
+            [objectsToAdd addObject:intersectionPoint];
+        }
+    }
+    
+    if (self.center && point && point != self.center) {
+        DHCircle* circle = [[DHCircle alloc] init];
+        circle.center = self.center;
+        circle.pointOnRadius = point;
+        
+        [objectsToAdd addObject:circle];
+        
+        self.center.highlighted = false;
+        self.center = nil;
+        
+        [self.delegate addGeometricObjects:objectsToAdd];
+        [objectsToAdd removeAllObjects];
+        [self.delegate toolTipDidChange:self.initialToolTip];
+    }
+    if (objectsToAdd.count > 0) {
+        [self.delegate addGeometricObjects:objectsToAdd];
+    }
+    if (self.center) {
+        [self.delegate toolTipDidChange:@"Tap on a second point that the circle will pass through"];
+    }
+    [touch.view setNeedsDisplay];
+    
+    /*CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
     DHPoint* point= FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
@@ -661,7 +778,7 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
             [self.delegate toolTipDidChange:@"Tap on a second point to mark the radius of the circle"];
             [touch.view setNeedsDisplay];
         }
-    }
+    }*/
 }
 - (BOOL)active
 {
@@ -673,6 +790,15 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
 }
 - (void)reset
 {
+    if (_temporaryCenter) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryCenter]];
+        _temporaryCenter = nil;
+    }
+    if (_temporaryCircle) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryCircle]];
+        _temporaryCircle = nil;
+    }
+    
     self.center.highlighted = NO;
     self.center = nil;
     [self.delegate toolTipDidChange:self.initialToolTip];
@@ -680,11 +806,17 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
 }
 - (void)dealloc
 {
-    if (self.center) {
-        self.center.highlighted = NO;
-        self.center = nil;
-        [self.delegate toolTipDidChange:self.initialToolTip];
+    if (_temporaryCenter) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryCenter]];
+        _temporaryCenter = nil;
     }
+    if (_temporaryCircle) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryCircle]];
+        _temporaryCircle = nil;
+    }
+
+    self.center.highlighted = NO;
+    [self.delegate toolTipDidChange:self.initialToolTip];
 }
 @end
 

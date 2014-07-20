@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		68376935197C315700D53E21 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9E619587AEC00A97B86 /* XCTest.framework */; };
+		68376936197C315700D53E21 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
+		68376937197C315700D53E21 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
+		6837693D197C315700D53E21 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6837693B197C315700D53E21 /* InfoPlist.strings */; };
+		6837693F197C315700D53E21 /* Euclid_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6837693E197C315700D53E21 /* Euclid_Tests.m */; };
 		683D9682196BEC680057B62D /* DHLevelTriIncircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9681196BEC680057B62D /* DHLevelTriIncircle.m */; };
 		683D9685196D2A390057B62D /* DHLevelTriCircumcircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9684196D2A390057B62D /* DHLevelTriCircumcircle.m */; };
 		683D9688196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9687196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m */; };
@@ -47,11 +52,6 @@
 		68F0A9DB19587AEC00A97B86 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 68F0A9D919587AEC00A97B86 /* Main.storyboard */; };
 		68F0A9DE19587AEC00A97B86 /* DHGeometryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0A9DD19587AEC00A97B86 /* DHGeometryViewController.m */; };
 		68F0A9E019587AEC00A97B86 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 68F0A9DF19587AEC00A97B86 /* Images.xcassets */; };
-		68F0A9E719587AEC00A97B86 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9E619587AEC00A97B86 /* XCTest.framework */; };
-		68F0A9E819587AEC00A97B86 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
-		68F0A9E919587AEC00A97B86 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
-		68F0A9F119587AEC00A97B86 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 68F0A9EF19587AEC00A97B86 /* InfoPlist.strings */; };
-		68F0A9F319587AEC00A97B86 /* PrincipiaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0A9F219587AEC00A97B86 /* PrincipiaTests.m */; };
 		68F0A9FE1958BDD500A97B86 /* DHGeometryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */; };
 		68F0AA011958C5AB00A97B86 /* DHGeometricObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA001958C5AB00A97B86 /* DHGeometricObjects.m */; };
 		68F0AA04195969A300A97B86 /* DHGeometricTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA03195969A300A97B86 /* DHGeometricTools.m */; };
@@ -68,16 +68,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		68F0A9EA19587AEC00A97B86 /* PBXContainerItemProxy */ = {
+		68376941197C315700D53E21 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 68F0A9BC19587AEC00A97B86 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 68F0A9C319587AEC00A97B86;
-			remoteInfo = Principia;
+			remoteInfo = Euclid;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		68376934197C315600D53E21 /* Euclid Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Euclid Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6837693A197C315700D53E21 /* Euclid Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Euclid Tests-Info.plist"; sourceTree = "<group>"; };
+		6837693C197C315700D53E21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6837693E197C315700D53E21 /* Euclid_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Euclid_Tests.m; sourceTree = "<group>"; };
+		68376940197C315700D53E21 /* Euclid Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Euclid Tests-Prefix.pch"; sourceTree = "<group>"; };
 		683D9680196BEC680057B62D /* DHLevelTriIncircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTriIncircle.h; sourceTree = "<group>"; };
 		683D9681196BEC680057B62D /* DHLevelTriIncircle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelTriIncircle.m; sourceTree = "<group>"; };
 		683D9683196D2A390057B62D /* DHLevelTriCircumcircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTriCircumcircle.h; sourceTree = "<group>"; };
@@ -153,11 +158,7 @@
 		68F0A9DC19587AEC00A97B86 /* DHGeometryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHGeometryViewController.h; sourceTree = "<group>"; };
 		68F0A9DD19587AEC00A97B86 /* DHGeometryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DHGeometryViewController.m; sourceTree = "<group>"; };
 		68F0A9DF19587AEC00A97B86 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		68F0A9E519587AEC00A97B86 /* EuclidTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EuclidTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		68F0A9E619587AEC00A97B86 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		68F0A9EE19587AEC00A97B86 /* EuclidTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "EuclidTests-Info.plist"; sourceTree = "<group>"; };
-		68F0A9F019587AEC00A97B86 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		68F0A9F219587AEC00A97B86 /* PrincipiaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrincipiaTests.m; sourceTree = "<group>"; };
 		68F0A9FC1958BDD500A97B86 /* DHGeometryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGeometryView.h; sourceTree = "<group>"; };
 		68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGeometryView.m; sourceTree = "<group>"; };
 		68F0A9FF1958C5AB00A97B86 /* DHGeometricObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGeometricObjects.h; sourceTree = "<group>"; };
@@ -191,6 +192,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		68376931197C315600D53E21 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68376935197C315700D53E21 /* XCTest.framework in Frameworks */,
+				68376937197C315700D53E21 /* UIKit.framework in Frameworks */,
+				68376936197C315700D53E21 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		68F0A9C119587AEC00A97B86 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -203,19 +214,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		68F0A9E219587AEC00A97B86 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				68F0A9E719587AEC00A97B86 /* XCTest.framework in Frameworks */,
-				68F0A9E919587AEC00A97B86 /* UIKit.framework in Frameworks */,
-				68F0A9E819587AEC00A97B86 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		68376938197C315700D53E21 /* Euclid Tests */ = {
+			isa = PBXGroup;
+			children = (
+				6837693E197C315700D53E21 /* Euclid_Tests.m */,
+				68376939197C315700D53E21 /* Supporting Files */,
+			);
+			path = "Euclid Tests";
+			sourceTree = "<group>";
+		};
+		68376939197C315700D53E21 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6837693A197C315700D53E21 /* Euclid Tests-Info.plist */,
+				6837693B197C315700D53E21 /* InfoPlist.strings */,
+				68376940197C315700D53E21 /* Euclid Tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		6866224919779248004DCFAC /* Game Center & StoreKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -231,7 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				68F0A9CD19587AEC00A97B86 /* Euclid */,
-				68F0A9EC19587AEC00A97B86 /* EuclidTests */,
+				68376938197C315700D53E21 /* Euclid Tests */,
 				68F0A9C619587AEC00A97B86 /* Frameworks */,
 				68F0A9C519587AEC00A97B86 /* Products */,
 			);
@@ -241,7 +261,7 @@
 			isa = PBXGroup;
 			children = (
 				68F0A9C419587AEC00A97B86 /* Euclid.app */,
-				68F0A9E519587AEC00A97B86 /* EuclidTests.xctest */,
+				68376934197C315600D53E21 /* Euclid Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -284,25 +304,6 @@
 				68F0A9D019587AEC00A97B86 /* InfoPlist.strings */,
 				68F0A9D319587AEC00A97B86 /* main.m */,
 				68F0A9D519587AEC00A97B86 /* Euclid-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		68F0A9EC19587AEC00A97B86 /* EuclidTests */ = {
-			isa = PBXGroup;
-			children = (
-				68F0A9F219587AEC00A97B86 /* PrincipiaTests.m */,
-				68F0A9ED19587AEC00A97B86 /* Supporting Files */,
-			);
-			name = EuclidTests;
-			path = PrincipiaTests;
-			sourceTree = "<group>";
-		};
-		68F0A9ED19587AEC00A97B86 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				68F0A9EE19587AEC00A97B86 /* EuclidTests-Info.plist */,
-				68F0A9EF19587AEC00A97B86 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -425,6 +426,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		68376933197C315600D53E21 /* Euclid Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 68376943197C315700D53E21 /* Build configuration list for PBXNativeTarget "Euclid Tests" */;
+			buildPhases = (
+				68376930197C315600D53E21 /* Sources */,
+				68376931197C315600D53E21 /* Frameworks */,
+				68376932197C315600D53E21 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				68376942197C315700D53E21 /* PBXTargetDependency */,
+			);
+			name = "Euclid Tests";
+			productName = "Euclid Tests";
+			productReference = 68376934197C315600D53E21 /* Euclid Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		68F0A9C319587AEC00A97B86 /* Euclid */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 68F0A9F619587AEC00A97B86 /* Build configuration list for PBXNativeTarget "Euclid" */;
@@ -442,24 +461,6 @@
 			productReference = 68F0A9C419587AEC00A97B86 /* Euclid.app */;
 			productType = "com.apple.product-type.application";
 		};
-		68F0A9E419587AEC00A97B86 /* EuclidTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 68F0A9F919587AEC00A97B86 /* Build configuration list for PBXNativeTarget "EuclidTests" */;
-			buildPhases = (
-				68F0A9E119587AEC00A97B86 /* Sources */,
-				68F0A9E219587AEC00A97B86 /* Frameworks */,
-				68F0A9E319587AEC00A97B86 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				68F0A9EB19587AEC00A97B86 /* PBXTargetDependency */,
-			);
-			name = EuclidTests;
-			productName = PrincipiaTests;
-			productReference = 68F0A9E519587AEC00A97B86 /* EuclidTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -470,6 +471,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "David Hallgren";
 				TargetAttributes = {
+					68376933197C315600D53E21 = {
+						TestTargetID = 68F0A9C319587AEC00A97B86;
+					};
 					68F0A9C319587AEC00A97B86 = {
 						DevelopmentTeam = 99K4X6B359;
 						SystemCapabilities = {
@@ -480,9 +484,6 @@
 								enabled = 1;
 							};
 						};
-					};
-					68F0A9E419587AEC00A97B86 = {
-						TestTargetID = 68F0A9C319587AEC00A97B86;
 					};
 				};
 			};
@@ -500,12 +501,20 @@
 			projectRoot = "";
 			targets = (
 				68F0A9C319587AEC00A97B86 /* Euclid */,
-				68F0A9E419587AEC00A97B86 /* EuclidTests */,
+				68376933197C315600D53E21 /* Euclid Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		68376932197C315600D53E21 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6837693D197C315700D53E21 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		68F0A9C219587AEC00A97B86 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -516,17 +525,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		68F0A9E319587AEC00A97B86 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				68F0A9F119587AEC00A97B86 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		68376930197C315600D53E21 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6837693F197C315700D53E21 /* Euclid_Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		68F0A9C019587AEC00A97B86 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -579,25 +588,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		68F0A9E119587AEC00A97B86 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				68F0A9F319587AEC00A97B86 /* PrincipiaTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		68F0A9EB19587AEC00A97B86 /* PBXTargetDependency */ = {
+		68376942197C315700D53E21 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 68F0A9C319587AEC00A97B86 /* Euclid */;
-			targetProxy = 68F0A9EA19587AEC00A97B86 /* PBXContainerItemProxy */;
+			targetProxy = 68376941197C315700D53E21 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		6837693B197C315700D53E21 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6837693C197C315700D53E21 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		68F0A9D019587AEC00A97B86 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -614,17 +623,49 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		68F0A9EF19587AEC00A97B86 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				68F0A9F019587AEC00A97B86 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		68376944197C315700D53E21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Euclid.app/Euclid";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Euclid Tests/Euclid Tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Euclid Tests/Euclid Tests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		68376945197C315700D53E21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Euclid.app/Euclid";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Euclid Tests/Euclid Tests-Prefix.pch";
+				INFOPLIST_FILE = "Euclid Tests/Euclid Tests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
 		68F0A9F419587AEC00A97B86 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -733,49 +774,17 @@
 			};
 			name = Release;
 		};
-		68F0A9FA19587AEC00A97B86 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Principia.app/Principia";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Principia/Principia-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "PrincipiaTests/EuclidTests-Info.plist";
-				PRODUCT_NAME = EuclidTests;
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		68F0A9FB19587AEC00A97B86 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Principia.app/Principia";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Principia/Principia-Prefix.pch";
-				INFOPLIST_FILE = "PrincipiaTests/EuclidTests-Info.plist";
-				PRODUCT_NAME = EuclidTests;
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		68376943197C315700D53E21 /* Build configuration list for PBXNativeTarget "Euclid Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68376944197C315700D53E21 /* Debug */,
+				68376945197C315700D53E21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		68F0A9BF19587AEC00A97B86 /* Build configuration list for PBXProject "Euclid" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -790,15 +799,6 @@
 			buildConfigurations = (
 				68F0A9F719587AEC00A97B86 /* Debug */,
 				68F0A9F819587AEC00A97B86 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		68F0A9F919587AEC00A97B86 /* Build configuration list for PBXNativeTarget "EuclidTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				68F0A9FA19587AEC00A97B86 /* Debug */,
-				68F0A9FB19587AEC00A97B86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -75,16 +75,13 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHBisectLine* bline = [[DHBisectLine alloc] init];
-    bline.line1 = _lineAB;
-    bline.line2 = _lineAC;
-    
-    CGVector bpointVec = bline.vector;
-    CGPoint bpointPos = CGPointMake(_lineAB.start.position.x + bpointVec.dx*100, _lineAB.start.position.y + bpointVec.dy*100);
-    DHPoint* bpoint = [[DHPoint alloc] initWithPositionX:bpointPos.x andY:bpointPos.y];
-    DHLineSegment* bseg = [[DHLineSegment alloc] initWithStart:_lineAB.start andEnd:bpoint];
-    
-    [objects insertObject:bseg atIndex:0];
+    DHCircle* cAC = [[DHCircle alloc] initWithCenter:_lineAC.start andPointOnRadius:_lineAC.end];
+    DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc] init];
+    ip.c = cAC;
+    ip.l = _lineAB;
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_lineAC.end andPoint2:ip];
+    DHRay* rayBisector = [[DHRay alloc] initWithStart:_lineAB.start andEnd:mp];
+    [objects insertObject:rayBisector atIndex:0];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

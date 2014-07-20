@@ -45,7 +45,7 @@
 }
 - (NSUInteger)minimumNumberOfMovesPrimitiveOnly
 {
-    return 10;
+    return 8;
 }
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects

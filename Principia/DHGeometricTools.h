@@ -54,91 +54,70 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 - (void)reset;
 @end
 
-
-@interface DHZoomPanTool : NSObject <DHGeometryTool>
+@interface DHGeometryTool : NSObject
 @property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
 @property (nonatomic) intptr_t associatedTouch;
 @end
 
-@interface DHPointTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+
+@interface DHZoomPanTool : DHGeometryTool <DHGeometryTool>
+@end
+
+@interface DHPointTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* point;
 @property (nonatomic) CGPoint touchStart;
 @end
 
 
-@interface DHLineSegmentTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHLineSegmentTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
 
 
-@interface DHCircleTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHCircleTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* center;
 @end
 
-@interface DHIntersectTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHIntersectTool : DHGeometryTool <DHGeometryTool>
 @end
 
 
-@interface DHMidPointTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHMidPointTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
 
-@interface DHLineTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHLineTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
 
-@interface DHTriangleTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHTriangleTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
 
 
-@interface DHBisectTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHBisectTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHLineObject* firstLine;
 @property (nonatomic, weak) DHPoint* firstPoint;
 @property (nonatomic, weak) DHPoint* secondPoint;
 @end
 
 
-@interface DHPerpendicularTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHPerpendicularTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHLineObject* line;
 @end
 
-@interface DHParallelTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHParallelTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHLineObject* line;
 @end
 
-@interface DHTranslateSegmentTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHTranslateSegmentTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* start;
 @property (nonatomic, weak) DHPoint* end;
 @property (nonatomic, weak) DHLineSegment* segment;
 @property (nonatomic) BOOL disableWhenOnSameLine;
 @end
 
-@interface DHCompassTool : NSObject <DHGeometryTool>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
+@interface DHCompassTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* firstPoint;
 @property (nonatomic, weak) DHPoint* secondPoint;
 @property (nonatomic, weak) DHLineSegment* radiusSegment;

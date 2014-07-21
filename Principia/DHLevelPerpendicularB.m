@@ -72,12 +72,18 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHLineSegment* r = [[DHLineSegment alloc] init];
-    r.start = _pointC;
-    DHPoint* pend = [[DHPoint alloc] initWithPositionX:_pointC.position.x andY:_lineAB.start.position.y];
-    r.end = pend;
+    DHCircle* c = [[DHCircle alloc] initWithCenter:_pointC andPointOnRadius:_lineAB.end];
+    DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc] init];
+    ip.c = c;
+    ip.l = _lineAB;
+    ip.preferEnd = NO;
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:ip andPoint2:_lineAB.end];
     
-    [objects insertObject:r atIndex:0];
+    DHLineSegment* sPerp = [[DHLineSegment alloc] init];
+    sPerp.start = _pointC;
+    sPerp.end = mp;
+    
+    [objects insertObject:sPerp atIndex:0];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

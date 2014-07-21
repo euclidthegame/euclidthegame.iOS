@@ -116,6 +116,7 @@
 @interface DHPointOnCircle : DHPoint
 @property (nonatomic, strong) DHCircle* circle;
 @property (nonatomic) CGFloat angle; // Angle of rotation from positive x-axis to point
+- (instancetype)initWithCircle:(DHCircle*)circle andAngle:(CGFloat)angle;
 @end
 
 

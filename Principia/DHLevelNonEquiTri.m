@@ -69,15 +69,18 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHCircle* c1 = [[DHCircle alloc] init];
-    c1.center = _lineAB.start;
-    c1.pointOnRadius = [[DHPoint alloc] initWithPositionX:_lineAB.start.position.x + _lineCD.length
-                                                     andY:_lineAB.start.position.y];
+    DHTranslatedPoint* tp1 = [[DHTranslatedPoint alloc] init];
+    tp1.startOfTranslation = _lineAB.start;
+    tp1.translationStart = _lineCD.start;
+    tp1.translationEnd = _lineCD.end;
 
-    DHCircle* c2 = [[DHCircle alloc] init];
-    c2.center = _lineAB.end;
-    c2.pointOnRadius = [[DHPoint alloc] initWithPositionX:_lineAB.end.position.x - _lineEF.length
-                                                     andY:_lineAB.end.position.y];
+    DHTranslatedPoint* tp2 = [[DHTranslatedPoint alloc] init];
+    tp2.startOfTranslation = _lineAB.end;
+    tp2.translationStart = _lineEF.start;
+    tp2.translationEnd = _lineEF.end;
+    
+    DHCircle* c1 = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:tp1];
+    DHCircle* c2 = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:tp2];
     
     DHIntersectionPointCircleCircle* p = [[DHIntersectionPointCircleCircle alloc] init];
     p.c1 = c1;

@@ -358,6 +358,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 @end
 
 @implementation DHPointOnCircle
+- (instancetype)initWithCircle:(DHCircle *)circle andAngle:(CGFloat)angle
+{
+    self = [super init];
+    if (self) {
+        _circle = circle;
+        _angle = angle;
+        [self updatePosition];
+    }
+    return self;
+}
+
 - (void)setCircle:(DHCircle *)circle
 {
     _circle = circle;

@@ -74,10 +74,16 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHPoint* p = [[DHPoint alloc] initWithPositionX:_lineCD.start.position.x+_lineAB.length
-                                               andY:_lineCD.start.position.y];
+    DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
+    tp.startOfTranslation = _lineCD.start;
+    tp.translationStart = _lineAB.start;
+    tp.translationEnd = _lineAB.end;
+    DHCircle* c = [[DHCircle alloc] initWithCenter:_lineCD.start andPointOnRadius:tp];
+    DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc] init];
+    ip.c = c;
+    ip.l = _lineCD;
     
-    [objects addObject:p];
+    [objects addObject:ip];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects

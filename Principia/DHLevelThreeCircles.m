@@ -68,8 +68,6 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    CGPoint pc1Pos = _circle1.center.position;
-    
     DHTranslatedPoint* pc2 = [[DHTranslatedPoint alloc] init];
     pc2.startOfTranslation = _lAB.end;
     pc2.translationStart = _lAB.start;
@@ -78,13 +76,14 @@
     DHCircle* c2 = [[DHCircle alloc] initWithCenter:pc2 andPointOnRadius:_lAB.end];
     [objects insertObject:c2 atIndex:0];
     
-    CGVector vAC2 = CGVectorBetweenPoints(_lAB.start.position, c2.center.position);
-    CGVector vAC3 = CGVectorRotateByAngle(vAC2, M_PI/3.0);
+    DHTrianglePoint* pt = [[DHTrianglePoint alloc] initWithPoint1:_lAB.start andPoint2:pc2];
+    DHLineSegment* l = [[DHLineSegment alloc] initWithStart:_lAB.start andEnd:pt];
+    DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc] init];
+    ip.c = _circle1;
+    ip.l = l;
     
-    DHPoint* pc3 = [[DHPoint alloc] initWithPositionX:pc1Pos.x+vAC3.dx andY:pc1Pos.y - vAC3.dy];
-    DHPoint* pc3r = [[DHPoint alloc] initWithPositionX:pc1Pos.x+0.5*vAC3.dx andY:pc1Pos.y - 0.5*vAC3.dy];
     
-    DHCircle* c3 = [[DHCircle alloc] initWithCenter:pc3 andPointOnRadius:pc3r];
+    DHCircle* c3 = [[DHCircle alloc] initWithCenter:pt andPointOnRadius:ip];
     [objects insertObject:c3 atIndex:0];
 }
 

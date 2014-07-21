@@ -79,21 +79,19 @@
     bl2.line1 = _lAC;
     bl2.line2 = _lBC;
     
-    DHIntersectionPointLineLine* ip = [[DHIntersectionPointLineLine alloc] init];
-    ip.l1 = bl1;
-    ip.l2 = bl2;
+    DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] init];
+    ip1.l1 = bl1;
+    ip1.l2 = bl2;
     
-    CGFloat sideAB = _lAB.length;
-    CGFloat sideAC = _lAC.length;
-    CGFloat sideBC = _lBC.length;
-    CGFloat triPerimiter = sideAB + sideAC + sideBC;
-    CGFloat halfPerim = triPerimiter*0.5;
-    CGFloat triArea = sqrt(halfPerim*(halfPerim-sideAB)*(halfPerim-sideAC)*(halfPerim-sideBC));
-    CGFloat incircleRadius = 2 * triArea / triPerimiter;
+    DHPerpendicularLine* lp = [[DHPerpendicularLine alloc] init];
+    lp.line = _lBC;
+    lp.point = ip1;
     
-    DHCircle* c = [[DHCircle alloc] init];
-    c.center = ip;
-    c.pointOnRadius = [[DHPoint alloc] initWithPositionX:ip.position.x+incircleRadius andY:ip.position.y];
+    DHIntersectionPointLineLine* ip2 = [[DHIntersectionPointLineLine alloc] init];
+    ip2.l1 = _lBC;
+    ip2.l2 = lp;
+        
+    DHCircle* c = [[DHCircle alloc] initWithCenter:ip1 andPointOnRadius:ip2];
     [objects insertObject:c atIndex:0];
 }
 

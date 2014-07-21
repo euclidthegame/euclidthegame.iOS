@@ -85,11 +85,21 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHPoint* pOnA = [[DHPoint alloc] initWithPositionX:_circleA.center.position.x
-                                                  andY:(_circleA.center.position.y + _circleA.radius)];
-    DHPoint* pOnB = [[DHPoint alloc] initWithPositionX:_circleB.center.position.x
-                                                  andY:(_circleB.center.position.y + _circleB.radius)];
     DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
+    DHPerpendicularLine* lpA = [[DHPerpendicularLine alloc] init];
+    lpA.line = r1;
+    lpA.point = _circleA.center;
+    DHPerpendicularLine* lpB = [[DHPerpendicularLine alloc] init];
+    lpB.line = r1;
+    lpB.point = _circleB.center;
+
+    DHIntersectionPointLineCircle* pOnA = [[DHIntersectionPointLineCircle alloc] init];
+    pOnA.c = _circleA;
+    pOnA.l = lpA;
+    DHIntersectionPointLineCircle* pOnB = [[DHIntersectionPointLineCircle alloc] init];
+    pOnB.c = _circleB;
+    pOnB.l = lpB;
+    
     DHRay* r2 = [[DHRay alloc] initWithStart:pOnB andEnd:pOnA];
 
     DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];

@@ -91,15 +91,35 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    CGVector vAB = _rayA1.vector;
-    CGVector vAC = _rayA2.vector;
+    DHCircle* c1 = [[DHCircle alloc] initWithCenter:_rayA2.start andPointOnRadius:_rayA2.end];
+    DHIntersectionPointLineCircle* ip1 = [[DHIntersectionPointLineCircle alloc] init];
+    ip1.c = c1;
+    ip1.l = _rayA1;
     
-    CGFloat angle = CGVectorAngleBetween(vAB, vAC);
-    CGVector vDE = CGVectorRotateByAngle(CGVectorNormalize(_rayB.vector), -angle);
+    DHTranslatedPoint* tp1 = [[DHTranslatedPoint alloc] init];
+    tp1.startOfTranslation = _pointB;
+    tp1.translationStart = _rayA1.start;
+    tp1.translationEnd = _rayA2.end;
+
+    DHCircle* c2 = [[DHCircle alloc] initWithCenter:_pointB andPointOnRadius:tp1];
+
+    DHIntersectionPointLineCircle* ip2 = [[DHIntersectionPointLineCircle alloc] init];
+    ip2.c = c2;
+    ip2.l = _rayB;
     
-    DHPoint* p = [[DHPoint alloc] initWithPositionX:_pointB.position.x + 100*vDE.dx
-                                               andY:_pointB.position.y + 100*vDE.dy];
-    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_pointB andEnd:p];
+    DHTranslatedPoint* tp2 = [[DHTranslatedPoint alloc] init];
+    tp2.startOfTranslation = ip2;
+    tp2.translationStart = _rayA2.end;
+    tp2.translationEnd = ip1;
+
+    DHCircle* c3 = [[DHCircle alloc] initWithCenter:ip2 andPointOnRadius:tp2];
+    
+    DHIntersectionPointCircleCircle* ip3 = [[DHIntersectionPointCircleCircle alloc] init];
+    ip3.c1 = c2;
+    ip3.c2 = c3;
+    ip3.onPositiveY = YES;
+    
+    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_pointB andEnd:ip3];
     
     [objects insertObject:r atIndex:0];
 }

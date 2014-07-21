@@ -25,7 +25,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a regular pentagon inscribed in the given circle with B as one of its points.");
+    return (@"Construct a regular pentagon inscribed in the given circle with B as one of its vertices.");
 }
 
 - (DHToolsAvailable)availableTools
@@ -61,22 +61,10 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    CGVector vAB = CGVectorBetweenPoints(_circle.pointOnRadius.position, _circle.center.position);
-    CGFloat side = 2*CGVectorLength(vAB)*sin(M_PI/5);
-    CGVector vBC = CGVectorRotateByAngle(vAB, M_PI*3/5*0.5);
-    vBC = CGVectorMultiplyByScalar(CGVectorNormalize(vBC),side);
-    CGPoint pCPos = CGPointFromPointByAddingVector(_circle.pointOnRadius.position, vBC);
-    CGVector vCD = CGVectorRotateByAngle(vBC, -M_PI*2/5);
-    CGPoint pDPos = CGPointFromPointByAddingVector(pCPos, vCD);
-    CGVector vDE = CGVectorRotateByAngle(vCD, -M_PI*2/5);
-    CGPoint pEPos = CGPointFromPointByAddingVector(pDPos, vDE);
-    CGVector vEF = CGVectorRotateByAngle(vDE, -M_PI*2/5);
-    CGPoint pFPos = CGPointFromPointByAddingVector(pEPos, vEF);
-    
-    DHPoint* pC = [[DHPoint alloc] initWithPositionX:pCPos.x andY:pCPos.y];
-    DHPoint* pD = [[DHPoint alloc] initWithPositionX:pDPos.x andY:pDPos.y];
-    DHPoint* pE = [[DHPoint alloc] initWithPositionX:pEPos.x andY:pEPos.y];
-    DHPoint* pF = [[DHPoint alloc] initWithPositionX:pFPos.x andY:pFPos.y];
+    DHPointOnCircle* pC = [[DHPointOnCircle alloc] initWithCircle:_circle andAngle:M_PI*(1.5 - 0.4)];
+    DHPointOnCircle* pD = [[DHPointOnCircle alloc] initWithCircle:_circle andAngle:M_PI*(1.5 - 0.8)];
+    DHPointOnCircle* pE = [[DHPointOnCircle alloc] initWithCircle:_circle andAngle:M_PI*(1.5 - 1.2)];
+    DHPointOnCircle* pF = [[DHPointOnCircle alloc] initWithCircle:_circle andAngle:M_PI*(1.5 - 1.6)];
 
     DHLineSegment* lBC = [[DHLineSegment alloc] initWithStart:_circle.pointOnRadius andEnd:pC];
     DHLineSegment* lCD = [[DHLineSegment alloc] initWithStart:pC andEnd:pD];

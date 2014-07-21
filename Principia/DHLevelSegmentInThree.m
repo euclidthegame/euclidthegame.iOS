@@ -61,13 +61,8 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    CGPoint pA = _lAB.start.position;
-    CGVector vAB = _lAB.vector;
-    CGVector vAC = CGVectorMultiplyByScalar(vAB, 1/3.0);
-    CGVector vAD = CGVectorMultiplyByScalar(vAB, 2/3.0);
-    
-    DHPoint* pC = [[DHPoint alloc] initWithPositionX:pA.x + vAC.dx andY:pA.y + vAC.dy];
-    DHPoint* pD = [[DHPoint alloc] initWithPositionX:pA.x + vAD.dx andY:pA.y + vAD.dy];
+    DHPointOnLine* pC = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:1/3.0];
+    DHPointOnLine* pD = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:2/3.0];
     
     [objects addObject:pC];
     [objects addObject:pD];

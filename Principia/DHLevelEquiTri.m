@@ -113,50 +113,92 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    if (geometricObjects.count < 3) {
-        return NO;
-    }
+    // Solution criteria
+    BOOL pC1_OK = NO;
+    BOOL pC2_OK = NO;
+    BOOL sAC1_OK = NO;
+    BOOL sBC1_OK = NO;
+    BOOL sAC2_OK = NO;
+    BOOL sBC2_OK = NO;
     
-    for (int index1 = 0; index1 < geometricObjects.count-2; ++index1) {
-        id object1 = [geometricObjects objectAtIndex:index1];
-        if ([[object1 class] isSubclassOfClass:[DHLineSegment class]] == NO) continue;
+    DHTrianglePoint* pCAlt1 = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
+    DHTrianglePoint* pCAlt2 = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.end andPoint2:_lineAB.start];
+    
+    for (int index = 0; index < geometricObjects.count; ++index) {
+        id object = [geometricObjects objectAtIndex:index];
         
-        for (int index2 = index1+1; index2 < geometricObjects.count-1; ++index2) {
-            id object2 = [geometricObjects objectAtIndex:index2];
-            if ([[object2 class] isSubclassOfClass:[DHLineSegment class]] == NO) continue;
+        if (object != _lineAB && [[object class] isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* line = object;
+            CGFloat distA = DistanceFromPointToLine(_lineAB.start, line);
+            CGFloat distB = DistanceFromPointToLine(_lineAB.end, line);
+            CGFloat distCAlt1 = DistanceFromPointToLine(pCAlt1, line);
+            CGFloat distCAlt2 = DistanceFromPointToLine(pCAlt2, line);
             
-            for (int index3 = index2+1; index3 < geometricObjects.count; ++index3) {
-                id object3 = [geometricObjects objectAtIndex:index3];
-                if ([[object3 class] isSubclassOfClass:[DHLineSegment class]] == NO) continue;
-                
-                DHLineSegment* l1 = object1;
-                DHLineSegment* l2 = object2;
-                DHLineSegment* l3 = object3;
-                
-                CGFloat length1 = l1.length;
-                CGFloat length2 = l2.length;
-                CGFloat length3 = l3.length;
-                
-                // Ensure one of the lines is AB
-                if (l1 != _lineAB && l2 != _lineAB && l3 != _lineAB) {
-                    continue;
-                }
-                
-                // Ensure all lines are different
-                if (AreLinesEqual(l1, l2) || AreLinesEqual(l1, l3) || AreLinesEqual(l2, l3)) {
-                    continue;
-                }
-                
-                // Ensure all lines are connected and of same length
-                BOOL connected = AreLinesConnected(l1,l2) && AreLinesConnected(l2,l3) && AreLinesConnected(l3,l1);
-                if (connected && fabs(length1 - length2) < 0.01 && fabs(length2 - length3) < 0.01) {
-                    return YES;
-                }
-            }
+            if (distA < 0.01 && distCAlt1 < 0.01) sAC1_OK = YES;
+            if (distA < 0.01 && distCAlt2 < 0.01) sAC2_OK = YES;
+            if (distB < 0.01 && distCAlt1 < 0.01) sBC1_OK = YES;
+            if (distB < 0.01 && distCAlt2 < 0.01) sBC2_OK = YES;
+        }
+        if ([[object class] isSubclassOfClass:[DHPoint class]] && [object class] != [DHPoint class]) {
+            DHPoint* point = object;
+            CGFloat distCAlt1 = DistanceBetweenPoints(pCAlt1.position, point.position);
+            CGFloat distCAlt2 = DistanceBetweenPoints(pCAlt2.position, point.position);
+            if (distCAlt1 < 0.01) pC1_OK = YES;
+            if (distCAlt2 < 0.01) pC2_OK = YES;
         }
     }
     
+    self.progress = ((pC1_OK || pC2_OK) + (sAC1_OK || sAC2_OK || sBC1_OK || sBC2_OK) +
+                     ((sAC1_OK && sBC1_OK) || (sAC2_OK && sBC2_OK)))/3.0 * 100;
+    
+    if ((pC1_OK && sAC1_OK && sBC1_OK) || (pC2_OK && sAC2_OK && sBC2_OK)) {
+        return YES;
+    }
+    
     return NO;
+}
+
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    // Objects to test
+    DHCircle* cAB = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
+    DHCircle* cBA = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
+    DHTrianglePoint* pTop = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
+    DHTrianglePoint* pBottom = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.end andPoint2:_lineAB.start];
+    DHLineSegment* sAC = [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:pTop];
+    DHLineSegment* sAD = [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:pBottom];
+    DHLineSegment* sBC = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pTop];
+    DHLineSegment* sBD = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pBottom];
+    
+    
+    for (id object in objects){
+        if (EqualCircles(cAB, object)) {
+            return cAB.center.position;
+        }
+        if (EqualCircles(cBA, object)) {
+            return cBA.center.position;
+        }
+        if (EqualPoints(pTop, object)) {
+            return pTop.position;
+        }
+        if (EqualPoints(pBottom, object)) {
+            return pBottom.position;
+        }
+        if (EqualSegments(sAC, object)) {
+            return MidPointFromPoints(sAC.start.position,sAC.end.position);
+        }
+        if (EqualSegments(sAD, object)) {
+            return MidPointFromPoints(sAD.start.position,sAD.end.position);
+        }
+        if (EqualSegments(sBD, object)) {
+            return MidPointFromPoints(sBD.start.position,sBD.end.position);
+        }
+        if (EqualSegments(sBC, object)) {
+            return MidPointFromPoints(sBC.start.position,sBC.end.position);
+        }
+    }
+
+    return CGPointMake(NAN, NAN);
 }
 
 

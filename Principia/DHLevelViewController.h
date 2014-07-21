@@ -25,6 +25,7 @@
 @property (nonatomic, weak) IBOutlet UILabel* levelInstruction;
 @property (nonatomic, weak) IBOutlet UILabel* movesLabel;
 @property (nonatomic, weak) IBOutlet UILabel* movesLeftLabel;
+@property (nonatomic, weak) IBOutlet UILabel* progressLabel;
 @property (nonatomic, weak) IBOutlet DHGeometryView* geometryView;
 
 @property (nonatomic, weak) DHGeometryViewController* geometryViewController;

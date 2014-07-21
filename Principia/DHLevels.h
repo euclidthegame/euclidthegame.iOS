@@ -36,6 +36,8 @@
 #import "DHLevelTwoCirclesInnerTangent.h"
 #import "DHLevelPentagon.h"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
 static void FillLevelArray(NSMutableArray* array) {
     [array addObject:[[DHLevelEquiTri alloc] init]];
     [array addObject:[[DHLevelMidPoint alloc] init]];
@@ -63,5 +65,6 @@ static void FillLevelArray(NSMutableArray* array) {
     [array addObject:[[DHLevelTwoCirclesInnerTangent alloc] init]];
     [array addObject:[[DHLevelPentagon alloc] init]];
 }
+#pragma clang diagnostic pop
 
 #endif

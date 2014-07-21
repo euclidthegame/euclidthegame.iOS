@@ -1222,7 +1222,7 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
                 DHIntersectionResult r = IntersectionTestLineLine(self.firstLine, line);
                 if (r.intersect == NO) {
                     [self.delegate showTemporaryMessage:@"The lines must intersect or be connected to define an angle"
-                                                atPoint:touchPointInView];
+                                                atPoint:touchPointInView withColor:[UIColor redColor]];
                     return;
                 }
                 
@@ -1230,7 +1230,7 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
                 CGFloat angle = CGVectorAngleBetween(self.firstLine.vector, line.vector);
                 if (angle < 0.0001 || fabs(angle - M_PI) < 0.001) {
                     [self.delegate showTemporaryMessage:@"The lines can not be parallel to define an angle"
-                                                atPoint:touchPointInView];
+                                                atPoint:touchPointInView withColor:[UIColor redColor]];
                     return;
                 }
                 
@@ -1271,7 +1271,7 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
                 CGFloat angle = CGVectorAngleBetween(v1, v2);
                 if (angle < 0.0001 || fabs(angle - M_PI) < 0.001) {
                     [self.delegate showTemporaryMessage:@"The points can not all lie on a line to define an angle"
-                                                atPoint:touchPointInView];
+                                                atPoint:touchPointInView withColor:[UIColor redColor]];
                     return;
                 }
                 
@@ -1542,7 +1542,7 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
             CGFloat angle = CGVectorAngleBetween(vLineDir, vLineStartToPoint);
             if (fabs(angle) < 0.0001) {
                 [self.delegate showTemporaryMessage:@"Not allowed, point lies on same line as segment"
-                                            atPoint:touchPointInView];
+                                            atPoint:touchPointInView withColor:[UIColor redColor]];
                 return;
             }
         }

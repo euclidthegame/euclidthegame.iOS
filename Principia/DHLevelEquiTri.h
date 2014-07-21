@@ -10,6 +10,7 @@
 #import "DHLevel.h"
 
 @interface DHLevelEquiTri : NSObject <DHLevel>
+@property NSUInteger progress;
 
 - (NSString*)levelDescription;
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects;

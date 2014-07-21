@@ -15,6 +15,7 @@
 #import "DHGeometricTransform.h"
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
+#import "DHLevels.h"
 
 @implementation DHLevelViewController {
     NSMutableArray* _geometricObjects;
@@ -119,6 +120,12 @@
         self.movesLeftLabel.hidden = YES;
     }
     
+    if ([_currentLevel respondsToSelector:@selector(progress)]) {
+        self.progressLabel.hidden = NO;
+    } else {
+        self.progressLabel.hidden = YES;
+    }
+    
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
     
@@ -166,6 +173,8 @@
     [self.geometryView setNeedsDisplay];
     self.levelCompletionMessage.hidden = YES;
     
+    self.progressLabel.text = @"Progress: 0%";
+    
     [_geometricObjectsForRedo removeAllObjects];
     [_geometricObjectsForUndo removeAllObjects];
     
@@ -197,7 +206,8 @@
     if (countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0) {
         [self.geometryView setNeedsDisplay];
         [self showTemporaryMessage:@"Sorry, out of moves, undo or reset the level"
-                           atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)];
+                           atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)
+                         withColor:[UIColor redColor]];
         return;
     }
     
@@ -289,6 +299,20 @@
             }
         }
     }
+    
+    // If level supports progress tracking, update the progress indicator
+    if ([_currentLevel respondsToSelector:@selector(progress)]) {
+        self.progressLabel.text = [NSString stringWithFormat:@"Progress: %d%%", _currentLevel.progress];
+    }
+    
+    // If level supports progress hints, check new objects towards them
+    if ([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)]) {
+        CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
+        if (!isnan(hintLocation.x)) {
+            [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocation withColor:[UIColor blackColor]];
+        }
+    }
+    
 }
 
 - (void)addTemporaryGeometricObjects:(NSArray *)objects
@@ -497,6 +521,11 @@
         _undoButton.enabled = false;
     }
     
+    if ([_currentLevel respondsToSelector:@selector(progress)]) {
+        [_currentLevel isLevelComplete:_geometricObjects];
+        self.progressLabel.text = [NSString stringWithFormat:@"Progress: %d%%", _currentLevel.progress];
+    }
+    
     [self.geometryView setNeedsDisplay];
 }
 
@@ -589,12 +618,12 @@
     self.levelCompletionMessage.hidden = YES;
 }
 
-- (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point
+- (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color
 {
     UILabel* label = [[UILabel alloc] init];
     label.alpha = 0;
     label.text = message;
-    label.textColor = [UIColor redColor];
+    label.textColor = color;
     
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;

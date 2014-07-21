@@ -10,9 +10,8 @@
 #import "DHLevel.h"
 
 @interface DHLevelTutorial : NSObject <DHLevel>
-
+@property NSUInteger progress;
 - (NSString*)levelDescription;
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects;
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;
-
 @end

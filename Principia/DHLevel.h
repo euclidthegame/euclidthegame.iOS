@@ -25,5 +25,7 @@
 - (NSString*)additionalCompletionMessage;
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects;
 - (NSUInteger)minimumNumberOfMovesPrimitiveOnly;
+- (CGPoint)testObjectsForProgressHints:(NSArray*)objects;
+@property NSUInteger progress;
 
 @end

@@ -300,10 +300,8 @@
         }
     }
     
-    // If level supports progress tracking, update the progress indicator
-    if ([_currentLevel respondsToSelector:@selector(progress)]) {
-        self.progressLabel.text = [NSString stringWithFormat:@"Progress: %d%%", _currentLevel.progress];
-    }
+    // Update the progress indicator
+    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %d%%", _currentLevel.progress];
     
     // If level supports progress hints, check new objects towards them
     if ([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)]) {
@@ -521,10 +519,11 @@
         _undoButton.enabled = false;
     }
     
-    if ([_currentLevel respondsToSelector:@selector(progress)]) {
-        [_currentLevel isLevelComplete:_geometricObjects];
-        self.progressLabel.text = [NSString stringWithFormat:@"Progress: %d%%", _currentLevel.progress];
+    BOOL complete = [_currentLevel isLevelComplete:_geometricObjects];
+    if (!complete) {
+        self.levelCompleted = NO;
     }
+    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %d%%", _currentLevel.progress];
     
     [self.geometryView setNeedsDisplay];
 }

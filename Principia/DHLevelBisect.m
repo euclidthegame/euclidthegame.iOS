@@ -26,7 +26,7 @@
 
 - (NSString*)levelDescription
 {
-    return @"Create a line (segment) that bisects (divides in half) the angle between segments AB and AC";
+    return @"Create a line (segment) that bisects (divides in half) the given angle";
 }
 
 - (NSString *)additionalCompletionMessage
@@ -53,7 +53,7 @@
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:300 andY:300];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:500 andY:300];
-    DHPoint* p3 = [[DHPoint alloc] initWithPositionX:400 andY:200];
+    DHPoint* p3 = [[DHPoint alloc] initWithPositionX:450 andY:170];
     
     DHLineSegment* l1 = [[DHLineSegment alloc] init];
     l1.start = p1;
@@ -66,8 +66,8 @@
     [geometricObjects addObject:l1];
     [geometricObjects addObject:l2];
     [geometricObjects addObject:p1];
-    [geometricObjects addObject:p2];
-    [geometricObjects addObject:p3];
+    //[geometricObjects addObject:p2];
+    //[geometricObjects addObject:p3];
     
     _lineAB = l1;
     _lineAC = l2;
@@ -119,28 +119,75 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL pointOnLineOK = NO;
+    DHPoint* pointOnLine = nil;
+    BOOL secondPointOK = NO;
+    BOOL midPointOK = NO;
+    
+    CGVector vAB = _lineAB.vector;
+    CGVector vAC = _lineAC.vector;
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         if (object == _lineAB || object == _lineAC) continue;
         
-        DHLineObject* l = object;
-        
-        CGVector ab = _lineAB.vector;
-        CGVector ac = _lineAC.vector;
-
-        CGFloat targetAngle = CGVectorAngleBetween(ab, ac) * 0.5;
-        CGFloat angleToAB = CGVectorAngleBetween(l.vector, ab);
-        CGFloat angleToAC = CGVectorAngleBetween(l.vector, ac);
-        
-        //Compare angle to both initial lines and ensure = 0.5*
-        
-        if (CGFloatsEqualWithinEpsilon(angleToAB, targetAngle) &&
-            CGFloatsEqualWithinEpsilon(angleToAC, targetAngle)) {
-            self.progress = 100;
-            return YES;
+        if ([object class] == [DHPointOnLine class]) {
+            DHPointOnLine* p = object;
+            if (p.line == _lineAB || p.line == _lineAC) {
+                pointOnLineOK = YES;
+                pointOnLine = p;
+            }
+        }
+        if ([object class] == [DHIntersectionPointLineCircle class]) {
+            DHIntersectionPointLineCircle* ip = object;
+            if (pointOnLineOK && pointOnLine && (ip.l == _lineAB || ip.l == _lineAC) &&
+                ip.c.center == _lineAB.start && ip.c.pointOnRadius == pointOnLine) {
+                secondPointOK = YES;
+            }
+        }
+        if ([[object class]  isSubclassOfClass:[DHPoint class]]) {
+            DHPoint* p = object;
+            
+            CGVector vAP = CGVectorBetweenPoints(_lineAB.start.position, p.position);
+            if (CGVectorDotProduct(vAP, vAB) < 0) {
+                vAP.dx = -vAP.dx;
+                vAP.dy = -vAP.dy;
+            }
+            
+            CGFloat targetAngle = CGVectorAngleBetween(vAB, vAC) * 0.5;
+            CGFloat angleToAB = CGVectorAngleBetween(vAP, vAB);
+            CGFloat angleToAC = CGVectorAngleBetween(vAP, vAC);
+            
+            //Compare angle to both initial lines and ensure = 0.5*
+            
+            if (CGFloatsEqualWithinEpsilon(angleToAB, targetAngle) &&
+                CGFloatsEqualWithinEpsilon(angleToAC, targetAngle)) {
+                midPointOK = YES;
+            }
+        }
+        if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* l = object;
+            
+            CGVector vl = l.vector;
+            if (CGVectorDotProduct(vl, vAB) < 0) {
+                vl.dx = -vl.dx;
+                vl.dy = -vl.dy;
+            }
+            
+            CGFloat targetAngle = CGVectorAngleBetween(vAB, vAC) * 0.5;
+            CGFloat angleToAB = CGVectorAngleBetween(vl, vAB);
+            CGFloat angleToAC = CGVectorAngleBetween(vl, vAC);
+            
+            //Compare angle to both initial lines and ensure = 0.5*
+            
+            if (CGFloatsEqualWithinEpsilon(angleToAB, targetAngle) &&
+                CGFloatsEqualWithinEpsilon(angleToAC, targetAngle)) {
+                self.progress = 100;
+                return YES;
+            }
         }
     }
+    self.progress = (pointOnLineOK + secondPointOK + midPointOK)/4.0 * 100;
     
     return NO;
 }

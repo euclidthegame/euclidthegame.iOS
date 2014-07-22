@@ -126,21 +126,43 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL pointOnLineOK = NO;
+    BOOL pointOnPerpLineOK = NO;
+    
+    DHPerpendicularLine* pl = [[DHPerpendicularLine alloc] initWithLine:_lineBC andPoint:_pointA];
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
+        if (object == _pointA) continue;
         
-        DHLineObject* l = object;
-        if ((l.start == _pointA || l.end == _pointA) == NO) continue;
+        if ([object class] == [DHPointOnLine class]) {
+            DHPointOnLine* p = object;
+            if (p.line == _lineBC) {
+                pointOnLineOK = YES;
+            }
+        }
+        if ([[object class]  isSubclassOfClass:[DHPoint class]] && [object class] != [DHPoint class]) {
+            CGFloat dist = DistanceFromPointToLine(object, pl);
+            if (dist < 0.001) {
+                pointOnPerpLineOK = YES;
+            }
+        }
         
-        CGVector bc = CGVectorNormalize(_lineBC.vector);
-        
-        CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
-        if (fabs(lDotBC) < 0.001) {
-            self.progress = 100;
-            return YES;
+        if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* l = object;
+            if ((l.start == _pointA || l.end == _pointA) == NO) continue;
+            
+            CGVector bc = CGVectorNormalize(_lineBC.vector);
+            
+            CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
+            if (fabs(lDotBC) < 0.001) {
+                self.progress = 100;
+                return YES;
+            }
         }
     }
+    
+    self.progress = (pointOnLineOK + pointOnPerpLineOK*4)/10.0 * 100;
     
     return NO;
 }

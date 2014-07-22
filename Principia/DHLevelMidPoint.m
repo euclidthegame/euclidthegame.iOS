@@ -106,6 +106,13 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL pointOnMidLineOK = NO;
+    BOOL secondPontOnMidLineOK = NO;
+    BOOL midPointOK = NO;
+    
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
+    DHPerpendicularLine* midLine = [[DHPerpendicularLine alloc] initWithLine:_initialLine andPoint:mp];
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
         if ([[object class] isSubclassOfClass:[DHPoint class]] == NO) continue;
@@ -113,11 +120,22 @@
         
         DHPoint* p = object;
         CGPoint currentPoint = p.position;
-        CGPoint midPoint = MidPointFromPoints(_initialLine.start.position, _initialLine.end.position);
-        if (fabs(currentPoint.x - midPoint.x) < 0.0001 && fabs(currentPoint.y -midPoint.y) < 0.0001) {
-            self.progress = 100;
-            return YES;
+        if (DistanceBetweenPoints(mp.position, currentPoint) < 0.0001) {
+            midPointOK = YES;
         }
+        if (DistanceFromPointToLine(p, midLine) < 0.0001) {
+            if (!pointOnMidLineOK) {
+                pointOnMidLineOK = YES;
+            } else {
+                secondPontOnMidLineOK = YES;
+            }
+        }
+    }
+    
+    self.progress = (pointOnMidLineOK + secondPontOnMidLineOK + midPointOK)/3.0 * 100;
+    if (midPointOK) {
+        self.progress = 100;
+        return YES;
     }
     
     return NO;

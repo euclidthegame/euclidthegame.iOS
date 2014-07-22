@@ -68,13 +68,13 @@
 @property (nonatomic) DHCircle* c1;
 @property (nonatomic) DHCircle* c2;
 @property (nonatomic) BOOL onPositiveY;
+- (instancetype)initWithCircle1:(DHCircle*)c1 andCircle2:(DHCircle*)c2 onPositiveY:(BOOL)onPositiveY;
 @end
 
 
 @interface DHIntersectionPointLineLine : DHPoint
 @property (nonatomic,strong) DHLineObject* l1;
 @property (nonatomic,strong) DHLineObject* l2;
-
 - (instancetype)initWithLine:(DHLineObject*)l1 andLine:(DHLineObject*)l2;
 @end
 
@@ -83,6 +83,7 @@
 @property (nonatomic) DHLineObject* l;
 @property (nonatomic) DHCircle* c;
 @property (nonatomic) BOOL preferEnd;
+- (instancetype)initWithLine:(DHLineObject*)l andCircle:(DHCircle*)c andPreferEnd:(BOOL)preferEnd;
 @end
 
 
@@ -130,6 +131,7 @@
 @interface DHPerpendicularLine : DHLineObject
 @property (nonatomic, strong) DHLineObject* line;
 @property (nonatomic, strong) DHPoint* point;
+- (instancetype)initWithLine:(DHLineObject*)line andPoint:(DHPoint*)point;
 @end
 
 @interface DHParallelLine : DHLineObject

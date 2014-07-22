@@ -61,11 +61,34 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHPointOnCircle* pC = [[DHPointOnCircle alloc] initWithCircle:_circle andAngle:M_PI*(1.5 - 0.4)];
-    DHPointOnCircle* pD = [[DHPointOnCircle alloc] initWithCircle:_circle andAngle:M_PI*(1.5 - 0.8)];
-    DHPointOnCircle* pE = [[DHPointOnCircle alloc] initWithCircle:_circle andAngle:M_PI*(1.5 - 1.2)];
-    DHPointOnCircle* pF = [[DHPointOnCircle alloc] initWithCircle:_circle andAngle:M_PI*(1.5 - 1.6)];
-
+    DHPoint* pA = _circle.center;
+    DHPoint* pB = _circle.pointOnRadius;
+    DHLine* lVert = [[DHLine alloc] initWithStart:pB andEnd:pA];
+    DHPerpendicularLine* lHori = [[DHPerpendicularLine alloc] initWithLine:lVert andPoint:pA];
+    DHIntersectionPointLineCircle* ip1 = [[DHIntersectionPointLineCircle alloc]
+                                          initWithLine:lVert andCircle:_circle andPreferEnd:YES];
+    DHIntersectionPointLineCircle* ip2 = [[DHIntersectionPointLineCircle alloc]
+                                          initWithLine:lHori andCircle:_circle andPreferEnd:YES];
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:pA andPoint2:ip1];
+    DHCircle* cMP = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:ip2];
+    DHIntersectionPointLineCircle* ip3 = [[DHIntersectionPointLineCircle alloc]
+                                          initWithLine:lVert andCircle:cMP andPreferEnd:YES];
+    DHTranslatedPoint* pt = [[DHTranslatedPoint alloc] init];
+    pt.startOfTranslation = ip3;
+    pt.translationStart = pB;
+    pt.translationEnd = pA;
+    DHCircle* cIP3 = [[DHCircle alloc] initWithCenter:ip3 andPointOnRadius:pt];
+    DHIntersectionPointCircleCircle* pD = [[DHIntersectionPointCircleCircle alloc]
+                                           initWithCircle1:cIP3 andCircle2:_circle onPositiveY:YES];
+    DHIntersectionPointCircleCircle* pE = [[DHIntersectionPointCircleCircle alloc]
+                                           initWithCircle1:cIP3 andCircle2:_circle onPositiveY:NO];
+    DHCircle* cD = [[DHCircle alloc] initWithCenter:pD andPointOnRadius:pE];
+    DHCircle* cE = [[DHCircle alloc] initWithCenter:pE andPointOnRadius:pD];
+    DHIntersectionPointCircleCircle* pC = [[DHIntersectionPointCircleCircle alloc]
+                                           initWithCircle1:cD andCircle2:_circle onPositiveY:YES];
+    DHIntersectionPointCircleCircle* pF = [[DHIntersectionPointCircleCircle alloc]
+                                           initWithCircle1:_circle andCircle2:cE onPositiveY:YES];
+    
     DHLineSegment* lBC = [[DHLineSegment alloc] initWithStart:_circle.pointOnRadius andEnd:pC];
     DHLineSegment* lCD = [[DHLineSegment alloc] initWithStart:pC andEnd:pD];
     DHLineSegment* lDE = [[DHLineSegment alloc] initWithStart:pD andEnd:pE];

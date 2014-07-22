@@ -118,6 +118,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 
 
 @implementation DHIntersectionPointCircleCircle
+- (instancetype)initWithCircle1:(DHCircle*)c1 andCircle2:(DHCircle*)c2 onPositiveY:(BOOL)onPositiveY
+{
+    self = [super init];
+    if (self) {
+        _c1 = c1;
+        _c2 = c2;
+        _onPositiveY = onPositiveY;
+        [self updatePosition];
+    }
+    return self;
+}
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
     [super drawInContext:context withTransform:transform];
@@ -219,6 +230,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 
 
 @implementation DHIntersectionPointLineCircle
+- (instancetype)initWithLine:(DHLineObject*)l andCircle:(DHCircle*)c andPreferEnd:(BOOL)preferEnd
+{
+    self = [super init];
+    if (self) {
+        _l = l;
+        _c = c;
+        _preferEnd = preferEnd;
+        [self updatePosition];
+    }
+    return self;
+}
 - (void)setL:(DHLineObject *)l
 {
     _l = l;
@@ -553,6 +575,16 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         _endPointCache = [[DHPoint alloc] initWithPositionX:NAN andY:NAN];
     }
     return self;
+}
+- (instancetype)initWithLine:(DHLineObject*)line andPoint:(DHPoint*)point
+{
+    self = [self init];
+    if (self) {
+        self.line = line;
+        self.point = point;
+    }
+    return self;
+    
 }
 - (DHPoint*)start
 {

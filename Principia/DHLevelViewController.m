@@ -301,7 +301,7 @@
     }
     
     // Update the progress indicator
-    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %d%%", _currentLevel.progress];
+    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
     
     // If level supports progress hints, check new objects towards them
     if ([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)]) {
@@ -523,7 +523,7 @@
     if (!complete) {
         self.levelCompleted = NO;
     }
-    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %d%%", _currentLevel.progress];
+    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
     
     [self.geometryView setNeedsDisplay];
 }

@@ -150,12 +150,11 @@
         
         if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
             DHLineObject* l = object;
-            if ((l.start == _pointA || l.end == _pointA) == NO) continue;
-            
+            CGFloat distAL = DistanceFromPointToLine(_pointA, l);
             CGVector bc = CGVectorNormalize(_lineBC.vector);
             
             CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
-            if (fabs(lDotBC) < 0.001) {
+            if (distAL < 0.001 && fabs(lDotBC) < 0.001) {
                 self.progress = 100;
                 return YES;
             }

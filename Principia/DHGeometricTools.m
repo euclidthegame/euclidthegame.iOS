@@ -33,6 +33,26 @@ DHPoint* FindPointClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFlo
     return closestPoint;
 }
 
+DHPoint* FindPointClosestToCircle(DHCircle* c, NSArray* geometricObjects, CGFloat maxDistance)
+{
+    DHPoint* closestPoint = nil;
+    CGFloat closestPointDistance = maxDistance;
+    
+    for (id object in geometricObjects) {
+        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+            CGPoint currentPoint = [object position];
+            CGFloat distance = DistanceFromPositionToCircle(currentPoint, c);
+            
+            if (distance < closestPointDistance) {
+                closestPoint = object;
+                closestPointDistance = distance;
+            }
+        }
+    }
+    
+    return closestPoint;
+}
+
 DHLineObject* FindLineClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
 {
     DHLineObject* closestLine = nil;
@@ -683,6 +703,11 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
         if (!point) {
             point = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects, geoViewScale);
         }
+        if (!point) {
+            _temporaryCircle.pointOnRadius.position = endPoint;
+            point = FindPointClosestToCircle(_temporaryCircle, self.delegate.geometryObjects, 8/geoViewScale);
+        }
+        
         if (point && point != self.center) {
             endPoint = point.position;
             [self.delegate toolTipDidChange:@"Release to create circle"];
@@ -726,6 +751,13 @@ DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometr
             point = intersectionPoint;
             [objectsToAdd addObject:intersectionPoint];
         }
+    }
+    // If still no point, see if there is a point close to the circle and snap to it
+    if (!point) {
+        DHCircle* tempCircle = [[DHCircle alloc] init];
+        tempCircle.center = self.center;
+        tempCircle.pointOnRadius = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
+        point = FindPointClosestToCircle(tempCircle, self.delegate.geometryObjects, 8/geoViewScale);
     }
     
     if (self.center && point && point != self.center) {

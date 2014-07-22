@@ -137,6 +137,7 @@
         
         if (CGFloatsEqualWithinEpsilon(angleToAB, targetAngle) &&
             CGFloatsEqualWithinEpsilon(angleToAC, targetAngle)) {
+            self.progress = 100;
             return YES;
         }
     }

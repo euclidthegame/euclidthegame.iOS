@@ -108,6 +108,7 @@
         DHPoint* p = object;
         CGFloat distance = DistanceBetweenPoints(p.position, _pointC.position);
         if (distance < 0.001) {
+            self.progress = 100;
             return YES;
         }
     }

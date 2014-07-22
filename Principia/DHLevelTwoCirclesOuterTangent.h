@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelTwoCirclesOuterTangent : NSObject <DHLevel>
+@interface DHLevelTwoCirclesOuterTangent : DHLevel <DHLevel>
 
 @end

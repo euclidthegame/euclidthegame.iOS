@@ -139,6 +139,7 @@
         CGFloat lAB = CGVectorLength(vAB);
         CGFloat lengthDiff = fabs(lCP - lAB);
         if (lengthDiff < 0.01) {
+            self.progress = 100;
             return YES;
         }
     }

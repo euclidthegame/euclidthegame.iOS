@@ -136,6 +136,7 @@
         CGFloat lAB = CGVectorLength(vAB);
         
         if (fabs(dotProd) > 1 - 0.000001 && CGFloatsEqualWithinEpsilon(lCP, lAB)) {
+            self.progress = 100;
             return YES;
         }
     }

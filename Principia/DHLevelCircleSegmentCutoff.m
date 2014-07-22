@@ -145,6 +145,7 @@
             CGFloat distAB = _lAB.length;
             
             if (fabs(dist - distAB) < 0.001) {
+                self.progress = 100;
                 return YES;
             }
             

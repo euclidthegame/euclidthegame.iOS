@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelLineCopy : NSObject <DHLevel>
+@interface DHLevelLineCopy : DHLevel <DHLevel>
 
 @end

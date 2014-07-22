@@ -126,6 +126,7 @@
         CGFloat l = _lineAB.length;
         CGFloat r = circle.radius;
         if (fabs(l - r) < 0.01) {
+            self.progress = 100;
             return YES;
         }
     }

@@ -152,6 +152,7 @@
             CGFloat distLC = DistanceFromPointToLine(_pointC, l);
             CGFloat distLPoint = DistanceFromPointToLine(translatedPoint, l);
             if (distLC < 0.01 && distLPoint < 0.01) {
+                self.progress = 100;
                 return YES;
             }
         }

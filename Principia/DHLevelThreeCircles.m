@@ -165,6 +165,7 @@
             BOOL oneCircleTouchesB = fabs(distB2-radius1) < 0.01 || fabs(distB3-radius1) < 0.01;
 
             if (oneCircleTouchesB) {
+                self.progress = 100;
                 return YES;
             }
         }

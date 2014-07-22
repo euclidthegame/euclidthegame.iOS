@@ -115,6 +115,7 @@
         CGPoint currentPoint = p.position;
         CGPoint midPoint = MidPointFromPoints(_initialLine.start.position, _initialLine.end.position);
         if (fabs(currentPoint.x - midPoint.x) < 0.0001 && fabs(currentPoint.y -midPoint.y) < 0.0001) {
+            self.progress = 100;
             return YES;
         }
     }

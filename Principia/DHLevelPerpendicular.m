@@ -137,6 +137,7 @@
         
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
         if (fabs(lDotBC) < 0.001) {
+            self.progress = 100;
             return YES;
         }
     }

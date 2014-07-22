@@ -125,6 +125,7 @@
         
         CGFloat dist = DistanceFromPointToLine(_pointB, l);
         if (dist < 0.01) {
+            self.progress = 100;
             return YES;
         }
     }

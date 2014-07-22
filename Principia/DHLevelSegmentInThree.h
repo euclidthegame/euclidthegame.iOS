@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelSegmentInThree : NSObject <DHLevel>
+@interface DHLevelSegmentInThree : DHLevel <DHLevel>
 
 @end

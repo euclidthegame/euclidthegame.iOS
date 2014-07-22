@@ -154,6 +154,7 @@
                            fabs(distC-circumcircleRadius) < 0.1);
         
         if (radiusOK && locationOK) {
+            self.progress = 100;
             return YES;
         }
     }

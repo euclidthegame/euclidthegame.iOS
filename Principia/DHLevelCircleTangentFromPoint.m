@@ -157,6 +157,7 @@
             CGFloat distL2ToIp2 = DistanceFromPointToLine(ip2, l2);
             
             if ((distL1ToIp1 < 0.01 ||  distL2ToIp1 < 0.01) && (distL1ToIp2 < 0.01 ||  distL2ToIp2 < 0.01)) {
+                self.progress = 100;
                 return YES;
             }
         }

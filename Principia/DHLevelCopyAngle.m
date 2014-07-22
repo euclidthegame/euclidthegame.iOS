@@ -176,10 +176,12 @@
         }
         
         if (fabs(targetAngle - angleToDLine) < 0.0001) {
+            self.progress = 100;
             return YES;
         }
         
         if (l.tMin < 0 && fabs(targetAngle - (M_PI - angleToDLine)) < 0.0001) {
+            self.progress = 100;
             return YES;
         }
     }

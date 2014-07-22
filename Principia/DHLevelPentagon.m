@@ -271,6 +271,7 @@
                         if (!faOK) continue;
                         
                         if (bcOK && cdOK && deOK && efOK && faOK) {
+                            self.progress = 100;
                             return YES;
                         }
                         

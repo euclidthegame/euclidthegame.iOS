@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelNonEquiTri : NSObject <DHLevel>
+@interface DHLevelNonEquiTri : DHLevel <DHLevel>
 
 @end

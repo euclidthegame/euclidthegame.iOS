@@ -12,6 +12,7 @@
 		68376937197C315700D53E21 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
 		6837693D197C315700D53E21 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6837693B197C315700D53E21 /* InfoPlist.strings */; };
 		6837693F197C315700D53E21 /* Euclid_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6837693E197C315700D53E21 /* Euclid_Tests.m */; };
+		68376948197E2E4200D53E21 /* DHLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 68376947197E2E4200D53E21 /* DHLevel.m */; };
 		683D9682196BEC680057B62D /* DHLevelTriIncircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9681196BEC680057B62D /* DHLevelTriIncircle.m */; };
 		683D9685196D2A390057B62D /* DHLevelTriCircumcircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9684196D2A390057B62D /* DHLevelTriCircumcircle.m */; };
 		683D9688196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9687196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m */; };
@@ -83,6 +84,7 @@
 		6837693C197C315700D53E21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6837693E197C315700D53E21 /* Euclid_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Euclid_Tests.m; sourceTree = "<group>"; };
 		68376940197C315700D53E21 /* Euclid Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Euclid Tests-Prefix.pch"; sourceTree = "<group>"; };
+		68376947197E2E4200D53E21 /* DHLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevel.m; sourceTree = "<group>"; };
 		683D9680196BEC680057B62D /* DHLevelTriIncircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTriIncircle.h; sourceTree = "<group>"; };
 		683D9681196BEC680057B62D /* DHLevelTriIncircle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelTriIncircle.m; sourceTree = "<group>"; };
 		683D9683196D2A390057B62D /* DHLevelTriCircumcircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTriCircumcircle.h; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 				68F0AA3E1961F3B000A97B86 /* DHLevelResults.m */,
 				68F0AA19195A983D00A97B86 /* DHLevels.h */,
 				68F0AA0B195A188500A97B86 /* DHLevel.h */,
+				68376947197E2E4200D53E21 /* DHLevel.m */,
 				68F0AA3A1961DE4700A97B86 /* DHLevelTutorial.h */,
 				68F0AA3B1961DE5100A97B86 /* DHLevelTutorial.m */,
 				68F0AA16195A96D500A97B86 /* DHLevelEquiTri.h */,
@@ -546,6 +549,7 @@
 				68F0AA011958C5AB00A97B86 /* DHGeometricObjects.m in Sources */,
 				68F0A9D819587AEC00A97B86 /* DHAppDelegate.m in Sources */,
 				686014DB1969D3CE0004DD1E /* DHLevelCopyAngle.m in Sources */,
+				68376948197E2E4200D53E21 /* DHLevel.m in Sources */,
 				686014DE1969DFE70004DD1E /* DHLevelCircleCenter.m in Sources */,
 				68F0A9DE19587AEC00A97B86 /* DHGeometryViewController.m in Sources */,
 				68F0AA3C1961DE5100A97B86 /* DHLevelTutorial.m in Sources */,
@@ -784,6 +788,7 @@
 				68376945197C315700D53E21 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		68F0A9BF19587AEC00A97B86 /* Build configuration list for PBXProject "Euclid" */ = {
 			isa = XCConfigurationList;

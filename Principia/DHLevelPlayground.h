@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelPlayground : NSObject <DHLevel>
+@interface DHLevelPlayground : DHLevel <DHLevel>
 
 @end

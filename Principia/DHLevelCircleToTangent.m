@@ -131,6 +131,7 @@
         CGVector vLine = CGVectorNormalize(_givenLine.vector);
         CGFloat tangentAngle = CGVectorDotProduct(vCB, vLine);
         if (fabs(distCA - radius) < 0.01 && fabs(distCB-radius) < 0.01 && fabs(tangentAngle) < 0.01) {
+            self.progress = 100;
             return YES;
         }
     }

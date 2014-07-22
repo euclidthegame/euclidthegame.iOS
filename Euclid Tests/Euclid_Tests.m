@@ -41,4 +41,19 @@
     }
 }
 
+- (void)testLevelSolutionsShowProgres100
+{
+    NSMutableArray* levels = [[NSMutableArray alloc] init];
+    NSMutableArray* geometricObjects = [[NSMutableArray alloc] init];
+    FillLevelArray(levels);
+    for (DHLevel<DHLevel>* level in levels) {
+        [level createInitialObjects:geometricObjects];
+        [level createSolutionPreviewObjects:geometricObjects];
+        [level isLevelComplete:geometricObjects];
+        XCTAssertTrue(level.progress == 100,
+                      @"Level %@ solution incomplete",
+                      NSStringFromClass([level class]));
+    }
+}
+
 @end

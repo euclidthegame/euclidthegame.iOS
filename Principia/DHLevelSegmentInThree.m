@@ -143,6 +143,7 @@
             }
             
             if (splitInThree) {
+                self.progress = 100;
                 return YES;
             }
 

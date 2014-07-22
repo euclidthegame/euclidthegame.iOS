@@ -153,6 +153,7 @@
         BOOL locationOK = (fabs(distAB-incircleRadius) < 0.1 && fabs(distAC-incircleRadius) < 0.1);
         
         if (radiusOK && locationOK) {
+            self.progress = 100;
             return YES;
         }
     }

@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelCircleSegmentCutoff : NSObject <DHLevel>
+@interface DHLevelCircleSegmentCutoff : DHLevel <DHLevel>
 
 @end

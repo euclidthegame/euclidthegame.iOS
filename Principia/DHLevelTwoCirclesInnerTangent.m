@@ -171,12 +171,14 @@
         if (angleL1Tangent1 < 0.01) {
             CGFloat distL1Ip2 = DistanceFromPointToLine(ip2, l1);
             if (distL1Ip2 < 0.01) {
+                self.progress = 100;
                 return YES;
             }
         }
         if (angleL1Tangent2 < 0.01) {
             CGFloat distL1Ip3 = DistanceFromPointToLine(ip3, l1);
             if (distL1Ip3 < 0.01) {
+                self.progress = 100;
                 return YES;
             }
         }

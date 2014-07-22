@@ -157,6 +157,7 @@
             BOOL connected = AreLinesConnected(l1,l2) && AreLinesConnected(l2,l3) && AreLinesConnected(l3,l1);
             
             if (connected && correctLengthCD && correctLengthEF) {
+                self.progress = 100;
                 return YES;
             }
         }

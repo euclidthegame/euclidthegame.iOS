@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelParallellLines : NSObject <DHLevel>
+@interface DHLevelParallellLines : DHLevel <DHLevel>
 
 @end

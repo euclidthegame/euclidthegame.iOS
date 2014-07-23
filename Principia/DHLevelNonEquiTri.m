@@ -14,6 +14,7 @@
     DHLineSegment* _lineAB;
     DHLineSegment* _lineCD;
     DHLineSegment* _lineEF;
+    DHPoint* requiredPoint;
 }
 
 @end
@@ -166,5 +167,27 @@
     return NO;
 }
 
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
 
+    for (id object in objects){
+        if ([[object class] isSubclassOfClass:[DHPoint class]]){
+            requiredPoint = object;
+            if ((LineSegmentsWithEqualLength([[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:requiredPoint],_lineCD) &&
+                 LineSegmentsWithEqualLength([[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:requiredPoint],_lineEF) )
+                ||
+                (LineSegmentsWithEqualLength([[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:requiredPoint],_lineEF) &&
+                 LineSegmentsWithEqualLength([[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:requiredPoint],_lineCD) ))
+                return requiredPoint.position;
+        }
+        if (requiredPoint)
+        {
+            if(LineObjectCoversSegment(object, [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:requiredPoint]))
+                return MidPointFromPoints(_lineAB.start.position, requiredPoint.position);
+            if(LineObjectCoversSegment(object, [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:requiredPoint]))
+               return MidPointFromPoints(_lineAB.end.position, requiredPoint.position);
+        }
+    }
+    return CGPointMake(NAN, NAN);
+}
 @end

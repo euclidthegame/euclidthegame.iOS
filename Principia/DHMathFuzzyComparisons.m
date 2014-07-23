@@ -99,3 +99,27 @@ BOOL LinesPerpendicular(DHLineObject* l1, DHLineObject* l2)
     }
     return NO;
 }
+
+BOOL EqualLineSegments(id segment1, id segment2)
+{
+    if ([segment1 class] == [DHLineSegment class] && [segment2 class] == [DHLineSegment class]) {
+        DHLineSegment* s1 = segment1;
+        DHLineSegment* s2 = segment2;
+        if (EqualPoints(s1.start, s2.start) && EqualPoints(s1.end, s2.end)) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+BOOL LineSegmentsWithEqualLength(id segment1, id segment2)
+{
+    if ([segment1 class] == [DHLineSegment class] && [segment2 class] == [DHLineSegment class]) {
+        DHLineSegment* s1 = segment1;
+        DHLineSegment* s2 = segment2;
+        if (fabs(s1.length - s2.length) < kFuzzyEpsilon) {
+            return YES;
+        }
+    }
+    return NO;
+}

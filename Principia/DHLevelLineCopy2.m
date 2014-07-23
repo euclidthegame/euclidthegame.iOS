@@ -168,6 +168,10 @@
     for (id object in objects){
         if (LineObjectCoversSegment(object, sCD)) return MidPointFromLine(sCD);
         if (EqualPoints(object, tp)) return tp.position;
+        if (LineSegmentsWithEqualLength(_lineAB, object) && EqualDirection2(_lineAB,object)){
+            DHLineObject* line = object;
+            return MidPointFromLine(line);
+        }
     }
     return CGPointMake(NAN, NAN);
 }

@@ -43,6 +43,20 @@ BOOL PointOnLine(id point, id lineObject)
     else return NO;
 }
 
+BOOL PointOnCircle(id point, id circle)
+{
+    if ([[point class] isSubclassOfClass:[DHPoint class]] &&
+        [circle class] == [DHCircle class])
+    {
+        DHPoint* p = point;
+        DHCircle* c = circle;
+        CGFloat dist = DistanceFromPositionToCircle(p.position, c);
+        if (dist < kFuzzyEpsilon) return YES;
+        else return NO;
+    }
+    else return NO;
+}
+
 BOOL LineObjectCoversSegment(id lineObject, id lineSegment)
 {
     if (
@@ -77,7 +91,6 @@ BOOL EqualLines(id line1, id line2)
 }
 
 
-
 BOOL EqualDirection(id lineObject1, id lineObject2)
 {
     if (
@@ -88,6 +101,25 @@ BOOL EqualDirection(id lineObject1, id lineObject2)
         DHLineObject* l2 = lineObject2;
         DHLine* line2 = [[DHLine alloc] initWithStart:l2.start andEnd:l2.end];
         if (PointOnLine(l1.start,line2) && PointOnLine(l1.end,line2))
+        {
+            return YES;
+        }
+        else return NO;
+    }
+    else return NO;
+}
+
+
+BOOL EqualDirection2(id lineObject1, id lineObject2)
+{
+    if (
+        [[lineObject1 class] isSubclassOfClass:[DHLineObject class]] &&
+        [[lineObject2 class] isSubclassOfClass:[DHLineObject class]])
+    {
+        DHLineObject* l1 = lineObject1;
+        DHLineObject* l2 = lineObject2;
+        if (
+            fabs((l1.end.position.y - l1.start.position.y)*(l2.end.position.x - l2.start.position.x) - (l2.end.position.y - l2.start.position.y)*(l1.end.position.x - l1.start.position.x)) < kFuzzyEpsilon )
         {
             return YES;
         }

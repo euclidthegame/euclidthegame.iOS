@@ -166,4 +166,29 @@
     return NO;
 }
 
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHPerpendicularLine* perp = [[DHPerpendicularLine alloc] init];
+    perp.line = _lineBC;
+    perp.point = _pointA;
+    
+    for (id object in objects){
+        
+        if ([object class] == [DHCircle class])
+        {
+            DHCircle* c = object;
+            if (EqualPoints(c.center,_pointA)) return c.center.position;
+        }
+        if ([object class] == [DHIntersectionPointLineCircle class])
+        {
+            DHPoint* p = object;
+            if (PointOnLine(p,_lineBC)) return p.position;
+        }
+        if (PointOnLine(object,perp)){ DHPoint* p = object; return p.position; }
+        if (EqualDirection(object,perp) && PointOnLine(_pointA, object))  return _pointA.position;
+        
+    }
+    return CGPointMake(NAN, NAN);
+}
+
 @end

@@ -12,8 +12,10 @@
 #import "DHGeometricObjects.h"
 
 @interface DHLevelPerpendicularB () {
+    DHPoint* _pointA;
     DHPoint* _pointB;
     DHLine* _lineA;
+    
 }
 
 @end
@@ -64,6 +66,7 @@
     //[geometricObjects addObject:p2];
     [geometricObjects addObject:p3];
     
+    _pointA = p1;
     _pointB = p3;
     _lineA = l1;
 }
@@ -158,6 +161,29 @@
     self.progress = (pointOnLineEquidistantOK + pointOnPerpLineOK*4)/10.0 * 100;
     
     return NO;
+}
+
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHPerpendicularLine* perp = [[DHPerpendicularLine alloc] init];
+    perp.line = _lineA;
+    perp.point = _pointB;
+    
+    for (id object in objects){
+        
+        if (EqualCircles(object,[[DHCircle alloc] initWithCenter:_pointB andPointOnRadius:_pointA]))
+            return _pointB.position;
+        
+        if ([object class]==[DHIntersectionPointLineCircle class] && PointOnLine(object,_lineA))
+        {
+            DHPoint* p = object;
+            return p.position;
+        }
+        if (PointOnLine(object,perp)){ DHPoint* p = object; return p.position; }
+        if (EqualDirection(object,perp) && PointOnLine(_pointA, object))  return _pointA.position;
+        
+    }
+    return CGPointMake(NAN, NAN);
 }
 
 @end

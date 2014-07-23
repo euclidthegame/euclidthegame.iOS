@@ -68,7 +68,7 @@ BOOL EqualDirection(id lineObject1, id lineObject2)
         DHLineObject* l1 = lineObject1;
         DHLineObject* l2 = lineObject2;
         if (
-            fabs(((l1.end.position.y - l1.start.position.y)/(l1.end.position.x - l1.start.position.x)) - ((l2.end.position.y - l2.start.position.y)/(l2.end.position.x - l2.start.position.x))) < kFuzzyEpsilon )
+            fabs((l1.end.position.y - l1.start.position.y)*(l2.end.position.x - l2.start.position.x) - (l2.end.position.y - l2.start.position.y)*(l1.end.position.x - l1.start.position.x)) < kFuzzyEpsilon )
         {
             return YES;
         }

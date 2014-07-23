@@ -137,6 +137,7 @@
 @interface DHParallelLine : DHLineObject
 @property (nonatomic, strong) DHLineObject* line;
 @property (nonatomic, strong) DHPoint* point;
+- (instancetype)initWithLine:(DHLineObject*)line andPoint:(DHPoint*)point;
 @end
 
 

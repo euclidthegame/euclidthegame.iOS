@@ -59,6 +59,25 @@ BOOL LineObjectCoversSegment(id lineObject, id lineSegment)
     else return NO;
 }
 
+BOOL EqualLines(id line1, id line2)
+{
+    if (
+        [line1 class] == [DHLine class] &&
+        [line2 class] == [DHLine class])
+    {
+        DHLine* l1 = line1;
+        DHLine* l2 = line2;
+        if (PointOnLine(l1.start,l2) && PointOnLine(l1.end,l2))
+        {
+            return YES;
+        }
+        else return NO;
+    }
+    else return NO;
+}
+
+
+
 BOOL EqualDirection(id lineObject1, id lineObject2)
 {
     if (
@@ -67,8 +86,8 @@ BOOL EqualDirection(id lineObject1, id lineObject2)
     {
         DHLineObject* l1 = lineObject1;
         DHLineObject* l2 = lineObject2;
-        if (
-            fabs((l1.end.position.y - l1.start.position.y)*(l2.end.position.x - l2.start.position.x) - (l2.end.position.y - l2.start.position.y)*(l1.end.position.x - l1.start.position.x)) < kFuzzyEpsilon )
+        DHLine* line2 = [[DHLine alloc] initWithStart:l2.start andEnd:l2.end];
+        if (PointOnLine(l1.start,line2) && PointOnLine(l1.end,line2))
         {
             return YES;
         }
@@ -76,6 +95,7 @@ BOOL EqualDirection(id lineObject1, id lineObject2)
     }
     else return NO;
 }
+
 
 BOOL EqualCircles(id circle1, id circle2)
 {

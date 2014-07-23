@@ -541,6 +541,15 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     }
     return self;
 }
+- (instancetype)initWithLine:(DHLineObject*)line andPoint:(DHPoint*)point
+{
+    self = [self init];
+    if (self) {
+        self.line = line;
+        self.point = point;
+    }
+    return self;
+}
 - (DHPoint*)start
 {
     return self.point;

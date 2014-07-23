@@ -304,23 +304,14 @@ static CGPoint MidPointFromPoints(CGPoint p1, CGPoint p2)
     return CGPointMake(0.5*(p1.x + p2.x), 0.5*(p1.y + p2.y));
 }
 
+static CGPoint MidPointFromLine(DHLineObject* l)
+{
+    return CGPointMake(0.5*(l.start.position.x + l.end.position.x), 0.5*(l.start.position.y + l.end.position.y));
+}
 #pragma mark - Geometric object comparison functions
 
 
 
-static BOOL EqualLines(DHLine* r1, id object)
-{
-    if ([object class] == [DHLine class]){
-        DHLine* r2 = object;
-        if (r1.start == r2.start && r1.end == r2.end) {
-            return YES;
-        }
-        else{
-            return NO;
-        }
-    }
-    return NO;
-}
 
 
 static BOOL EqualSegments(DHLineSegment* l1, id object)

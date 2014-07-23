@@ -151,6 +151,23 @@
     
     return NO;
 }
-
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHParallelLine* par1 = [[DHParallelLine alloc] initWithLine:_lineAB andPoint:_pointC];
+    DHLine* lineAC = [[DHLine alloc] initWithStart:_lineAB.start andEnd:_pointC];
+    DHParallelLine* par2 = [[DHParallelLine alloc] initWithLine:lineAC andPoint:_lineAB.end];
+    DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
+    tp.startOfTranslation = _pointC;
+    tp.translationStart = _lineAB.start;
+    tp.translationEnd = _lineAB.end;
+    
+    for (id object in objects){
+        if (EqualDirection(object,par1))  return MidPointFromLine(par1);
+        if (EqualDirection(object,lineAC)) return MidPointFromLine(lineAC);
+        if (EqualDirection(object,par2))  return MidPointFromLine(par2);
+        if (EqualPoints(object,tp)) return tp.position;
+    }
+    return CGPointMake(NAN, NAN);
+}
 
 @end

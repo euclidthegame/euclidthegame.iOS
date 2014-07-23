@@ -148,6 +148,7 @@
             DHLineObject * l = object;
             if (PointOnLine(_lineAB.start, l)) {
                 bisectOK = YES;
+                self.progress = 100;
                 return YES;
             }
         }

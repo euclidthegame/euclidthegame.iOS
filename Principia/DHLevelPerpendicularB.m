@@ -180,7 +180,7 @@
             return p.position;
         }
         if (PointOnLine(object,perp)){ DHPoint* p = object; return p.position; }
-        if (EqualDirection(object,perp) && PointOnLine(_pointA, object))  return _pointA.position;
+        if (EqualDirection(object,perp) && PointOnLine(_pointB, object))  return _pointB.position;
         
     }
     return CGPointMake(NAN, NAN);

@@ -113,11 +113,18 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL perpendicularLineOK = NO;
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
         if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         
         DHLineObject* l = object;
+        
+        if (l.tMin < 0 && l.tMax > 1 && FuzzyLinesPerpendicular(l, _lineA)) {
+            perpendicularLineOK = YES;
+        }
+        
         CGVector bc = CGVectorNormalize(_lineA.vector);
         
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
@@ -129,6 +136,8 @@
             return YES;
         }
     }
+    
+    self.progress = (perpendicularLineOK)/2.0 * 100;
     
     return NO;
 }

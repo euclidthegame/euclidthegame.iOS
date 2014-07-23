@@ -11,6 +11,7 @@
 
 #import "DHGeometricObjects.h"
 #import "DHMathCGVector.h"
+#import "DHMathFuzzyComparisons.h"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"

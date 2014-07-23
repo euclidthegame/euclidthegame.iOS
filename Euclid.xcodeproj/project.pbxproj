@@ -13,6 +13,7 @@
 		6837693D197C315700D53E21 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6837693B197C315700D53E21 /* InfoPlist.strings */; };
 		6837693F197C315700D53E21 /* Euclid_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6837693E197C315700D53E21 /* Euclid_Tests.m */; };
 		68376948197E2E4200D53E21 /* DHLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 68376947197E2E4200D53E21 /* DHLevel.m */; };
+		6837694B197F64BD00D53E21 /* DHMathFuzzyComparisons.m in Sources */ = {isa = PBXBuildFile; fileRef = 6837694A197F64BD00D53E21 /* DHMathFuzzyComparisons.m */; };
 		683D9682196BEC680057B62D /* DHLevelTriIncircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9681196BEC680057B62D /* DHLevelTriIncircle.m */; };
 		683D9685196D2A390057B62D /* DHLevelTriCircumcircle.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9684196D2A390057B62D /* DHLevelTriCircumcircle.m */; };
 		683D9688196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m in Sources */ = {isa = PBXBuildFile; fileRef = 683D9687196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m */; };
@@ -85,6 +86,8 @@
 		6837693E197C315700D53E21 /* Euclid_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Euclid_Tests.m; sourceTree = "<group>"; };
 		68376940197C315700D53E21 /* Euclid Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Euclid Tests-Prefix.pch"; sourceTree = "<group>"; };
 		68376947197E2E4200D53E21 /* DHLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevel.m; sourceTree = "<group>"; };
+		68376949197F64BC00D53E21 /* DHMathFuzzyComparisons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHMathFuzzyComparisons.h; sourceTree = "<group>"; };
+		6837694A197F64BD00D53E21 /* DHMathFuzzyComparisons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHMathFuzzyComparisons.m; sourceTree = "<group>"; };
 		683D9680196BEC680057B62D /* DHLevelTriIncircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTriIncircle.h; sourceTree = "<group>"; };
 		683D9681196BEC680057B62D /* DHLevelTriIncircle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelTriIncircle.m; sourceTree = "<group>"; };
 		683D9683196D2A390057B62D /* DHLevelTriCircumcircle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelTriCircumcircle.h; sourceTree = "<group>"; };
@@ -391,6 +394,8 @@
 			isa = PBXGroup;
 			children = (
 				68F0AA051959936C00A97B86 /* DHMath.h */,
+				68376949197F64BC00D53E21 /* DHMathFuzzyComparisons.h */,
+				6837694A197F64BD00D53E21 /* DHMathFuzzyComparisons.m */,
 				68F0AA061959FBB000A97B86 /* DHMathCGVector.h */,
 				68F0A9FF1958C5AB00A97B86 /* DHGeometricObjects.h */,
 				68F0AA001958C5AB00A97B86 /* DHGeometricObjects.m */,
@@ -564,6 +569,7 @@
 				68F0A9D419587AEC00A97B86 /* main.m in Sources */,
 				686622431972B78E004DCFAC /* DHLevelPlayground.m in Sources */,
 				68F0AA481964889C00A97B86 /* DHGeometricObjectLabeler.m in Sources */,
+				6837694B197F64BD00D53E21 /* DHMathFuzzyComparisons.m in Sources */,
 				683D9685196D2A390057B62D /* DHLevelTriCircumcircle.m in Sources */,
 				68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */,
 				6872A7DB197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.m in Sources */,

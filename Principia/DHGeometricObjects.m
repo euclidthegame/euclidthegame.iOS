@@ -71,6 +71,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
         CGContextFillEllipseInRect(context, rect);
         
+    } else if(self.temporary) {
+        CGSize shadowSize = CGSizeMake(0, 0);
+        //CGContextSetShadow(context, shadowSize, 8.0f);
+        CGColorRef shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.9].CGColor;
+        CGContextSetShadowWithColor (context, shadowSize, 5.0f, shadowColor);
+        CGContextSetLineWidth(context, 0.6);
+        CGContextSetRGBFillColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
+                                 kLineColorHighlighted.b, kLineColorHighlighted.a);
+        CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
+        CGContextFillEllipseInRect(context, rect);
+        CGContextStrokeEllipseInRect(context, rect);
     } else {
         CGContextSetLineWidth(context, 1.0);
         if (self.class == [DHPoint class] ||
@@ -746,6 +757,8 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 }
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
+    CGContextSaveGState(context);
+    
     CGFloat geoRadius = self.radius;
     CGPoint geoCenterPosition = self.center.position;
     
@@ -771,6 +784,8 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         CGContextSetRGBStrokeColor(context, kLineColor.r, kLineColor.g, kLineColor.b, kLineColor.a);
     }
     CGContextStrokeEllipseInRect(context, rect);
+    
+    CGContextRestoreGState(context);
 }
 - (CGFloat)radius
 {

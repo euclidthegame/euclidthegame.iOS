@@ -143,6 +143,26 @@
     
     return NO;
 }
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
+    tp.startOfTranslation = _lineCD.start;
+    tp.translationStart = _lineAB.start;
+    tp.translationEnd = _lineAB.end;
+    DHCircle* circle = [[DHCircle alloc] initWithCenter:_lineCD.start andPointOnRadius:tp];
+    
+    for (id object in objects){
+        if (PointOnLine(object,_lineCD)){
+            DHPoint* p = object;
+            if (LineSegmentsWithEqualLength([[DHLineSegment alloc]initWithStart:_lineCD.start andEnd:p],_lineAB))
+                return p.position;
+        }
+        if (EqualCircles(object,circle)) return circle.center.position;
+        
+    }
+    
+    return CGPointMake(NAN, NAN);
+}
 
 
 @end

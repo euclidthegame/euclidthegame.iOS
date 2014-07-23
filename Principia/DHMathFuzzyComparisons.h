@@ -16,3 +16,5 @@ BOOL EqualDirection(id lineObject1, id lineObject2);
 BOOL EqualLines(id lineObject1, id lineObject2);
 BOOL EqualCircles(id circle1, id circle2);
 BOOL LinesPerpendicular(DHLineObject* l1, DHLineObject* l2);
+BOOL EqualLineSegments(id segment1, id segment2);
+BOOL LineSegmentsWithEqualLength(id segment1, id segment2);

@@ -1294,10 +1294,10 @@ const CGFloat kClosestTapLimit = 25.0f;
         
         if (self.disableWhenOnSameLine) {
             // Check if point is on line and then do nothing
-            CGVector vLineDir = self.segment.vector;
-            CGVector vLineStartToPoint = CGVectorBetweenPoints(self.segment.start.position, point.position);
+            CGVector vLineDir = CGVectorBetweenPoints(self.start.position, self.end.position);
+            CGVector vLineStartToPoint = CGVectorBetweenPoints(self.start.position, point.position);
             CGFloat angle = CGVectorAngleBetween(vLineDir, vLineStartToPoint);
-            if (fabs(angle) < 0.0001) {
+            if (fabs(angle) < 0.001 || fabs(angle - M_PI) < 0.001) {
                 [self.delegate showTemporaryMessage:@"Not allowed, point lies on same line as segment"
                                             atPoint:touchPointInView withColor:[UIColor redColor]];
                 return;

@@ -141,6 +141,16 @@
     
     return NO;
 }
-
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHPerpendicularLine* perp1 = [[DHPerpendicularLine alloc] initWithLine:_lineA andPoint:_pointB];
+    DHPerpendicularLine* perp2 = [[DHPerpendicularLine alloc] initWithLine:perp1 andPoint:_pointB];
+    
+    for (id object in objects){
+        if (EqualDirection(object,perp1))  return _pointB.position;
+        if (EqualDirection(object,perp2))  return _pointB.position;
+    }
+    return CGPointMake(NAN, NAN);
+}
 
 @end

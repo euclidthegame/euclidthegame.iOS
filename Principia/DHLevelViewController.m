@@ -120,7 +120,7 @@
         self.movesLeftLabel.hidden = YES;
     }
     
-    if ([_currentLevel respondsToSelector:@selector(progress)]) {
+    if ([_currentLevel respondsToSelector:@selector(progress)] && _currentGameMode != kDHGameModePlayground) {
         self.progressLabel.hidden = NO;
     } else {
         self.progressLabel.hidden = YES;
@@ -950,7 +950,16 @@
             }
         }
         
-        [level createSolutionPreviewObjects:objects];
+        NSMutableArray* solutionObjects = [[NSMutableArray alloc] init];
+        [level createSolutionPreviewObjects:solutionObjects];
+        for (DHGeometricObject* object in solutionObjects) {
+            object.temporary = YES;
+            if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+                [objects addObject:object];
+            } else {
+                [objects insertObject:object atIndex:0];
+            }
+        }
         geoView.geometricObjects = objects;
         
     }

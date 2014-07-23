@@ -156,6 +156,20 @@
     
     return NO;
 }
-
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
+    tp.startOfTranslation = _pointC;
+    tp.translationStart = _lineAB.start;
+    tp.translationEnd = _lineAB.end;
+    DHLineSegment* sCD = [[DHLineSegment alloc] initWithStart:_pointC andEnd:tp];
+    
+    
+    for (id object in objects){
+        if (LineObjectCoversSegment(object, sCD)) return MidPointFromLine(sCD);
+        if (EqualPoints(object, tp)) return tp.position;
+    }
+    return CGPointMake(NAN, NAN);
+}
 
 @end

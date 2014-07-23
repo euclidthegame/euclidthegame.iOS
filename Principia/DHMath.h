@@ -306,33 +306,7 @@ static CGPoint MidPointFromPoints(CGPoint p1, CGPoint p2)
 
 #pragma mark - Geometric object comparison functions
 
-static BOOL EqualPoints(DHPoint* p1, id object)
-{
-    if ([[object class] isSubclassOfClass:[DHPoint class]]){
-        DHPoint* p2 = object;
-        if (p1.position.x == p2.position.x && p1.position.y == p2.position.y) {
-            return YES;
-        }
-        else{
-            return NO;
-        }
-    }
-    return NO;
-}
 
-static BOOL EqualCircles(DHCircle* c1, id object)
-{
-    if ([object class] == [DHCircle class]){
-        DHCircle* c2 = object;
-        if (EqualPoints(c1.center, c2.center) && EqualPoints(c1.pointOnRadius, c2.pointOnRadius)) {
-            return YES;
-        }
-        else{
-            return NO;
-        }
-    }
-    return NO;
-}
 
 static BOOL EqualLines(DHLine* r1, id object)
 {

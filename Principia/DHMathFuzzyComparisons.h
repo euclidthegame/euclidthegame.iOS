@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "DHGeometricObjects.h"
 
-BOOL FuzzyPointsEqual(DHPoint* p1, DHPoint* p2);
-BOOL FuzzyPointOnLine(DHPoint* p, DHLineObject* l);
-BOOL FuzzyLinesPerpendicular(DHLineObject* l1, DHLineObject* l2);
+BOOL EqualPoints(id point1, id point2);
+BOOL PointOnLine(id point, id lineObject);
+BOOL LineObjectCoversSegment(id lineObject, id lineSegment);
+BOOL EqualCircles(id circle1, id circle2);
+BOOL LinesPerpendicular(DHLineObject* l1, DHLineObject* l2);

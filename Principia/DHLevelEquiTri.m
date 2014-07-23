@@ -114,44 +114,36 @@
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
     // Solution criteria
-    BOOL pC1_OK = NO;
-    BOOL pC2_OK = NO;
-    BOOL sAC1_OK = NO;
-    BOOL sBC1_OK = NO;
-    BOOL sAC2_OK = NO;
-    BOOL sBC2_OK = NO;
+    BOOL pC_OK = NO;
+    BOOL pD_OK = NO;
+    BOOL sAC_OK = NO;
+    BOOL sBC_OK = NO;
+    BOOL sAD_OK = NO;
+    BOOL sBD_OK = NO;
     
-    DHTrianglePoint* pCAlt1 = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
-    DHTrianglePoint* pCAlt2 = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.end andPoint2:_lineAB.start];
-    
+    DHTrianglePoint* pC = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
+    DHTrianglePoint* pD = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.end andPoint2:_lineAB.start];
+    DHLineSegment* sAC = [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:pC];
+    DHLineSegment* sAD = [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:pD];
+    DHLineSegment* sBC = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pC];
+    DHLineSegment* sBD = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pD];
+
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
-        
-        if (object != _lineAB && [[object class] isSubclassOfClass:[DHLineObject class]]) {
-            DHLineObject* line = object;
-            CGFloat distA = DistanceFromPointToLine(_lineAB.start, line);
-            CGFloat distB = DistanceFromPointToLine(_lineAB.end, line);
-            CGFloat distCAlt1 = DistanceFromPointToLine(pCAlt1, line);
-            CGFloat distCAlt2 = DistanceFromPointToLine(pCAlt2, line);
-            
-            if (distA < 0.01 && distCAlt1 < 0.01) sAC1_OK = YES;
-            if (distA < 0.01 && distCAlt2 < 0.01) sAC2_OK = YES;
-            if (distB < 0.01 && distCAlt1 < 0.01) sBC1_OK = YES;
-            if (distB < 0.01 && distCAlt2 < 0.01) sBC2_OK = YES;
-        }
-        if ([[object class] isSubclassOfClass:[DHPoint class]] && [object class] != [DHPoint class]) {
-            DHPoint* point = object;
-            CGFloat distCAlt1 = DistanceBetweenPoints(pCAlt1.position, point.position);
-            CGFloat distCAlt2 = DistanceBetweenPoints(pCAlt2.position, point.position);
-            if (distCAlt1 < 0.01) pC1_OK = YES;
-            if (distCAlt2 < 0.01) pC2_OK = YES;
-        }
+        if ([object class] == [DHPoint class]) continue;
+        if (object == _lineAB) continue;
+        if (LineObjectCoversSegment(object,sAC)) sAC_OK = YES;
+        if (LineObjectCoversSegment(object,sAD)) sAD_OK = YES;
+        if (LineObjectCoversSegment(object,sBC)) sBC_OK = YES;
+        if (LineObjectCoversSegment(object,sBD)) sBD_OK = YES;
+        if (EqualPoints(object,pC)) pC_OK = YES;
+        if (EqualPoints(object,pD)) pD_OK = YES;
     }
     
-    self.progress = ((pC1_OK || pC2_OK) + (sAC1_OK || sAC2_OK || sBC1_OK || sBC2_OK) +
-                     ((sAC1_OK && sBC1_OK) || (sAC2_OK && sBC2_OK)))/3.0 * 100;
+    self.progress = ((pC_OK || pD_OK) + (sAC_OK || sAD_OK || sBC_OK || sBD_OK) +
+                     ((sAC_OK && sBC_OK) || (sAD_OK && sBD_OK)))/3.0 * 100;
     
-    if ((pC1_OK && sAC1_OK && sBC1_OK) || (pC2_OK && sAC2_OK && sBC2_OK)) {
+    if ((pC_OK && sAC_OK && sBC_OK) || (pD_OK && sAD_OK && sBD_OK)) {
         return YES;
     }
     
@@ -170,34 +162,17 @@
     DHLineSegment* sBC = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pTop];
     DHLineSegment* sBD = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pBottom];
     
-    
     for (id object in objects){
-        if (EqualCircles(cAB, object)) {
-            return cAB.center.position;
-        }
-        if (EqualCircles(cBA, object)) {
-            return cBA.center.position;
-        }
-        if (EqualPoints(pTop, object)) {
-            return pTop.position;
-        }
-        if (EqualPoints(pBottom, object)) {
-            return pBottom.position;
-        }
-        if (EqualSegments(sAC, object)) {
-            return MidPointFromPoints(sAC.start.position,sAC.end.position);
-        }
-        if (EqualSegments(sAD, object)) {
-            return MidPointFromPoints(sAD.start.position,sAD.end.position);
-        }
-        if (EqualSegments(sBD, object)) {
-            return MidPointFromPoints(sBD.start.position,sBD.end.position);
-        }
-        if (EqualSegments(sBC, object)) {
-            return MidPointFromPoints(sBC.start.position,sBC.end.position);
-        }
+        if (EqualCircles(object,cAB)) return cAB.center.position;
+        if (EqualCircles(object, cBA)) return cBA.center.position;
+        if (EqualPoints(object, pTop)) return pTop.position;
+        if (EqualPoints(object,pBottom)) return  pBottom.position;
+        if (LineObjectCoversSegment(object,sAC)) return MidPointFromPoints(sAC.start.position,sAC.end.position);
+        if (LineObjectCoversSegment(object,sAD)) return  MidPointFromPoints(sAD.start.position,sAD.end.position);
+        if (LineObjectCoversSegment(object,sBD)) return  MidPointFromPoints(sBD.start.position,sBD.end.position);
+        if (LineObjectCoversSegment(object,sBC)) return  MidPointFromPoints(sBC.start.position,sBC.end.position);
+    
     }
-
     return CGPointMake(NAN, NAN);
 }
 

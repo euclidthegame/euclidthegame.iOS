@@ -130,8 +130,8 @@
         
         if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
             DHLineObject* l = object;
-            BOOL intersectsTP = FuzzyPointOnLine(tp, l);
-            if (FuzzyPointOnLine(_pointC, l) && intersectsTP) {
+            BOOL intersectsTP = PointOnLine(tp, l);
+            if (PointOnLine(_pointC, l) && intersectsTP) {
                 parallelLineOK = YES;
             } else if (intersectsTP) {
                 intersectingLineOK = YES;
@@ -140,7 +140,7 @@
         
         if ([[object class]  isSubclassOfClass:[DHPoint class]]) {
             DHPoint* p = object;
-            if (parallelLineOK && FuzzyPointsEqual(p, tp)) {
+            if (parallelLineOK && EqualPoints(p, tp)) {
                 self.progress = 100;
                 return YES;
             }

@@ -147,6 +147,7 @@
     return NO;
 }
 
+
 - (CGPoint)testObjectsForProgressHints:(NSArray*)objects {
     
     // Objects to test for

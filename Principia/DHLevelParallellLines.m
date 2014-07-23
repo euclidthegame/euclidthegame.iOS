@@ -121,7 +121,7 @@
         
         DHLineObject* l = object;
         
-        if (l.tMin < 0 && l.tMax > 1 && FuzzyLinesPerpendicular(l, _lineA)) {
+        if (l.tMin < 0 && l.tMax > 1 && LinesPerpendicular(l, _lineA)) {
             perpendicularLineOK = YES;
         }
         

@@ -141,5 +141,25 @@
     return NO;
 }
 
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
 
+DHCircle* cAB = [[DHCircle alloc] initWithCenter:_initialLine.start andPointOnRadius:_initialLine.end];
+DHCircle* cBA = [[DHCircle alloc] initWithCenter:_initialLine.end andPointOnRadius:_initialLine.start];
+DHTrianglePoint* pTop = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
+DHTrianglePoint* pBottom = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.end andPoint2:_initialLine.start];
+DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:pBottom andEnd:pTop];
+DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
+
+for (id object in objects){
+    if (EqualCircles(object,cAB)) return cAB.center.position;
+    if (EqualCircles(object,cBA)) return cBA.center.position;
+    if (EqualPoints(object, pTop)) return pTop.position;
+    if (EqualPoints(object,pBottom)) return pBottom.position;
+    if (LineObjectCoversSegment(object,segment)) return MidPointFromPoints(segment.start.position,segment.end.position);
+    if (EqualPoints(object,mp)) return mp.position;
+}
+    return CGPointMake(NAN, NAN);
+
+}
 @end

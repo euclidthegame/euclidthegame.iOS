@@ -23,4 +23,5 @@ BOOL EqualLineSegments(id segment1, id segment2);
 BOOL LineSegmentsWithEqualLength(id segment1, id segment2);
 BOOL EqualScalarValues(CGFloat a, CGFloat b);
 CGFloat AngleBetweenLineObjects(id o1, id o2);
+CGPoint Position(id object);
 CGFloat GetAngle(id rayOrSegment, id lineObject);

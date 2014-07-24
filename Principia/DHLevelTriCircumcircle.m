@@ -161,6 +161,32 @@
     
     return NO;
 }
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    DHPerpendicularLine* pl1 = [[DHPerpendicularLine alloc] init];
+    pl1.line = _lAB;
+    pl1.point = _lAB.start;
+    DHPerpendicularLine* pl2 = [[DHPerpendicularLine alloc] init];
+    pl2.line = _lBC;
+    pl2.point = _lBC.end;
+    
+    DHIntersectionPointLineLine* ip = [[DHIntersectionPointLineLine alloc] init];
+    ip.l1 = pl1;
+    ip.l2 = pl2;
+    
+    DHMidPoint* mp = [[DHMidPoint alloc] init];
+    mp.start = ip;
+    mp.end = _lAB.end;
+    
+    DHCircle* c = [[DHCircle alloc] init];
+    c.center = mp;
+    c.pointOnRadius = _lAB.start;
+    for (id object in objects){
+        
+        if (EqualPoints(object, mp)) return mp.position;
+        if (PointOnCircle(object, c)) return Position(object);
+    }
+    return CGPointMake(NAN, NAN);
+}
 
 
 @end

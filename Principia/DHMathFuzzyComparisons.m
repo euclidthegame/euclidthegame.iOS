@@ -270,3 +270,20 @@ CGFloat GetAngle(id rayOrSegment, id lineObject){
     }
     return NAN;
 }
+
+CGPoint Position(id object) {
+    if ([[object class] isSubclassOfClass:[DHLineObject class]]) {
+        DHPoint* point = object;
+        return point.position;
+    }
+    else if ([[object class] isSubclassOfClass:[DHLineObject class]])
+    {
+        DHLineObject* line = object;
+        return MidPointFromLine(line);
+    }
+    else if ([object class] == [DHCircle class]){
+        DHCircle* circle = object;
+        return circle.center.position;
+    }
+    else return CGPointMake(NAN,NAN);
+}

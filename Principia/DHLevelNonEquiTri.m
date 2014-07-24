@@ -131,7 +131,61 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    for (int index2 = 0; index2 < geometricObjects.count-1; ++index2) {
+    
+    // Solution criteria
+    BOOL translatedPointFromAOK = NO;
+    BOOL translatedPointFromBOK = NO;
+    BOOL pointAtTriangleApexOK = NO;
+    BOOL oneTriangleSideOK = NO;
+    BOOL bothTriangleSidesOK = NO;
+    
+    CGFloat lengthCD = _lineCD.length;
+    CGFloat lengthEF = _lineEF.length;
+    
+    for (id object in geometricObjects) {
+        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+            DHPoint* p = object;
+            CGFloat distPA = DistanceBetweenPoints(p.position, _lineAB.start.position);
+            CGFloat distPB = DistanceBetweenPoints(p.position, _lineAB.end.position);
+            
+            if (EqualScalarValues(lengthCD, distPA) || EqualScalarValues(lengthEF, distPA)) {
+                translatedPointFromAOK = YES;
+            }
+            if (EqualScalarValues(lengthCD, distPB) || EqualScalarValues(lengthEF, distPB)) {
+                translatedPointFromBOK = YES;
+            }
+            
+            if ((EqualScalarValues(lengthCD, distPA) && EqualScalarValues(lengthEF, distPB)) ||
+                (EqualScalarValues(lengthEF, distPA) && EqualScalarValues(lengthCD, distPB))) {
+                pointAtTriangleApexOK = YES;
+                
+                DHLineSegment* sFromA = [[DHLineSegment alloc] initWithStart:_lineAB.start andEnd:p];
+                DHLineSegment* sFromB = [[DHLineSegment alloc] initWithStart:_lineAB.end andEnd:p];
+                
+                BOOL segmentAOK = NO;
+                BOOL segmentBOK = NO;
+                
+                for (id object in geometricObjects) {
+                    if (LineObjectCoversSegment(object, sFromA)) segmentAOK = YES;
+                    if (LineObjectCoversSegment(object, sFromB)) segmentBOK = YES;
+                }
+                if (segmentAOK || segmentBOK) oneTriangleSideOK = YES;
+                if (segmentAOK && segmentBOK) bothTriangleSidesOK = YES;
+            }
+        }
+    }
+    
+    self.progress = (translatedPointFromAOK + translatedPointFromBOK + pointAtTriangleApexOK +
+                     oneTriangleSideOK + bothTriangleSidesOK)/5.0 * 100;
+    
+    if (pointAtTriangleApexOK && bothTriangleSidesOK) {
+        self.progress = 100;
+        return YES;
+    }
+    
+    return NO;
+    
+    /*for (int index2 = 0; index2 < geometricObjects.count-1; ++index2) {
         id object2 = [geometricObjects objectAtIndex:index2];
         if ([[object2 class] isSubclassOfClass:[DHLineSegment class]] == NO) continue;
         if (object2 == _lineAB || object2 == _lineCD || object2 == _lineEF) continue;
@@ -164,7 +218,7 @@
         }
     }
     
-    return NO;
+    return NO;*/
 }
 
 - (CGPoint)testObjectsForProgressHints:(NSArray *)objects

@@ -219,10 +219,11 @@
     [_geometricObjectsForUndo addObject:[objects copy]];
     _undoButton.enabled = true;
     
-    for (id object in objects) {
+    for (DHGeometricObject* object in objects) {
+        object.temporary = NO;
         // Sort objects to ensure points are last in the array to be drawn last
         if ([[object class] isSubclassOfClass:[DHPoint class]]) {
-            DHPoint* p = object;
+            DHPoint* p = (DHPoint*)object;
             if (p.label == nil) {
                 p.label = [_objectLabeler nextLabel];
             }

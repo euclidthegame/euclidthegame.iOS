@@ -135,10 +135,16 @@ BOOL EqualCircles(id circle1, id circle2)
     {
         DHCircle* c1 = circle1;
         DHCircle* c2 = circle2;
-        if (EqualPoints(c1.center, c2.center) &&
+        
+        if (EqualPoints(c1.center, c2.center) && EqualScalarValues(c1.radius, c2.radius)) {
+            return YES;
+        } else {
+            return NO;
+        }
+        /*if (EqualPoints(c1.center, c2.center) &&
             EqualPoints(c1.pointOnRadius, c2.pointOnRadius))
             return YES;
-        else return NO;
+        else return NO;*/
     }
     else return NO;
 }
@@ -174,4 +180,9 @@ BOOL LineSegmentsWithEqualLength(id segment1, id segment2)
         }
     }
     return NO;
+}
+
+CG_INLINE BOOL EqualScalarValues(CGFloat a, CGFloat b)
+{
+    return fabs(a-b) < kFuzzyEpsilon;
 }

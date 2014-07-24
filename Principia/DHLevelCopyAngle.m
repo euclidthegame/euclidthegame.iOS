@@ -159,31 +159,34 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL pointAtTargetAngleOK = NO;
+    CGFloat targetAngle = AngleBetweenLineObjects(_rayA1, _rayA2);
+
+    DHLineObject* lTemp = [[DHLine alloc] init];
+    lTemp.start = _pointB;
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
-        
-        DHLineObject* l = object;
-
-        CGFloat distToB = DistanceFromPointToLine(_pointB, l);
-        if (distToB > 0.01) continue;
-        
-        CGFloat targetAngle = CGVectorAngleBetween(_rayA1.vector, _rayA2.vector);
-        CGFloat angleToDLine = CGVectorAngleBetween(l.vector, _rayB.vector);
-        
-        if (angleToDLine > M_PI) {
-            angleToDLine = 2*M_PI - angleToDLine;
+        if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* l = object;
+            if (!PointOnLine(_pointB, l)) continue;
+            CGFloat angleToBLine = AngleBetweenLineObjects(l, _rayB);
+            if (EqualScalarValues(angleToBLine, targetAngle)) {
+                self.progress = 100;
+                return YES;
+            }
         }
-        if (fabs(targetAngle - angleToDLine) < 0.0001) {
-            self.progress = 100;
-            return YES;
-        }
-        
-        if (l.tMin < 0 && fabs(targetAngle - (M_PI - angleToDLine)) < 0.0001) {
-            self.progress = 100;
-            return YES;
+        if ([[object class]  isSubclassOfClass:[DHPoint class]] && [object class] != [DHPoint class]) {
+            DHPoint* point = object;
+            lTemp.end = point;
+            CGFloat angleToBLine = AngleBetweenLineObjects(lTemp, _rayB);
+            if (EqualScalarValues(angleToBLine, targetAngle)) {
+                pointAtTargetAngleOK = YES;
+            }
         }
     }
+    
+    self.progress = pointAtTargetAngleOK/2.0*100;
     
     return NO;
 }

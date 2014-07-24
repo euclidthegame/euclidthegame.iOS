@@ -10,6 +10,7 @@
 #import "DHGeometricObjects.h"
 
 BOOL EqualPoints(id point1, id point2);
+BOOL EqualPositions(CGPoint p1, CGPoint p2);
 BOOL PointOnLine(id point, id lineObject);
 BOOL PointOnCircle(id point, id circle);
 BOOL LineObjectCoversSegment(id lineObject, id lineSegment);
@@ -21,5 +22,6 @@ BOOL LinesPerpendicular(DHLineObject* l1, DHLineObject* l2);
 BOOL EqualLineSegments(id segment1, id segment2);
 BOOL LineSegmentsWithEqualLength(id segment1, id segment2);
 BOOL EqualScalarValues(CGFloat a, CGFloat b);
-CGFloat GetAngle(id rayOrSegment, id lineObject);
+CGFloat AngleBetweenLineObjects(id o1, id o2);
 CGPoint Position(id object);
+CGFloat GetAngle(id rayOrSegment, id lineObject);

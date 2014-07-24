@@ -25,6 +25,11 @@ CG_INLINE CGVector CGVectorBetweenPoints(CGPoint from, CGPoint to)
     return CGVectorMake(to.x - from.x, to.y - from.y);
 }
 
+CG_INLINE CGVector CGVectorInvert(CGVector vector)
+{
+    return CGVectorMake(-vector.dx, -vector.dy);
+}
+
 /* Add two vectors */
 CG_INLINE CGVector CGVectorSum(CGVector vector1, CGVector vector2);
 
@@ -156,7 +161,11 @@ CG_INLINE CGFloat CGVectorAngleBetween(CGVector vector1, CGVector vector2)
 		tmp = -1.0f;
 	}
     
+#if CGFLOAT_IS_DOUBLE
+    return acos( tmp );
+#else
     return acosf( tmp );
+#endif
 }
 
 CG_INLINE CGFloat CGVectorAngle(CGVector vector)

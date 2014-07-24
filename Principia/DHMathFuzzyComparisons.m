@@ -29,6 +29,15 @@ BOOL EqualPoints(id point1, id point2)
     
 }
 
+BOOL EqualPositions(CGPoint p1, CGPoint p2)
+{
+    if (fabs(p1.x - p2.x) < kFuzzyEpsilon && fabs(p1.y - p2.y) < kFuzzyEpsilon)
+        return YES;
+    else
+        return NO;
+    
+}
+
 BOOL PointOnLine(id point, id lineObject)
 {
     if ([[point class] isSubclassOfClass:[DHPoint class]] &&
@@ -185,6 +194,47 @@ BOOL LineSegmentsWithEqualLength(id segment1, id segment2)
 BOOL EqualScalarValues(CGFloat a, CGFloat b)
 {
     return fabs(a-b) < kFuzzyEpsilon;
+}
+
+CGFloat AngleBetweenLineObjects(id o1, id o2)
+{
+    if ([[o1 class] isSubclassOfClass:[DHLineObject class]] &&
+        [[o2 class] isSubclassOfClass:[DHLineObject class]])
+    {
+        DHLineObject* l1 = o1;
+        DHLineObject* l2 = o2;
+        
+        DHIntersectionResult r = IntersectionTestLineLine(l1, l2);
+        
+        if (r.intersect) {
+            CGVector v1 = l1.vector;
+            CGVector v2 = l2.vector;
+            BOOL angleFromEndPointL1 = NO;
+            BOOL angleFromEndPointL2 = NO;
+            if (l1.tMin > -INFINITY && EqualPositions(l1.start.position, r.intersectionPoint)) {
+                angleFromEndPointL1 = YES;
+            }
+            if (l2.tMin > -INFINITY && EqualPositions(l2.start.position, r.intersectionPoint)) {
+                angleFromEndPointL2 = YES;
+            }
+            if (l1.tMax < INFINITY && EqualPositions(l1.end.position, r.intersectionPoint)) {
+                angleFromEndPointL1 = YES;
+                v1 = CGVectorInvert(v1);
+            }
+            if (l2.tMax < INFINITY && EqualPositions(l2.end.position, r.intersectionPoint)) {
+                angleFromEndPointL2 = YES;
+                v2 = CGVectorInvert(v2);
+            }
+            
+            CGFloat angle = CGVectorAngleBetween(v1, v2);
+            if (!(angleFromEndPointL1 && angleFromEndPointL2) && angle > M_PI_2) {
+                angle = M_PI - angle;
+            }
+            return angle;
+        }
+    }
+    
+    return NAN;
 }
 
 CGFloat GetAngle(id rayOrSegment, id lineObject){

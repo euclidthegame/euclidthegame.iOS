@@ -115,6 +115,15 @@
     
     return NO;
 }
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    
+    for (id object in objects){
+    
+        if(EqualPoints(object, _pointC)) return _pointC.position;
+    }
 
+    
+return CGPointMake(NAN, NAN);
+}
 
 @end

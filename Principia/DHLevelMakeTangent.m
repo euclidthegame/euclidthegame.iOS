@@ -127,6 +127,21 @@
     
     return NO;
 }
-
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    
+    DHLineSegment* sAB = [[DHLineSegment alloc] initWithStart:_pointA andEnd:_pointB];
+    DHPerpendicularLine *perp = [[DHPerpendicularLine alloc]initWithLine:sAB andPoint:_pointB];
+    
+    for (id object in objects){
+        
+        
+        if(EqualDirection(object,sAB)) return MidPointFromLine(sAB);
+        if(EqualDirection(perp, object)) return _pointB.position;
+    
+    }
+    
+    
+    return CGPointMake(NAN, NAN);
+}
 
 @end

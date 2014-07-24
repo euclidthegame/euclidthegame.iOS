@@ -153,6 +153,25 @@
     return NO;
 }
 
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    
+    DHPointOnLine* pC = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:1/3.0];
+    DHPointOnLine* pD = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:2/3.0];
+    
+    
+    for (id object in objects){
+        if (PointOnLine(pC, object)) return Position(object);
+        if (PointOnCircle(pC, object)) return Position(object);
+        if (PointOnLine(pD, object)) return Position(object);
+        if (PointOnCircle(pD, object)) return Position(object);
+        if (EqualPoints(object, pC)) return pC.position;
+        if (EqualPoints(object,pD)) return pD.position;
+    }
+    
+    
+    return CGPointMake(NAN, NAN);
+}
+
 
 @end
 

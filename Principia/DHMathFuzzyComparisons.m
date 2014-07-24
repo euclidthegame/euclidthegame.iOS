@@ -182,7 +182,7 @@ BOOL LineSegmentsWithEqualLength(id segment1, id segment2)
     return NO;
 }
 
-CG_INLINE BOOL EqualScalarValues(CGFloat a, CGFloat b)
+BOOL EqualScalarValues(CGFloat a, CGFloat b)
 {
     return fabs(a-b) < kFuzzyEpsilon;
 }

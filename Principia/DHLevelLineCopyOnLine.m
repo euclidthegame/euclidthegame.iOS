@@ -121,25 +121,30 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHPoint class]] == NO) continue;
-
-        DHPoint* p = object;
-        
-        CGVector vCP = CGVectorBetweenPoints(_lineCD.start.position, p.position);
-        CGVector vAB = _lineAB.vector;
-        CGVector vCD = _lineCD.vector;
-        CGFloat dotProd = CGVectorDotProduct(CGVectorNormalize(vCP), CGVectorNormalize(vCD));
-        
-        CGFloat lCP = CGVectorLength(vCP);
-        CGFloat lAB = CGVectorLength(vAB);
-        
-        if (fabs(dotProd) > 1 - 0.000001 && CGFloatsEqualWithinEpsilon(lCP, lAB)) {
-            self.progress = 100;
-            return YES;
+    DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
+    tp.startOfTranslation = _lineCD.start;
+    tp.translationStart = _lineAB.start;
+    tp.translationEnd = _lineAB.end;
+    DHCircle* circle = [[DHCircle alloc] initWithCenter:_lineCD.start andPointOnRadius:tp];
+    CGFloat distAB = DistanceBetweenPoints(_lineAB.start.position, _lineAB.end.position);
+    
+    BOOL circleWithABRadiusAtCOK = NO;
+    
+    for (id object in geometricObjects){
+        if (PointOnLine(object,_lineCD)){
+            DHPoint* p = object;
+            CGFloat distCP = DistanceBetweenPoints(p.position, _lineCD.start.position);
+            if (EqualScalarValues(distAB, distCP)) {
+                self.progress = 100;
+                return YES;
+            }
+        }
+        if (EqualCircles(object,circle)) {
+            circleWithABRadiusAtCOK = YES;
         }
     }
+    
+    self.progress = circleWithABRadiusAtCOK/2.0*100;
     
     return NO;
 }

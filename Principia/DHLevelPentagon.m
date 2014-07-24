@@ -197,6 +197,61 @@
     return NO;
 }
 
+-(CGPoint) testObjectsForProgressHints:(NSArray *)objects{
+    
+    DHPoint* pA = _circle.center;
+    DHPoint* pB = _circle.pointOnRadius;
+    DHLine* lVert = [[DHLine alloc] initWithStart:pB andEnd:pA];
+    DHPerpendicularLine* lHori = [[DHPerpendicularLine alloc] initWithLine:lVert andPoint:pA];
+    DHIntersectionPointLineCircle* ip1 = [[DHIntersectionPointLineCircle alloc]
+                                          initWithLine:lVert andCircle:_circle andPreferEnd:YES];
+    DHIntersectionPointLineCircle* ip2 = [[DHIntersectionPointLineCircle alloc]
+                                          initWithLine:lHori andCircle:_circle andPreferEnd:YES];
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:pA andPoint2:ip1];
+    DHCircle* cMP = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:ip2];
+    DHIntersectionPointLineCircle* ip3 = [[DHIntersectionPointLineCircle alloc]
+                                          initWithLine:lVert andCircle:cMP andPreferEnd:YES];
+    DHTranslatedPoint* pt = [[DHTranslatedPoint alloc] init];
+    pt.startOfTranslation = ip3;
+    pt.translationStart = pB;
+    pt.translationEnd = pA;
+    DHCircle* cIP3 = [[DHCircle alloc] initWithCenter:ip3 andPointOnRadius:pt];
+    DHIntersectionPointCircleCircle* pD = [[DHIntersectionPointCircleCircle alloc]
+                                           initWithCircle1:cIP3 andCircle2:_circle onPositiveY:YES];
+    DHIntersectionPointCircleCircle* pE = [[DHIntersectionPointCircleCircle alloc]
+                                           initWithCircle1:cIP3 andCircle2:_circle onPositiveY:NO];
+    DHCircle* cD = [[DHCircle alloc] initWithCenter:pD andPointOnRadius:pE];
+    DHCircle* cE = [[DHCircle alloc] initWithCenter:pE andPointOnRadius:pD];
+    DHIntersectionPointCircleCircle* pC = [[DHIntersectionPointCircleCircle alloc]
+                                           initWithCircle1:cD andCircle2:_circle onPositiveY:YES];
+    DHIntersectionPointCircleCircle* pF = [[DHIntersectionPointCircleCircle alloc]
+                                           initWithCircle1:_circle andCircle2:cE onPositiveY:YES];
+    
+    DHLineSegment* lBC = [[DHLineSegment alloc] initWithStart:_circle.pointOnRadius andEnd:pC];
+    DHLineSegment* lCD = [[DHLineSegment alloc] initWithStart:pC andEnd:pD];
+    DHLineSegment* lDE = [[DHLineSegment alloc] initWithStart:pD andEnd:pE];
+    DHLineSegment* lEF = [[DHLineSegment alloc] initWithStart:pE andEnd:pF];
+    DHLineSegment* lFB = [[DHLineSegment alloc] initWithStart:pF andEnd:_circle.pointOnRadius];
+    
+    for (id object in objects){
+        if (EqualPoints(object,pC)) return Position(object);
+        if (EqualPoints(object,pD)) return Position(object);
+        if (EqualPoints(object,pE)) return Position(object);
+        if (EqualPoints(object,pF)) return Position(object);
+        if (PointOnCircle(pC,object)) return Position(object);
+        if (PointOnCircle(pD,object)) return Position(object);
+        if (PointOnCircle(pE,object)) return Position(object);
+        if (PointOnCircle(pF,object)) return Position(object);
+        if (LineObjectCoversSegment(object, lBC)) return Position(object);
+        if (LineObjectCoversSegment(object, lCD)) return Position(object);
+        if (LineObjectCoversSegment(object, lDE)) return Position(object);
+        if (LineObjectCoversSegment(object, lEF)) return Position(object);
+        if (LineObjectCoversSegment(object, lFB)) return Position(object);
+    }
+    
+    return CGPointMake(NAN, NAN);
+}
+
 
 @end
 

@@ -204,6 +204,46 @@
     return NO;
 }
 
+-(CGPoint) testObjectsForProgressHints:(NSArray *)objects{
+    
+    DHPoint* pOnA = [[DHPoint alloc] initWithPositionX:_circleA.center.position.x
+                                                  andY:(_circleA.center.position.y + _circleA.radius)];
+    DHPoint* pOnB = [[DHPoint alloc] initWithPositionX:_circleB.center.position.x
+                                                  andY:(_circleB.center.position.y + _circleB.radius)];
+    DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
+    DHRay* r2 = [[DHRay alloc] initWithStart:pOnB andEnd:pOnA];
+    
+    DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];
+    DHMidPoint* mp = [[DHMidPoint alloc] init];
+    mp.start = ip1;
+    mp.end = _circleA.center;
+    
+    DHCircle* c = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_circleA.center];
+    DHIntersectionPointCircleCircle* ip2 = [[DHIntersectionPointCircleCircle alloc] init];
+    ip2.c1 = c;
+    ip2.c2 = _circleA;
+    ip2.onPositiveY = NO;
+    
+    DHIntersectionPointCircleCircle* ip3 = [[DHIntersectionPointCircleCircle alloc] init];
+    ip3.c1 = c;
+    ip3.c2 = _circleA;
+    ip3.onPositiveY = YES;
+    
+    DHRay* tangent1 = [[DHRay alloc] initWithStart:ip1 andEnd:ip2];
+    DHRay* tangent2 = [[DHRay alloc] initWithStart:ip1 andEnd:ip3];
+    
+    for (id object in objects){
+        if (PointOnLine(object, tangent1)) return Position(object);
+        if (PointOnLine(object, tangent2)) return Position(object);
+        if (EqualDirection(object, tangent1)) return Position(tangent1);
+        if (EqualDirection(object, tangent2)) return Position(tangent2);
+        if (EqualCircles(object, c)) return Position(c);
+    }
+    
+    
+    return CGPointMake(NAN, NAN);
+}
+
 
 @end
 

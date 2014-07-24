@@ -276,6 +276,44 @@
     
     return NO;
 }
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    DHTrianglePoint* center = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.start
+                                                            andPoint2:_lineAB.end];
+    DHPoint* pA = _lineAB.start;
+    DHPoint* pB = _lineAB.end;
+    DHPoint* pC = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pB];
+    DHPoint* pD = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pC];
+    DHPoint* pE = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pD];
+    DHPoint* pF = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pE];
+    
+    DHLineSegment* lBC = [[DHLineSegment alloc] initWithStart:pB andEnd:pC];
+    DHLineSegment* lCD = [[DHLineSegment alloc] initWithStart:pC andEnd:pD];
+    DHLineSegment* lDE = [[DHLineSegment alloc] initWithStart:pD andEnd:pE];
+    DHLineSegment* lEF = [[DHLineSegment alloc] initWithStart:pE andEnd:pF];
+    DHLineSegment* lFA = [[DHLineSegment alloc] initWithStart:pF andEnd:pA];
+    
+    
+    for (id object in objects){
+        if (PointOnCircle(pA,object)) return Position(object);
+        if (PointOnCircle(pB,object)) return Position(object);
+        if (PointOnCircle(pC,object)) return Position(object);
+        if (PointOnCircle(pD,object)) return Position(object);
+        if (PointOnCircle(pE,object)) return Position(object);
+        if (PointOnCircle(pF,object)) return Position(object);
+        if (EqualPoints(object,pC)) return Position(object);
+        if (EqualPoints(object,pD)) return Position(object);
+        if (EqualPoints(object,pE)) return Position(object);
+        if (EqualPoints(object,pF)) return Position(object);
+        if (LineObjectCoversSegment(object, lBC)) return Position(object);
+        if (LineObjectCoversSegment(object, lCD)) return Position(object);
+        if (LineObjectCoversSegment(object, lDE)) return Position(object);
+        if (LineObjectCoversSegment(object, lEF)) return Position(object);
+        if (LineObjectCoversSegment(object, lFA)) return Position(object);
+    }
+    
+    
+    return CGPointMake(NAN, NAN);
+}
 
 
 @end

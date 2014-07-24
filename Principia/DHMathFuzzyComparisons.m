@@ -186,3 +186,37 @@ BOOL EqualScalarValues(CGFloat a, CGFloat b)
 {
     return fabs(a-b) < kFuzzyEpsilon;
 }
+
+CGFloat GetAngle(id rayOrSegment, id lineObject){
+    if ([[rayOrSegment class] isSubclassOfClass:[DHLineObject class]] &&
+        [[lineObject class] isSubclassOfClass:[DHLineObject class]])
+    
+    {
+        DHLineObject* l1 = rayOrSegment;
+        DHLineObject* l2 = lineObject;
+        DHIntersectionPointLineLine* intersection = [[DHIntersectionPointLineLine alloc] initWithLine:l1 andLine:l2];
+        
+        
+        if (PointOnLine(intersection,l1) && PointOnLine(intersection,l2)){
+            if (EqualPoints(l1.end,intersection))
+            {
+                DHPoint* swap = l1.end;
+                l1.end = l1.start;
+                l1.start = swap;
+            }
+            if (l2.tMin == 0.0f && EqualPoints(l2.end,intersection))
+            {
+                DHPoint* swap = l2.end;
+                l2.end = l2.start;
+                l2.start = swap;
+            }
+            CGFloat result = CGVectorAngleBetween(l1.vector,l2.vector);
+            //if l2 is a line, two angles are made, the function returns only the acute angle
+            if (l2.tMin <0 && result > 0.5* M_PI ){
+                result = M_PI - result;
+            }
+            return result;
+        }
+    }
+    return NAN;
+}

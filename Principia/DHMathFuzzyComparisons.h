@@ -21,3 +21,4 @@ BOOL LinesPerpendicular(DHLineObject* l1, DHLineObject* l2);
 BOOL EqualLineSegments(id segment1, id segment2);
 BOOL LineSegmentsWithEqualLength(id segment1, id segment2);
 BOOL EqualScalarValues(CGFloat a, CGFloat b);
+CGFloat GetAngle(id rayOrSegment, id lineObject);

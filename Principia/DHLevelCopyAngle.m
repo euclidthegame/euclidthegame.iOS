@@ -174,7 +174,6 @@
         if (angleToDLine > M_PI) {
             angleToDLine = 2*M_PI - angleToDLine;
         }
-        
         if (fabs(targetAngle - angleToDLine) < 0.0001) {
             self.progress = 100;
             return YES;
@@ -187,6 +186,25 @@
     }
     
     return NO;
+}
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    
+    for (id object in objects){
+        if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* l = object;
+            if (! PointOnLine(_pointB,l)) continue;
+            if (EqualScalarValues(GetAngle(_rayA1, _rayA2), GetAngle(_rayB,l))) return MidPointFromLine(l);
+        }
+        
+        if ([[object class]  isSubclassOfClass:[DHPoint class]] && [object class] != [DHPoint class]) {
+            DHPoint* point = object;
+            DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:_pointB andEnd:point];
+            if (EqualScalarValues(GetAngle(_rayA1, _rayA2), GetAngle(_rayB,segment))) return point.position;
+        }
+        
+    }
+    return CGPointMake(NAN, NAN);
 }
 
 

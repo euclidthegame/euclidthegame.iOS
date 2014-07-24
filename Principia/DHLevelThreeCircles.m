@@ -173,7 +173,38 @@
     
     return NO;
 }
-
+-(CGPoint)testObjectsForProgressHints:(NSArray *)objects {
+    
+    DHTranslatedPoint* pc2 = [[DHTranslatedPoint alloc] init];
+    pc2.startOfTranslation = _lAB.end;
+    pc2.translationStart = _lAB.start;
+    pc2.translationEnd = _lAB.end;
+    
+    DHCircle* c2 = [[DHCircle alloc] initWithCenter:pc2 andPointOnRadius:_lAB.end];
+    
+    DHTrianglePoint* pt = [[DHTrianglePoint alloc] initWithPoint1:_lAB.start andPoint2:pc2];
+    
+    DHTrianglePoint* pt2 = [[DHTrianglePoint alloc] initWithPoint1:pc2 andPoint2:_lAB.start];
+    DHLineSegment* l = [[DHLineSegment alloc] initWithStart:_lAB.start andEnd:pt];
+    DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc] init];
+    ip.c = _circle1;
+    ip.l = l;
+    
+    
+    DHCircle* c3 = [[DHCircle alloc] initWithCenter:pt andPointOnRadius:ip];
+    
+    for (id object in objects) {
+        if (EqualPoints(object, pc2)) return pc2.position;
+        if (EqualPoints(object, pt)) return pt.position;
+        if (EqualPoints(object, pt2)) return pt2.position;
+        if (PointOnCircle(object, c2)) return Position(object);
+        if (PointOnCircle(object, c3)) return Position(object);
+        if (EqualCircles(object, c2)) return c2.center.position;
+        if (EqualCircles(object, c3)) return c3.center.position;
+    }
+    
+    return CGPointMake(NAN, NAN);
+}
 
 @end
 

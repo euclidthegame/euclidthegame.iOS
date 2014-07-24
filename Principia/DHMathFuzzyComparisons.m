@@ -222,7 +222,7 @@ CGFloat GetAngle(id rayOrSegment, id lineObject){
 }
 
 CGPoint Position(id object) {
-    if ([[object class] isSubclassOfClass:[DHLineObject class]]) {
+    if ([[object class] isSubclassOfClass:[DHPoint class]]) {
         DHPoint* point = object;
         return point.position;
     }

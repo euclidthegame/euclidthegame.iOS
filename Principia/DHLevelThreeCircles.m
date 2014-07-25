@@ -122,54 +122,44 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    if (geometricObjects.count < 3) {
-        return NO;
+    DHTranslatedPoint* pc2 = [[DHTranslatedPoint alloc] init];
+    pc2.startOfTranslation = _lAB.end;
+    pc2.translationStart = _lAB.start;
+    pc2.translationEnd = _lAB.end;
+    DHCircle* c2 = [[DHCircle alloc] initWithCenter:pc2 andPointOnRadius:_lAB.end];
+    DHTrianglePoint* pt = [[DHTrianglePoint alloc] initWithPoint1:_lAB.start andPoint2:pc2];
+    DHTrianglePoint* pt2 = [[DHTrianglePoint alloc] initWithPoint1:pc2 andPoint2:_lAB.start];
+
+    DHLineSegment* l = [[DHLineSegment alloc] initWithStart:_lAB.start andEnd:pt];
+    DHLineSegment* l2 = [[DHLineSegment alloc] initWithStart:_lAB.start andEnd:pt2];
+    DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc]
+                                         initWithLine:l andCircle:_circle1 andPreferEnd:NO];
+    DHIntersectionPointLineCircle* ip2 = [[DHIntersectionPointLineCircle alloc]
+                                         initWithLine:l2 andCircle:_circle1 andPreferEnd:NO];
+    DHCircle* c3 = [[DHCircle alloc] initWithCenter:pt andPointOnRadius:ip];
+    DHCircle* c3_2 = [[DHCircle alloc] initWithCenter:pt2 andPointOnRadius:ip2];
+    
+    BOOL secondCircleOK = NO;
+    BOOL thirdCircleOK = NO;
+    bool pointOnThirdCircleOK = NO;
+    BOOL secondCircleCenterOK = NO;
+    BOOL thirdCircleCenterOK = NO;
+    
+    for (id object in geometricObjects) {
+        if (EqualPoints(object, pc2)) secondCircleCenterOK = YES;
+        if (EqualCircles(object, c2)) secondCircleOK = YES;
+        if (EqualPoints(object, pt) || EqualPoints(object, pt2)) thirdCircleCenterOK = YES;
+        if (PointOnCircle(object, c3) || PointOnCircle(object, c3_2)) pointOnThirdCircleOK = YES;
+        if (EqualCircles(object, c3) || EqualCircles(object, c3_2)) thirdCircleOK = YES;
     }
     
-    for (int index2 = 0; index2 < geometricObjects.count-1; ++index2) {
-        id object2 = [geometricObjects objectAtIndex:index2];
-        if ([[object2 class] isSubclassOfClass:[DHCircle class]] == NO) continue;
-        
-        for (int index3 = index2+1; index3 < geometricObjects.count; ++index3) {
-            id object3 = [geometricObjects objectAtIndex:index3];
-            if ([[object3 class] isSubclassOfClass:[DHCircle class]] == NO) continue;
-            
-            DHCircle* c1 = _circle1;
-            DHCircle* c2 = object2;
-            DHCircle* c3 = object3;
-            
-            CGFloat radius1 = c1.radius;
-            CGFloat radius2 = c2.radius;
-            CGFloat radius3 = c3.radius;
-            
-            // Ensure all radii are equal
-            BOOL radiiOK = fabs(radius1-radius2) < 0.01 && fabs(radius1-radius3) < 0.01 && fabs(radius2-radius3) < 0.01;
-            if (radiiOK == NO) {
-                continue;
-            }
-            
-            CGFloat dist12 = DistanceBetweenPoints(c1.center.position, c2.center.position);
-            CGFloat dist13 = DistanceBetweenPoints(c1.center.position, c3.center.position);
-            CGFloat dist23 = DistanceBetweenPoints(c2.center.position, c3.center.position);
-            
-            // Ensure all distances are equal to 2*radius
-            CGFloat doubRad = 2*radius1;
-            BOOL distOK = fabs(dist12 - doubRad) < 0.01 && fabs(dist13 - doubRad) < 0.01 && fabs(dist23 - doubRad) < 0.01;
-            if (distOK == NO) {
-                continue;
-            }
-            
-            // Ensure one circle touches B
-            CGFloat distB2 = DistanceBetweenPoints(_circle1.pointOnRadius.position, c2.center.position);
-            CGFloat distB3 = DistanceBetweenPoints(_circle1.pointOnRadius.position, c3.center.position);
-            BOOL oneCircleTouchesB = fabs(distB2-radius1) < 0.01 || fabs(distB3-radius1) < 0.01;
-
-            if (oneCircleTouchesB) {
-                self.progress = 100;
-                return YES;
-            }
-        }
+    if (secondCircleOK && thirdCircleOK) {
+        self.progress = 100;
+        return YES;
     }
+    
+    self.progress = (secondCircleCenterOK + secondCircleOK*4 +
+                     thirdCircleCenterOK + pointOnThirdCircleOK + thirdCircleOK*3)/10.0*100;
     
     return NO;
 }

@@ -144,7 +144,7 @@
             CGFloat dist = DistanceBetweenPoints(ip1, ip2);
             CGFloat distAB = _lAB.length;
             
-            if (fabs(dist - distAB) < 0.001) {
+            if (EqualScalarValues(dist, distAB)) {
                 self.progress = 100;
                 return YES;
             }

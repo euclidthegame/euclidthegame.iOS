@@ -165,6 +165,39 @@
     
     return NO;
 }
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    
+    DHMidPoint* mp = [[DHMidPoint alloc] init];
+    mp.start = _pointA;
+    mp.end = _circle.center;
+    
+    DHCircle* c1 = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_pointA];
+    
+    DHIntersectionPointCircleCircle* ip1 = [[DHIntersectionPointCircleCircle alloc] init];
+    ip1.c1 = c1;
+    ip1.c2 = _circle;
+    ip1.onPositiveY = YES;
+    
+    DHIntersectionPointCircleCircle* ip2 = [[DHIntersectionPointCircleCircle alloc] init];
+    ip2.c1 = c1;
+    ip2.c2 = _circle;
+    ip2.onPositiveY = NO;
+    
+    DHRay* r1 = [[DHRay alloc] initWithStart:_pointA andEnd:ip1];
+    DHRay* r2 = [[DHRay alloc] initWithStart:_pointA andEnd:ip2];
+    
+    
+    for (id object in objects){
+        if (PointOnLine(object, r1)) return Position(object);
+        if (PointOnLine(object, r2)) return Position(object);
+        if (EqualDirection(object, r1)) return Position(r1);
+        if (EqualDirection(object, r2)) return Position(r2);
+        if (EqualCircles(object, c1)) return Position(c1);
+    }
+    
+    
+    return CGPointMake(NAN, NAN);
+}
 
 
 @end

@@ -188,6 +188,7 @@
         
         if (EqualPoints(object, ip1)) return ip1.position;
         if (PointOnCircle(object, c)) return Position(object);
+        if (EqualCircles(object,c)) return c.center.position;
     }
     return CGPointMake(NAN, NAN);
 }

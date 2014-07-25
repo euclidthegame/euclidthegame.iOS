@@ -122,46 +122,35 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    for (int index1 = 0; index1 < geometricObjects.count-1; ++index1) {
-        id object1 = [geometricObjects objectAtIndex:index1];
-        if ([[object1 class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
-
-        for (int index2 = index1+1; index2 < geometricObjects.count; ++index2) {
-            id object2 = [geometricObjects objectAtIndex:index2];
-            if ([[object2 class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
-            
-            DHLineObject* l1 = object1;
-            if ((l1.start == _pointA || l1.end == _pointA) == NO) continue;
-            DHLineObject* l2 = object2;
-            if ((l2.start == _pointA || l2.end == _pointA) == NO) continue;
-            
-            DHMidPoint* mp = [[DHMidPoint alloc] init];
-            mp.start = _pointA;
-            mp.end = _circle.center;
-            
-            DHCircle* c1 = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_pointA];
-            
-            DHIntersectionPointCircleCircle* ip1 = [[DHIntersectionPointCircleCircle alloc] init];
-            ip1.c1 = c1;
-            ip1.c2 = _circle;
-            ip1.onPositiveY = YES;
-            
-            DHIntersectionPointCircleCircle* ip2 = [[DHIntersectionPointCircleCircle alloc] init];
-            ip2.c1 = c1;
-            ip2.c2 = _circle;
-            ip2.onPositiveY = NO;
-            
-            CGFloat distL1ToIp1 = DistanceFromPointToLine(ip1, l1);
-            CGFloat distL1ToIp2 = DistanceFromPointToLine(ip2, l1);
-            CGFloat distL2ToIp1 = DistanceFromPointToLine(ip1, l2);
-            CGFloat distL2ToIp2 = DistanceFromPointToLine(ip2, l2);
-            
-            if ((distL1ToIp1 < 0.01 ||  distL2ToIp1 < 0.01) && (distL1ToIp2 < 0.01 ||  distL2ToIp2 < 0.01)) {
-                self.progress = 100;
-                return YES;
-            }
-        }
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_pointA andPoint2:_circle.center];
+    DHCircle* c1 = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_pointA];
+    DHIntersectionPointCircleCircle* ip1 = [[DHIntersectionPointCircleCircle alloc]
+                                            initWithCircle1:c1 andCircle2:_circle onPositiveY:YES];
+    DHIntersectionPointCircleCircle* ip2 =  [[DHIntersectionPointCircleCircle alloc]
+                                             initWithCircle1:c1 andCircle2:_circle onPositiveY:NO];
+    DHLine* l1 = [[DHLine alloc] initWithStart:_pointA andEnd:ip1];
+    DHLine* l2 = [[DHLine alloc] initWithStart:_pointA andEnd:ip2];
+    
+    BOOL pointOnTangent1OK = NO;
+    BOOL pointOnTangent2OK = NO;
+    BOOL tangent1OK = NO;
+    BOOL tangent2OK = NO;
+    
+    for (id object in geometricObjects) {
+        if (object == _pointA || object == _circle) continue;
+        
+        if (PointOnLine(object, l1)) pointOnTangent1OK = YES;
+        if (PointOnLine(object, l2)) pointOnTangent2OK = YES;
+        if (PointOnLine(_pointA, object) && PointOnLine(ip1, object)) tangent1OK = YES;
+        if (PointOnLine(_pointA, object) && PointOnLine(ip2, object)) tangent2OK = YES;
     }
+    
+    if (tangent1OK && tangent2OK) {
+        self.progress = 100;
+        return YES;
+    }
+    
+    self.progress = (pointOnTangent1OK + tangent1OK + pointOnTangent2OK + tangent2OK)/4.0 * 100;
     
     return NO;
 }

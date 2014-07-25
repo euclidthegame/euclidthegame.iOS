@@ -114,8 +114,8 @@
     for (id object in geometricObjects){
         if (object == _lAB || object == _lAB.start || object == _lAB.end) continue;
         
-        // Do not count lines overlapping AB as intersecting lines with C or D
-        if (PointOnLine(_lAB.start, object) || PointOnLine(_lAB.end, object)) continue;
+        // Do not count lines parallel with AB intersecting lines with C or D
+        if (EqualDirection2(_lAB, object)) continue;
         
         if (PointOnLine(pC, object) || PointOnCircle(pC, object)) intersectionAtFirstPointOK = YES;
         if (PointOnLine(pD, object) || PointOnCircle(pD, object)) intersectionAtSecondPointOK = YES;
@@ -141,6 +141,9 @@
     
     
     for (id object in objects){
+        // Do not count lines parallel with AB intersecting lines with C or D
+        if (EqualDirection2(_lAB, object)) continue;
+        
         if (PointOnLine(pC, object)) return Position(object);
         if (PointOnCircle(pC, object)) return Position(object);
         if (PointOnLine(pD, object)) return Position(object);

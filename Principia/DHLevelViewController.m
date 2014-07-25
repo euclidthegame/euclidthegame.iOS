@@ -308,7 +308,8 @@
     if ([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)]) {
         CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
         if (!isnan(hintLocation.x)) {
-            [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocation withColor:[UIColor blackColor]];
+            CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];
+            [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor blackColor]];
         }
     }
     

@@ -286,6 +286,8 @@
     DHPoint* pE = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pD];
     DHPoint* pF = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pE];
     
+    DHCircle* cAB = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
+    
     DHLineSegment* lBC = [[DHLineSegment alloc] initWithStart:pB andEnd:pC];
     DHLineSegment* lCD = [[DHLineSegment alloc] initWithStart:pC andEnd:pD];
     DHLineSegment* lDE = [[DHLineSegment alloc] initWithStart:pD andEnd:pE];
@@ -294,12 +296,14 @@
     
     
     for (id object in objects){
-        if (PointOnCircle(pA,object)) return Position(object);
-        if (PointOnCircle(pB,object)) return Position(object);
-        if (PointOnCircle(pC,object)) return Position(object);
-        if (PointOnCircle(pD,object)) return Position(object);
-        if (PointOnCircle(pE,object)) return Position(object);
-        if (PointOnCircle(pF,object)) return Position(object);
+        if (EqualRadius(object,cAB)){
+            if (PointOnCircle(pA,object)) return Position(object);
+            if (PointOnCircle(pB,object)) return Position(object);
+            if (PointOnCircle(pC,object)) return Position(object);
+            if (PointOnCircle(pD,object)) return Position(object);
+            if (PointOnCircle(pE,object)) return Position(object);
+            if (PointOnCircle(pF,object)) return Position(object);
+        }
         if (EqualPoints(object,pC)) return Position(object);
         if (EqualPoints(object,pD)) return Position(object);
         if (EqualPoints(object,pE)) return Position(object);

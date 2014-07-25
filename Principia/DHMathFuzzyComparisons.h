@@ -25,3 +25,4 @@ BOOL EqualScalarValues(CGFloat a, CGFloat b);
 CGFloat AngleBetweenLineObjects(id o1, id o2);
 CGPoint Position(id object);
 CGFloat GetAngle(id rayOrSegment, id lineObject);
+BOOL EqualRadius (id circle1, id circle2);

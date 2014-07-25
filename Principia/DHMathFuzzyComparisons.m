@@ -287,3 +287,14 @@ CGPoint Position(id object) {
     }
     else return CGPointMake(NAN,NAN);
 }
+
+BOOL EqualRadius (id circle1, id circle2){
+    if ([circle1 class] == [DHCircle class] && [circle2 class] == [DHCircle class]){
+        DHCircle* c1 = circle1;
+        DHCircle* c2 = circle2;
+        if (EqualScalarValues(c1.radius, c2.radius)){
+            return YES;
+        }
+    }
+    return NO;
+}

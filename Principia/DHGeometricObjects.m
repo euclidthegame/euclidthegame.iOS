@@ -686,13 +686,6 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     CGVector v1 = CGVectorNormalize(self.line1.vector);
     CGVector v2 = CGVectorNormalize(self.line2.vector);
     
-    // Always use the smallest angle for the bisector and let the perpendicular line also added by the
-    // Bisector-tool be other if the lines intersect
-    if (CGVectorDotProduct(v1, v2) < 0 && !self.fixedDirection) {
-        v2.dx = -v2.dx;
-        v2.dy = -v2.dy;
-    }
-    
     _endPointCache.position = CGPointMake(startPos.x + v1.dx + v2.dx, startPos.y + v1.dy + v2.dy);
     return _endPointCache;
 }

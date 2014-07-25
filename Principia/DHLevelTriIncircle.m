@@ -72,25 +72,11 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHBisectLine* bl1 = [[DHBisectLine alloc] init];
-    bl1.line1 = _lAB;
-    bl1.line2 = _lAC;
-    DHBisectLine* bl2 = [[DHBisectLine alloc] init];
-    bl2.line1 = _lAC;
-    bl2.line2 = _lBC;
-    
-    DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] init];
-    ip1.l1 = bl1;
-    ip1.l2 = bl2;
-    
-    DHPerpendicularLine* lp = [[DHPerpendicularLine alloc] init];
-    lp.line = _lBC;
-    lp.point = ip1;
-    
-    DHIntersectionPointLineLine* ip2 = [[DHIntersectionPointLineLine alloc] init];
-    ip2.l1 = _lBC;
-    ip2.l2 = lp;
-        
+    DHBisectLine* bl1 = [[DHBisectLine alloc] initWithLine:_lAB andLine:_lAC];
+    DHBisectLine* bl2 = [[DHBisectLine alloc] initWithLine:_lAC andLine:_lBC];
+    DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:bl1 andLine:bl2];
+    DHPerpendicularLine* lp = [[DHPerpendicularLine alloc] initWithLine:_lBC andPoint:ip1];
+    DHIntersectionPointLineLine* ip2 = [[DHIntersectionPointLineLine alloc] initWithLine:_lBC andLine:lp];
     DHCircle* c = [[DHCircle alloc] initWithCenter:ip1 andPointOnRadius:ip2];
     [objects insertObject:c atIndex:0];
 }
@@ -130,33 +116,27 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHCircle class]] == NO) continue;
+    DHBisectLine* bl1 = [[DHBisectLine alloc] initWithLine:_lAB andLine:_lAC];
+    DHBisectLine* bl2 = [[DHBisectLine alloc] initWithLine:_lAC andLine:_lBC];
+    DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:bl1 andLine:bl2];
+    DHPerpendicularLine* lp = [[DHPerpendicularLine alloc] initWithLine:_lBC andPoint:ip1];
+    DHIntersectionPointLineLine* ip2 = [[DHIntersectionPointLineLine alloc] initWithLine:_lBC andLine:lp];
+    DHCircle* c = [[DHCircle alloc] initWithCenter:ip1 andPointOnRadius:ip2];
+    
+    BOOL centerPointOK = NO;
+    BOOL pointOnRadiusOK = NO;
+    
+    for (id object in geometricObjects) {
+        if (EqualPoints(object, ip1)) centerPointOK = YES;
+        if (PointOnCircle(object, c)) pointOnRadiusOK = YES;
         
-        DHCircle* circle = object;
-        CGFloat radius = circle.radius;
-        
-        CGFloat sideAB = _lAB.length;
-        CGFloat sideAC = _lAC.length;
-        CGFloat sideBC = _lBC.length;
-        CGFloat triPerimiter = sideAB + sideAC + sideBC;
-        CGFloat halfPerim = triPerimiter*0.5;
-        CGFloat triArea = sqrt(halfPerim*(halfPerim-sideAB)*(halfPerim-sideAC)*(halfPerim-sideBC));
-        CGFloat incircleRadius = 2 * triArea / triPerimiter;
-        
-        BOOL radiusOK = fabs(radius - incircleRadius) < 0.05;
-
-        CGFloat distAB = DistanceFromPointToLine(circle.center, _lAB);
-        CGFloat distAC = DistanceFromPointToLine(circle.center, _lAC);
-        
-        BOOL locationOK = (fabs(distAB-incircleRadius) < 0.1 && fabs(distAC-incircleRadius) < 0.1);
-        
-        if (radiusOK && locationOK) {
+        if (EqualCircles(object,c)) {
             self.progress = 100;
             return YES;
         }
     }
+
+    self.progress = (centerPointOK + pointOnRadiusOK)/3.0*100;
     
     return NO;
 }

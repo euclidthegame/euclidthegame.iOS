@@ -1035,7 +1035,6 @@ const CGFloat kClosestTapLimit = 25.0f;
                 DHBisectLine* bl = [[DHBisectLine alloc] init];
                 bl.line1 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:self.firstPoint];
                 bl.line2 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:point];
-                bl.fixedDirection = YES;
                 DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] init];
                 perpLine.line = bl;
                 perpLine.point = bl.start;

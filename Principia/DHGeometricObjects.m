@@ -649,6 +649,15 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     }
     return self;
 }
+- (instancetype)initWithLine:(DHLineObject*)l1 andLine:(DHLineObject*)l2
+{
+    self = [self init];
+    if (self) {
+        _line1 = l1;
+        _line2 = l2;
+    }
+    return self;
+}
 - (DHPoint*)start
 {
     // First, check if the assigned lines share a point, if so, use it

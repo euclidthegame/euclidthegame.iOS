@@ -124,65 +124,46 @@
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
     DHLine* l1 = [[DHLine alloc] initWithStart:_circleB.center andEnd:_circleA.center];
-    DHPointOnCircle* p1 = [[DHPointOnCircle alloc] init];
-    p1.circle = _circleA;
-    p1.angle = M_PI_2;
-    DHPointOnCircle* p2 = [[DHPointOnCircle alloc] init];
-    p2.circle = _circleB;
-    p2.angle = -M_PI_2;
+    DHPointOnCircle* p1 = [[DHPointOnCircle alloc] initWithCircle:_circleA andAngle:M_PI_2];
+    DHPointOnCircle* p2 = [[DHPointOnCircle alloc] initWithCircle:_circleB andAngle:-M_PI_2];
     DHLine* l2 = [[DHLine alloc] initWithStart:p1 andEnd:p2];
     
     DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:l1 andLine:l2];
-    DHMidPoint* mp = [[DHMidPoint alloc] init];
-    mp.start = ip1;
-    mp.end = _circleA.center;
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:ip1 andPoint2:_circleA.center];
     
     DHCircle* c = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_circleA.center];
-    DHIntersectionPointCircleCircle* ip2 = [[DHIntersectionPointCircleCircle alloc] init];
-    ip2.c1 = c;
-    ip2.c2 = _circleA;
-    ip2.onPositiveY = NO;
-    
-    DHIntersectionPointCircleCircle* ip3 = [[DHIntersectionPointCircleCircle alloc] init];
-    ip3.c1 = c;
-    ip3.c2 = _circleA;
-    ip3.onPositiveY = YES;
+    DHIntersectionPointCircleCircle* ip2 = [[DHIntersectionPointCircleCircle alloc]
+                                            initWithCircle1:c andCircle2:_circleA onPositiveY:NO];
+    DHIntersectionPointCircleCircle* ip3 = [[DHIntersectionPointCircleCircle alloc]
+                                            initWithCircle1:c andCircle2:_circleA onPositiveY:YES];
 
-    DHLine* tangent1 = [[DHLine alloc] initWithStart:ip1 andEnd:ip2];
-    DHLine* tangent2 = [[DHLine alloc] initWithStart:ip1 andEnd:ip3];
+    DHLineSegment* tangent1 = [[DHLineSegment alloc] initWithStart:ip1 andEnd:ip2];
+    DHLineSegment* tangent2 = [[DHLineSegment alloc] initWithStart:ip1 andEnd:ip3];
+    DHLine* tangent1Line = [[DHLine alloc] initWithStart:ip1 andEnd:ip2];
+    DHLine* tangent2Line = [[DHLine alloc] initWithStart:ip1 andEnd:ip3];
     
-    for (int index1 = 0; index1 < geometricObjects.count; ++index1) {
-        id object1 = [geometricObjects objectAtIndex:index1];
-        if ([[object1 class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
-        
-        DHLineObject* l1 = object1;
-        CGVector l1Vector = l1.vector;
-        CGVector tangent1Vector = tangent1.vector;
-        CGVector tangent2Vector = tangent2.vector;
-        
-        // Reverse direction if in different directions to only compare angle to 0 instead of also 180 deg. case
-        if (CGVectorDotProduct(l1Vector, tangent1Vector) < 0) {
-            l1Vector.dx = -l1Vector.dx;
-            l1Vector.dy = -l1Vector.dy;
+    BOOL ip1OK = NO, pointOnTangentOK = NO, tangentOK = NO;
+    
+    for (id object in geometricObjects) {
+        if (EqualPoints(object, ip1)) {
+            ip1OK = YES;
+        } else {
+            if (PointOnLine(object, tangent1Line)) pointOnTangentOK = YES;
+            if (PointOnLine(object, tangent2Line)) pointOnTangentOK = YES;
         }
-        CGFloat angleL1Tangent1 = CGVectorAngleBetween(l1Vector, tangent1Vector);
-        CGFloat angleL1Tangent2 = CGVectorAngleBetween(l1Vector, tangent2Vector);
-        
-        if (angleL1Tangent1 < 0.01) {
-            CGFloat distL1Ip2 = DistanceFromPointToLine(ip2, l1);
-            if (distL1Ip2 < 0.01) {
-                self.progress = 100;
-                return YES;
-            }
-        }
-        if (angleL1Tangent2 < 0.01) {
-            CGFloat distL1Ip3 = DistanceFromPointToLine(ip3, l1);
-            if (distL1Ip3 < 0.01) {
-                self.progress = 100;
-                return YES;
-            }
-        }
+        if (LineObjectCoversSegment(object, tangent1)) tangentOK = YES;
+        if (LineObjectCoversSegment(object, tangent2)) tangentOK = YES;
     }
+    
+    if (tangentOK) {
+        self.progress = 100;
+        return YES;
+    }
+    
+    self.progress = (ip1OK + pointOnTangentOK)/4.0 * 100;
+    
+    return NO;
+
     
     return NO;
 }

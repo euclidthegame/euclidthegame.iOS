@@ -125,6 +125,7 @@
     } else {
         self.progressLabel.hidden = YES;
     }
+
     
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
@@ -132,6 +133,19 @@
     [self setupTools];
     [self showDetailedLevelInstruction:nil];
     [self resetLevel];
+    
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        self.movesLabel.hidden = YES;
+        self.progressLabel.hidden = YES;
+        self.levelInstruction.hidden = YES;
+        self.levelObjectiveView.hidden = YES;
+        _redoButton.title = nil;
+        _undoButton.title = nil;
+        _resetButton.title = nil;
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:NO];
+    }
+
+    
 }
 
 - (void)resetLevel
@@ -174,7 +188,7 @@
     self.levelCompletionMessage.hidden = YES;
     
     self.progressLabel.text = @"Progress: 0%";
-    
+
     [_geometricObjectsForRedo removeAllObjects];
     [_geometricObjectsForUndo removeAllObjects];
     
@@ -313,6 +327,9 @@
         }
     }
     
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:NO];
+    }
 }
 
 - (void)addTemporaryGeometricObjects:(NSArray *)objects
@@ -354,8 +371,8 @@
                           DHCircleToolAvailable);
     }
 
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolZoomPan"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHZoomPanTool class]];
+    //[_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolZoomPan"] atIndex:index++ animated:NO];
+    //[_tools addObject:[DHZoomPanTool class]];
     
     [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPoint"] atIndex:index++ animated:NO];
     [_tools addObject:[DHPointTool class]];
@@ -431,11 +448,12 @@
             [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
         }
     }
+    
     _toolControl.selectedSegmentIndex = 0;
     _currentTool = [[DHZoomPanTool alloc] init];
     self.geometryViewController.currentTool = _currentTool;
     _toolInstruction.text = [_currentTool initialToolTip];
-
+    
 }
 
 - (void)toolChanged:(id)sender
@@ -458,6 +476,12 @@
             tool.disableWhenOnSameLine = YES;
         }
     }
+    
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:NO];
+    }
+
+    
 }
 
 #pragma mark Geometry tool delegate methods
@@ -471,6 +495,7 @@
 }
 - (DHGeometricTransform*)geoViewTransform
 {
+
     return self.geometryView.geoViewTransform;
 }
 - (void)updateAllPositions
@@ -480,6 +505,11 @@
             [object updatePosition];
         }
     }
+    
+    if (self.currentGameMode == kDHGameModeTutorial) {
+    [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:YES];
+    }
+    
 }
 
 #pragma mark - Undo/Redo
@@ -554,6 +584,7 @@
         DHGeometryViewController * childViewController = (DHGeometryViewController *) [segue destinationViewController];
         self.geometryView = (DHGeometryView*)childViewController.view;
         self.geometryViewController = childViewController;
+     
     }
 }
 

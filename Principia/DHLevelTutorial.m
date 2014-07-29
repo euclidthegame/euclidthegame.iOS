@@ -121,28 +121,23 @@
         [toolControl setEnabled:NO forSegmentAtIndex:2];
         toolControl.selectedSegmentIndex = -1;
         
-        //1
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             [message1 text:@"The most fundamental objects in this game are points."];
+             [message1 text:@"The most fundamental objects in this game are points."]; message1.alpha = 1;
              [view addSubview:message1];
-             message1.alpha = 1;
          }
          completion:^(BOOL finished){
              
-             //2
              [geometricObjects addObject:_pointA];
              [geometricObjects addObject:_pointB];
              [geometryView setNeedsDisplay];
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  [message2 text:@"Points are often labeled with capital letters."];
+                  [message2 text:@"Points are often labeled with capital letters."]; message2.alpha = 1;
                   [view addSubview:message2];
-                  message2.alpha = 1;
               }
               completion:^(BOOL finished){
                   
-                  //3
                   _pointA.label =@"A";
                   _pointB.label =@"B";
                   [geometryView setNeedsDisplay];
@@ -155,7 +150,6 @@
                    }
                    completion:^(BOOL finished){
                        
-                       //4
                        [UIView
                         animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                             [message4 text:@"Let's start with constructing a line segment. Tap on the tool, to select it."];
@@ -164,13 +158,7 @@
                         }
                         completion:^(BOOL finished){
                             [toolControl setEnabled:YES forSegmentAtIndex:2];
-                            step1 = NO;
-                            step2 = YES;
-                        }];
-                   }];
-              }];
-             
-         }];
+                            step1 = NO; step2 = YES; }]; }]; }]; }];
     }
     
     else if (step2 && toolControl.selectedSegmentIndex == 2 ) {
@@ -178,10 +166,8 @@
         [message1 text:@"Try to construct a line segment that connects point A and B."];
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message3.alpha = 0;
-             message4.alpha = 0;
+             message3.alpha = 0; message4.alpha = 0; message1.alpha = 1;
              toolInstruction.alpha = 1;
-             message1.alpha = 1;
          }
          completion:^(BOOL finished){step2 = NO; step3 = YES;}];
     }
@@ -191,17 +177,15 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              [toolControl setEnabled:NO forSegmentAtIndex:2];
-             message6.alpha = 1;
+             message6.alpha = 1; message1.alpha = 0;
          }
          completion:^(BOOL finished){
              toolInstruction.alpha = 0;
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   message6.alpha = 0;
-                  message1.alpha = 0;
                   [message3 text: @"We can also use points to construct a circle."];
                   message3.alpha = 1;
-                  
               }
               completion:^(BOOL finished){
                   [UIView
@@ -210,26 +194,17 @@
                        message4.alpha = 1;
                        [toolControl setEnabled:YES forSegmentAtIndex:4];
                    }
-                   completion:^(BOOL finished){
-                       step3 = NO;
-                       step4 = YES;
-                   }];
-              }];
-         }];
+                   completion:^(BOOL finished){ step3 = NO; step4 = YES; }]; }]; }];
     }
     else if (step4 && toolControl.selectedSegmentIndex == 4) {
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+             message3.alpha = 0; message4.alpha = 0;
              toolInstruction.alpha = 1;
              [message1 text:@"Try to construct a circle with center A and radius AB."];
              message1.alpha = 1;
-             message3.alpha = 0;
-             message4.alpha = 0;
          }
-         completion:^(BOOL finished){
-             step4 = NO;
-             step5= YES;
-         }];
+         completion:^(BOOL finished){ step4 = NO; step5 = YES; }];
     }
     else if (step5 && circleAB) {
         [UIView
@@ -244,12 +219,7 @@
                   [message1 text: @"Now, let's make a circle with center B (!) and radius AB."];
                   message1.alpha = 1;
               }
-              completion:^(BOOL finished){
-                  step5= NO;
-                  step6 = YES;
-              }];
-         }];
-        
+              completion:^(BOOL finished){ step5= NO; step6 = YES ;}] ;}];
     }
     else if (step6 && circleBA) {
         [UIView
@@ -280,17 +250,13 @@
                        [toolControl setEnabled:YES forSegmentAtIndex:3];
                        message4.alpha = 1;
                    }
-                   completion:^(BOOL finished){ step6 = NO; step7 = YES;
-                   }];
-              }];
-         }];
+                   completion:^(BOOL finished){ step6 = NO; step7 = YES;}];}];}];
     }
     else if (step7 && toolControl.selectedSegmentIndex == 3) {
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              toolInstruction.alpha = 1;
-             message3.alpha = 0;
-             message4.alpha = 0;
+             message3.alpha = 0; message4.alpha = 0;
              [message1 text:@"Try to construct a line using the points A and B."];
              message1.alpha = 1;
          }
@@ -319,12 +285,8 @@
                        [toolControl setEnabled:YES forSegmentAtIndex:1];
                        message4.alpha = 1;
                    }
-                   completion:^(BOOL finished){ step8 = NO; step9 = YES;
-                   }];
-              }];
-         }];
+                   completion:^(BOOL finished){ step8 = NO; step9 = YES; }];}];}];
     }
-    
     else if (step9 && toolControl.selectedSegmentIndex == 1) {
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
@@ -373,12 +335,10 @@
     else if (step11 && toolControl.selectedSegmentIndex == 0 ) {
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+             message3.alpha = 0; message4.alpha = 0; message5.alpha = 0;
              toolInstruction.alpha = 1;
              [message1 text:@"Move one of the grey points."];
              message1.alpha = 1;
-             message3.alpha = 0;
-             message4.alpha = 0;
-             message5.alpha = 0;
          }
          completion:^(BOOL finished){step11 = NO; step12 = YES;}];
     }
@@ -410,9 +370,7 @@
                        message4.alpha = 1;
                        [toolControl setEnabled:YES forSegmentAtIndex:0];
                    }
-                   completion:^(BOOL finished){
-                       step12 = NO; levelcomplete=YES;
-                   }];
+                   completion:^(BOOL finished){step12 = NO; levelcomplete=YES;}];
               }];
          }];
     }

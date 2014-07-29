@@ -11,6 +11,7 @@
 
 #import "DHGeometricObjects.h"
 #import "DHMathCGVector.h"
+#import "DHMathFuzzyComparisons.h"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
@@ -19,6 +20,8 @@ typedef struct DHIntersectionResult {
     BOOL intersect;
     CGPoint intersectionPoint;
 } DHIntersectionResult;
+
+FOUNDATION_EXPORT const CGFloat kClosestTapLimit;
 
 #pragma mark - Floating point comparison
 
@@ -300,6 +303,317 @@ static CGPoint MidPointFromPoints(CGPoint p1, CGPoint p2)
 {
     return CGPointMake(0.5*(p1.x + p2.x), 0.5*(p1.y + p2.y));
 }
+
+static CGPoint MidPointFromLine(DHLineObject* l)
+{
+    return CGPointMake(0.5*(l.start.position.x + l.end.position.x), 0.5*(l.start.position.y + l.end.position.y));
+}
+#pragma mark - Geometric object comparison functions
+
+
+
+
+
+static BOOL EqualSegments(DHLineSegment* l1, id object)
+{
+    if ([object class] == [DHLineSegment class]){
+        DHLineSegment* l2 = object;
+        if ((EqualPoints(l1.start,l2.start) && EqualPoints(l1.end,l2.end)) || (EqualPoints(l1.start,l2.end) && EqualPoints(l1.end,l2.start))) {
+            return YES;
+        }
+        else{
+            return NO;
+        }
+    }
+    return NO;
+}
+
+
+static BOOL IsObjectOnCricle(DHCircle* c1, id object)
+{
+    if ([[object class] isSubclassOfClass:[DHPoint class]]){
+        DHPoint* p1 = object;
+        if (DistanceBetweenPoints(p1.position, c1.center.position) == c1.radius)  {
+            return YES;
+        }
+        else{
+            return NO;
+        }
+    }
+    return NO;
+}
+
+static BOOL IsObjectOnLine(DHLineObject* l1, id object)
+{
+    if ([[object class] isSubclassOfClass:[DHPoint class]]){
+        DHPoint* p1 = object;
+        
+        if (((l1.end.position.y - l1.start.position.y)/(l1.end.position.x - l1.start.position.x)) ==  ((l1.end.position.y - p1.position.y)/(l1.end.position.x - p1.position.x)))  {
+            return YES;
+        }
+        else{
+            return NO;
+        }
+    }
+    return NO;
+}
+
+#pragma mark - Tool helper functions
+static DHPoint* FindPointClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
+{
+    DHPoint* closestPoint = nil;
+    //CGFloat closestPointDistance = maxDistance;
+    CGFloat closestPointDistanceSquared = maxDistance*maxDistance;
+    
+    for (id object in geometricObjects) {
+        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+            CGPoint currentPoint = [object position];
+            CGFloat distance = SquaredDistanceBetweenPoints(point, currentPoint);
+            
+            if (distance < closestPointDistanceSquared) {
+                closestPoint = object;
+                closestPointDistanceSquared = distance;
+            }
+        }
+    }
+    
+    return closestPoint;
+}
+
+static DHPoint* FindPointClosestToCircle(DHCircle* c, NSArray* geometricObjects, CGFloat maxDistance)
+{
+    DHPoint* closestPoint = nil;
+    CGFloat closestPointDistance = maxDistance;
+    
+    for (id object in geometricObjects) {
+        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+            CGPoint currentPoint = [object position];
+            CGFloat distance = DistanceFromPositionToCircle(currentPoint, c);
+            
+            if (distance < closestPointDistance) {
+                closestPoint = object;
+                closestPointDistance = distance;
+            }
+        }
+    }
+    
+    return closestPoint;
+}
+
+static DHLineObject* FindLineClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
+{
+    DHLineObject* closestLine = nil;
+    CGFloat closestLineDistance = maxDistance;
+    
+    DHPoint *dhPoint = [[DHPoint alloc] init];
+    dhPoint.position = point;
+    
+    for (id object in geometricObjects) {
+        if ([[object class] isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* currentLine = object;
+            CGFloat distance = DistanceFromPointToLine(dhPoint, currentLine);
+            
+            if (distance < closestLineDistance) {
+                closestLine = object;
+                closestLineDistance = distance;
+            }
+        }
+    }
+    
+    return closestLine;
+}
+
+
+static DHLineSegment* FindLineSegmentClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
+{
+    DHLineSegment* closestLine = nil;
+    CGFloat closestLineDistance = maxDistance;
+    
+    DHPoint *dhPoint = [[DHPoint alloc] init];
+    dhPoint.position = point;
+    
+    for (id object in geometricObjects) {
+        if ([object class] == [DHLineSegment class]) {
+            DHLineSegment* currentLine = object;
+            CGFloat distance = DistanceFromPointToLine(dhPoint, currentLine);
+            
+            if (distance < closestLineDistance) {
+                closestLine = object;
+                closestLineDistance = distance;
+            }
+        }
+    }
+    
+    return closestLine;
+}
+
+
+
+static NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
+{
+    const CGFloat maxDistanceLimit = maxDistance;
+    NSMutableArray* foundObjects = [[NSMutableArray alloc] init];
+    DHPoint *dhPoint = [[DHPoint alloc] init];
+    dhPoint.position = point;
+    
+    for (id object in geometricObjects) {
+        if ([object class] == [DHCircle class]) {
+            DHCircle* circle = (DHCircle*)object;
+            CGFloat distanceToCircle = DistanceFromPositionToCircle(point, circle);
+            if (distanceToCircle <= maxDistanceLimit) {
+                [foundObjects addObject:circle];
+            }
+        }
+        if ([[object class] isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* line = (DHLineObject*)object;
+            CGFloat distanceToLine = DistanceFromPointToLine(dhPoint, line);
+            if (distanceToLine <= maxDistanceLimit) {
+                [foundObjects addObject:line];
+            }
+        }
+    }
+    
+    return foundObjects;
+}
+
+static NSMutableArray* CreateIntersectionPointsBetweenObjects(NSArray* nearObjects)
+{
+    NSMutableArray* intersectionPoints = [[NSMutableArray alloc] init];
+    
+    for (int index1 = 0; index1 < nearObjects.count-1; ++index1) {
+        for (int index2 = index1+1; index2 < nearObjects.count; ++index2) {
+            id object1 = [nearObjects objectAtIndex:index1];
+            id object2 = [nearObjects objectAtIndex:index2];
+            
+            // Circle/circle intersection
+            if ([[object1 class] isSubclassOfClass:[DHCircle class]] &&
+                [[object2 class] isSubclassOfClass:[DHCircle class]]) {
+                DHCircle* c1 = object1;
+                DHCircle* c2 = object2;
+                
+                if (DoCirclesIntersect(c1, c2)) {
+                    { // First variant
+                        DHIntersectionPointCircleCircle* iPoint = [[DHIntersectionPointCircleCircle alloc] init];
+                        iPoint.c1 = c1;
+                        iPoint.c2 = c2;
+                        iPoint.onPositiveY = false;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                    { // Second variant
+                        DHIntersectionPointCircleCircle* iPoint = [[DHIntersectionPointCircleCircle alloc] init];
+                        iPoint.c1 = c1;
+                        iPoint.c2 = c2;
+                        iPoint.onPositiveY = true;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                }
+            }
+            
+            // Line/line intersection
+            if ([[object1 class] isSubclassOfClass:[DHLineObject class]] &&
+                [[object2 class] isSubclassOfClass:[DHLineObject class]]) {
+                DHLineObject* l1 = object1;
+                DHLineObject* l2 = object2;
+                
+                DHIntersectionResult r = IntersectionTestLineLine(l1, l2);
+                if (r.intersect) {
+                    DHIntersectionPointLineLine* iPoint = [[DHIntersectionPointLineLine alloc] init];
+                    iPoint.l1 = l1;
+                    iPoint.l2 = l2;
+                    [intersectionPoints addObject:iPoint];
+                }
+            }
+            
+            // Line/circle intersection
+            if ([[object1 class] isSubclassOfClass:[DHLineObject class]] &&
+                [[object2 class] isSubclassOfClass:[DHCircle class]]) {
+                DHLineObject* l = object1;
+                DHCircle* c = object2;
+                
+                DHIntersectionResult result = IntersectionTestLineCircle(l, c, NO);
+                if (result.intersect) {
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = NO;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = YES;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                }
+            }
+            if ([[object1 class] isSubclassOfClass:[DHCircle class]] &&
+                [[object2 class] isSubclassOfClass:[DHLineObject class]]) {
+                DHCircle* c = object1;
+                DHLineObject* l = object2;
+                
+                DHIntersectionResult result = IntersectionTestLineCircle(l, c, NO);
+                if (result.intersect) {
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = NO;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                    {
+                        DHIntersectionPointLineCircle* iPoint = [[DHIntersectionPointLineCircle alloc] init];
+                        iPoint.l = l;
+                        iPoint.c = c;
+                        iPoint.preferEnd = YES;
+                        [intersectionPoints addObject:iPoint];
+                    }
+                }
+            }
+        }
+    }
+    
+    return intersectionPoints;
+}
+
+static DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* geometricObjects, CGFloat geoViewScale)
+{
+    NSArray* nearObjects = FindIntersectablesNearPoint(touchPoint, geometricObjects, kClosestTapLimit / geoViewScale);
+    if (nearObjects.count < 2) {
+        // At least two potentially intersecting objects required to create intersection point
+        return nil;
+    }
+    NSMutableArray* intersectionPoints = CreateIntersectionPointsBetweenObjects(nearObjects);
+    
+    if (intersectionPoints.count == 0) {
+        // No intersection points could be created
+        return nil;
+    }
+    
+    // Determine intersection point closest to touch point
+    CGFloat closestDistance = CGFLOAT_MAX;
+    DHPoint* closestPoint = nil;
+    for (DHPoint* iPoint in intersectionPoints) {
+        CGFloat distance = DistanceBetweenPoints(touchPoint, iPoint.position);
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestPoint = iPoint;
+        }
+    }
+    
+    // Check if point at intersection already exists, if so, don't create new one
+    CGPoint newPoint = [closestPoint position];
+    DHPoint* oldPoint = FindPointClosestToPoint(newPoint, geometricObjects, kClosestTapLimit / geoViewScale);
+    CGPoint oldPointPos = [oldPoint position];
+    if ((newPoint.x == oldPointPos.x) && (newPoint.y == oldPointPos.y))
+    {
+        return nil;
+    }
+    
+    return closestPoint;
+}
+
 
 #pragma clang diagnostic pop
 

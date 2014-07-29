@@ -131,6 +131,7 @@
         CGVector vLine = CGVectorNormalize(_givenLine.vector);
         CGFloat tangentAngle = CGVectorDotProduct(vCB, vLine);
         if (fabs(distCA - radius) < 0.01 && fabs(distCB-radius) < 0.01 && fabs(tangentAngle) < 0.01) {
+            self.progress = 100;
             return YES;
         }
     }
@@ -138,5 +139,33 @@
     return NO;
 }
 
+-(CGPoint)testObjectsForProgressHints:(NSArray *)objects {
+    
+    DHPerpendicularLine* pl1 = [[DHPerpendicularLine alloc] init];
+    pl1.point = _givenLine.start;
+    pl1.line = _givenLine;
+    
+    DHLineSegment* lAB = [[DHLineSegment alloc] initWithStart:_pA andEnd:_givenLine.start];
+    DHMidPoint* mp = [[DHMidPoint alloc] init];
+    mp.start = lAB.start;
+    mp.end = lAB.end;
+    
+    DHPerpendicularLine* pl2 = [[DHPerpendicularLine alloc] init];
+    pl2.point = mp;
+    pl2.line = lAB;
+    
+    DHIntersectionPointLineLine* ip = [[DHIntersectionPointLineLine alloc] initWithLine:pl1 andLine:pl2];
+    
+    DHCircle* c = [[DHCircle alloc] initWithCenter:ip andPointOnRadius:lAB.start];
+
+    
+    for (id object in objects) {
+        if (EqualPoints(object, ip)) return ip.position;
+        if (PointOnCircle(object, c)) return Position(object);
+        if (EqualCircles(object, c)) return c.center.position;
+    }
+    
+    return CGPointMake(NAN, NAN);
+}
 
 @end

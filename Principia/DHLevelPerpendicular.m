@@ -71,10 +71,22 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
+    DHPoint* p = [[DHPoint alloc] initWithPositionX:500 andY:200];
+    DHCircle* c = [[DHCircle alloc] initWithCenter:p andPointOnRadius:_pointA];
+    DHIntersectionPointLineCircle* ip1 = [[DHIntersectionPointLineCircle alloc] init];
+    ip1.c = c;
+    ip1.l = _lineBC;
+    ip1.preferEnd = YES;
+    DHLine* l1 = [[DHLine alloc] initWithStart:ip1 andEnd:p];
+    DHIntersectionPointLineCircle* ip2 = [[DHIntersectionPointLineCircle alloc] init];
+    ip2.c = c;
+    ip2.l = l1;
+    ip2.preferEnd = YES;
+    
+    
     DHRay* r = [[DHRay alloc] init];
     r.start = _pointA;
-    DHPoint* pend = [[DHPoint alloc] initWithPositionX:_pointA.position.x andY:_pointA.position.y-10];
-    r.end = pend;
+    r.end = ip2;
     
     [objects insertObject:r atIndex:0];
 }
@@ -114,22 +126,69 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL pointOnLineOK = NO;
+    BOOL pointOnPerpLineOK = NO;
+    
+    DHPerpendicularLine* pl = [[DHPerpendicularLine alloc] initWithLine:_lineBC andPoint:_pointA];
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
+        if (object == _pointA) continue;
         
-        DHLineObject* l = object;
-        if ((l.start == _pointA || l.end == _pointA) == NO) continue;
+        if ([object class] == [DHPointOnLine class]) {
+            DHPointOnLine* p = object;
+            if (p.line == _lineBC) {
+                pointOnLineOK = YES;
+            }
+        }
+        if ([[object class]  isSubclassOfClass:[DHPoint class]] && [object class] != [DHPoint class]) {
+            CGFloat dist = DistanceFromPointToLine(object, pl);
+            if (dist < 0.001) {
+                pointOnPerpLineOK = YES;
+            }
+        }
         
-        CGVector bc = CGVectorNormalize(_lineBC.vector);
-        
-        CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
-        if (fabs(lDotBC) < 0.001) {
-            return YES;
+        if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* l = object;
+            CGFloat distAL = DistanceFromPointToLine(_pointA, l);
+            CGVector bc = CGVectorNormalize(_lineBC.vector);
+            
+            CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
+            if (distAL < 0.001 && fabs(lDotBC) < 0.001) {
+                self.progress = 100;
+                return YES;
+            }
         }
     }
     
+    self.progress = (pointOnLineOK + pointOnPerpLineOK*4)/10.0 * 100;
+    
     return NO;
+}
+
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHPerpendicularLine* perp = [[DHPerpendicularLine alloc] init];
+    perp.line = _lineBC;
+    perp.point = _pointA;
+    
+    for (id object in objects){
+        
+        if ([object class] == [DHCircle class])
+        {
+            DHCircle* c = object;
+            if (EqualPoints(c.center,_pointA)) return c.center.position;
+        }
+        if ([object class] == [DHIntersectionPointLineCircle class])
+        {
+            DHPoint* p = object;
+            if (PointOnLine(p,_lineBC)) return p.position;
+        }
+        if (PointOnLine(object,perp)){ DHPoint* p = object; return p.position; }
+        if (EqualDirection(object,perp) && PointOnLine(_pointA, object))  return _pointA.position;
+        
+    }
+    return CGPointMake(NAN, NAN);
 }
 
 @end

@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelMakeCompass : NSObject <DHLevel>
+@interface DHLevelMakeCompass : DHLevel <DHLevel>
 
 @end

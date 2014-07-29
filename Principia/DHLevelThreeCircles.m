@@ -68,8 +68,6 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    CGPoint pc1Pos = _circle1.center.position;
-    
     DHTranslatedPoint* pc2 = [[DHTranslatedPoint alloc] init];
     pc2.startOfTranslation = _lAB.end;
     pc2.translationStart = _lAB.start;
@@ -78,13 +76,14 @@
     DHCircle* c2 = [[DHCircle alloc] initWithCenter:pc2 andPointOnRadius:_lAB.end];
     [objects insertObject:c2 atIndex:0];
     
-    CGVector vAC2 = CGVectorBetweenPoints(_lAB.start.position, c2.center.position);
-    CGVector vAC3 = CGVectorRotateByAngle(vAC2, M_PI/3.0);
+    DHTrianglePoint* pt = [[DHTrianglePoint alloc] initWithPoint1:_lAB.start andPoint2:pc2];
+    DHLineSegment* l = [[DHLineSegment alloc] initWithStart:_lAB.start andEnd:pt];
+    DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc] init];
+    ip.c = _circle1;
+    ip.l = l;
     
-    DHPoint* pc3 = [[DHPoint alloc] initWithPositionX:pc1Pos.x+vAC3.dx andY:pc1Pos.y - vAC3.dy];
-    DHPoint* pc3r = [[DHPoint alloc] initWithPositionX:pc1Pos.x+0.5*vAC3.dx andY:pc1Pos.y - 0.5*vAC3.dy];
     
-    DHCircle* c3 = [[DHCircle alloc] initWithCenter:pc3 andPointOnRadius:pc3r];
+    DHCircle* c3 = [[DHCircle alloc] initWithCenter:pt andPointOnRadius:ip];
     [objects insertObject:c3 atIndex:0];
 }
 
@@ -123,57 +122,79 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    if (geometricObjects.count < 3) {
-        return NO;
+    DHTranslatedPoint* pc2 = [[DHTranslatedPoint alloc] init];
+    pc2.startOfTranslation = _lAB.end;
+    pc2.translationStart = _lAB.start;
+    pc2.translationEnd = _lAB.end;
+    DHCircle* c2 = [[DHCircle alloc] initWithCenter:pc2 andPointOnRadius:_lAB.end];
+    DHTrianglePoint* pt = [[DHTrianglePoint alloc] initWithPoint1:_lAB.start andPoint2:pc2];
+    DHTrianglePoint* pt2 = [[DHTrianglePoint alloc] initWithPoint1:pc2 andPoint2:_lAB.start];
+
+    DHLineSegment* l = [[DHLineSegment alloc] initWithStart:_lAB.start andEnd:pt];
+    DHLineSegment* l2 = [[DHLineSegment alloc] initWithStart:_lAB.start andEnd:pt2];
+    DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc]
+                                         initWithLine:l andCircle:_circle1 andPreferEnd:NO];
+    DHIntersectionPointLineCircle* ip2 = [[DHIntersectionPointLineCircle alloc]
+                                         initWithLine:l2 andCircle:_circle1 andPreferEnd:NO];
+    DHCircle* c3 = [[DHCircle alloc] initWithCenter:pt andPointOnRadius:ip];
+    DHCircle* c3_2 = [[DHCircle alloc] initWithCenter:pt2 andPointOnRadius:ip2];
+    
+    BOOL secondCircleOK = NO;
+    BOOL thirdCircleOK = NO;
+    bool pointOnThirdCircleOK = NO;
+    BOOL secondCircleCenterOK = NO;
+    BOOL thirdCircleCenterOK = NO;
+    
+    for (id object in geometricObjects) {
+        if (EqualPoints(object, pc2)) secondCircleCenterOK = YES;
+        if (EqualCircles(object, c2)) secondCircleOK = YES;
+        if (EqualPoints(object, pt) || EqualPoints(object, pt2)) thirdCircleCenterOK = YES;
+        if (PointOnCircle(object, c3) || PointOnCircle(object, c3_2)) pointOnThirdCircleOK = YES;
+        if (EqualCircles(object, c3) || EqualCircles(object, c3_2)) thirdCircleOK = YES;
     }
     
-    for (int index2 = 0; index2 < geometricObjects.count-1; ++index2) {
-        id object2 = [geometricObjects objectAtIndex:index2];
-        if ([[object2 class] isSubclassOfClass:[DHCircle class]] == NO) continue;
-        
-        for (int index3 = index2+1; index3 < geometricObjects.count; ++index3) {
-            id object3 = [geometricObjects objectAtIndex:index3];
-            if ([[object3 class] isSubclassOfClass:[DHCircle class]] == NO) continue;
-            
-            DHCircle* c1 = _circle1;
-            DHCircle* c2 = object2;
-            DHCircle* c3 = object3;
-            
-            CGFloat radius1 = c1.radius;
-            CGFloat radius2 = c2.radius;
-            CGFloat radius3 = c3.radius;
-            
-            // Ensure all radii are equal
-            BOOL radiiOK = fabs(radius1-radius2) < 0.01 && fabs(radius1-radius3) < 0.01 && fabs(radius2-radius3) < 0.01;
-            if (radiiOK == NO) {
-                continue;
-            }
-            
-            CGFloat dist12 = DistanceBetweenPoints(c1.center.position, c2.center.position);
-            CGFloat dist13 = DistanceBetweenPoints(c1.center.position, c3.center.position);
-            CGFloat dist23 = DistanceBetweenPoints(c2.center.position, c3.center.position);
-            
-            // Ensure all distances are equal to 2*radius
-            CGFloat doubRad = 2*radius1;
-            BOOL distOK = fabs(dist12 - doubRad) < 0.01 && fabs(dist13 - doubRad) < 0.01 && fabs(dist23 - doubRad) < 0.01;
-            if (distOK == NO) {
-                continue;
-            }
-            
-            // Ensure one circle touches B
-            CGFloat distB2 = DistanceBetweenPoints(_circle1.pointOnRadius.position, c2.center.position);
-            CGFloat distB3 = DistanceBetweenPoints(_circle1.pointOnRadius.position, c3.center.position);
-            BOOL oneCircleTouchesB = fabs(distB2-radius1) < 0.01 || fabs(distB3-radius1) < 0.01;
-
-            if (oneCircleTouchesB) {
-                return YES;
-            }
-        }
+    if (secondCircleOK && thirdCircleOK) {
+        self.progress = 100;
+        return YES;
     }
+    
+    self.progress = (secondCircleCenterOK + secondCircleOK*4 +
+                     thirdCircleCenterOK + pointOnThirdCircleOK + thirdCircleOK*3)/10.0*100;
     
     return NO;
 }
-
+-(CGPoint)testObjectsForProgressHints:(NSArray *)objects {
+    
+    DHTranslatedPoint* pc2 = [[DHTranslatedPoint alloc] init];
+    pc2.startOfTranslation = _lAB.end;
+    pc2.translationStart = _lAB.start;
+    pc2.translationEnd = _lAB.end;
+    
+    DHCircle* c2 = [[DHCircle alloc] initWithCenter:pc2 andPointOnRadius:_lAB.end];
+    
+    DHTrianglePoint* pt = [[DHTrianglePoint alloc] initWithPoint1:_lAB.start andPoint2:pc2];
+    
+    DHTrianglePoint* pt2 = [[DHTrianglePoint alloc] initWithPoint1:pc2 andPoint2:_lAB.start];
+    DHLineSegment* l = [[DHLineSegment alloc] initWithStart:_lAB.start andEnd:pt];
+    DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc] init];
+    ip.c = _circle1;
+    ip.l = l;
+    
+    
+    DHCircle* c3 = [[DHCircle alloc] initWithCenter:pt andPointOnRadius:ip];
+    
+    for (id object in objects) {
+        if (EqualPoints(object, pc2)) return pc2.position;
+        if (EqualPoints(object, pt)) return pt.position;
+        if (EqualPoints(object, pt2)) return pt2.position;
+        if (PointOnCircle(object, c2)) return Position(object);
+        if (PointOnCircle(object, c3)) return Position(object);
+        if (EqualCircles(object, c2)) return c2.center.position;
+        if (EqualCircles(object, c3)) return c3.center.position;
+    }
+    
+    return CGPointMake(NAN, NAN);
+}
 
 @end
 

@@ -91,15 +91,35 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    CGVector vAB = _rayA1.vector;
-    CGVector vAC = _rayA2.vector;
+    DHCircle* c1 = [[DHCircle alloc] initWithCenter:_rayA2.start andPointOnRadius:_rayA2.end];
+    DHIntersectionPointLineCircle* ip1 = [[DHIntersectionPointLineCircle alloc] init];
+    ip1.c = c1;
+    ip1.l = _rayA1;
     
-    CGFloat angle = CGVectorAngleBetween(vAB, vAC);
-    CGVector vDE = CGVectorRotateByAngle(CGVectorNormalize(_rayB.vector), -angle);
+    DHTranslatedPoint* tp1 = [[DHTranslatedPoint alloc] init];
+    tp1.startOfTranslation = _pointB;
+    tp1.translationStart = _rayA1.start;
+    tp1.translationEnd = _rayA2.end;
+
+    DHCircle* c2 = [[DHCircle alloc] initWithCenter:_pointB andPointOnRadius:tp1];
+
+    DHIntersectionPointLineCircle* ip2 = [[DHIntersectionPointLineCircle alloc] init];
+    ip2.c = c2;
+    ip2.l = _rayB;
     
-    DHPoint* p = [[DHPoint alloc] initWithPositionX:_pointB.position.x + 100*vDE.dx
-                                               andY:_pointB.position.y + 100*vDE.dy];
-    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_pointB andEnd:p];
+    DHTranslatedPoint* tp2 = [[DHTranslatedPoint alloc] init];
+    tp2.startOfTranslation = ip2;
+    tp2.translationStart = _rayA2.end;
+    tp2.translationEnd = ip1;
+
+    DHCircle* c3 = [[DHCircle alloc] initWithCenter:ip2 andPointOnRadius:tp2];
+    
+    DHIntersectionPointCircleCircle* ip3 = [[DHIntersectionPointCircleCircle alloc] init];
+    ip3.c1 = c2;
+    ip3.c2 = c3;
+    ip3.onPositiveY = YES;
+    
+    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_pointB andEnd:ip3];
     
     [objects insertObject:r atIndex:0];
 }
@@ -139,32 +159,55 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL pointAtTargetAngleOK = NO;
+    CGFloat targetAngle = AngleBetweenLineObjects(_rayA1, _rayA2);
+
+    DHLineObject* lTemp = [[DHLine alloc] init];
+    lTemp.start = _pointB;
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
-        
-        DHLineObject* l = object;
-
-        CGFloat distToB = DistanceFromPointToLine(_pointB, l);
-        if (distToB > 0.01) continue;
-        
-        CGFloat targetAngle = CGVectorAngleBetween(_rayA1.vector, _rayA2.vector);
-        CGFloat angleToDLine = CGVectorAngleBetween(l.vector, _rayB.vector);
-        
-        if (angleToDLine > M_PI) {
-            angleToDLine = 2*M_PI - angleToDLine;
+        if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* l = object;
+            if (!PointOnLine(_pointB, l)) continue;
+            CGFloat angleToBLine = AngleBetweenLineObjects(l, _rayB);
+            if (EqualScalarValues(angleToBLine, targetAngle)) {
+                self.progress = 100;
+                return YES;
+            }
         }
-        
-        if (fabs(targetAngle - angleToDLine) < 0.0001) {
-            return YES;
-        }
-        
-        if (l.tMin < 0 && fabs(targetAngle - (M_PI - angleToDLine)) < 0.0001) {
-            return YES;
+        if ([[object class]  isSubclassOfClass:[DHPoint class]] && [object class] != [DHPoint class]) {
+            DHPoint* point = object;
+            lTemp.end = point;
+            CGFloat angleToBLine = AngleBetweenLineObjects(lTemp, _rayB);
+            if (EqualScalarValues(angleToBLine, targetAngle)) {
+                pointAtTargetAngleOK = YES;
+            }
         }
     }
     
+    self.progress = pointAtTargetAngleOK/2.0*100;
+    
     return NO;
+}
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    
+    for (id object in objects){
+        if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
+            DHLineObject* l = object;
+            if (! PointOnLine(_pointB,l)) continue;
+            if (EqualScalarValues(GetAngle(_rayA1, _rayA2), GetAngle(_rayB,l))) return MidPointFromLine(l);
+        }
+        
+        if ([[object class]  isSubclassOfClass:[DHPoint class]] && [object class] != [DHPoint class]) {
+            DHPoint* point = object;
+            DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:_pointB andEnd:point];
+            if (EqualScalarValues(GetAngle(_rayA1, _rayA2), GetAngle(_rayB,segment))) return point.position;
+        }
+        
+    }
+    return CGPointMake(NAN, NAN);
 }
 
 

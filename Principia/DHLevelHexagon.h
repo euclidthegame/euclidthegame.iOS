@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelHexagon : NSObject <DHLevel>
+@interface DHLevelHexagon : DHLevel <DHLevel>
 
 @end

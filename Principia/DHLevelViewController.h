@@ -14,7 +14,7 @@
 
 @interface DHLevelViewController : UIViewController <DHGeometryToolDelegate>
 
-@property (nonatomic, strong) id<DHLevel> currentLevel;
+@property (nonatomic, strong) DHLevel<DHLevel>* currentLevel;
 
 @property (nonatomic, weak) IBOutlet UISegmentedControl* toolControl;
 @property (nonatomic, weak) IBOutlet UIView* levelObjectiveView;
@@ -25,6 +25,7 @@
 @property (nonatomic, weak) IBOutlet UILabel* levelInstruction;
 @property (nonatomic, weak) IBOutlet UILabel* movesLabel;
 @property (nonatomic, weak) IBOutlet UILabel* movesLeftLabel;
+@property (nonatomic, weak) IBOutlet UILabel* progressLabel;
 @property (nonatomic, weak) IBOutlet DHGeometryView* geometryView;
 
 @property (nonatomic, weak) DHGeometryViewController* geometryViewController;

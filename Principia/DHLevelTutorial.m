@@ -106,45 +106,78 @@
     
     
     for (id object in geometricObjects) {
-        if ([object class] != [DHLineSegment class]) continue;
-        DHLineSegment* segment = object;
-        if ((segment.start == _pointA || segment.end == _pointA) &&
-            (segment.start == _pointB || segment.end == _pointB)) {
-            segmentAB = YES;
-            lAB = segment;
+        if ([object class] == [DHLineSegment class]) {
+            DHLineSegment* segment = object;
+            if ((segment.start == _pointA || segment.end == _pointA) &&
+                (segment.start == _pointB || segment.end == _pointB)) {
+                segmentAB = YES;
+                lAB = segment;
+            }
+        }
+
+        if ([object class] == [DHLine class]) {
+            DHLine* line = object;
+            if ((line.start == _pointC || line.end == _pointC) &&
+                (line.start == _pointD || line.end == _pointD)) {
+                lineCD = YES;
+                lCD = line;
+            }
+        }
+
+        if ([object class] == [DHCircle class]) {
+            DHCircle* circle = object;
+            if (circle.center == _pointE && circle.pointOnRadius == _pointF) circleEF = YES;
+            if (circle.center == _pointF && circle.pointOnRadius == _pointE) circleFE = YES;
+        }
+
+        if ([object class] == [DHIntersectionPointLineLine class]) {
+            DHIntersectionPointLineLine* point = object;
+            if ((point.l1 == lAB || point.l2 == lAB) && (point.l1 == lCD || point.l2 == lCD)) {
+                intersectionPoint = YES;
+            }
         }
     }
-
-    for (id object in geometricObjects) {
-        if ([object class] != [DHLine class]) continue;
-        DHLine* line = object;
-        if ((line.start == _pointC || line.end == _pointC) &&
-            (line.start == _pointD || line.end == _pointD)) {
-            lineCD = YES;
-            lCD = line;
-        }
-    }
-
-    for (id object in geometricObjects) {
-        if ([object class] != [DHCircle class]) continue;
-        DHCircle* circle = object;
-        if (circle.center == _pointE && circle.pointOnRadius == _pointF) circleEF = YES;
-        if (circle.center == _pointF && circle.pointOnRadius == _pointE) circleFE = YES;
-    }
-
-    for (id object in geometricObjects) {
-        if ([object class] != [DHIntersectionPointLineLine class]) continue;
-        DHIntersectionPointLineLine* point = object;
-        if ((point.l1 == lAB || point.l2 == lAB) && (point.l1 == lCD || point.l2 == lCD)) {
-            intersectionPoint = YES;
-        }
-    }
+    
+    self.progress = (segmentAB + lineCD + circleEF + circleFE + intersectionPoint)/5.0*100;
     
     if (segmentAB && lineCD && circleEF && circleFE && intersectionPoint) {
         return YES;
     }
     
     return NO;
+}
+
+
+- (CGPoint)testObjectsForProgressHints:(NSArray*)objects {
+    
+    // Objects to test for
+    DHLineSegment* sAB = [[DHLineSegment alloc]initWithStart:_pointA andEnd:_pointB];
+    DHLine* lCD = [[DHLine alloc] initWithStart:_pointC andEnd:_pointD];
+    DHCircle* cEF = [[DHCircle alloc] initWithCenter:_pointE andPointOnRadius:_pointF];
+    DHCircle* cFE = [[DHCircle alloc] initWithCenter:_pointF andPointOnRadius:_pointE];
+    DHIntersectionPointLineLine* ip = [[DHIntersectionPointLineLine alloc] initWithLine:sAB andLine:lCD];
+    DHPoint* pABCD = [[DHPoint alloc ]init];
+    pABCD.position = ip.position;
+    
+    for (id object in objects){
+        if (EqualSegments(sAB, object)){
+            return sAB.end.position;
+        }
+        if (EqualLines(lCD, object)){
+            return lCD.end.position;
+        }
+        if (EqualCircles(cEF, object)){
+            return cEF.center.position;
+        }
+        if (EqualCircles(cFE, object)){
+            return cFE.center.position;
+        }
+        if (EqualPoints(pABCD, object)){
+            return pABCD.position;
+        }
+    }
+    
+    return CGPointMake(NAN, NAN);
 }
 
 @end

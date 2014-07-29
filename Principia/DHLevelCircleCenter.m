@@ -101,19 +101,24 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHPoint class]] == NO) continue;
-        
-        DHPoint* p = object;
-        CGFloat distance = DistanceBetweenPoints(p.position, _pointC.position);
-        if (distance < 0.001) {
+    for (id object in geometricObjects){
+        if(EqualPoints(object, _pointC)) {
+            self.progress = 100;
             return YES;
         }
     }
     
     return NO;
 }
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    
+    for (id object in objects){
+    
+        if(EqualPoints(object, _pointC)) return _pointC.position;
+    }
 
+    
+return CGPointMake(NAN, NAN);
+}
 
 @end

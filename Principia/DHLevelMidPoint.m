@@ -106,6 +106,13 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL pointOnMidLineOK = NO;
+    BOOL secondPontOnMidLineOK = NO;
+    BOOL midPointOK = NO;
+    
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
+    DHPerpendicularLine* midLine = [[DHPerpendicularLine alloc] initWithLine:_initialLine andPoint:mp];
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
         if ([[object class] isSubclassOfClass:[DHPoint class]] == NO) continue;
@@ -113,14 +120,46 @@
         
         DHPoint* p = object;
         CGPoint currentPoint = p.position;
-        CGPoint midPoint = MidPointFromPoints(_initialLine.start.position, _initialLine.end.position);
-        if (fabs(currentPoint.x - midPoint.x) < 0.0001 && fabs(currentPoint.y -midPoint.y) < 0.0001) {
-            return YES;
+        if (DistanceBetweenPoints(mp.position, currentPoint) < 0.0001) {
+            midPointOK = YES;
         }
+        if (DistanceFromPointToLine(p, midLine) < 0.0001) {
+            if (!pointOnMidLineOK) {
+                pointOnMidLineOK = YES;
+            } else {
+                secondPontOnMidLineOK = YES;
+            }
+        }
+    }
+    
+    self.progress = (pointOnMidLineOK + secondPontOnMidLineOK + midPointOK)/3.0 * 100;
+    if (midPointOK) {
+        self.progress = 100;
+        return YES;
     }
     
     return NO;
 }
 
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
 
+DHCircle* cAB = [[DHCircle alloc] initWithCenter:_initialLine.start andPointOnRadius:_initialLine.end];
+DHCircle* cBA = [[DHCircle alloc] initWithCenter:_initialLine.end andPointOnRadius:_initialLine.start];
+DHTrianglePoint* pTop = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
+DHTrianglePoint* pBottom = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.end andPoint2:_initialLine.start];
+DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:pBottom andEnd:pTop];
+DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
+
+for (id object in objects){
+    if (EqualCircles(object,cAB)) return cAB.center.position;
+    if (EqualCircles(object,cBA)) return cBA.center.position;
+    if (EqualPoints(object, pTop)) return pTop.position;
+    if (EqualPoints(object,pBottom)) return pBottom.position;
+    if (LineObjectCoversSegment(object,segment)) return MidPointFromPoints(segment.start.position,segment.end.position);
+    if (EqualPoints(object,mp)) return mp.position;
+}
+    return CGPointMake(NAN, NAN);
+
+}
 @end

@@ -109,23 +109,38 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
+    CGVector vAB = CGVectorNormalize(CGVectorBetweenPoints(_pointA.position, _pointB.position));
+
+    for (id object in geometricObjects) {
         if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         
         DHLineObject* l = object;
-        if ((l.start == _pointB || l.end == _pointB) == NO) continue;
-        
-        CGVector vAB = CGVectorNormalize(CGVectorBetweenPoints(_pointA.position, _pointB.position));
+        if (!PointOnLine(_pointB, l)) continue;
         
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), vAB);
         if (fabs(lDotBC) < 0.00001) {
+            self.progress = 100;
             return YES;
         }
     }
     
     return NO;
 }
-
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    
+    DHLineSegment* sAB = [[DHLineSegment alloc] initWithStart:_pointA andEnd:_pointB];
+    DHPerpendicularLine *perp = [[DHPerpendicularLine alloc]initWithLine:sAB andPoint:_pointB];
+    
+    for (id object in objects){
+        
+        
+        if(EqualDirection(object,sAB)) return MidPointFromLine(sAB);
+        if(EqualDirection(perp, object)) return _pointB.position;
+    
+    }
+    
+    
+    return CGPointMake(NAN, NAN);
+}
 
 @end

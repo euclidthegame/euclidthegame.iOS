@@ -71,6 +71,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
         CGContextFillEllipseInRect(context, rect);
         
+    } else if(self.temporary) {
+        CGSize shadowSize = CGSizeMake(0, 0);
+        //CGContextSetShadow(context, shadowSize, 8.0f);
+        CGColorRef shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.9].CGColor;
+        CGContextSetShadowWithColor (context, shadowSize, 5.0f, shadowColor);
+        CGContextSetLineWidth(context, 0.6);
+        CGContextSetRGBFillColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
+                                 kLineColorHighlighted.b, kLineColorHighlighted.a);
+        CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
+        CGContextFillEllipseInRect(context, rect);
+        CGContextStrokeEllipseInRect(context, rect);
     } else {
         CGContextSetLineWidth(context, 1.0);
         if (self.class == [DHPoint class] ||
@@ -118,6 +129,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 
 
 @implementation DHIntersectionPointCircleCircle
+- (instancetype)initWithCircle1:(DHCircle*)c1 andCircle2:(DHCircle*)c2 onPositiveY:(BOOL)onPositiveY
+{
+    self = [super init];
+    if (self) {
+        _c1 = c1;
+        _c2 = c2;
+        _onPositiveY = onPositiveY;
+        [self updatePosition];
+    }
+    return self;
+}
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
     [super drawInContext:context withTransform:transform];
@@ -219,6 +241,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 
 
 @implementation DHIntersectionPointLineCircle
+- (instancetype)initWithLine:(DHLineObject*)l andCircle:(DHCircle*)c andPreferEnd:(BOOL)preferEnd
+{
+    self = [super init];
+    if (self) {
+        _l = l;
+        _c = c;
+        _preferEnd = preferEnd;
+        [self updatePosition];
+    }
+    return self;
+}
 - (void)setL:(DHLineObject *)l
 {
     _l = l;
@@ -358,6 +391,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 @end
 
 @implementation DHPointOnCircle
+- (instancetype)initWithCircle:(DHCircle *)circle andAngle:(CGFloat)angle
+{
+    self = [super init];
+    if (self) {
+        _circle = circle;
+        _angle = angle;
+        [self updatePosition];
+    }
+    return self;
+}
+
 - (void)setCircle:(DHCircle *)circle
 {
     _circle = circle;
@@ -508,6 +552,15 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     }
     return self;
 }
+- (instancetype)initWithLine:(DHLineObject*)line andPoint:(DHPoint*)point
+{
+    self = [self init];
+    if (self) {
+        self.line = line;
+        self.point = point;
+    }
+    return self;
+}
 - (DHPoint*)start
 {
     return self.point;
@@ -542,6 +595,16 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         _endPointCache = [[DHPoint alloc] initWithPositionX:NAN andY:NAN];
     }
     return self;
+}
+- (instancetype)initWithLine:(DHLineObject*)line andPoint:(DHPoint*)point
+{
+    self = [self init];
+    if (self) {
+        self.line = line;
+        self.point = point;
+    }
+    return self;
+    
 }
 - (DHPoint*)start
 {
@@ -586,6 +649,15 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     }
     return self;
 }
+- (instancetype)initWithLine:(DHLineObject*)l1 andLine:(DHLineObject*)l2
+{
+    self = [self init];
+    if (self) {
+        _line1 = l1;
+        _line2 = l2;
+    }
+    return self;
+}
 - (DHPoint*)start
 {
     // First, check if the assigned lines share a point, if so, use it
@@ -622,13 +694,6 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     CGPoint startPos = start.position;
     CGVector v1 = CGVectorNormalize(self.line1.vector);
     CGVector v2 = CGVectorNormalize(self.line2.vector);
-    
-    // Always use the smallest angle for the bisector and let the perpendicular line also added by the
-    // Bisector-tool be other if the lines intersect
-    if (CGVectorDotProduct(v1, v2) < 0 && !self.fixedDirection) {
-        v2.dx = -v2.dx;
-        v2.dy = -v2.dy;
-    }
     
     _endPointCache.position = CGPointMake(startPos.x + v1.dx + v2.dx, startPos.y + v1.dy + v2.dy);
     return _endPointCache;
@@ -694,6 +759,8 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 }
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
+    CGContextSaveGState(context);
+    
     CGFloat geoRadius = self.radius;
     CGPoint geoCenterPosition = self.center.position;
     
@@ -719,6 +786,8 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         CGContextSetRGBStrokeColor(context, kLineColor.r, kLineColor.g, kLineColor.b, kLineColor.a);
     }
     CGContextStrokeEllipseInRect(context, rect);
+    
+    CGContextRestoreGState(context);
 }
 - (CGFloat)radius
 {

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelSquare : NSObject <DHLevel>
+@interface DHLevelSquare : DHLevel <DHLevel>
 
 - (NSString*)levelDescription;
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects;

@@ -15,6 +15,7 @@
 #import "DHGeometricTransform.h"
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
+#import "DHLevels.h"
 
 @implementation DHLevelViewController {
     NSMutableArray* _geometricObjects;
@@ -119,6 +120,12 @@
         self.movesLeftLabel.hidden = YES;
     }
     
+    if ([_currentLevel respondsToSelector:@selector(progress)] && _currentGameMode != kDHGameModePlayground) {
+        self.progressLabel.hidden = NO;
+    } else {
+        self.progressLabel.hidden = YES;
+    }
+    
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
     
@@ -166,6 +173,8 @@
     [self.geometryView setNeedsDisplay];
     self.levelCompletionMessage.hidden = YES;
     
+    self.progressLabel.text = @"Progress: 0%";
+    
     [_geometricObjectsForRedo removeAllObjects];
     [_geometricObjectsForUndo removeAllObjects];
     
@@ -197,7 +206,8 @@
     if (countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0) {
         [self.geometryView setNeedsDisplay];
         [self showTemporaryMessage:@"Sorry, out of moves, undo or reset the level"
-                           atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)];
+                           atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)
+                         withColor:[UIColor redColor]];
         return;
     }
     
@@ -209,10 +219,11 @@
     [_geometricObjectsForUndo addObject:[objects copy]];
     _undoButton.enabled = true;
     
-    for (id object in objects) {
+    for (DHGeometricObject* object in objects) {
+        object.temporary = NO;
         // Sort objects to ensure points are last in the array to be drawn last
         if ([[object class] isSubclassOfClass:[DHPoint class]]) {
-            DHPoint* p = object;
+            DHPoint* p = (DHPoint*)object;
             if (p.label == nil) {
                 p.label = [_objectLabeler nextLabel];
             }
@@ -289,6 +300,19 @@
             }
         }
     }
+    
+    // Update the progress indicator
+    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
+    
+    // If level supports progress hints, check new objects towards them
+    if ([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)]) {
+        CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
+        if (!isnan(hintLocation.x)) {
+            CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];
+            [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor blackColor]];
+        }
+    }
+    
 }
 
 - (void)addTemporaryGeometricObjects:(NSArray *)objects
@@ -497,6 +521,12 @@
         _undoButton.enabled = false;
     }
     
+    BOOL complete = [_currentLevel isLevelComplete:_geometricObjects];
+    if (!complete) {
+        self.levelCompleted = NO;
+    }
+    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
+    
     [self.geometryView setNeedsDisplay];
 }
 
@@ -589,12 +619,12 @@
     self.levelCompletionMessage.hidden = YES;
 }
 
-- (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point
+- (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color
 {
     UILabel* label = [[UILabel alloc] init];
     label.alpha = 0;
     label.text = message;
-    label.textColor = [UIColor redColor];
+    label.textColor = color;
     
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
@@ -922,7 +952,16 @@
             }
         }
         
-        [level createSolutionPreviewObjects:objects];
+        NSMutableArray* solutionObjects = [[NSMutableArray alloc] init];
+        [level createSolutionPreviewObjects:solutionObjects];
+        for (DHGeometricObject* object in solutionObjects) {
+            object.temporary = YES;
+            if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+                [objects addObject:object];
+            } else {
+                [objects insertObject:object atIndex:0];
+            }
+        }
         geoView.geometricObjects = objects;
         
     }

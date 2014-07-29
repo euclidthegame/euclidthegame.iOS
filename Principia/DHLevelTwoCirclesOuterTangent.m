@@ -85,11 +85,21 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHPoint* pOnA = [[DHPoint alloc] initWithPositionX:_circleA.center.position.x
-                                                  andY:(_circleA.center.position.y + _circleA.radius)];
-    DHPoint* pOnB = [[DHPoint alloc] initWithPositionX:_circleB.center.position.x
-                                                  andY:(_circleB.center.position.y + _circleB.radius)];
     DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
+    DHPerpendicularLine* lpA = [[DHPerpendicularLine alloc] init];
+    lpA.line = r1;
+    lpA.point = _circleA.center;
+    DHPerpendicularLine* lpB = [[DHPerpendicularLine alloc] init];
+    lpB.line = r1;
+    lpB.point = _circleB.center;
+
+    DHIntersectionPointLineCircle* pOnA = [[DHIntersectionPointLineCircle alloc] init];
+    pOnA.c = _circleA;
+    pOnA.l = lpA;
+    DHIntersectionPointLineCircle* pOnB = [[DHIntersectionPointLineCircle alloc] init];
+    pOnB.c = _circleB;
+    pOnB.l = lpB;
+    
     DHRay* r2 = [[DHRay alloc] initWithStart:pOnB andEnd:pOnA];
 
     DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];
@@ -149,6 +159,51 @@
     DHRay* r2 = [[DHRay alloc] initWithStart:pOnB andEnd:pOnA];
     
     DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:ip1 andPoint2:_circleA.center];
+    DHCircle* c = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_circleA.center];
+    DHIntersectionPointCircleCircle* ip2 = [[DHIntersectionPointCircleCircle alloc]
+                                            initWithCircle1:c andCircle2:_circleA onPositiveY:NO];
+    DHIntersectionPointCircleCircle* ip3 = [[DHIntersectionPointCircleCircle alloc]
+                                            initWithCircle1:c andCircle2:_circleA onPositiveY:YES];
+    
+    DHLineSegment* tangent1 = [[DHLineSegment alloc] initWithStart:ip1 andEnd:ip2];
+    DHLine* tangent1Line = [[DHLine alloc] initWithStart:ip1 andEnd:ip2];
+    DHLineSegment* tangent2 = [[DHLineSegment alloc] initWithStart:ip1 andEnd:ip3];
+    DHLine* tangent2Line = [[DHLine alloc] initWithStart:ip1 andEnd:ip3];
+    
+    BOOL ip1OK = NO, pointOnTangentOK = NO, tangentOK = NO;
+    
+    for (id object in geometricObjects) {
+        if (EqualPoints(object, ip1)) {
+            ip1OK = YES;
+        } else {
+            if (PointOnLine(object, tangent1Line)) pointOnTangentOK = YES;
+            if (PointOnLine(object, tangent2Line)) pointOnTangentOK = YES;
+        }
+        if (LineObjectCoversSegment(object, tangent1)) tangentOK = YES;
+        if (LineObjectCoversSegment(object, tangent2)) tangentOK = YES;
+    }
+    
+    if (tangentOK) {
+        self.progress = 100;
+        return YES;
+    }
+    
+    self.progress = (ip1OK + pointOnTangentOK)/4.0 * 100;
+    
+    return NO;
+}
+
+-(CGPoint) testObjectsForProgressHints:(NSArray *)objects{
+    
+    DHPoint* pOnA = [[DHPoint alloc] initWithPositionX:_circleA.center.position.x
+                                                  andY:(_circleA.center.position.y + _circleA.radius)];
+    DHPoint* pOnB = [[DHPoint alloc] initWithPositionX:_circleB.center.position.x
+                                                  andY:(_circleB.center.position.y + _circleB.radius)];
+    DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
+    DHRay* r2 = [[DHRay alloc] initWithStart:pOnB andEnd:pOnA];
+    
+    DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];
     DHMidPoint* mp = [[DHMidPoint alloc] init];
     mp.start = ip1;
     mp.end = _circleA.center;
@@ -158,7 +213,7 @@
     ip2.c1 = c;
     ip2.c2 = _circleA;
     ip2.onPositiveY = NO;
-
+    
     DHIntersectionPointCircleCircle* ip3 = [[DHIntersectionPointCircleCircle alloc] init];
     ip3.c1 = c;
     ip3.c2 = _circleA;
@@ -167,29 +222,16 @@
     DHRay* tangent1 = [[DHRay alloc] initWithStart:ip1 andEnd:ip2];
     DHRay* tangent2 = [[DHRay alloc] initWithStart:ip1 andEnd:ip3];
     
-    for (int index1 = 0; index1 < geometricObjects.count; ++index1) {
-        id object1 = [geometricObjects objectAtIndex:index1];
-        if ([[object1 class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
-        
-        DHLineObject* l1 = object1;
-        CGFloat angleL1Tangent1 = CGVectorAngleBetween(l1.vector, tangent1.vector);
-        CGFloat angleL1Tangent2 = CGVectorAngleBetween(l1.vector, tangent2.vector);
-        
-        if (angleL1Tangent1 < 0.01) {
-            CGFloat distL1Ip2 = DistanceFromPointToLine(ip2, l1);
-            if (distL1Ip2 < 0.01) {
-                return YES;
-            }
-        }
-        if (angleL1Tangent2 < 0.01) {
-            CGFloat distL1Ip3 = DistanceFromPointToLine(ip3, l1);
-            if (distL1Ip3 < 0.01) {
-                return YES;
-            }
-        }
+    for (id object in objects){
+        if (PointOnLine(object, tangent1)) return Position(object);
+        if (PointOnLine(object, tangent2)) return Position(object);
+        if (EqualDirection(object, tangent1)) return Position(tangent1);
+        if (EqualDirection(object, tangent2)) return Position(tangent2);
+        if (EqualCircles(object, c)) return Position(c);
     }
     
-    return NO;
+    
+    return CGPointMake(NAN, NAN);
 }
 
 

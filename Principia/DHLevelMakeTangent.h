@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelMakeTangent : NSObject <DHLevel>
+@interface DHLevelMakeTangent : DHLevel <DHLevel>
 
 @end

@@ -122,29 +122,58 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL segmentOfEqualLengthOK = NO;
+    BOOL lineObjectCoversSegmentOK = NO;
+    BOOL endPointOK = NO;
+    
+    DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
+    tp.startOfTranslation = _pointC;
+    tp.translationStart = _lineAB.start;
+    tp.translationEnd = _lineAB.end;
+    DHLineSegment* sCD = [[DHLineSegment alloc] initWithStart:_pointC andEnd:tp];
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHPoint class]] == NO) continue;
-        if (object == _pointC) continue;
-        
-        DHPoint* p = object;
-        
-        CGVector vCP = CGVectorBetweenPoints(_pointC.position, p.position);
-        CGVector vAB = _lineAB.vector;
-        CGFloat dotProd = CGVectorDotProduct(CGVectorNormalize(vCP), CGVectorNormalize(vAB));
-        
-        if (!(dotProd > 1 - 0.001)) continue;
-        
-        CGFloat lCP = CGVectorLength(vCP);
-        CGFloat lAB = CGVectorLength(vAB);
-        CGFloat lengthDiff = fabs(lCP - lAB);
-        if (lengthDiff < 0.01) {
-            return YES;
+        if (object == _pointC || object == _lineAB) continue;
+
+        if (LineObjectCoversSegment(object, sCD)) {
+            lineObjectCoversSegmentOK = YES;
         }
+        if (EqualPoints(object, tp)) {
+            endPointOK = YES;
+        }
+        if (LineSegmentsWithEqualLength(_lineAB, object)) {
+            segmentOfEqualLengthOK = YES;
+        }
+    }
+    
+    self.progress = (segmentOfEqualLengthOK)/2.0*100;
+
+    if (lineObjectCoversSegmentOK && endPointOK) {
+        self.progress = 100;
+        return YES;
     }
     
     return NO;
 }
-
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
+    tp.startOfTranslation = _pointC;
+    tp.translationStart = _lineAB.start;
+    tp.translationEnd = _lineAB.end;
+    DHLineSegment* sCD = [[DHLineSegment alloc] initWithStart:_pointC andEnd:tp];
+    
+    
+    for (id object in objects){
+        if (LineObjectCoversSegment(object, sCD)) return MidPointFromLine(sCD);
+        if (EqualPoints(object, tp)) return tp.position;
+        if (LineSegmentsWithEqualLength(_lineAB, object) && EqualDirection2(_lineAB,object)){
+            DHLineObject* line = object;
+            return MidPointFromLine(line);
+        }
+    }
+    return CGPointMake(NAN, NAN);
+}
 
 @end

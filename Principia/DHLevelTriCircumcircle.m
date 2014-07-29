@@ -72,24 +72,11 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHPerpendicularLine* pl1 = [[DHPerpendicularLine alloc] init];
-    pl1.line = _lAB;
-    pl1.point = _lAB.start;
-    DHPerpendicularLine* pl2 = [[DHPerpendicularLine alloc] init];
-    pl2.line = _lBC;
-    pl2.point = _lBC.end;
-    
-    DHIntersectionPointLineLine* ip = [[DHIntersectionPointLineLine alloc] init];
-    ip.l1 = pl1;
-    ip.l2 = pl2;
-    
-    DHMidPoint* mp = [[DHMidPoint alloc] init];
-    mp.start = ip;
-    mp.end = _lAB.end;
-    
-    DHCircle* c = [[DHCircle alloc] init];
-    c.center = mp;
-    c.pointOnRadius = _lAB.start;
+    DHPerpendicularLine* pl1 = [[DHPerpendicularLine alloc] initWithLine:_lAB andPoint:_lAB.start];
+    DHPerpendicularLine* pl2 = [[DHPerpendicularLine alloc] initWithLine:_lBC andPoint:_lBC.end];
+    DHIntersectionPointLineLine* ip = [[DHIntersectionPointLineLine alloc] initWithLine:pl1 andLine:pl2];
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:ip andPoint2:_lAB.end];
+    DHCircle* c = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_lAB.start];
     [objects insertObject:c atIndex:0];
 }
 
@@ -128,37 +115,52 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHCircle class]] == NO) continue;
-        
-        DHCircle* circle = object;
-        CGFloat radius = circle.radius;
-        
-        CGFloat sideAB = _lAB.length;
-        CGFloat sideAC = _lAC.length;
-        CGFloat sideBC = _lBC.length;
-        CGFloat triPerimiter = sideAB + sideAC + sideBC;
-        CGFloat halfPerim = triPerimiter*0.5;
-        CGFloat triArea = sqrt(halfPerim*(halfPerim-sideAB)*(halfPerim-sideAC)*(halfPerim-sideBC));
-        CGFloat circumcircleRadius = sideAB*sideAC*sideBC/(4 * triArea);
-        
-        BOOL radiusOK = fabs(radius - circumcircleRadius) < 0.05;
-        
-        CGFloat distA = DistanceBetweenPoints(circle.center.position, _lAB.start.position);
-        CGFloat distB = DistanceBetweenPoints(circle.center.position, _lAB.end.position);
-        CGFloat distC = DistanceBetweenPoints(circle.center.position, _lBC.end.position);
-        
-        BOOL locationOK = (fabs(distA-circumcircleRadius) < 0.1 &&
-                           fabs(distB-circumcircleRadius) < 0.1 &&
-                           fabs(distC-circumcircleRadius) < 0.1);
-        
-        if (radiusOK && locationOK) {
+    DHPerpendicularLine* pl1 = [[DHPerpendicularLine alloc] initWithLine:_lAB andPoint:_lAB.start];
+    DHPerpendicularLine* pl2 = [[DHPerpendicularLine alloc] initWithLine:_lBC andPoint:_lBC.end];
+    DHIntersectionPointLineLine* ip = [[DHIntersectionPointLineLine alloc] initWithLine:pl1 andLine:pl2];
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:ip andPoint2:_lAB.end];
+    DHCircle* c = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_lAB.start];
+
+    BOOL centerPointOK = NO;
+    
+    for (id object in geometricObjects) {
+        if (EqualPoints(object, mp)) centerPointOK = YES;
+        if (EqualCircles(object,c)) {
+            self.progress = 100;
             return YES;
         }
     }
-    
+
+    self.progress = (centerPointOK)/2.0*100;
+
     return NO;
+}
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    DHPerpendicularLine* pl1 = [[DHPerpendicularLine alloc] init];
+    pl1.line = _lAB;
+    pl1.point = _lAB.start;
+    DHPerpendicularLine* pl2 = [[DHPerpendicularLine alloc] init];
+    pl2.line = _lBC;
+    pl2.point = _lBC.end;
+    
+    DHIntersectionPointLineLine* ip = [[DHIntersectionPointLineLine alloc] init];
+    ip.l1 = pl1;
+    ip.l2 = pl2;
+    
+    DHMidPoint* mp = [[DHMidPoint alloc] init];
+    mp.start = ip;
+    mp.end = _lAB.end;
+    
+    DHCircle* c = [[DHCircle alloc] init];
+    c.center = mp;
+    c.pointOnRadius = _lAB.start;
+    for (id object in objects){
+        
+        if (EqualPoints(object, mp)) return mp.position;
+        if (PointOnCircle(object, c)) return Position(object);
+        if (EqualCircles(object,c)) return c.center.position;
+    }
+    return CGPointMake(NAN, NAN);
 }
 
 

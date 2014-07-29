@@ -116,22 +116,48 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHCircle class]] == NO) continue;
-        
-        DHCircle* circle = object;
-        if (circle.center != _pointC) continue;
-        
-        CGFloat l = _lineAB.length;
-        CGFloat r = circle.radius;
-        if (fabs(l - r) < 0.01) {
+    BOOL pointOnRadiusOK = NO;
+    
+    DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
+    tp.startOfTranslation = _pointC;
+    tp.translationStart = _lineAB.start;
+    tp.translationEnd = _lineAB.end;
+    DHCircle* circle = [[DHCircle alloc] initWithCenter:_pointC andPointOnRadius:tp];
+    
+    for (id object in geometricObjects) {
+        if (EqualCircles(object, circle)) {
+            self.progress = 100;
             return YES;
         }
+        if (PointOnCircle(object, circle)) {
+            pointOnRadiusOK = YES;
+        }
     }
+    
+    self.progress = pointOnRadiusOK/2.0*100;
     
     return NO;
 }
 
-
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
+    tp.startOfTranslation = _pointC;
+    tp.translationStart = _lineAB.start;
+    tp.translationEnd = _lineAB.end;
+    
+    DHCircle* circle = [[DHCircle alloc] initWithCenter:_pointC andPointOnRadius:tp];
+    
+    
+    for (id object in objects){
+        if (EqualCircles(object, circle)) return _pointC.position;
+        if (PointOnCircle(object,circle))
+        {
+            DHPoint* p = object;
+            return p.position;
+        }
+    }
+    
+    return CGPointMake(NAN, NAN);
+}
 @end

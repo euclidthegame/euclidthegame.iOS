@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DHLevel.h"
 
-@interface DHLevelPerpendicularB : NSObject <DHLevel>
+@interface DHLevelPerpendicularB : DHLevel <DHLevel>
 
 - (NSString*)levelDescription;
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects;

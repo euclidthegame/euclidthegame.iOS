@@ -61,13 +61,8 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    CGPoint pA = _lAB.start.position;
-    CGVector vAB = _lAB.vector;
-    CGVector vAC = CGVectorMultiplyByScalar(vAB, 1/3.0);
-    CGVector vAD = CGVectorMultiplyByScalar(vAB, 2/3.0);
-    
-    DHPoint* pC = [[DHPoint alloc] initWithPositionX:pA.x + vAC.dx andY:pA.y + vAC.dy];
-    DHPoint* pD = [[DHPoint alloc] initWithPositionX:pA.x + vAD.dx andY:pA.y + vAD.dy];
+    DHPointOnLine* pC = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:1/3.0];
+    DHPointOnLine* pD = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:2/3.0];
     
     [objects addObject:pC];
     [objects addObject:pD];
@@ -108,53 +103,57 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    if (geometricObjects.count < 3) {
-        return NO;
+    DHPointOnLine* pC = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:1/3.0];
+    DHPointOnLine* pD = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:2/3.0];
+    
+    BOOL firstPointOK = NO;
+    BOOL secondPointOK = NO;
+    BOOL intersectionAtFirstPointOK = NO;
+    BOOL intersectionAtSecondPointOK = NO;
+    
+    for (id object in geometricObjects){
+        if (object == _lAB || object == _lAB.start || object == _lAB.end) continue;
+        
+        // Do not count lines parallel with AB intersecting lines with C or D
+        if (EqualDirection2(_lAB, object)) continue;
+        
+        if (PointOnLine(pC, object) || PointOnCircle(pC, object)) intersectionAtFirstPointOK = YES;
+        if (PointOnLine(pD, object) || PointOnCircle(pD, object)) intersectionAtSecondPointOK = YES;
+        if (EqualPoints(object, pC)) firstPointOK = YES;
+        if (EqualPoints(object,pD)) secondPointOK = YES;
     }
     
-    for (int index1 = 0; index1 < geometricObjects.count-1; ++index1) {
-        id object1 = [geometricObjects objectAtIndex:index1];
-        if (object1 == _lAB || object1 == _lAB.start || object1 == _lAB.end) continue;
-        if ([[object1 class] isSubclassOfClass:[DHPoint class]] == NO) continue;
-        
-        for (int index2 = index1+1; index2 < geometricObjects.count; ++index2) {
-            id object2 = [geometricObjects objectAtIndex:index2];
-            if (object2 == _lAB || object2 == _lAB.start || object2 == _lAB.end) continue;
-            if ([[object2 class] isSubclassOfClass:[DHPoint class]] == NO) continue;
-            
-            DHPoint* p1 = object1;
-            DHPoint* p2 = object2;
-
-            // Ensure both points are on AB-line
-            CGFloat p1toAB = DistanceFromPointToLine(p1, _lAB);
-            CGFloat p2toAB = DistanceFromPointToLine(p2, _lAB);
-            
-            BOOL onLine = p1toAB < 0.01 && p2toAB < 0.01;
-            if (onLine == NO) {
-                continue;
-            }
-            
-            // Ensure they split line in three
-            CGFloat p1toA = DistanceBetweenPoints(p1.position, _lAB.start.position);
-            CGFloat p1toB = DistanceBetweenPoints(p1.position, _lAB.end.position);
-            CGFloat p2toA = DistanceBetweenPoints(p2.position, _lAB.start.position);
-            CGFloat p2toB = DistanceBetweenPoints(p2.position, _lAB.end.position);
-            
-            BOOL splitInThree = NO;
-            if (p1toA < p2toA) {
-                splitInThree = fabs(p1toA-p2toB) < 0.01 && fabs(p1toA*2 - p1toB) < 0.01 && fabs(p2toB*2-p2toA) < 0.01;
-            } else {
-                splitInThree = fabs(p2toA-p1toB) < 0.01 && fabs(p2toA*2 - p2toB) < 0.01 && fabs(p1toB*2-p1toA) < 0.01;
-            }
-            
-            if (splitInThree) {
-                return YES;
-            }
-
-        }
+    if (firstPointOK && secondPointOK) {
+        self.progress = 100;
+        return YES;
     }
+    
+    self.progress = (intersectionAtFirstPointOK + firstPointOK +
+                     intersectionAtSecondPointOK + secondPointOK)/4.0*100;
     
     return NO;
+}
+
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
+    
+    DHPointOnLine* pC = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:1/3.0];
+    DHPointOnLine* pD = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:2/3.0];
+    
+    
+    for (id object in objects){
+        // Do not count lines parallel with AB intersecting lines with C or D
+        if (EqualDirection2(_lAB, object)) continue;
+        
+        if (PointOnLine(pC, object)) return Position(object);
+        if (PointOnCircle(pC, object)) return Position(object);
+        if (PointOnLine(pD, object)) return Position(object);
+        if (PointOnCircle(pD, object)) return Position(object);
+        if (EqualPoints(object, pC)) return pC.position;
+        if (EqualPoints(object,pD)) return pD.position;
+    }
+    
+    
+    return CGPointMake(NAN, NAN);
 }
 
 

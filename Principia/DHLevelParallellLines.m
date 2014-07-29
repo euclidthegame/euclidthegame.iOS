@@ -113,11 +113,18 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL perpendicularLineOK = NO;
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
         if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         
         DHLineObject* l = object;
+        
+        if (l.tMin < 0 && l.tMax > 1 && LinesPerpendicular(l, _lineA)) {
+            perpendicularLineOK = YES;
+        }
+        
         CGVector bc = CGVectorNormalize(_lineA.vector);
         
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
@@ -125,12 +132,25 @@
         
         CGFloat dist = DistanceFromPointToLine(_pointB, l);
         if (dist < 0.01) {
+            self.progress = 100;
             return YES;
         }
     }
     
+    self.progress = (perpendicularLineOK)/2.0 * 100;
+    
     return NO;
 }
-
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHPerpendicularLine* perp1 = [[DHPerpendicularLine alloc] initWithLine:_lineA andPoint:_pointB];
+    DHPerpendicularLine* perp2 = [[DHPerpendicularLine alloc] initWithLine:perp1 andPoint:_pointB];
+    
+    for (id object in objects){
+        if (EqualDirection(object,perp1))  return _pointB.position;
+        if (EqualDirection(object,perp2))  return _pointB.position;
+    }
+    return CGPointMake(NAN, NAN);
+}
 
 @end

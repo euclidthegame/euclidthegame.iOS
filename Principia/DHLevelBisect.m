@@ -12,8 +12,8 @@
 #import "DHGeometricObjects.h"
 
 @interface DHLevelBisect () {
-    DHLineSegment* _lineAB;
-    DHLineSegment* _lineAC;
+    DHRay* _lineAB;
+    DHRay* _lineAC;
 }
 @end
 
@@ -26,7 +26,7 @@
 
 - (NSString*)levelDescription
 {
-    return @"Create a line (segment) that bisects (divides in half) the angle between segments AB and AC";
+    return @"Create a line (segment) that bisects (divides in half) the given angle";
 }
 
 - (NSString *)additionalCompletionMessage
@@ -53,21 +53,21 @@
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:300 andY:300];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:500 andY:300];
-    DHPoint* p3 = [[DHPoint alloc] initWithPositionX:400 andY:200];
+    DHPoint* p3 = [[DHPoint alloc] initWithPositionX:450 andY:170];
     
-    DHLineSegment* l1 = [[DHLineSegment alloc] init];
+    DHRay* l1 = [[DHRay alloc] init];
     l1.start = p1;
     l1.end = p2;
     
-    DHLineSegment* l2 = [[DHLineSegment alloc] init];
+    DHRay* l2 = [[DHRay alloc] init];
     l2.start = p1;
     l2.end = p3;
     
     [geometricObjects addObject:l1];
     [geometricObjects addObject:l2];
     [geometricObjects addObject:p1];
-    [geometricObjects addObject:p2];
-    [geometricObjects addObject:p3];
+    //[geometricObjects addObject:p2];
+    //[geometricObjects addObject:p3];
     
     _lineAB = l1;
     _lineAC = l2;
@@ -119,30 +119,75 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
+    BOOL circleOK = NO;
+    BOOL intersectionPointOK = NO;
+    BOOL midPointOK = NO;
+    BOOL bisectOK = NO;
+    
+    DHBisectLine* b = [[DHBisectLine alloc] init];
+    b.line1 = _lineAB;
+    b.line2 = _lineAC;
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
-        if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         if (object == _lineAB || object == _lineAC) continue;
         
-        DHLineObject* l = object;
-        
-        CGVector ab = _lineAB.vector;
-        CGVector ac = _lineAC.vector;
-
-        CGFloat targetAngle = CGVectorAngleBetween(ab, ac) * 0.5;
-        CGFloat angleToAB = CGVectorAngleBetween(l.vector, ab);
-        CGFloat angleToAC = CGVectorAngleBetween(l.vector, ac);
-        
-        //Compare angle to both initial lines and ensure = 0.5*
-        
-        if (CGFloatsEqualWithinEpsilon(angleToAB, targetAngle) &&
-            CGFloatsEqualWithinEpsilon(angleToAC, targetAngle)) {
-            return YES;
+        if ([object class] == [DHCircle class])
+        {
+            DHCircle* c = object;
+            if (EqualPoints(c.center,_lineAB.start)) circleOK = YES;
+        }
+        if ([object class] == [DHIntersectionPointLineCircle class])
+        {
+            DHPoint* p = object;
+            if (PointOnLine(p,_lineAB) || PointOnLine(object,_lineAC)) intersectionPointOK = YES;
+        }
+        if (PointOnLine(object,b)) midPointOK = YES;
+        if (EqualDirection(b,object))
+        {
+            DHLineObject * l = object;
+            if (PointOnLine(_lineAB.start, l)) {
+                bisectOK = YES;
+                self.progress = 100;
+                return YES;
+            }
         }
     }
+    self.progress = (circleOK + intersectionPointOK + midPointOK + bisectOK)/4.0 * 100;
     
     return NO;
 }
 
-
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
+    DHBisectLine* b = [[DHBisectLine alloc] init];
+    b.line1 = _lineAB;
+    b.line2 = _lineAC;
+    
+    for (id object in objects){
+        
+        if ([object class] == [DHCircle class])
+        {
+            DHCircle* c = object;
+            if (EqualPoints(c.center,_lineAB.start)) return c.center.position;
+        }
+        if ([object class] == [DHIntersectionPointLineCircle class])
+        {
+            DHPoint* p = object;
+            if (PointOnLine(p,_lineAB) || PointOnLine(object,_lineAC)) return p.position;
+        }
+        if (PointOnLine(object,b))
+        {
+            DHPoint* p = object;
+            return p.position;
+        }
+        if (EqualDirection(b,object))
+        {
+            DHLineObject * l = object;
+            if (PointOnLine(_lineAB.start, l)) return l.end.position;
+        }
+        
+    }
+    return CGPointMake(NAN, NAN);
+}
 @end

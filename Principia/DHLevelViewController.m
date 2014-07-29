@@ -354,8 +354,8 @@
                           DHCircleToolAvailable);
     }
 
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolZoomPan"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHZoomPanTool class]];
+    //[_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolZoomPan"] atIndex:index++ animated:NO];
+    //[_tools addObject:[DHZoomPanTool class]];
     
     [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPoint"] atIndex:index++ animated:NO];
     [_tools addObject:[DHPointTool class]];
@@ -432,7 +432,7 @@
         }
     }
     _toolControl.selectedSegmentIndex = 0;
-    _currentTool = [[DHZoomPanTool alloc] init];
+    _currentTool = [[DHLineSegmentTool alloc] init];
     self.geometryViewController.currentTool = _currentTool;
     _toolInstruction.text = [_currentTool initialToolTip];
 

@@ -15,7 +15,7 @@
     Message* message1; Message* message2; Message* message3; Message* message4; Message* message5; Message* message6;
     BOOL norepeat; BOOL levelcomplete;
     BOOL step1; BOOL step2; BOOL step3; BOOL step4; BOOL step5; BOOL step6; BOOL step7; BOOL step8; BOOL step9; BOOL step10;
-    BOOL step11; BOOL step12; BOOL step13;
+    BOOL step11; BOOL step12;
 }
 @end
 
@@ -63,13 +63,17 @@
     
     [geometricObjects addObject:pAhidden];
     [geometricObjects addObject:pBhidden];
+    
+    message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,350)];
+    message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,370)];
+    message3 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,850)];
+    message4 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,870)];
+    message5 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,890)];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
 {
-    
     return levelcomplete;
-    
 }
 
 - (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstruction and:(UIView *)geometryView and:(UIView *)view and:(BOOL)update
@@ -109,10 +113,7 @@
             moved = YES;
             _point = _pointB;
         }
-        
     }
-    
-    
     if (step1) {
         // remove toolbar
         toolControl.alpha = 0;
@@ -123,9 +124,7 @@
         //1
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message1 = [[Message alloc]
-                         initWithMessage:@"The most fundamental objects in this game are points."
-                         andPoint:CGPointMake(200,350)];
+             [message1 text:@"The most fundamental objects in this game are points."];
              [view addSubview:message1];
              message1.alpha = 1;
          }
@@ -137,7 +136,7 @@
              [geometryView setNeedsDisplay];
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  message2 = [[Message alloc] initWithMessage:@"Points are often labeled with capital letters." andPoint:CGPointMake(200,370)];
+                  [message2 text:@"Points are often labeled with capital letters."];
                   [view addSubview:message2];
                   message2.alpha = 1;
               }
@@ -149,7 +148,7 @@
                   [geometryView setNeedsDisplay];
                   [UIView
                    animateWithDuration:1.5 delay:1.5 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       message3 = [[Message alloc] initWithMessage:@"Other objects can be constructed from those points using the toolbar below." andPoint:CGPointMake(20,850)];
+                       [message3 text:@"Other objects can be constructed from those points using the toolbar below."];
                        [view addSubview:message3];
                        message3.alpha = 1;
                        toolControl.alpha = 1;
@@ -159,7 +158,7 @@
                        //4
                        [UIView
                         animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                            message4 = [[Message alloc] initWithMessage:@"Let's start with constructing a line segment. Tap on the tool, to select it." andPoint:CGPointMake(20,870)];
+                            [message4 text:@"Let's start with constructing a line segment. Tap on the tool, to select it."];
                             [view addSubview:message4];
                             message4.alpha = 1;
                         }
@@ -176,8 +175,7 @@
     
     else if (step2 && toolControl.selectedSegmentIndex == 2 ) {
         message1.alpha = 0; message2.alpha = 0;
-        message1.text =@"Try to construct a line segment that connects point A and B.";
-        [message1 sizeToFit];
+        [message1 text:@"Try to construct a line segment that connects point A and B."];
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message3.alpha = 0;
@@ -201,16 +199,16 @@
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   message6.alpha = 0;
                   message1.alpha = 0;
-                  message3.text = @"We can also use points to construct a circle.";
+                  [message3 text: @"We can also use points to construct a circle."];
                   message3.alpha = 1;
-
+                  
               }
               completion:^(BOOL finished){
                   [UIView
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       message4.text = @"Tap on on the circle tool, to select it.";
+                       [message4 text:@"Tap on on the circle tool, to select it."];
                        message4.alpha = 1;
-                    [toolControl setEnabled:YES forSegmentAtIndex:4];
+                       [toolControl setEnabled:YES forSegmentAtIndex:4];
                    }
                    completion:^(BOOL finished){
                        step3 = NO;
@@ -223,7 +221,7 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              toolInstruction.alpha = 1;
-             message1.text =@"Try to construct a circle with center A and radius AB.";
+             [message1 text:@"Try to construct a circle with center A and radius AB."];
              message1.alpha = 1;
              message3.alpha = 0;
              message4.alpha = 0;
@@ -236,17 +234,14 @@
     else if (step5 && circleAB) {
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message6.text = @"Well done!";
-             CGRect frame = message6.frame;
-             frame.origin = Position(cAB);
-             message6.frame = frame;
+             [message6 text: @"Well done!" position:Position(cAB)];
              message6.alpha = 1;
          }
          completion:^(BOOL finished){
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   message6.alpha = 0 ;
-                  message1.text= @"Now, let's make a circle with center B (!) and radius AB.";
+                  [message1 text: @"Now, let's make a circle with center B (!) and radius AB."];
                   message1.alpha = 1;
               }
               completion:^(BOOL finished){
@@ -262,12 +257,9 @@
          delay:0.0
          options: UIViewAnimationOptionAllowAnimatedContent
          animations:^{
-             message6.text = @"Well done!";
-             message6.alpha = 1;
              message1.alpha = 0;
-             CGRect frame = message6.frame;
-             frame.origin = Position(cBA);
-             message6.frame = frame;
+             [message6 text:@"Well done!" position:Position(cBA)];
+             message6.alpha = 1;
          }
          completion:^(BOOL finished){
              toolInstruction.alpha = 0;
@@ -277,14 +269,14 @@
               options: UIViewAnimationOptionAllowAnimatedContent
               animations:^{
                   message6.alpha = 0;
-                  message3.text = @"Sometimes it is usefull to extend a segment using the line tool.";
+                  [message3 text:@"Sometimes it is usefull to extend a segment using the line tool."];
                   message3.alpha = 1;
                   [toolControl setEnabled:NO forSegmentAtIndex:4];
               }
               completion:^(BOOL finished){
                   [UIView
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       message4.text = @"Tap on it, to select it.";
+                       [message4 text: @"Tap on it, to select it."];
                        [toolControl setEnabled:YES forSegmentAtIndex:3];
                        message4.alpha = 1;
                    }
@@ -297,10 +289,10 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              toolInstruction.alpha = 1;
-             message1.text =@"Try to construct a line using the points A and B.";
-             message1.alpha = 1;
              message3.alpha = 0;
              message4.alpha = 0;
+             [message1 text:@"Try to construct a line using the points A and B."];
+             message1.alpha = 1;
          }
          completion:^(BOOL finished){step7= NO; step8 = YES;}];
     }
@@ -308,25 +300,22 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
-             message6.text = @"Well done!";
+             [message6 text:@"Well done!" position:Position(lAB)];
              message6.alpha = 1;
-             CGRect frame = message6.frame;
-             frame.origin = Position(lAB);
-             message6.frame = frame;
          }
          completion:^(BOOL finished){
              toolInstruction.alpha = 0;
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   message6.alpha = 0;
-                  message3.text = @"If lines or circles intersect we can create a point at the intersection.";
+                  [message3 text:@"If lines or circles intersect we can create a point at the intersection."];
                   message3.alpha = 1;
                   [toolControl setEnabled:NO forSegmentAtIndex:3];
               }
               completion:^(BOOL finished){
                   [UIView
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       message4.text = @"Tap on the intersect tool, to select it.";
+                       [message4 text:@"Tap on the intersect tool, to select it."];
                        [toolControl setEnabled:YES forSegmentAtIndex:1];
                        message4.alpha = 1;
                    }
@@ -341,7 +330,7 @@
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              toolInstruction.alpha = 1;
              message3.alpha = 0; message4.alpha = 0;
-             message1.text =@"Construct a point at an intersection.";
+             [message1 text:@"Construct a point at an intersection."];
              message1.alpha = 1;
          }
          completion:^(BOOL finished){ step9 = NO; step10 = YES;  }];
@@ -349,19 +338,15 @@
     else if (step10 && intersection) {
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message6.text = @"Well done!";
-             message6.alpha = 1;
              message1.alpha = 0;
-             CGRect frame = message6.frame;
-             frame.origin = Position(_point);
-             message6.frame = frame;
+             [message6 text:@"Well done!" position:Position(_point)];
+             message6.alpha = 1;
          }
          completion:^(BOOL finished){
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   message6.alpha = 0;
-                  message3.text = @"Note that the intersection point is black. Black points are unmovable and precise.";
-                  [message3 sizeToFit];
+                  [message3 text:@"Note that the intersection point is black. Black points are unmovable and precise."];
                   message3.alpha = 1;
                   toolInstruction.alpha = 0;
                   [toolControl setEnabled:NO forSegmentAtIndex:1];
@@ -369,20 +354,16 @@
               completion:^(BOOL finished){
                   [UIView
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       message4.text = @"Grey points are not placed precisely on an intersection and are movable.";
-                       [message4 sizeToFit];
+                       [message4 text: @"Grey points are not placed precisely on an intersection and are movable."];
                        message4.alpha = 1;
                    }
                    completion:^(BOOL finished){
                        [UIView
-                        animateWithDuration:1.0
-                        delay:1.0
-                        options: UIViewAnimationOptionAllowAnimatedContent
-                        animations:^{
-                            message5 = [[Message alloc] initWithMessage:@"Try to move a grey point using the point tool." andPoint:CGPointMake(20,890)];
-                            [toolControl setEnabled:YES forSegmentAtIndex:0];
+                        animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                            [message5 text:@"Try to move a grey point using the point tool."];
                             [view addSubview:message5];
                             message5.alpha = 1;
+                            [toolControl setEnabled:YES forSegmentAtIndex:0];
                         }
                         completion:^(BOOL finished){step10 = NO; step11 = YES; }];
                    }];
@@ -393,7 +374,7 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              toolInstruction.alpha = 1;
-             message1.text =@"Move one of the grey points.";
+             [message1 text:@"Move one of the grey points."];
              message1.alpha = 1;
              message3.alpha = 0;
              message4.alpha = 0;
@@ -407,17 +388,14 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
-             message6.text = @"Well done!";
+             [message6 text:@"Well done!" position:Position(_point)];
              message6.alpha = 1;
-             CGRect frame = message6.frame;
-             frame.origin = Position(_point);
-             message6.frame = frame;
          }
          completion:^(BOOL finished){
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   message6.alpha = 0;
-                  message3.text = @"These are the 5 primitive tools, you will start with in Level 1.";
+                  [message3 text: @"These are the 5 primitive tools, you will start with in Level 1."];
                   message3.alpha = 1;
                   [toolControl setEnabled:YES forSegmentAtIndex:0];
                   [toolControl setEnabled:YES forSegmentAtIndex:1];
@@ -428,7 +406,7 @@
               completion:^(BOOL finished){
                   [UIView
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       message4.text = @"To unlock any other tools, you first need to complete some levels!";
+                       [message4 text:@"To unlock any other tools, you first need to complete some levels!"];
                        message4.alpha = 1;
                        [toolControl setEnabled:YES forSegmentAtIndex:0];
                    }
@@ -456,5 +434,21 @@
         [self sizeToFit];
     }
     return self;
+}
+
+- (void)text:(NSString*)string{
+    self.text = [NSString stringWithString:string];
+    CGRect frame = self.frame;
+    frame.origin = self.point;
+    self.frame = frame;
+    [self sizeToFit];
+}
+- (void)text:(NSString*)string position:(CGPoint)point{
+    self.text = string;
+    self.point = point;
+    CGRect frame = self.frame;
+    frame.origin = self.point;
+    self.frame = frame;
+    [self sizeToFit];
 }
 @end

@@ -254,6 +254,7 @@ const CGFloat kClosestTapLimit = 25.0f;
         if (point && point != self.startPoint) {
             _temporaryLine.end.position = point.position;
             [self.delegate toolTipDidChange:@"Release to create line segment"];
+
         } else {
             _temporaryLine.end.position = touchPoint;
             [self.delegate toolTipDidChange:@"Drag to a point defining the end point of the segment"];
@@ -284,8 +285,11 @@ const CGFloat kClosestTapLimit = 25.0f;
         if (point && point != self.startPoint) {
             endPoint = point.position;
             [self.delegate toolTipDidChange:@"Release to create line segment"];
+            _temporaryLine.temporary = NO;
+            [touch.view setNeedsDisplay];
         } else {
             [self.delegate toolTipDidChange:@"Drag to a point defining the end point of the segment"];
+            _temporaryLine.temporary = YES;
         }
         _temporaryLine.end.position = endPoint;
         [touch.view setNeedsDisplay];
@@ -458,8 +462,10 @@ const CGFloat kClosestTapLimit = 25.0f;
         if (point && point != self.startPoint) {
             endPoint = point.position;
             [self.delegate toolTipDidChange:@"Release to create line"];
+            _temporaryLine.temporary = NO;
         } else {
             [self.delegate toolTipDidChange:@"Drag to a second point that the line will pass through"];
+            _temporaryLine.temporary = YES;
         }
         _temporaryLine.end.position = endPoint;
         [touch.view setNeedsDisplay];
@@ -638,8 +644,10 @@ const CGFloat kClosestTapLimit = 25.0f;
         if (point && point != self.center) {
             endPoint = point.position;
             [self.delegate toolTipDidChange:@"Release to create circle"];
+            _temporaryCircle.temporary = NO;
         } else {
             [self.delegate toolTipDidChange:@"Drag to a point that the circle will pass through"];
+            _temporaryCircle.temporary = YES;
         }
         _temporaryCircle.pointOnRadius.position = endPoint;
         [touch.view setNeedsDisplay];

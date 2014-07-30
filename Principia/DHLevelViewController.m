@@ -343,10 +343,11 @@
 
 - (void)addTemporaryGeometricObjects:(NSArray *)objects
 {
+    /*
     for (DHGeometricObject* object in objects) {
         object.temporary = YES;
     }
-    
+    */
     [_temporaryGeometricObjects addObjectsFromArray:objects];
 }
 

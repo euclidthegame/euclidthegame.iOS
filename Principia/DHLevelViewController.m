@@ -459,10 +459,10 @@
         }
     }
     
-    _toolControl.selectedSegmentIndex = 0;
-    _currentTool = [[DHLineSegmentTool alloc] init];
+    _toolControl.selectedSegmentIndex = UISegmentedControlNoSegment;
+    _currentTool = nil;
     self.geometryViewController.currentTool = _currentTool;
-    _toolInstruction.text = [_currentTool initialToolTip];
+    _toolInstruction.text = nil;
     
 }
 

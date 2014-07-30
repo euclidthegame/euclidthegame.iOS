@@ -39,7 +39,7 @@
 
 - (DHToolsAvailable)availableTools
 {
-    return (DHLineSegmentToolAvailable);
+    return (0);
 }
 
 - (NSUInteger)minimumNumberOfMoves
@@ -118,8 +118,6 @@
         // remove toolbar
         toolControl.alpha = 0;
         toolInstruction.alpha = 0;
-        [toolControl setEnabled:NO forSegmentAtIndex:2];
-        toolControl.selectedSegmentIndex = -1;
         
         [UIView
          animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{

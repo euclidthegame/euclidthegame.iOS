@@ -308,55 +308,6 @@ static CGPoint MidPointFromLine(DHLineObject* l)
 {
     return CGPointMake(0.5*(l.start.position.x + l.end.position.x), 0.5*(l.start.position.y + l.end.position.y));
 }
-#pragma mark - Geometric object comparison functions
-
-
-
-
-
-static BOOL EqualSegments(DHLineSegment* l1, id object)
-{
-    if ([object class] == [DHLineSegment class]){
-        DHLineSegment* l2 = object;
-        if ((EqualPoints(l1.start,l2.start) && EqualPoints(l1.end,l2.end)) || (EqualPoints(l1.start,l2.end) && EqualPoints(l1.end,l2.start))) {
-            return YES;
-        }
-        else{
-            return NO;
-        }
-    }
-    return NO;
-}
-
-
-static BOOL IsObjectOnCricle(DHCircle* c1, id object)
-{
-    if ([[object class] isSubclassOfClass:[DHPoint class]]){
-        DHPoint* p1 = object;
-        if (DistanceBetweenPoints(p1.position, c1.center.position) == c1.radius)  {
-            return YES;
-        }
-        else{
-            return NO;
-        }
-    }
-    return NO;
-}
-
-static BOOL IsObjectOnLine(DHLineObject* l1, id object)
-{
-    if ([[object class] isSubclassOfClass:[DHPoint class]]){
-        DHPoint* p1 = object;
-        
-        if (((l1.end.position.y - l1.start.position.y)/(l1.end.position.x - l1.start.position.x)) ==  ((l1.end.position.y - p1.position.y)/(l1.end.position.x - p1.position.x)))  {
-            return YES;
-        }
-        else{
-            return NO;
-        }
-    }
-    return NO;
-}
 
 #pragma mark - Tool helper functions
 static DHPoint* FindPointClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)

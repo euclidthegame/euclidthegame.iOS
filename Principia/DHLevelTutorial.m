@@ -94,7 +94,7 @@
     DHCircle* cBA = [[DHCircle alloc] initWithCenter:_pointB andPointOnRadius:_pointA];
     
     for (id object in geometricObjects) {
-        if (EqualSegments(sAB, object)) segmentAB =YES;
+        if (EqualLineSegments(sAB, object)) segmentAB =YES;
         if (EqualCircles(cAB,object)) circleAB = YES;
         if (EqualCircles(cBA,object)) circleBA = YES;
         if ([object class] == [DHIntersectionPointCircleCircle class] ||
@@ -122,7 +122,7 @@
         toolControl.selectedSegmentIndex = -1;
         
         [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+         animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              [message1 text:@"The most fundamental objects in this game are points."]; message1.alpha = 1;
              [view addSubview:message1];
          }
@@ -132,7 +132,7 @@
              [geometricObjects addObject:_pointB];
              [geometryView setNeedsDisplay];
              [UIView
-              animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+              animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   [message2 text:@"Points are often labeled with capital letters."]; message2.alpha = 1;
                   [view addSubview:message2];
               }
@@ -151,7 +151,7 @@
                    completion:^(BOOL finished){
                        
                        [UIView
-                        animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                        animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                             [message4 text:@"Let's start with constructing a line segment. Tap on the tool, to select it."];
                             [view addSubview:message4];
                             message4.alpha = 1;

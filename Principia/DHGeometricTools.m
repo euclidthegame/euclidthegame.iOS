@@ -329,6 +329,10 @@ const CGFloat kClosestTapLimit = 25.0f;
             [objectsToAdd addObject:intersectionPoint];
         }
     }
+    
+    if(!point) {
+        [self reset];
+    }
    
     if (self.startPoint && point && point != self.startPoint) {
         DHLineSegment* line = [[DHLineSegment alloc] init];
@@ -518,7 +522,10 @@ const CGFloat kClosestTapLimit = 25.0f;
         DHLine* tempLine = [[DHLine alloc]initWithStart:self.startPoint andEnd:[[DHPoint alloc]initWithPositionX:touchPoint.x andY:touchPoint.y]];
         point = FindPointClosestToLine(tempLine, self.startPoint, self.delegate.geometryObjects, 8/geoViewScale);
     }
-
+    
+    if(!point) {
+        [self reset];
+    }
     
     if (self.startPoint && point && point != self.startPoint) {
         DHLine* line = [[DHLine alloc] init];
@@ -707,6 +714,10 @@ const CGFloat kClosestTapLimit = 25.0f;
         tempCircle.center = self.center;
         tempCircle.pointOnRadius = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
         point = FindPointClosestToCircle(tempCircle, self.delegate.geometryObjects, 8/geoViewScale);
+    }
+    
+    if(!point) {
+        [self reset];
     }
     
     if (self.center && point && point != self.center) {

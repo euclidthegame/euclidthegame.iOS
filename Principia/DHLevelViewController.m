@@ -206,8 +206,17 @@
 {
     [self addGeometricObjects:@[object]];
 }
-- (void)addGeometricObjects:(NSArray*)objects
+- (void)addGeometricObjects:(NSArray*)objects_
 {
+    NSMutableArray* tempobjects = [[NSMutableArray alloc]initWithArray:objects_];
+    for (id newobject in objects_) {
+        for (id oldobject in _geometricObjects) {
+            if (EqualCircles(oldobject, newobject) || EqualLines(oldobject, newobject) || EqualLineSegments(oldobject, newobject)|| EqualPoints(oldobject, newobject)){
+                [tempobjects removeObject:newobject];
+            }
+        }
+    }
+    NSArray* objects = [[NSArray alloc] initWithArray:tempobjects];
     self.firstMoveMade = YES;
     BOOL countMove = NO;
 

@@ -417,6 +417,7 @@ const CGFloat kClosestTapLimit = 25.0f;
         }
     }
     
+    
     if (!self.startPoint && point) {
         self.startPoint = point;
         point.highlighted = true;
@@ -459,6 +460,13 @@ const CGFloat kClosestTapLimit = 25.0f;
         if (!point) {
             point = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects, geoViewScale);
         }
+        
+        //if still no point, see if there is a point close to the line and snap to it
+        if (!point) {
+            _temporaryLine.end.position = touchPoint;
+            point = FindPointClosestToLine(_temporaryLine, self.startPoint, self.delegate.geometryObjects, 8/geoViewScale);
+        }
+        
         if (point && point != self.startPoint) {
             endPoint = point.position;
             [self.delegate toolTipDidChange:@"Release to create line"];
@@ -505,6 +513,12 @@ const CGFloat kClosestTapLimit = 25.0f;
             [objectsToAdd addObject:intersectionPoint];
         }
     }
+    //if still no point, see if there is a point close to the line and snap to it
+    if (!point) {
+        DHLine* tempLine = [[DHLine alloc]initWithStart:self.startPoint andEnd:[[DHPoint alloc]initWithPositionX:touchPoint.x andY:touchPoint.y]];
+        point = FindPointClosestToLine(tempLine, self.startPoint, self.delegate.geometryObjects, 8/geoViewScale);
+    }
+
     
     if (self.startPoint && point && point != self.startPoint) {
         DHLine* line = [[DHLine alloc] init];

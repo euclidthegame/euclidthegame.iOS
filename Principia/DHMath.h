@@ -351,6 +351,27 @@ static DHPoint* FindPointClosestToCircle(DHCircle* c, NSArray* geometricObjects,
     return closestPoint;
 }
 
+static DHPoint* FindPointClosestToLine(DHLine* l, DHPoint* p, NSArray* geometricObjects, CGFloat maxDistance)
+{
+    DHPoint* closestPoint = nil;
+    CGFloat closestPointDistance = maxDistance;
+    
+    NSMutableArray* tempobjects = [[NSMutableArray alloc]initWithArray:geometricObjects];
+    [tempobjects removeObject:p];
+    for (id object in tempobjects) {
+        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+            CGFloat distance = DistanceFromPointToLine(object, l);
+            
+            if (distance < closestPointDistance) {
+                closestPoint = object;
+                closestPointDistance = distance;
+            }
+        }
+    }
+    return closestPoint;
+}
+
+
 static DHLineObject* FindLineClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
 {
     DHLineObject* closestLine = nil;
@@ -564,7 +585,6 @@ static DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* 
     
     return closestPoint;
 }
-
 
 #pragma clang diagnostic pop
 

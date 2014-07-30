@@ -137,12 +137,19 @@
     if (self.currentGameMode == kDHGameModeTutorial) {
         self.movesLabel.hidden = YES;
         self.progressLabel.hidden = YES;
-        self.levelInstruction.hidden = YES;
-        self.levelObjectiveView.hidden = YES;
+        self.heightLevelObjectiveView.constant = 0;
+        self.heightToolBar.constant = 0;
+        _levelInstruction.text = @"";
         _redoButton.title = nil;
         _undoButton.title = nil;
         _resetButton.title = nil;
-        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:NO];
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
+    }
+    else {
+        self.heightLevelObjectiveView.constant = 60;
+        self.heightToolBar.constant = 70;
+        self.movesLabel.hidden = NO;
+        self.progressLabel.hidden = NO;
     }
 
     
@@ -337,7 +344,7 @@
     }
     
     if (self.currentGameMode == kDHGameModeTutorial) {
-        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:NO];
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
     }
 }
 
@@ -488,7 +495,7 @@
     }
     
     if (self.currentGameMode == kDHGameModeTutorial) {
-        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:NO];
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:YES];
     }
 
     
@@ -517,7 +524,7 @@
     }
     
     if (self.currentGameMode == kDHGameModeTutorial) {
-    [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:YES];
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:YES];
     }
     
 }
@@ -612,7 +619,8 @@
     if (self.currentGameMode == kDHGameModeTutorial) {
         // Special message for tutorial
         [completionMessageText setString:@"Well done! You are now ready to begin with Level 1."];
-        self.nextChallengeButton.hidden = YES;
+        self.nextChallengeButton.hidden = NO;
+        [self.nextChallengeButton setTitle:@"Go to Level 1." forState:UIControlStateNormal];
     } else {
         // If this is the last level, show special completion message and hide the "Next level" button
         if (self.levelIndex >= self.levelArray.count - 1) {
@@ -644,6 +652,15 @@
 
 - (IBAction)loadNextLevel:(id)sender
 {
+    
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        self.levelIndex = 0;
+        self.currentGameMode = kDHGameModeNormal;
+        id<DHLevel> nextLevel = [[DHLevelEquiTri alloc] init];
+        _currentLevel = nextLevel;
+        [self viewDidLoad];
+    }
+    
     if (self.levelArray) {
         self.levelIndex = self.levelIndex + 1;
         

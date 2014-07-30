@@ -29,7 +29,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Follow the instructions.");
+    return (@"");
 }
 
 - (NSString *)additionalCompletionMessage
@@ -64,8 +64,8 @@
     [geometricObjects addObject:pAhidden];
     [geometricObjects addObject:pBhidden];
     
-    message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,350)];
-    message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,370)];
+    message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,300)];
+    message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,320)];
     message3 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,850)];
     message4 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,870)];
     message5 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,890)];
@@ -73,10 +73,15 @@
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
 {
+    if (levelcomplete){
+        message3.alpha = 0;
+        message4.alpha = 0;
+        message5.alpha = 0;
+    }
     return levelcomplete;
 }
 
-- (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstruction and:(UIView *)geometryView and:(UIView *)view and:(BOOL)update
+- (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstruction and:(UIView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolControl and:(BOOL)update
 {
     
     if (norepeat && update) return;
@@ -145,9 +150,10 @@
                        [view addSubview:message3];
                        message3.alpha = 1;
                        toolControl.alpha = 1;
+
                    }
                    completion:^(BOOL finished){
-                       
+                        heightToolControl.constant = 70;
                        [UIView
                         animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                             [message4 text:@"Let's start with constructing a line segment. Tap on the tool, to select it."];
@@ -366,13 +372,20 @@
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                        [message4 text:@"To unlock any other tools, you first need to complete some levels!"];
                        message4.alpha = 1;
-                       [toolControl setEnabled:YES forSegmentAtIndex:0];
                    }
-                   completion:^(BOOL finished){step12 = NO; levelcomplete=YES;}];
+                   completion:^(BOOL finished){
+                       [UIView
+                        animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                            [message5 text:@"Construct a new object with one of those 5 tools, to complete the tutorial."];
+                            message5.alpha = 1;
+                        }
+                        completion:^(BOOL finished){step12 = NO; levelcomplete=YES;}];
+                   }];
               }];
          }];
     }
 }
+
 @end
 
 @implementation Message

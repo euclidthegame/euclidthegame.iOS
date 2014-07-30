@@ -11,6 +11,7 @@
 #import "DHGeometricTools.h"
 #import "DHMath.h"
 
+
 @protocol DHLevel <NSObject>
 
 @required
@@ -26,7 +27,7 @@
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects;
 - (NSUInteger)minimumNumberOfMovesPrimitiveOnly;
 - (CGPoint)testObjectsForProgressHints:(NSArray*)objects;
-- (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(UIView*)geometryView and:(UIView*)view and:(BOOL)update;
+- (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(UIView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heighToolControl and:(BOOL)update;
 @end
 
 @interface DHLevel : NSObject

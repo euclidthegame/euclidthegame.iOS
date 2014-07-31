@@ -330,7 +330,7 @@ const CGFloat kClosestTapLimit = 25.0f;
         }
     }
     
-    if(!point && !DistanceBetweenPoints(self.startPoint.position, touchPoint)<0.1 ) {
+    if(!point && DistanceBetweenPoints(self.startPoint.position, touchPoint)>20 ) {
         [self reset];
     }
    

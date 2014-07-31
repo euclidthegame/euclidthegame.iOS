@@ -73,6 +73,10 @@
     _redoButton = redoButtonItem;
     _resetButton = resetButtonItem;
     
+    
+    [self.detailedInstructions addTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchDown];
+    
+    
     _levelInstruction.layer.cornerRadius = 10.0f;
     
     // Set up completion message
@@ -802,6 +806,17 @@
     objectiveLabel.font = [UIFont systemFontOfSize:16.0];
     objectiveLabel.numberOfLines = 0;
     [objectiveLabel setLineBreakMode:NSLineBreakByWordWrapping];
+    
+    if ([_currentLevel respondsToSelector:@selector(levelDescriptionExtra)]) {
+        //NSAttributedStringMarkdownParser* parser = [[NSAttributedStringMarkdownParser alloc]init];
+        //parser.paragraphFont = [UIFont systemFontOfSize:16];
+        //objectiveLabel.attributedText = [parser mdString:[_currentLevel levelDescriptionExtra]];
+        objectiveLabel.text = [_currentLevel levelDescriptionExtra];
+    }
+    else {
+        objectiveLabel.text = [_currentLevel levelDescription];
+    }
+    
     
     // Constraints for pop-up view
     

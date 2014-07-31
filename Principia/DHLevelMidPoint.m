@@ -25,12 +25,17 @@
 
 - (NSString*)levelDescription
 {
-    return @"Create a point exactly dividing the line AB into two parts of equal length";
+    return @"Construct the midpoint of line segment AB.";
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct the midpoint of line segment AB. \n\nThe midpoint divides the line segment AB into two parts of equal length.");
 }
 
 - (NSString *)additionalCompletionMessage
 {
-    return @"You unlocked a new tool: Constructing a midpoint!";
+    return @"Well done ! You unlocked a new tool: Constructing a midpoint!";
 }
 
 - (DHToolsAvailable)availableTools

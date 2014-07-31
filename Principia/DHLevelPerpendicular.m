@@ -28,7 +28,12 @@
 
 - (NSString*)levelDescription
 {
-    return @"Create a line (segment) on A that is perpendicular to the given line";
+    return @"Construct a line (segment) on A that is perpendicular to the given line.";
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct a line (segment) on A that is perpendicular to the given line. \n \nWhen a straight line standing on a straight line makes the adjacent angles equal to one another, each of the equal angles is right, and the straight line standing on the other is called a perpendicular to that on which it stands.");
 }
 
 - (DHToolsAvailable)availableTools

@@ -776,9 +776,9 @@
                              forControlEvents:UIControlEventTouchUpInside];
     
     if (self.firstMoveMade == 0) {
-        [startButton setTitle:@"Begin" forState:UIControlStateNormal];
+        [startButton setTitle:@"Start Game" forState:UIControlStateNormal];
     } else {
-        [startButton setTitle:@"Continue" forState:UIControlStateNormal];
+        [startButton setTitle:@"Resume Game" forState:UIControlStateNormal];
     }
     
     startButton.titleLabel.font = [UIFont boldSystemFontOfSize:17];

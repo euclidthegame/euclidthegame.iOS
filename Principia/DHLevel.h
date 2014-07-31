@@ -28,6 +28,7 @@
 - (NSUInteger)minimumNumberOfMovesPrimitiveOnly;
 - (CGPoint)testObjectsForProgressHints:(NSArray*)objects;
 - (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(UIView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heighToolControl and:(BOOL)update;
+- (void)animation:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(UIView*)geometryView and:(UIView*)view;
 @end
 
 @interface DHLevel : NSObject

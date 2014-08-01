@@ -135,6 +135,10 @@
 
 - (void)centerContent
 {
+    if (self.geometricObjects.count == 0) {
+        return;
+    }
+    
     const CGFloat pointMargin = 20.0;
     
     // Determine size of contents and scale/translate view to fit and center all items

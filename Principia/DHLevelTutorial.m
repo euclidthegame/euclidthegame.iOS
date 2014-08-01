@@ -18,7 +18,7 @@
     Message* message4;
     Message* message5;
     Message* message6;
-    BOOL norepeat, levelcomplete;
+    BOOL _noRepeat, _levelComplete;
     BOOL step1, step2, step3, step4, step5, step6, step7, step8, step9, step10, step11, step12;
 }
 @end
@@ -53,20 +53,18 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (UIInterfaceOrientationIsPortrait(orientation)) {
+        _pointA = [[DHPoint alloc] initWithPositionX:310 andY:450];
+        _pointB = [[DHPoint alloc] initWithPositionX:460 andY:450];
+    } else {
+        _pointA = [[DHPoint alloc] initWithPositionX:430 andY:250];
+        _pointB = [[DHPoint alloc] initWithPositionX:590 andY:250];
+    }
     
-    DHPoint* pA = [[DHPoint alloc] initWithPositionX:310 andY:450];
-    DHPoint* pB = [[DHPoint alloc] initWithPositionX:460 andY:450];
-    DHPoint* pAhidden = [[DHPoint alloc] initWithPositionX:10000 andY:10000];
-    DHPoint* pBhidden = [[DHPoint alloc] initWithPositionX:10000 andY:10000];
-    _pointA = pA;
-    _pointB = pB;
-    
-    norepeat = NO;
-    levelcomplete = NO;
+    _noRepeat = NO;
+    _levelComplete = NO;
     step1= YES;
-    
-    [geometricObjects addObject:pAhidden];
-    [geometricObjects addObject:pBhidden];
     
     message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,300)];
     message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,320)];
@@ -75,20 +73,54 @@
     message5 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,890)];
 }
 
+- (void)positionMessagesForOrientation:(UIInterfaceOrientation)orientation
+{
+    CGRect frame1 = message1.frame;
+    CGRect frame2 = message2.frame;
+    CGRect frame3 = message3.frame;
+    CGRect frame4 = message4.frame;
+    CGRect frame5 = message5.frame;
+    
+    if (UIInterfaceOrientationIsPortrait(orientation)) {
+        frame1.origin = CGPointMake(200,300);
+        frame2.origin = CGPointMake(200,320);
+        frame3.origin = CGPointMake(20,850);
+        frame4.origin = CGPointMake(20,870);
+        frame5.origin = CGPointMake(20,890);
+    } else {
+        frame1.origin = CGPointMake(300,100);
+        frame2.origin = CGPointMake(300,122);
+        frame3.origin = CGPointMake(20,590);
+        frame4.origin = CGPointMake(20,612);
+        frame5.origin = CGPointMake(20,634);
+    }
+    
+    message1.point = frame1.origin;
+    message2.point = frame2.origin;
+    message3.point = frame3.origin;
+    message4.point = frame4.origin;
+    message5.point = frame5.origin;
+    message1.frame = frame1;
+    message2.frame = frame2;
+    message3.frame = frame3;
+    message4.frame = frame4;
+    message5.frame = frame5;
+}
+
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
 {
-    if (levelcomplete){
+    if (_levelComplete){
         message3.alpha = 0;
         message4.alpha = 0;
         message5.alpha = 0;
     }
-    return levelcomplete;
+    return _levelComplete;
 }
 
 - (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstruction and:(UIView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolControl and:(BOOL)update
 {
     
-    if (norepeat && update) return;
+    if (_noRepeat && update) return;
     
     BOOL segmentAB = NO;
     BOOL circleAB = NO;
@@ -111,7 +143,7 @@
             [object class] == [DHIntersectionPointLineLine class]) {
             intersection = YES;
             DHPoint* p = object;
-            _point = [[DHPoint alloc]initWithPositionX:p.position.x andY:p.position.y];
+            _point = [[DHPoint alloc] initWithPositionX:p.position.x andY:p.position.y];
         }
         if (EqualLines(lAB,object)) lineAB = YES;
         if (_pointA.position.x != 310){
@@ -352,7 +384,7 @@
     }
     
     else if (step12 && moved) {
-        norepeat = YES;
+        _noRepeat = YES;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
@@ -383,7 +415,7 @@
                             [message5 text:@"Construct a new object with any of the 5 available tools to complete the tutorial."];
                             message5.alpha = 1;
                         }
-                        completion:^(BOOL finished){step12 = NO; levelcomplete=YES;}];
+                        completion:^(BOOL finished){step12 = NO; _levelComplete=YES;}];
                    }];
               }];
          }];

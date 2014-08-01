@@ -104,9 +104,14 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
         [self.geometryView centerContent];
         [self.geometryView setNeedsDisplay];
+    }
+    
+    if ([_currentLevel respondsToSelector:@selector(positionMessagesForOrientation:)]) {
+        [(id)_currentLevel positionMessagesForOrientation:orientation];
     }
 }
 
@@ -396,6 +401,10 @@
 {
     _tempGeoCenter = [self.geometryView getCenterInGeoCoordinates];
     [UIView animateWithDuration:0.2 animations:^{self.geometryView.alpha=0;}];
+    
+    if ([_currentLevel respondsToSelector:@selector(positionMessagesForOrientation:)]) {
+        [(id)_currentLevel positionMessagesForOrientation:toInterfaceOrientation];
+    }
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation

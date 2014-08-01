@@ -257,6 +257,7 @@ const CGFloat kClosestTapLimit = 25.0f;
 
         } else {
             _temporaryLine.end.position = touchPoint;
+            _temporaryLine.temporary = YES;
             [self.delegate toolTipDidChange:@"Drag to a point defining the end point of the segment"];
         }
         [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];

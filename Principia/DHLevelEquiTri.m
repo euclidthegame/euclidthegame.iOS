@@ -114,13 +114,7 @@
             [object updatePosition];
         }
     }
-    [geometricObjects removeAllObjects];
-    
-    
 
-    
-    
-    
     return complete;
 }
 

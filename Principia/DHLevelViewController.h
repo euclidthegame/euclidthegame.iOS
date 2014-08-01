@@ -21,6 +21,7 @@
 @property (nonatomic, strong) IBOutlet UIView* levelCompletionMessage;
 @property (nonatomic, strong) IBOutlet UILabel* levelCompletionMessageAdditional;
 @property (nonatomic, strong) IBOutlet UIButton* nextChallengeButton;
+@property (nonatomic, strong) IBOutlet UIButton* detailedInstructions;
 @property (nonatomic, weak) IBOutlet UILabel* toolInstruction;
 @property (nonatomic, weak) IBOutlet UILabel* levelInstruction;
 @property (nonatomic, weak) IBOutlet UILabel* movesLabel;

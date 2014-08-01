@@ -26,12 +26,18 @@
 
 - (NSString*)levelDescription
 {
-    return @"Create a line (segment) that bisects (divides in half) the given angle";
+    return @"Construct an angle bisector of the given angle.";
+}
+
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct an angle bisector of the given angle. \n \nAn angle bisector is a line or a line segment that divides an angle into two equal angles. ");
 }
 
 - (NSString *)additionalCompletionMessage
 {
-    return @"You unlocked a new tool: Constructing a bisector!";
+    return @"Well done ! You unlocked a new tool: Constructing a bisector!";
 }
 
 - (DHToolsAvailable)availableTools

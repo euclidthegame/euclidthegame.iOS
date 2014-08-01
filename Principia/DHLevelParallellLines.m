@@ -26,7 +26,12 @@
 
 - (NSString*)levelDescription
 {
-    return @"Construct a line through point B parallell to the given line through A";
+    return @"Construct a line through point B parallell to the given line.";
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return @"Construct a line through point B parallell to the given line. \n\nParallel lines are lines which do not meet one another in either direction.";
 }
 
 - (NSString *)additionalCompletionMessage

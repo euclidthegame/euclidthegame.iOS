@@ -11,6 +11,7 @@
 
 @interface DHLevelEquiTri() {
     DHLineSegment* _lineAB;
+
 }
 @end
 
@@ -18,13 +19,18 @@
 
 - (NSString*)subTitle
 {
-    return @"Making triangles";
+    return @"Equilateral triangle";
 }
 
 - (NSString*)levelDescription
 {
-    return (@"Create 3 lines forming an equilateral triangle (a triangle whose sides all are of equal length) "
-            @"such that the segment AB is one of its sides");
+    return (@"Construct an equilateral triangle.");
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return(@"Construct an equilateral triangle such that segment AB is one of its sides. \n\n"
+                          @"An equilateral triangle is a triangle whose sides are of equal length.");
 }
 
 - (DHToolsAvailable)availableTools
@@ -35,7 +41,7 @@
 
 - (NSString *)additionalCompletionMessage
 {
-    return @"You unlocked a new tool: Constructing equilateral triangles!";
+    return @"Well done ! You unlocked a new tool: Constructing equilateral triangles!";
 }
 
 - (NSUInteger)minimumNumberOfMoves
@@ -186,20 +192,15 @@
 - (void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(UIView *)geometryView and:(UIView *)view {
     
     
+    
     DHGeometryView* geoView = [[DHGeometryView alloc] initWithFrame:CGRectMake(geometryView.frame.origin.x, geometryView.frame.origin.y, geometryView.frame.size.width, geometryView.frame.size.height)];
-    
-    
-    //[geoView setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     [view addSubview:geoView];
     geoView.hideBorder = YES;
-    //geoView.keepContentCenteredAndZoomedIn = YES;
     geoView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
     geoView.opaque = NO;
     
     NSMutableArray* geometricObjects2 = [[NSMutableArray alloc]init];
-    
-
     
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:480];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:480];
@@ -249,7 +250,7 @@
     [geoView.layer addAnimation:animation2 forKey:@"basic2"];
     
     geoView.transform = CGAffineTransformMakeScale(0.18, 0.18);
-    //[geoView.geoViewTransform setScale:0.5];
+    
     geoView.layer.position = CGPointMake(353, 990);
     [UIView
      animateWithDuration:1.0 delay:3.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
@@ -257,9 +258,6 @@
      }
      completion:^(BOOL finished){
               [geoView removeFromSuperview];}];
-
-    //[geoView setNeedsDisplay];
-
     
     
 }

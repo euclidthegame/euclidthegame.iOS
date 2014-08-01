@@ -29,12 +29,12 @@
 
 - (NSString*)levelDescription
 {
-    return @"Construct a line (segment) perpendicular to the given line.";
+    return @"Construct a line (segment) through A perpendicular to the given line.";
 }
 
 - (NSString*)levelDescriptionExtra
 {
-    return (@"Construct a line (segment) perpendicular to the given line going through point B."
+    return (@"Construct a line (segment) perpendicular to the given line going through point A."
             @"\n \nWhen a straight line standing on a straight line makes the adjacent angles equal to one another, each of the equal angles is right, and the straight line standing on the other is called a perpendicular to that on which it stands.");
 }
 
@@ -69,7 +69,7 @@
     DHLine* l1 = [[DHLine alloc] initWithStart:p1 andEnd:p2];
     
     [geometricObjects addObject:l1];
-    [geometricObjects addObject:p1];
+    //[geometricObjects addObject:p1];
     //[geometricObjects addObject:p2];
     [geometricObjects addObject:p3];
     

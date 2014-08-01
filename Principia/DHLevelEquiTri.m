@@ -29,7 +29,7 @@
 
 - (NSString*)levelDescriptionExtra
 {
-    return(@"**Objective:** Construct an equilateral triangle such that segment AB is one of its sides. \n\n"
+    return(@"Construct an equilateral triangle such that segment AB is one of its sides. \n\n"
                           @"An equilateral triangle is a triangle whose sides are of equal length.");
 }
 

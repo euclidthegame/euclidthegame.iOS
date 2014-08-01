@@ -141,6 +141,7 @@
     if (self.currentGameMode == kDHGameModeTutorial) {
         self.movesLabel.hidden = YES;
         self.progressLabel.hidden = YES;
+        self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
         self.heightToolBar.constant = 0;
         _levelInstruction.text = @"";
@@ -148,8 +149,10 @@
         _undoButton.title = nil;
         _resetButton.title = nil;
         [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
-    }
-    else {
+    } else if (self.currentGameMode == kDHGameModePlayground) {
+        self.levelObjectiveView.hidden = YES;
+        self.heightLevelObjectiveView.constant = 0;    
+    } else {
         self.heightLevelObjectiveView.constant = 60;
         self.heightToolBar.constant = 70;
         self.movesLabel.hidden = NO;

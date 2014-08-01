@@ -29,6 +29,11 @@
     return (@"Construct a new point E on the line segment CD such that CE has the same length as AB");
 }
 
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct a new point E on the line segment CD such that CE has the same length as AB");
+}
+
 - (NSUInteger)minimumNumberOfMoves
 {
     return 1;

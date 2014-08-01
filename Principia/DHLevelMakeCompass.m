@@ -26,7 +26,12 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a circle with radius equal to line segment AB and center C");
+    return (@"Construct a circle with radius equal to line segment AB and center C.");
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct a circle with radius equal to line segment AB and center C.");
 }
 
 - (NSString *)additionalCompletionMessage

@@ -26,8 +26,12 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a line segment with the same length and same direction as the line segment AB "
-            @"but with starting point C");
+    return @"Translate the segment AB to the point C.";
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return @"Translate the segment AB to point C. \n\nIn other words, construct a line segment with the same length and same direction as line segment AB but with starting point C. Note that point C lays on the same line as segment AB.";
 }
 
 - (NSString *)additionalCompletionMessage

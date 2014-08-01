@@ -154,7 +154,6 @@
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
         self.heightToolBar.constant = 0;
-        _levelInstruction.text = @"";
         _redoButton.title = nil;
         _undoButton.title = nil;
         _resetButton.title = nil;
@@ -165,6 +164,7 @@
     } else {
         self.heightLevelObjectiveView.constant = 60;
         self.heightToolBar.constant = 70;
+        self.levelObjectiveView.hidden = NO;
         self.movesLabel.hidden = NO;
         self.progressLabel.hidden = NO;
     }

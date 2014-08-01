@@ -125,6 +125,7 @@
     } else {
         self.progressLabel.hidden = YES;
     }
+
     
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
@@ -132,6 +133,26 @@
     [self setupTools];
     [self showDetailedLevelInstruction:nil];
     [self resetLevel];
+    
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        self.movesLabel.hidden = YES;
+        self.progressLabel.hidden = YES;
+        self.heightLevelObjectiveView.constant = 0;
+        self.heightToolBar.constant = 0;
+        _levelInstruction.text = @"";
+        _redoButton.title = nil;
+        _undoButton.title = nil;
+        _resetButton.title = nil;
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
+    }
+    else {
+        self.heightLevelObjectiveView.constant = 60;
+        self.heightToolBar.constant = 70;
+        self.movesLabel.hidden = NO;
+        self.progressLabel.hidden = NO;
+    }
+
+    
 }
 
 - (void)resetLevel
@@ -174,7 +195,7 @@
     self.levelCompletionMessage.hidden = YES;
     
     self.progressLabel.text = @"Progress: 0%";
-    
+
     [_geometricObjectsForRedo removeAllObjects];
     [_geometricObjectsForUndo removeAllObjects];
     
@@ -192,8 +213,17 @@
 {
     [self addGeometricObjects:@[object]];
 }
-- (void)addGeometricObjects:(NSArray*)objects
+- (void)addGeometricObjects:(NSArray*)objects_
 {
+    NSMutableArray* tempobjects = [[NSMutableArray alloc]initWithArray:objects_];
+    for (id newobject in objects_) {
+        for (id oldobject in _geometricObjects) {
+            if (EqualCircles(oldobject, newobject) || EqualLines(oldobject, newobject) || EqualLineSegments(oldobject, newobject)|| EqualPoints(oldobject, newobject)){
+                [tempobjects removeObject:newobject];
+            }
+        }
+    }
+    NSArray* objects = [[NSArray alloc] initWithArray:tempobjects];
     self.firstMoveMade = YES;
     BOOL countMove = NO;
 
@@ -309,18 +339,22 @@
         CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
         if (!isnan(hintLocation.x)) {
             CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];
-            [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor blackColor]];
+            [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
         }
     }
     
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
+    }
 }
 
 - (void)addTemporaryGeometricObjects:(NSArray *)objects
 {
+    /*
     for (DHGeometricObject* object in objects) {
         object.temporary = YES;
     }
-    
+    */
     [_temporaryGeometricObjects addObjectsFromArray:objects];
 }
 
@@ -354,8 +388,8 @@
                           DHCircleToolAvailable);
     }
 
-    [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolZoomPan"] atIndex:index++ animated:NO];
-    [_tools addObject:[DHZoomPanTool class]];
+    //[_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolZoomPan"] atIndex:index++ animated:NO];
+    //[_tools addObject:[DHZoomPanTool class]];
     
     [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolPoint"] atIndex:index++ animated:NO];
     [_tools addObject:[DHPointTool class]];
@@ -431,11 +465,12 @@
             [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
         }
     }
-    _toolControl.selectedSegmentIndex = 0;
-    _currentTool = [[DHZoomPanTool alloc] init];
+    
+    _toolControl.selectedSegmentIndex = UISegmentedControlNoSegment;
+    _currentTool = nil;
     self.geometryViewController.currentTool = _currentTool;
-    _toolInstruction.text = [_currentTool initialToolTip];
-
+    _toolInstruction.text = nil;
+    
 }
 
 - (void)toolChanged:(id)sender
@@ -458,6 +493,12 @@
             tool.disableWhenOnSameLine = YES;
         }
     }
+    
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:YES];
+    }
+
+    
 }
 
 #pragma mark Geometry tool delegate methods
@@ -471,6 +512,7 @@
 }
 - (DHGeometricTransform*)geoViewTransform
 {
+
     return self.geometryView.geoViewTransform;
 }
 - (void)updateAllPositions
@@ -480,6 +522,11 @@
             [object updatePosition];
         }
     }
+    
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:YES];
+    }
+    
 }
 
 #pragma mark - Undo/Redo
@@ -554,6 +601,7 @@
         DHGeometryViewController * childViewController = (DHGeometryViewController *) [segue destinationViewController];
         self.geometryView = (DHGeometryView*)childViewController.view;
         self.geometryViewController = childViewController;
+     
     }
 }
 
@@ -571,7 +619,8 @@
     if (self.currentGameMode == kDHGameModeTutorial) {
         // Special message for tutorial
         [completionMessageText setString:@"Well done! You are now ready to begin with Level 1."];
-        self.nextChallengeButton.hidden = YES;
+        self.nextChallengeButton.hidden = NO;
+        [self.nextChallengeButton setTitle:@"Go to Level 1." forState:UIControlStateNormal];
     } else {
         // If this is the last level, show special completion message and hide the "Next level" button
         if (self.levelIndex >= self.levelArray.count - 1) {
@@ -603,6 +652,15 @@
 
 - (IBAction)loadNextLevel:(id)sender
 {
+    
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        self.levelIndex = 0;
+        self.currentGameMode = kDHGameModeNormal;
+        id<DHLevel> nextLevel = [[DHLevelEquiTri alloc] init];
+        _currentLevel = nextLevel;
+        [self viewDidLoad];
+    }
+    
     if (self.levelArray) {
         self.levelIndex = self.levelIndex + 1;
         

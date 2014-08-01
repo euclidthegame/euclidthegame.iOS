@@ -13,6 +13,7 @@
 @implementation DHGeometryViewController {
     CGFloat _lastScale;
     CGPoint _lastPoint;
+    BOOL twoFingers;
 }
 
 #pragma mark Life-cycle
@@ -29,17 +30,25 @@
 #pragma mark Manage input
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    for (UITouch* touch in touches) {
-        if ([_currentTool associatedTouch] == 0) {
-            [_currentTool setAssociatedTouch:(intptr_t)touch];
-            [_currentTool touchBegan:touch];
+    NSArray *allTouches = [[event allTouches] allObjects];
+    if ([allTouches count] == 2) {
+        twoFingers = YES;
+        [_currentTool reset];
+    }
+    else {
+        twoFingers = NO;
+        for (UITouch* touch in touches) {
+            if ([_currentTool associatedTouch] == 0) {
+                [_currentTool setAssociatedTouch:(intptr_t)touch];
+                [_currentTool touchBegan:touch];
+            }
         }
     }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if ([_currentTool class] == [DHZoomPanTool class]) {
+    if (twoFingers){
         NSArray *allTouches = [[event allTouches] allObjects];
         if ([allTouches count] == 2) {
             UITouch *touchA = [allTouches objectAtIndex:0];

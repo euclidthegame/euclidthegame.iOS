@@ -240,6 +240,8 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="geometryView" destination="2ux-1M-Bze" id="om1-wG-s4P"/>
+                        <outlet property="heightLevelObjectiveView" destination="UQi-lV-ZOm" id="haK-uK-jQF"/>
+                        <outlet property="heightToolBar" destination="zAV-e7-iiH" id="Gcm-Hc-h0J"/>
                         <outlet property="levelCompletionMessage" destination="tbY-LX-K8w" id="JTx-tJ-JQ1"/>
                         <outlet property="levelCompletionMessageAdditional" destination="lZY-n7-yQ8" id="tND-O7-ZlJ"/>
                         <outlet property="levelInstruction" destination="4Y1-gV-t0q" id="8Pd-2G-VSu"/>

@@ -331,7 +331,7 @@ const CGFloat kClosestTapLimit = 25.0f;
         }
     }
     
-    if(!point && DistanceBetweenPoints(self.startPoint.position, touchPoint) > kClosestTapLimit / geoViewScale ) {
+    if(!point && DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit ) {
         [self reset];
     }
    
@@ -525,7 +525,7 @@ const CGFloat kClosestTapLimit = 25.0f;
         point = FindPointClosestToLine(tempLine, self.startPoint, self.delegate.geometryObjects, 8/geoViewScale);
     }
     
-    if(!point && DistanceBetweenPoints(self.startPoint.position, touchPoint) > kClosestTapLimit / geoViewScale ) {
+    if(!point && DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit) {
         [self reset];
     }
     
@@ -719,7 +719,7 @@ const CGFloat kClosestTapLimit = 25.0f;
         point = FindPointClosestToCircle(tempCircle, self.delegate.geometryObjects, 8/geoViewScale);
     }
     
-    if(!point && DistanceBetweenPoints(self.center.position, touchPoint) > kClosestTapLimit / geoViewScale ) {
+    if(!point && DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit) {
         [self reset];
     }
     

@@ -14,10 +14,12 @@
 
 @property (nonatomic, strong) NSMutableArray* geometricObjects;
 @property (nonatomic, strong) NSMutableArray* temporaryGeometricObjects;
-//@property (nonatomic) CGFloat geometryScale;
-//@property (nonatomic) CGPoint geometryOffset;
 @property (nonatomic) BOOL hideBorder;
 @property (nonatomic, strong) DHGeometricTransform* geoViewTransform;
 @property (nonatomic) BOOL keepContentCenteredAndZoomedIn;
+
+- (CGPoint)getCenterInGeoCoordinates;
+- (void)centerOnGeoCoordinate:(CGPoint)geoCoord;
+- (void)centerContent;
 
 @end

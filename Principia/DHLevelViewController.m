@@ -30,6 +30,8 @@
     UIBarButtonItem* _undoButton;
     UIBarButtonItem* _redoButton;
     UIBarButtonItem* _resetButton;
+    
+    CGPoint _tempGeoCenter;
 }
 
 #pragma mark Life-cycle
@@ -100,6 +102,14 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        [self.geometryView centerContent];
+        [self.geometryView setNeedsDisplay];
+    }
+}
+
 #pragma mark Level related methods
 - (void)setupForLevel
 {
@@ -151,20 +161,17 @@
         [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
     } else if (self.currentGameMode == kDHGameModePlayground) {
         self.levelObjectiveView.hidden = YES;
-        self.heightLevelObjectiveView.constant = 0;    
+        self.heightLevelObjectiveView.constant = 0;
     } else {
         self.heightLevelObjectiveView.constant = 60;
         self.heightToolBar.constant = 70;
         self.movesLabel.hidden = NO;
         self.progressLabel.hidden = NO;
     }
-
-    
 }
 
 - (void)resetLevel
 {
-    
     [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
     [self.geometryView.geoViewTransform setScale:1];
     [self.geometryView.geoViewTransform setRotation:0];
@@ -187,6 +194,9 @@
         } else {
             [_geometricObjects insertObject:object atIndex:0];
         }
+    }
+    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        [self.geometryView centerContent];
     }
     
     self.levelCompleted = NO;
@@ -380,6 +390,19 @@
 - (BOOL)prefersStatusBarHidden
 {
     return YES;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    _tempGeoCenter = [self.geometryView getCenterInGeoCoordinates];
+    [UIView animateWithDuration:0.2 animations:^{self.geometryView.alpha=0;}];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.geometryView centerOnGeoCoordinate:_tempGeoCenter];
+    [self.geometryView setNeedsDisplay];
+    [UIView animateWithDuration:0.3 animations:^{self.geometryView.alpha=1;}];
 }
 
 #pragma mark Toolbar functions

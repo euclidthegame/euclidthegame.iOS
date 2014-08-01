@@ -19,6 +19,7 @@
     self = [super init];
     if (self) {
         _geoTransformScale = 1;
+        _geoTransformOffset = CGPointMake(0, 0);
     }
     return self;
 }

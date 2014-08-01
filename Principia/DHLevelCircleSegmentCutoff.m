@@ -27,9 +27,14 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Given a line, a line segment AB, and a point C. Construct a circle with center C that cuts off a line "
-            @"segment on the given line that has the same length as segment AB.");
+    return (@"Construct a circle with center C that cuts off a line segment on the given line that has the same length as segment AB.");
 }
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Given a line, a line segment AB, and a point C. Construct a circle with center C such that the part of the given line inside the circle has the same length as segment AB.");
+}
+
 
 - (DHToolsAvailable)availableTools
 {

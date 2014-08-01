@@ -25,7 +25,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a regular hexagon given one side AB");
+    return (@"Construct a regular hexagon given one side AB.");
 }
 
 - (DHToolsAvailable)availableTools

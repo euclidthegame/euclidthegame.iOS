@@ -29,7 +29,12 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct an angle at B to the given line equal to the given angle at A");
+    return (@"Construct an angle at B to the given line equal to the given angle.");
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct an angle at B to the given line equal to the given angle at A.");
 }
 
 - (DHToolsAvailable)availableTools

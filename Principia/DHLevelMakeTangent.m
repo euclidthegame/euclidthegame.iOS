@@ -26,9 +26,15 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a line (segment) at B tangent to the circle. "
+    return (@"Construct a line (segment) at B tangent to the circle. ");
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct a line (segment) at B tangent to the circle. \n\n"
             @"A tangent line to a circle is a line that only touches the circle at one point.");
 }
+
 
 - (DHToolsAvailable)availableTools
 {

@@ -28,7 +28,7 @@
 
 - (NSString*)levelDescription
 {
-    return @"Construct a line (segment) on A that is perpendicular to the given line.";
+    return @"Construct a line on A that is perpendicular to the given line.";
 }
 
 - (NSString*)levelDescriptionExtra

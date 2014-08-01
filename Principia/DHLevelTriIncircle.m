@@ -27,7 +27,12 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct the incircle of a triangle. An incircle is a circle fully contained in a triangle "
+    return (@"Construct the incircle of a triangle.");
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct the incircle of a triangle. \n\nAn incircle is a circle fully contained in a triangle "
             @"that is tangent to all three sides.");
 }
 

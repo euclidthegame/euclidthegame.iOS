@@ -26,8 +26,13 @@
 
 - (NSString*)levelDescription
 {
+    return (@"Construct a circle that passes through A and is tangent to the line at B.");
+}
+
+- (NSString*)levelDescriptionExtra
+{
     return (@"Given a point A, a line, and a point B. Construct a circle that passes through A and is "
-            @"tangent to the line at B.");
+            @"tangent to the line at B. \n\nA circle and a line are tangent if they only touch at one point.");
 }
 
 - (DHToolsAvailable)availableTools

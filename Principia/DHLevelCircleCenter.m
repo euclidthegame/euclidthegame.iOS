@@ -26,7 +26,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a point in the center of the given circle");
+    return (@"Construct a point at the center of the given circle.");
 }
 
 - (NSUInteger)minimumNumberOfMoves

@@ -26,7 +26,13 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct two tangents to the given circle from the point A");
+    return (@"Construct two tangents to the given circle from the point A.");
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct two tangents to the given circle from the point A.\n\n"
+            @"A tangent to a circle is a line that only touches the circle at one point.");
 }
 
 - (DHToolsAvailable)availableTools

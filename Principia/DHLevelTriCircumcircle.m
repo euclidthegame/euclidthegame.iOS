@@ -27,7 +27,12 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct the circumcircle of a triangle. A circumcircle is a circle that passes through all three "
+    return (@"Construct the circumcircle of a triangle.");
+}
+
+- (NSString*)levelDescriptionExtra
+{
+    return (@"Construct the circumcircle of a triangle. \n\nA circumcircle is a circle that passes through all three "
             @"points of a triangle.");
 }
 

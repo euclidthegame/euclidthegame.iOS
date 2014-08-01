@@ -440,6 +440,7 @@ const CGFloat kClosestTapLimit = 25.0f;
             [self.delegate toolTipDidChange:@"Release to create line"];
         } else {
             _temporaryLine.end.position = touchPoint;
+            _temporaryLine.temporary = YES;
             [self.delegate toolTipDidChange:@"Drag to a second point that the line will pass through"];
         }
         [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
@@ -633,6 +634,7 @@ const CGFloat kClosestTapLimit = 25.0f;
             [self.delegate toolTipDidChange:@"Release to create circle"];
         } else {
             _temporaryCircle.pointOnRadius.position = touchPoint;
+            _temporaryCircle.temporary = YES;
             [self.delegate toolTipDidChange:@"Drag to a point that the circle will pass through"];
         }
         [self.delegate addTemporaryGeometricObjects:@[_temporaryCircle]];

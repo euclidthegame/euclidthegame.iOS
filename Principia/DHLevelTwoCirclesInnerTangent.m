@@ -33,7 +33,9 @@
 
 - (NSString*)levelDescriptionExtra
 {
-    return (@"Construct an inner tangent between the two circles. An inner tangent is a line that is tangent to both circles that intersects the segment joining two circles' centers.");
+    return (@"Construct an inner tangent between the two circles. \n\n"
+            @"An inner tangent is a line that is tangent to both circles that intersects "
+            @"the segment joining two circles' centers.");
 }
 
 - (DHToolsAvailable)availableTools

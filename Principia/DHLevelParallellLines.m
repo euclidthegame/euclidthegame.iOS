@@ -11,8 +11,8 @@
 #import "DHGeometricObjects.h"
 
 @interface DHLevelParallellLines () {
-    DHPoint* _pointB;
-    DHLine* _lineA;
+    DHPoint* _pointA;
+    DHLine* _givenLine;
 }
 
 @end
@@ -26,12 +26,12 @@
 
 - (NSString*)levelDescription
 {
-    return @"Construct a line through point B parallell to the given line.";
+    return @"Construct a line through point A parallell to the given line.";
 }
 
 - (NSString*)levelDescriptionExtra
 {
-    return @"Construct a line through point B parallell to the given line. \n\nParallel lines are lines which do not meet one another in either direction.";
+    return @"Construct a line through point A parallell to the given line. \n\nParallel lines are lines which do not meet one another in either direction.";
 }
 
 - (NSString *)additionalCompletionMessage
@@ -66,19 +66,19 @@
     l1.end = p2;
     
     [geometricObjects addObject:l1];
-    [geometricObjects addObject:p1];
+    //[geometricObjects addObject:p1];
     //[geometricObjects addObject:p2];
     [geometricObjects addObject:p3];
     
-    _pointB = p3;
-    _lineA = l1;
+    _pointA = p3;
+    _givenLine = l1;
 }
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
     DHParallelLine* l = [[DHParallelLine alloc] init];
-    l.line = _lineA;
-    l.point = _pointB;
+    l.line = _givenLine;
+    l.point = _pointA;
     
     [objects insertObject:l atIndex:0];
 }
@@ -92,11 +92,11 @@
     }
     
     // Move A and B and ensure solution holds
-    CGPoint pointA = _lineA.start.position;
-    CGPoint pointB = _lineA.end.position;
+    CGPoint pointA = _givenLine.start.position;
+    CGPoint pointB = _givenLine.end.position;
     
-    _lineA.start.position = CGPointMake(280, 310);
-    _lineA.end.position = CGPointMake(480, 320);
+    _givenLine.start.position = CGPointMake(280, 310);
+    _givenLine.end.position = CGPointMake(480, 320);
     for (id object in geometricObjects) {
         if ([object respondsToSelector:@selector(updatePosition)]) {
             [object updatePosition];
@@ -105,8 +105,8 @@
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
-    _lineA.start.position = pointA;
-    _lineA.end.position = pointB;
+    _givenLine.start.position = pointA;
+    _givenLine.end.position = pointB;
     for (id object in geometricObjects) {
         if ([object respondsToSelector:@selector(updatePosition)]) {
             [object updatePosition];
@@ -126,16 +126,16 @@
         
         DHLineObject* l = object;
         
-        if (l.tMin < 0 && l.tMax > 1 && LinesPerpendicular(l, _lineA)) {
+        if (l.tMin < 0 && l.tMax > 1 && LinesPerpendicular(l, _givenLine)) {
             perpendicularLineOK = YES;
         }
         
-        CGVector bc = CGVectorNormalize(_lineA.vector);
+        CGVector bc = CGVectorNormalize(_givenLine.vector);
         
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
         if (!(fabs(lDotBC) > 1 - 0.001)) continue;
         
-        CGFloat dist = DistanceFromPointToLine(_pointB, l);
+        CGFloat dist = DistanceFromPointToLine(_pointA, l);
         if (dist < 0.01) {
             self.progress = 100;
             return YES;
@@ -148,12 +148,12 @@
 }
 - (CGPoint)testObjectsForProgressHints:(NSArray *)objects
 {
-    DHPerpendicularLine* perp1 = [[DHPerpendicularLine alloc] initWithLine:_lineA andPoint:_pointB];
-    DHPerpendicularLine* perp2 = [[DHPerpendicularLine alloc] initWithLine:perp1 andPoint:_pointB];
+    DHPerpendicularLine* perp1 = [[DHPerpendicularLine alloc] initWithLine:_givenLine andPoint:_pointA];
+    DHPerpendicularLine* perp2 = [[DHPerpendicularLine alloc] initWithLine:perp1 andPoint:_pointA];
     
     for (id object in objects){
-        if (EqualDirection(object,perp1))  return _pointB.position;
-        if (EqualDirection(object,perp2))  return _pointB.position;
+        if (EqualDirection(object,perp1))  return _pointA.position;
+        if (EqualDirection(object,perp2))  return _pointA.position;
     }
     return CGPointMake(NAN, NAN);
 }

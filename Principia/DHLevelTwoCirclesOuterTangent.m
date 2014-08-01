@@ -35,7 +35,9 @@
 
 - (NSString*)levelDescriptionExtra
 {
-    return (@"Construct an outer tangent of both circles. \n\n  An outer tangent is a line or line segment that is tangent to both circles, but that doesn't intersect the segment joining the two circles' centers.");
+    return (@"Construct an outer tangent of both circles. \n\n"
+            @"An outer tangent is a line or line segment that is tangent to both circles, "
+            @"but that doesn't intersect the segment joining the two circles' centers.");
 }
 
 - (DHToolsAvailable)availableTools

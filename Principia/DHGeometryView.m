@@ -107,11 +107,16 @@
     // Drawing code
     CGContextRef context = UIGraphicsGetCurrentContext();
     
+    for (id<DHGeometricObject> object in self.temporaryGeometricObjects) {
+        if ([[object class] isSubclassOfClass:[DHPoint class]] == NO)
+            [object drawInContext:context withTransform:self.geoViewTransform];
+    }
     for (id<DHGeometricObject> object in self.geometricObjects) {
         [object drawInContext:context withTransform:self.geoViewTransform];
     }
     for (id<DHGeometricObject> object in self.temporaryGeometricObjects) {
-        [object drawInContext:context withTransform:self.geoViewTransform];
+        if ([[object class] isSubclassOfClass:[DHPoint class]])
+            [object drawInContext:context withTransform:self.geoViewTransform];
     }
     
     if (!self.hideBorder) {

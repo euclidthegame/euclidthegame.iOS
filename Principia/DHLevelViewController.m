@@ -663,6 +663,7 @@
             [completionMessageText appendString:@"\n\nEuclid would be proud of you. You completed ALL levels !!!"];
         } else {
             self.nextChallengeButton.hidden = NO;
+            [self.nextChallengeButton setTitle:@"Continue to next level" forState:UIControlStateNormal];
         }
     }
     
@@ -688,23 +689,26 @@
 - (IBAction)loadNextLevel:(id)sender
 {
     
-    if (self.currentGameMode == kDHGameModeTutorial) {
-        self.levelIndex = 0;
-        self.currentGameMode = kDHGameModeNormal;
-        id<DHLevel> nextLevel = [[DHLevelEquiTri alloc] init];
-        _currentLevel = nextLevel;
-        [self viewDidLoad];
-    }
-    
+
     if (self.levelArray) {
         self.levelIndex = self.levelIndex + 1;
-        
         id<DHLevel> nextLevel = [[[[self.levelArray objectAtIndex:self.levelIndex] class] alloc] init];
         if (nextLevel) {
             _currentLevel = nextLevel;
             [self setupForLevel];
         }
     }
+    if (self.currentGameMode == kDHGameModeTutorial) {
+        self.levelIndex = 0;
+        self.currentGameMode = kDHGameModeNormal;
+        id<DHLevel> nextLevel = [[DHLevelEquiTri alloc] init];
+        _currentLevel = nextLevel;
+        NSMutableArray* levels = [[NSMutableArray alloc] init];
+        FillLevelArray(levels);
+        self.levelArray =  levels;
+        [self viewDidLoad];
+    }
+    
 }
 
 - (IBAction)hideCompletionMessage:(id)sender

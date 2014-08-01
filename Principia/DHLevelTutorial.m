@@ -12,10 +12,14 @@
     DHPoint* _pointA;
     DHPoint* _pointB;
     DHPoint* _point;
-    Message* message1; Message* message2; Message* message3; Message* message4; Message* message5; Message* message6;
-    BOOL norepeat; BOOL levelcomplete;
-    BOOL step1; BOOL step2; BOOL step3; BOOL step4; BOOL step5; BOOL step6; BOOL step7; BOOL step8; BOOL step9; BOOL step10;
-    BOOL step11; BOOL step12;
+    Message* message1;
+    Message* message2;
+    Message* message3;
+    Message* message4;
+    Message* message5;
+    Message* message6;
+    BOOL norepeat, levelcomplete;
+    BOOL step1, step2, step3, step4, step5, step6, step7, step8, step9, step10, step11, step12;
 }
 @end
 
@@ -126,7 +130,7 @@
         
         [UIView
          animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             [message1 text:@"The most fundamental objects in this game are points."]; message1.alpha = 1;
+             [message1 text:@"Points are the most fundamental objects in this game."]; message1.alpha = 1;
              [view addSubview:message1];
          }
          completion:^(BOOL finished){
@@ -136,7 +140,7 @@
              [geometryView setNeedsDisplay];
              [UIView
               animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  [message2 text:@"Points are often labeled with capital letters."]; message2.alpha = 1;
+                  [message2 text:@"They are labeled with capital letters."]; message2.alpha = 1;
                   [view addSubview:message2];
               }
               completion:^(BOOL finished){
@@ -146,7 +150,7 @@
                   [geometryView setNeedsDisplay];
                   [UIView
                    animateWithDuration:1.5 delay:1.5 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message3 text:@"Other objects can be constructed from those points using the toolbar below."];
+                       [message3 text:@"Other objects can be constructed from points using the toolbar below."];
                        [view addSubview:message3];
                        message3.alpha = 1;
                        toolControl.alpha = 1;
@@ -156,7 +160,7 @@
                         heightToolControl.constant = 70;
                        [UIView
                         animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                            [message4 text:@"Let's start with constructing a line segment. Tap on the tool, to select it."];
+                            [message4 text:@"Let's start by constructing a line segment. Tap on the tool to select it."];
                             [view addSubview:message4];
                             message4.alpha = 1;
                         }
@@ -188,13 +192,13 @@
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   message6.alpha = 0;
-                  [message3 text: @"We can also use points to construct a circle."];
+                  [message3 text: @"Points can also be used to construct a circle."];
                   message3.alpha = 1;
               }
               completion:^(BOOL finished){
                   [UIView
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message4 text:@"Tap on on the circle tool, to select it."];
+                       [message4 text:@"Tap on the circle tool to select it."];
                        message4.alpha = 1;
                        [toolControl setEnabled:YES forSegmentAtIndex:4];
                    }
@@ -243,14 +247,14 @@
               options: UIViewAnimationOptionAllowAnimatedContent
               animations:^{
                   message6.alpha = 0;
-                  [message3 text:@"Sometimes it is usefull to extend a segment using the line tool."];
+                  [message3 text:@"Sometimes it is useful to extend a segment using the line tool."];
                   message3.alpha = 1;
                   [toolControl setEnabled:NO forSegmentAtIndex:4];
               }
               completion:^(BOOL finished){
                   [UIView
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message4 text: @"Tap on it, to select it."];
+                       [message4 text: @"Tap on it to select it."];
                        [toolControl setEnabled:YES forSegmentAtIndex:3];
                        message4.alpha = 1;
                    }
@@ -285,7 +289,7 @@
               completion:^(BOOL finished){
                   [UIView
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message4 text:@"Tap on the intersect tool, to select it."];
+                       [message4 text:@"Tap on the intersect tool to select it."];
                        [toolControl setEnabled:YES forSegmentAtIndex:1];
                        message4.alpha = 1;
                    }
@@ -359,7 +363,7 @@
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   message6.alpha = 0;
-                  [message3 text: @"These are the 5 primitive tools, you will start with in Level 1."];
+                  [message3 text: @"These are the 5 primitive tools you will start with in Level 1."];
                   message3.alpha = 1;
                   [toolControl setEnabled:YES forSegmentAtIndex:0];
                   [toolControl setEnabled:YES forSegmentAtIndex:1];
@@ -370,13 +374,13 @@
               completion:^(BOOL finished){
                   [UIView
                    animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message4 text:@"To unlock any other tools, you first need to complete some levels!"];
+                       [message4 text:@"To unlock the other tools, you need to complete more levels!"];
                        message4.alpha = 1;
                    }
                    completion:^(BOOL finished){
                        [UIView
                         animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                            [message5 text:@"Construct a new object with one of those 5 tools, to complete the tutorial."];
+                            [message5 text:@"Construct a new object with any of the 5 available tools to complete the tutorial."];
                             message5.alpha = 1;
                         }
                         completion:^(BOOL finished){step12 = NO; levelcomplete=YES;}];

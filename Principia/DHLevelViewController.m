@@ -295,6 +295,9 @@
         
         NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%lu", (unsigned long)self.currentGameMode];
         [DHLevelResults newResult:result forLevel:resultKey];
+        if ([_currentLevel respondsToSelector:@selector(animation:and:and:and:and:)]){
+            [_currentLevel animation:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view];
+        }
         [self showLevelCompleteMessage];
         
         if (self.currentGameMode == kDHGameModeNormal) {
@@ -601,7 +604,6 @@
         DHGeometryViewController * childViewController = (DHGeometryViewController *) [segue destinationViewController];
         self.geometryView = (DHGeometryView*)childViewController.view;
         self.geometryViewController = childViewController;
-     
     }
 }
 
@@ -774,9 +776,9 @@
                              forControlEvents:UIControlEventTouchUpInside];
     
     if (self.firstMoveMade == 0) {
-        [startButton setTitle:@"Begin" forState:UIControlStateNormal];
+        [startButton setTitle:@"Start Game" forState:UIControlStateNormal];
     } else {
-        [startButton setTitle:@"Continue" forState:UIControlStateNormal];
+        [startButton setTitle:@"Resume Game" forState:UIControlStateNormal];
     }
     
     startButton.titleLabel.font = [UIFont boldSystemFontOfSize:17];

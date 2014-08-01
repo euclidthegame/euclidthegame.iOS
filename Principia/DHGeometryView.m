@@ -128,4 +128,76 @@
     }
 }
 
+- (void)centerContent
+{
+    const CGFloat pointMargin = 20.0;
+    
+    // Determine size of contents and scale/translate view to fit and center all items
+    CGFloat minX = CGFLOAT_MAX;
+    CGFloat minY = CGFLOAT_MAX;
+    CGFloat maxX = CGFLOAT_MIN;
+    CGFloat maxY = CGFLOAT_MIN;
+    for (id<DHGeometricObject> object in self.geometricObjects) {
+        if ([[object class] isSubclassOfClass:[DHPoint class]]) {
+            DHPoint* p = object;
+            CGPoint pos = p.position;
+            
+            if (pos.x + pointMargin > maxX) maxX = pos.x + pointMargin;
+            if (pos.y + pointMargin > maxY) maxY = pos.y + pointMargin;
+            if (pos.x - pointMargin < minX) minX = pos.x - pointMargin;
+            if (pos.y - pointMargin < minY) minY = pos.y - pointMargin;
+        }
+        
+        if ([[object class] isSubclassOfClass:[DHLineSegment class]]) {
+            {
+                DHLineSegment* l = object;
+                CGPoint pos = l.start.position;
+                
+                if (pos.x + pointMargin > maxX) maxX = pos.x + pointMargin;
+                if (pos.y + pointMargin > maxY) maxY = pos.y + pointMargin;
+                if (pos.x - pointMargin < minX) minX = pos.x - pointMargin;
+                if (pos.y - pointMargin < minY) minY = pos.y - pointMargin;
+            }
+            {
+                DHLineSegment* l = object;
+                CGPoint pos = l.end.position;
+                
+                if (pos.x + pointMargin > maxX) maxX = pos.x + pointMargin;
+                if (pos.y + pointMargin > maxY) maxY = pos.y + pointMargin;
+                if (pos.x - pointMargin < minX) minX = pos.x - pointMargin;
+                if (pos.y - pointMargin < minY) minY = pos.y - pointMargin;
+            }
+        }
+        
+        if ([[object class] isSubclassOfClass:[DHCircle class]]) {
+            DHCircle* c = object;
+            CGPoint pos = c.center.position;
+            CGFloat radius = c.radius;
+            
+            if (pos.x + radius > maxX) maxX = pos.x + radius;
+            if (pos.y + radius > maxY) maxY = pos.y + radius;
+            if (pos.x - radius < minX) minX = pos.x - radius;
+            if (pos.y - radius < minY) minY = pos.y - radius;
+        }
+    }
+    CGSize geoViewSize = self.frame.size;
+    CGPoint center = CGPointMake((maxX+minX)*0.5, (maxY+minY)*0.5);
+    CGPoint centerView = [self.geoViewTransform geoToView:center];
+    CGPoint offset = CGPointMake(-(centerView.x - geoViewSize.width*0.5), -(centerView.y - geoViewSize.height*0.5));
+    
+    [self.geoViewTransform offsetWithVector:offset];
+}
+
+- (CGPoint)getCenterInGeoCoordinates
+{
+    return [self.geoViewTransform viewToGeo:self.center];
+}
+
+- (void)centerOnGeoCoordinate:(CGPoint)geoCoord
+{
+    CGPoint currentCenter = [self.geoViewTransform viewToGeo:self.center];
+    CGPoint offset = CGPointMake(-(geoCoord.x - currentCenter.x), -(geoCoord.y - currentCenter.y));
+    [self.geoViewTransform offsetWithVector:offset];
+}
+
 @end

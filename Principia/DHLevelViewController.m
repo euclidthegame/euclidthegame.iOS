@@ -60,7 +60,7 @@
     UIBarButtonItem *resetButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset"
                                                                            style:UIBarButtonItemStylePlain
                                                                           target:self
-                                                                          action:@selector(resetLevel)];
+                                                                          action:@selector(askToResetLevel)];
     UIBarButtonItem *undoButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Undo"
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
@@ -639,6 +639,23 @@
 }
 
 #pragma mark Other
+- (void) askToResetLevel
+{
+    NSString* resetMessage = @"Resetting the level will remove all items you have constructed";
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reset level"
+                                                        message:resetMessage
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"Reset", nil];
+    [alertView show];
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        [self resetLevel];
+    }
+}
+
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     NSString * segueName = segue.identifier;

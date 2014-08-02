@@ -9,6 +9,7 @@
 #import "DHGameModeSelectionViewController.h"
 #import "DHLevelViewController.h"
 #import "DHLevelSelectionViewController.h"
+#import "DHLevelSelection2ViewController.h"
 #import "DHLevelPlayground.h"
 #import "DHLevelResults.h"
 #import "DHLevels.h"
@@ -243,6 +244,10 @@
         DHLevelSelectionViewController* vc = [segue destinationViewController];
         vc.currentGameMode = [sender unsignedIntegerValue];
     }
+    if ([segue.identifier isEqualToString:@"ShowLevelSelection2"]) {
+        DHLevelSelection2ViewController* vc = [segue destinationViewController];
+        vc.currentGameMode = [sender unsignedIntegerValue];
+    }
 }
 
 
@@ -332,19 +337,22 @@
 #pragma mark - Select game modes
 - (void)selectGameMode1
 {
-    [self performSegueWithIdentifier:@"ShowLevelSelection" sender:[NSNumber numberWithUnsignedInteger:kDHGameModeNormal]];
+    [self performSegueWithIdentifier:@"ShowLevelSelection2"
+                              sender:[NSNumber numberWithUnsignedInteger:kDHGameModeNormal]];
 }
 - (void)selectGameMode2
 {
-    [self performSegueWithIdentifier:@"ShowLevelSelection" sender:[NSNumber numberWithUnsignedInteger:kDHGameModeNormalMinimumMoves]];
+    [self performSegueWithIdentifier:@"ShowLevelSelection2"
+                              sender:[NSNumber numberWithUnsignedInteger:kDHGameModeNormalMinimumMoves]];
 }
 - (void)selectGameMode3
 {
-    [self performSegueWithIdentifier:@"ShowLevelSelection" sender:[NSNumber numberWithUnsignedInteger:kDHGameModePrimitiveOnly]];
+    [self performSegueWithIdentifier:@"ShowLevelSelection2"
+                              sender:[NSNumber numberWithUnsignedInteger:kDHGameModePrimitiveOnly]];
 }
 - (void)selectGameMode4
 {
-    [self performSegueWithIdentifier:@"ShowLevelSelection"
+    [self performSegueWithIdentifier:@"ShowLevelSelection2"
                               sender:[NSNumber numberWithUnsignedInteger:kDHGameModePrimitiveOnlyMinimumMoves]];
 }
 - (void)loadPlayground

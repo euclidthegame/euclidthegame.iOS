@@ -117,10 +117,7 @@
             [object updatePosition];
         }
     }
-    
-    
-    
-    
+
     return complete;
 }
 

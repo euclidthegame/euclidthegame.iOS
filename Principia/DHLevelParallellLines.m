@@ -184,7 +184,7 @@
     [geometricObjects2 insertObject:l2 atIndex:0];
     
     CGFloat steps = 100;
-    CGPoint dA = PointFromToWithSteps(_pointB.position, p3.position, steps);
+    CGPoint dA = PointFromToWithSteps(_pointA.position, p3.position, steps);
     
     CGPoint oldOffset = geometryView.geoViewTransform.offset;
     CGFloat oldScale = geometryView.geoViewTransform.scale;
@@ -193,13 +193,13 @@
     
     if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
         [geometryView.geoViewTransform setScale:newScale];
-        CGPoint oldPointA = _pointB.position;
-        _pointB.position = p3.position;
+        CGPoint oldPointA = _pointA.position;
+        _pointA.position = p3.position;
         [geometryView centerContent];
         newOffset = geometryView.geoViewTransform.offset;
         [geometryView.geoViewTransform setOffset:oldOffset];
         [geometryView.geoViewTransform setScale:oldScale];
-        _pointB.position = oldPointA;
+        _pointA.position = oldPointA;
     }
     
     CGPoint offset = PointFromToWithSteps(oldOffset, newOffset, 100);
@@ -210,7 +210,7 @@
         [self performBlock:^{
             [geometryView.geoViewTransform offsetWithVector:CGPointMake(offset.x, offset.y)];
             [geometryView.geoViewTransform setScale:geometryView.geoViewTransform.scale *scale];
-            _pointB.position = CGPointMake(_pointB.position.x + dA.x,_pointB.position.y + dA.y);
+            _pointA.position = CGPointMake(_pointA.position.x + dA.x,_pointA.position.y + dA.y);
             
             for (id object in geometryView.geometricObjects) {
                 if ([object respondsToSelector:@selector(updatePosition)]) {

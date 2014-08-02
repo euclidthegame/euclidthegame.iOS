@@ -269,6 +269,7 @@
                             <constraint firstAttribute="trailing" secondItem="99O-ka-blD" secondAttribute="trailing" constant="20" id="MO5-hx-Q9r"/>
                             <constraint firstItem="49a-Bm-Jzm" firstAttribute="top" secondItem="Cqv-aF-aQU" secondAttribute="top" id="OLA-3h-LXM"/>
                             <constraint firstItem="2ux-1M-Bze" firstAttribute="top" secondItem="V5X-Pj-3WK" secondAttribute="bottom" id="S3t-Hj-uC3"/>
+                            <constraint firstItem="V5X-Pj-3WK" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="XAp-SH-Hfz"/>
                             <constraint firstItem="99O-ka-blD" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="XdF-SP-ybo"/>
                             <constraint firstAttribute="centerX" secondItem="99O-ka-blD" secondAttribute="centerX" id="ZUD-3a-qdd"/>
                             <constraint firstAttribute="trailing" secondItem="Cqv-aF-aQU" secondAttribute="trailing" constant="6" id="bf9-z4-fxM"/>
@@ -276,7 +277,6 @@
                             <constraint firstItem="2ux-1M-Bze" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="gTS-LQ-CPQ"/>
                             <constraint firstItem="bks-Fo-Osy" firstAttribute="centerX" secondItem="99O-ka-blD" secondAttribute="centerX" id="gfB-fb-zle"/>
                             <constraint firstItem="Cqv-aF-aQU" firstAttribute="top" secondItem="V5X-Pj-3WK" secondAttribute="bottom" constant="5" id="h5s-5G-Avu"/>
-                            <constraint firstItem="V5X-Pj-3WK" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="uo5-ZA-YqW"/>
                             <constraint firstAttribute="trailing" secondItem="V5X-Pj-3WK" secondAttribute="trailing" id="xy0-lc-evq"/>
                             <constraint firstAttribute="bottom" secondItem="bks-Fo-Osy" secondAttribute="bottom" constant="70" id="zAV-e7-iiH"/>
                         </constraints>
@@ -889,6 +889,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="OPu-el-66R">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

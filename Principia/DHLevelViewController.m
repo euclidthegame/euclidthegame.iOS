@@ -39,7 +39,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    
+    // NOTE: This is necessary due to a bug with custom transitions messing up the top layout guide
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+
     _geometricObjects = [[NSMutableArray alloc] initWithCapacity:200];
     _temporaryGeometricObjects = [[NSMutableArray alloc] initWithCapacity:4];
     self.geometryView.geometricObjects = _geometricObjects;

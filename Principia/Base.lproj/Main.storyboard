@@ -339,54 +339,38 @@
                                     <constraint firstItem="wP4-Rq-5gT" firstAttribute="leading" secondItem="aZC-nT-jUh" secondAttribute="leading" constant="20" id="v84-T1-S9v"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show &quot;Well done&quot;-messages" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T7E-u6-zGE">
-                                <rect key="frame" x="20" y="56" width="223" height="21"/>
+                            <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g3O-gE-3Fo">
+                                <rect key="frame" x="0.0" y="40" width="540" height="310"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VcC-c9-RIf">
-                                <rect key="frame" x="373" y="51" width="51" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </switch>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bcj-59-F5u">
-                                <rect key="frame" x="373" y="98" width="51" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </switch>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show level progress percentage" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zb4-Ri-hjW">
-                                <rect key="frame" x="20" y="103" width="246" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="310" id="5us-Y9-zVi"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="ABg-qO-oij" kind="embed" identifier="EmbedSettings" id="xEb-Z3-PHv"/>
+                                </connections>
+                            </containerView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Zb4-Ri-hjW" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" constant="20" id="20Q-wS-rUB"/>
-                            <constraint firstItem="VcC-c9-RIf" firstAttribute="centerY" secondItem="T7E-u6-zGE" secondAttribute="centerY" id="2BP-uq-8Lj"/>
                             <constraint firstAttribute="trailing" secondItem="SOU-G1-0Xe" secondAttribute="trailing" id="2D1-cd-ySm"/>
                             <constraint firstItem="SOU-G1-0Xe" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" id="3mp-Na-yXX"/>
                             <constraint firstAttribute="trailing" secondItem="aZC-nT-jUh" secondAttribute="trailing" constant="20" id="AbB-FW-XQf"/>
-                            <constraint firstItem="Zb4-Ri-hjW" firstAttribute="centerY" secondItem="bcj-59-F5u" secondAttribute="centerY" id="DsQ-mv-g6K"/>
-                            <constraint firstItem="Zb4-Ri-hjW" firstAttribute="top" secondItem="T7E-u6-zGE" secondAttribute="bottom" constant="26" id="FVx-j4-FlQ"/>
-                            <constraint firstAttribute="trailing" secondItem="VcC-c9-RIf" secondAttribute="trailing" constant="118" id="RD4-3T-GgO"/>
                             <constraint firstItem="KjS-fg-e6e" firstAttribute="top" secondItem="aZC-nT-jUh" secondAttribute="bottom" constant="20" id="RLd-UO-Ise"/>
                             <constraint firstItem="aZC-nT-jUh" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" constant="20" id="a3L-Bi-WGG"/>
                             <constraint firstItem="gRG-0Z-er9" firstAttribute="top" secondItem="kzw-TJ-W3W" secondAttribute="bottom" constant="6" id="dGu-t8-cHX"/>
-                            <constraint firstItem="T7E-u6-zGE" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" constant="20" id="etX-Wk-JGk"/>
                             <constraint firstAttribute="centerX" secondItem="VMu-TK-ICU" secondAttribute="centerX" id="f6S-ek-4T5"/>
+                            <constraint firstItem="g3O-gE-3Fo" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" id="gBg-5f-aZp"/>
                             <constraint firstItem="VMu-TK-ICU" firstAttribute="top" secondItem="kzw-TJ-W3W" secondAttribute="bottom" constant="10" id="k1x-fN-ayd"/>
+                            <constraint firstItem="g3O-gE-3Fo" firstAttribute="top" secondItem="SOU-G1-0Xe" secondAttribute="bottom" id="m5C-mI-QXG"/>
                             <constraint firstItem="gRG-0Z-er9" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" constant="12" id="myc-b8-VLj"/>
-                            <constraint firstItem="VcC-c9-RIf" firstAttribute="trailing" secondItem="bcj-59-F5u" secondAttribute="trailing" id="pMN-J2-hWP"/>
                             <constraint firstItem="SOU-G1-0Xe" firstAttribute="top" secondItem="VMu-TK-ICU" secondAttribute="bottom" constant="8" id="qSZ-lL-51d"/>
-                            <constraint firstItem="T7E-u6-zGE" firstAttribute="top" secondItem="SOU-G1-0Xe" secondAttribute="bottom" constant="16" id="rrB-lE-kyo"/>
+                            <constraint firstAttribute="trailing" secondItem="g3O-gE-3Fo" secondAttribute="trailing" id="vjF-BB-aLj"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="1aF-hG-qzg"/>
                     <connections>
                         <outlet property="developerSettingsView" destination="aZC-nT-jUh" id="diz-DB-e21"/>
-                        <outlet property="showProgressPercentageSwitch" destination="bcj-59-F5u" id="pSz-tg-V9A"/>
-                        <outlet property="showWellDoneMessagesSwitch" destination="VcC-c9-RIf" id="otI-Pu-08j"/>
                         <outlet property="unlockAllLevelsSwitch" destination="wIw-SM-Ffa" id="KU8-fU-i5e"/>
                     </connections>
                 </viewController>
@@ -394,6 +378,101 @@
                 <exit id="ldx-oE-598" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-84" y="-1369"/>
+        </scene>
+        <!--Settings Table View Controller-->
+        <scene sceneID="kvn-6e-Vst">
+            <objects>
+                <tableViewController id="ABg-qO-oij" customClass="DHSettingsTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="x8w-NY-l2k">
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="300"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection id="ikP-IG-0AE">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="ZnV-iq-wux">
+                                        <rect key="frame" x="0.0" y="35" width="540" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZnV-iq-wux" id="kkX-1W-DLp">
+                                            <rect key="frame" x="0.0" y="0.0" width="540" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show &quot;Well done&quot;-messages" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T7E-u6-zGE">
+                                                    <rect key="frame" x="20" y="11" width="223" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VcC-c9-RIf">
+                                                    <rect key="frame" x="471" y="6" width="51" height="31"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </switch>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="CUK-3O-fx4">
+                                        <rect key="frame" x="0.0" y="79" width="540" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CUK-3O-fx4" id="djl-HL-MLK">
+                                            <rect key="frame" x="0.0" y="0.0" width="540" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show level progress percentage" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zb4-Ri-hjW">
+                                                    <rect key="frame" x="20" y="11" width="246" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bcj-59-F5u">
+                                                    <rect key="frame" x="471" y="6" width="51" height="31"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                </switch>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection id="ehG-TT-iM7">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="B5f-Bk-dWw">
+                                        <rect key="frame" x="0.0" y="143" width="540" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B5f-Bk-dWw" id="MXn-de-MVP">
+                                            <rect key="frame" x="0.0" y="0.0" width="540" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A5s-Yv-bas">
+                                                    <rect key="frame" x="20" y="7" width="165" height="30"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" title="Reset All Progress">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="resetAllProgress:" destination="ABg-qO-oij" eventType="touchUpInside" id="MVx-2H-zxr"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="ABg-qO-oij" id="EZs-28-BUb"/>
+                            <outlet property="delegate" destination="ABg-qO-oij" id="aus-9J-4wZ"/>
+                        </connections>
+                    </tableView>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="540" height="300"/>
+                    <connections>
+                        <outlet property="showProgressPercentageSwitch" destination="bcj-59-F5u" id="oQn-uP-Ywd"/>
+                        <outlet property="showWellDoneMessagesSwitch" destination="VcC-c9-RIf" id="OjS-di-8kO"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6Cd-Hr-Lgq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="600" y="-1209"/>
         </scene>
         <!--Game Mode Selection View Controller - Select a game mode-->
         <scene sceneID="94G-Lf-9cj">

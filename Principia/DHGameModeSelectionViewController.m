@@ -202,11 +202,6 @@
     [self.gameMode4View setTouchActionWithTarget:self andAction:@selector(selectGameMode3)];
     [self.gameMode5View setTouchActionWithTarget:self andAction:@selector(selectGameMode4)];
     [self.gameMode6View setTouchActionWithTarget:self andAction:@selector(loadPlayground)];
-
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset progress"
-                                                                              style:UIBarButtonItemStylePlain
-                                                                             target:self
-                                                                             action:@selector(clearLevelResults)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -378,12 +373,6 @@
 }
 
 #pragma mark - Other
-- (void)clearLevelResults
-{
-    [DHLevelResults clearLevelResults];
-    [[DHGameCenterManager sharedInstance] resetAchievements];
-    [self loadProgressData];
-}
 - (void)loadProgressData
 {
     NSMutableArray* levels = [[NSMutableArray alloc] initWithCapacity:30];
@@ -472,6 +461,7 @@
 
 - (IBAction)closeSettings:(UIStoryboardSegue *)unwindSegue
 {
+    [self loadProgressData];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

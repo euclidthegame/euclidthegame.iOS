@@ -23,13 +23,16 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
     self.unlockAllLevelsSwitch.on = [DHSettings allLevelsUnlocked];
     [self.unlockAllLevelsSwitch addTarget:self action:@selector(unlockLevels:) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    self.view.layer.cornerRadius = 10;
+    self.view.layer.masksToBounds = YES;
+    self.view.superview.backgroundColor = [UIColor clearColor];
 }
 
 - (void)didReceiveMemoryWarning

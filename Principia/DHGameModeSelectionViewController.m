@@ -470,4 +470,9 @@
     [[DHGameCenterManager sharedInstance] showLeaderboard];
 }
 
+- (IBAction)closeSettings:(UIStoryboardSegue *)unwindSegue
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 @end

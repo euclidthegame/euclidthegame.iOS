@@ -278,7 +278,7 @@
                         <viewControllerLayoutGuide type="bottom" id="KjS-fg-e6e"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8gc-Od-lbP">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wIw-SM-Ffa">
@@ -292,6 +292,16 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gRG-0Z-er9">
+                                <rect key="frame" x="12" y="6" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Done">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="ldx-oE-598" kind="unwind" unwindAction="closeSettings:" id="5PT-51-JWq"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -301,6 +311,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hjd-5f-ekO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="ldx-oE-598" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-84" y="-1369"/>
         </scene>
@@ -649,7 +660,7 @@
                     <navigationItem key="navigationItem" title="Select game mode" id="gR4-4v-6e5">
                         <barButtonItem key="leftBarButtonItem" title="Settings" id="Ttz-NP-xIA">
                             <connections>
-                                <segue destination="9bD-XV-a7J" kind="push" id="hqp-5r-CNu"/>
+                                <segue destination="9bD-XV-a7J" kind="modal" modalPresentationStyle="formSheet" id="hqp-5r-CNu"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

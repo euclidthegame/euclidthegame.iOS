@@ -554,6 +554,9 @@
 - (void)toolTipDidChange:(NSString *)currentTip
 {
     _toolInstruction.text = currentTip;
+    if ([_currentTool active]) {
+        _undoButton.enabled = YES;
+    }
 }
 - (DHGeometricTransform*)geoViewTransform
 {
@@ -580,6 +583,9 @@
     if ([_currentTool active]) {
         [_currentTool reset];
         [self.geometryView setNeedsDisplay];
+        if (_geometricObjectsForUndo.count == 0) {
+            _undoButton.enabled = NO;
+        }        
         return;
     }
     
@@ -607,10 +613,10 @@
     }
     [_geometricObjectsForUndo removeObject:objectsToUndo];
     [_geometricObjectsForRedo addObject:objectsToUndo];
-    _redoButton.enabled = true;
+    _redoButton.enabled = YES;
     
     if (_geometricObjectsForUndo.count == 0) {
-        _undoButton.enabled = false;
+        _undoButton.enabled = NO;
     }
     
     BOOL complete = [_currentLevel isLevelComplete:_geometricObjects];

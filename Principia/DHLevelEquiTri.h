@@ -14,5 +14,4 @@
 - (NSString*)levelDescription;
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects;
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;
-
 @end

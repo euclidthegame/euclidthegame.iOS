@@ -18,8 +18,9 @@
     Message* message4;
     Message* message5;
     Message* message6;
-    BOOL norepeat, levelcomplete;
-    BOOL step1, step2, step3, step4, step5, step6, step7, step8, step9, step10, step11, step12;
+    BOOL _noRepeat, _levelComplete;
+    NSUInteger _currentStep;
+    //BOOL step1, step2, step3, step4, step5, step6, step7, step8, step9, step10, step11, step12;
 }
 @end
 
@@ -53,20 +54,18 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (UIInterfaceOrientationIsPortrait(orientation)) {
+        _pointA = [[DHPoint alloc] initWithPositionX:310 andY:450];
+        _pointB = [[DHPoint alloc] initWithPositionX:460 andY:450];
+    } else {
+        _pointA = [[DHPoint alloc] initWithPositionX:430 andY:250];
+        _pointB = [[DHPoint alloc] initWithPositionX:590 andY:250];
+    }
     
-    DHPoint* pA = [[DHPoint alloc] initWithPositionX:310 andY:450];
-    DHPoint* pB = [[DHPoint alloc] initWithPositionX:460 andY:450];
-    DHPoint* pAhidden = [[DHPoint alloc] initWithPositionX:10000 andY:10000];
-    DHPoint* pBhidden = [[DHPoint alloc] initWithPositionX:10000 andY:10000];
-    _pointA = pA;
-    _pointB = pB;
-    
-    norepeat = NO;
-    levelcomplete = NO;
-    step1= YES;
-    
-    [geometricObjects addObject:pAhidden];
-    [geometricObjects addObject:pBhidden];
+    _noRepeat = NO;
+    _levelComplete = NO;
+    _currentStep = 1;
     
     message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,300)];
     message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,320)];
@@ -75,20 +74,54 @@
     message5 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,890)];
 }
 
+- (void)positionMessagesForOrientation:(UIInterfaceOrientation)orientation
+{
+    CGRect frame1 = message1.frame;
+    CGRect frame2 = message2.frame;
+    CGRect frame3 = message3.frame;
+    CGRect frame4 = message4.frame;
+    CGRect frame5 = message5.frame;
+    
+    if (UIInterfaceOrientationIsPortrait(orientation)) {
+        frame1.origin = CGPointMake(200,300);
+        frame2.origin = CGPointMake(200,320);
+        frame3.origin = CGPointMake(20,850);
+        frame4.origin = CGPointMake(20,870);
+        frame5.origin = CGPointMake(20,890);
+    } else {
+        frame1.origin = CGPointMake(300,100);
+        frame2.origin = CGPointMake(300,122);
+        frame3.origin = CGPointMake(20,590);
+        frame4.origin = CGPointMake(20,612);
+        frame5.origin = CGPointMake(20,634);
+    }
+    
+    message1.point = frame1.origin;
+    message2.point = frame2.origin;
+    message3.point = frame3.origin;
+    message4.point = frame4.origin;
+    message5.point = frame5.origin;
+    message1.frame = frame1;
+    message2.frame = frame2;
+    message3.frame = frame3;
+    message4.frame = frame4;
+    message5.frame = frame5;
+}
+
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
 {
-    if (levelcomplete){
+    if (_levelComplete){
         message3.alpha = 0;
         message4.alpha = 0;
         message5.alpha = 0;
     }
-    return levelcomplete;
+    return _levelComplete;
 }
 
 - (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstruction and:(UIView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolControl and:(BOOL)update
 {
     
-    if (norepeat && update) return;
+    if (_noRepeat && update) return;
     
     BOOL segmentAB = NO;
     BOOL circleAB = NO;
@@ -111,7 +144,7 @@
             [object class] == [DHIntersectionPointLineLine class]) {
             intersection = YES;
             DHPoint* p = object;
-            _point = [[DHPoint alloc]initWithPositionX:p.position.x andY:p.position.y];
+            _point = [[DHPoint alloc] initWithPositionX:p.position.x andY:p.position.y];
         }
         if (EqualLines(lAB,object)) lineAB = YES;
         if (_pointA.position.x != 310){
@@ -123,10 +156,11 @@
             _point = _pointB;
         }
     }
-    if (step1) {
+    if (_currentStep == 1) {
         // remove toolbar
         toolControl.alpha = 0;
         toolInstruction.alpha = 0;
+        _currentStep = 2;
         
         [UIView
          animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
@@ -166,10 +200,10 @@
                         }
                         completion:^(BOOL finished){
                             [toolControl setEnabled:YES forSegmentAtIndex:2];
-                            step1 = NO; step2 = YES; }]; }]; }]; }];
+                             }]; }]; }]; }];
     }
-    
-    else if (step2 && toolControl.selectedSegmentIndex == 2 ) {
+    else if (_currentStep == 2 && toolControl.selectedSegmentIndex == 2 ) {
+        _currentStep = 3;
         message1.alpha = 0; message2.alpha = 0;
         [message1 text:@"Try to construct a line segment that connects point A and B."];
         [UIView
@@ -177,9 +211,10 @@
              message3.alpha = 0; message4.alpha = 0; message1.alpha = 1;
              toolInstruction.alpha = 1;
          }
-         completion:^(BOOL finished){step2 = NO; step3 = YES;}];
+         completion:^(BOOL finished){}];
     }
-    else if (step3 && segmentAB) {
+    else if (_currentStep == 3 && segmentAB) {
+        _currentStep = 4;
         message6 = [[Message alloc] initWithMessage:@"Well done!" andPoint:Position(sAB)];
         [geometryView addSubview:message6];
         [UIView
@@ -202,9 +237,10 @@
                        message4.alpha = 1;
                        [toolControl setEnabled:YES forSegmentAtIndex:4];
                    }
-                   completion:^(BOOL finished){ step3 = NO; step4 = YES; }]; }]; }];
+                   completion:^(BOOL finished){ }]; }]; }];
     }
-    else if (step4 && toolControl.selectedSegmentIndex == 4) {
+    else if (_currentStep == 4 && toolControl.selectedSegmentIndex == 4) {
+        _currentStep = 5;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message3.alpha = 0; message4.alpha = 0;
@@ -212,9 +248,10 @@
              [message1 text:@"Try to construct a circle with center A and radius AB."];
              message1.alpha = 1;
          }
-         completion:^(BOOL finished){ step4 = NO; step5 = YES; }];
+         completion:^(BOOL finished){ }];
     }
-    else if (step5 && circleAB) {
+    else if (_currentStep == 5 && circleAB) {
+        _currentStep = 6;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              [message6 text: @"Well done!" position:Position(cAB)];
@@ -227,9 +264,10 @@
                   [message1 text: @"Now, let's make a circle with center B (!) and radius AB."];
                   message1.alpha = 1;
               }
-              completion:^(BOOL finished){ step5= NO; step6 = YES ;}] ;}];
+              completion:^(BOOL finished){}] ;}];
     }
-    else if (step6 && circleBA) {
+    else if (_currentStep == 6 && circleBA) {
+        _currentStep = 7;
         [UIView
          animateWithDuration:1.0
          delay:0.0
@@ -258,9 +296,10 @@
                        [toolControl setEnabled:YES forSegmentAtIndex:3];
                        message4.alpha = 1;
                    }
-                   completion:^(BOOL finished){ step6 = NO; step7 = YES;}];}];}];
+                   completion:^(BOOL finished){}];}];}];
     }
-    else if (step7 && toolControl.selectedSegmentIndex == 3) {
+    else if (_currentStep == 7 && toolControl.selectedSegmentIndex == 3) {
+        _currentStep = 8;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              toolInstruction.alpha = 1;
@@ -268,9 +307,10 @@
              [message1 text:@"Try to construct a line using the points A and B."];
              message1.alpha = 1;
          }
-         completion:^(BOOL finished){step7= NO; step8 = YES;}];
+         completion:^(BOOL finished){}];
     }
-    else if (step8 && lineAB) {
+    else if (_currentStep == 8 && lineAB) {
+        _currentStep = 9;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
@@ -293,9 +333,10 @@
                        [toolControl setEnabled:YES forSegmentAtIndex:1];
                        message4.alpha = 1;
                    }
-                   completion:^(BOOL finished){ step8 = NO; step9 = YES; }];}];}];
+                   completion:^(BOOL finished){ }];}];}];
     }
-    else if (step9 && toolControl.selectedSegmentIndex == 1) {
+    else if (_currentStep == 9 && toolControl.selectedSegmentIndex == 1) {
+        _currentStep = 10;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              toolInstruction.alpha = 1;
@@ -303,9 +344,10 @@
              [message1 text:@"Construct a point at an intersection."];
              message1.alpha = 1;
          }
-         completion:^(BOOL finished){ step9 = NO; step10 = YES;  }];
+         completion:^(BOOL finished){ }];
     }
-    else if (step10 && intersection) {
+    else if (_currentStep == 10 && intersection) {
+        _currentStep = 11;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
@@ -335,12 +377,13 @@
                             message5.alpha = 1;
                             [toolControl setEnabled:YES forSegmentAtIndex:0];
                         }
-                        completion:^(BOOL finished){step10 = NO; step11 = YES; }];
+                        completion:^(BOOL finished){ }];
                    }];
               }];
          }];
     }
-    else if (step11 && toolControl.selectedSegmentIndex == 0 ) {
+    else if (_currentStep == 11 && toolControl.selectedSegmentIndex == 0 ) {
+        _currentStep = 12;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message3.alpha = 0; message4.alpha = 0; message5.alpha = 0;
@@ -348,11 +391,12 @@
              [message1 text:@"Move one of the grey points."];
              message1.alpha = 1;
          }
-         completion:^(BOOL finished){step11 = NO; step12 = YES;}];
+         completion:^(BOOL finished){}];
     }
     
-    else if (step12 && moved) {
-        norepeat = YES;
+    else if (_currentStep == 12 && moved) {
+        _currentStep = 13;
+        _noRepeat = YES;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
@@ -383,7 +427,7 @@
                             [message5 text:@"Construct a new object with any of the 5 available tools to complete the tutorial."];
                             message5.alpha = 1;
                         }
-                        completion:^(BOOL finished){step12 = NO; levelcomplete=YES;}];
+                        completion:^(BOOL finished){ _levelComplete=YES;}];
                    }];
               }];
          }];

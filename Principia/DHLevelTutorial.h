@@ -13,6 +13,8 @@
 - (NSString*)levelDescription;
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects;
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;
+- (void)positionMessagesForOrientation:(UIInterfaceOrientation)orientation;
+
 @end
 
 @interface Message : UILabel

@@ -73,6 +73,21 @@
                     if (pos.y - pointMargin < minY) minY = pos.y - pointMargin;
                 }
             }
+
+            if ([[object class] isSubclassOfClass:[DHLine class]]) {
+                DHLine* l = object;
+                CGPoint pos = l.start.position;
+                CGPoint pos2 = l.end.position;
+                
+                if (pos.x == pos2.x) {
+                    if (pos.x + pointMargin > maxX) maxX = pos.x + pointMargin;
+                    if (pos.x - pointMargin < minX) minX = pos.x - pointMargin;
+                }
+                if (pos.y == pos2.y) {
+                    if (pos.y + pointMargin > maxY) maxY = pos.y + pointMargin;
+                    if (pos.y - pointMargin < minY) minY = pos.y - pointMargin;
+                }
+            }
             
             if ([[object class] isSubclassOfClass:[DHCircle class]]) {
                 DHCircle* c = object;
@@ -107,11 +122,16 @@
     // Drawing code
     CGContextRef context = UIGraphicsGetCurrentContext();
     
+    for (id<DHGeometricObject> object in self.temporaryGeometricObjects) {
+        if ([[object class] isSubclassOfClass:[DHPoint class]] == NO)
+            [object drawInContext:context withTransform:self.geoViewTransform];
+    }
     for (id<DHGeometricObject> object in self.geometricObjects) {
         [object drawInContext:context withTransform:self.geoViewTransform];
     }
     for (id<DHGeometricObject> object in self.temporaryGeometricObjects) {
-        [object drawInContext:context withTransform:self.geoViewTransform];
+        if ([[object class] isSubclassOfClass:[DHPoint class]])
+            [object drawInContext:context withTransform:self.geoViewTransform];
     }
     
     if (!self.hideBorder) {
@@ -130,6 +150,10 @@
 
 - (void)centerContent
 {
+    if (self.geometricObjects.count == 0) {
+        return;
+    }
+    
     const CGFloat pointMargin = 20.0;
     
     // Determine size of contents and scale/translate view to fit and center all items

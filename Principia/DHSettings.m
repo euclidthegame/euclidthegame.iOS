@@ -10,19 +10,51 @@
 
 @implementation DHSettings
 
-+ (BOOL)allLevelsUnlocked
++ (BOOL)getBoolSettingForKey:(NSString*)key withDefault:(BOOL)defaultValue
 {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    BOOL allUnlocked = [userDefaults boolForKey:kSettingKey_AllLevelsUnlocked];
-    return allUnlocked;
+    
+    if (![userDefaults objectForKey:key]) {
+        return defaultValue;
+    }
+    
+    BOOL settingValue = [userDefaults boolForKey:key];
+    return settingValue;
+}
++ (void)setBoolSettingForKey:(NSString*)key toValue:(BOOL)newValue
+{
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setBool:newValue forKey:key];
+    [userDefaults synchronize];
+}
+
++ (BOOL)allLevelsUnlocked
+{
+    return [self getBoolSettingForKey:kSettingKey_AllLevelsUnlocked withDefault:NO];
 }
 
 + (void)setAllLevelsUnlocked:(BOOL)unlocked
 {
-    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setBool:unlocked forKey:kSettingKey_AllLevelsUnlocked];
-    [userDefaults synchronize];
+    [self setBoolSettingForKey:kSettingKey_AllLevelsUnlocked toValue:unlocked];
 }
 
+
++ (BOOL)showWellDoneMessages
+{
+    return [self getBoolSettingForKey:kSettingKey_ShowWellDoneMessages withDefault:YES];
+}
++ (void)setShowWellDoneMessages:(BOOL)value
+{
+    [self setBoolSettingForKey:kSettingKey_ShowWellDoneMessages toValue:value];
+}
+
++ (BOOL)showProgressPercentage
+{
+    return [self getBoolSettingForKey:kSettingKey_ShowProgressPercentage withDefault:YES];
+}
++ (void)setShowProgressPercentage:(BOOL)value
+{
+    [self setBoolSettingForKey:kSettingKey_ShowProgressPercentage toValue:value];
+}
 
 @end

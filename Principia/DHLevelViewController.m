@@ -16,6 +16,7 @@
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
 #import "DHLevels.h"
+#import "DHSettings.h"
 
 @implementation DHLevelViewController {
     NSMutableArray* _geometricObjects;
@@ -60,7 +61,7 @@
     UIBarButtonItem *resetButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset"
                                                                            style:UIBarButtonItemStylePlain
                                                                           target:self
-                                                                          action:@selector(resetLevel)];
+                                                                          action:@selector(askToResetLevel)];
     UIBarButtonItem *undoButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Undo"
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
@@ -104,9 +105,14 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
         [self.geometryView centerContent];
         [self.geometryView setNeedsDisplay];
+    }
+    
+    if ([_currentLevel respondsToSelector:@selector(positionMessagesForOrientation:)]) {
+        [(id)_currentLevel positionMessagesForOrientation:orientation];
     }
 }
 
@@ -139,7 +145,6 @@
     } else {
         self.progressLabel.hidden = YES;
     }
-
     
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
@@ -167,6 +172,10 @@
         self.levelObjectiveView.hidden = NO;
         self.movesLabel.hidden = NO;
         self.progressLabel.hidden = NO;
+    }
+    
+    if ([DHSettings showProgressPercentage] == NO) {
+        self.progressLabel.hidden = YES;
     }
 }
 
@@ -362,7 +371,9 @@
     self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
     
     // If level supports progress hints, check new objects towards them
-    if ([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)]) {
+    if ([DHSettings showWellDoneMessages] &&
+        [_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)])
+    {
         CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
         if (!isnan(hintLocation.x)) {
             CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];
@@ -400,6 +411,10 @@
 {
     _tempGeoCenter = [self.geometryView getCenterInGeoCoordinates];
     [UIView animateWithDuration:0.2 animations:^{self.geometryView.alpha=0;}];
+    
+    if ([_currentLevel respondsToSelector:@selector(positionMessagesForOrientation:)]) {
+        [(id)_currentLevel positionMessagesForOrientation:toInterfaceOrientation];
+    }
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -549,6 +564,9 @@
 - (void)toolTipDidChange:(NSString *)currentTip
 {
     _toolInstruction.text = currentTip;
+    if ([_currentTool active]) {
+        _undoButton.enabled = YES;
+    }
 }
 - (DHGeometricTransform*)geoViewTransform
 {
@@ -575,6 +593,9 @@
     if ([_currentTool active]) {
         [_currentTool reset];
         [self.geometryView setNeedsDisplay];
+        if (_geometricObjectsForUndo.count == 0) {
+            _undoButton.enabled = NO;
+        }        
         return;
     }
     
@@ -602,10 +623,10 @@
     }
     [_geometricObjectsForUndo removeObject:objectsToUndo];
     [_geometricObjectsForRedo addObject:objectsToUndo];
-    _redoButton.enabled = true;
+    _redoButton.enabled = YES;
     
     if (_geometricObjectsForUndo.count == 0) {
-        _undoButton.enabled = false;
+        _undoButton.enabled = NO;
     }
     
     BOOL complete = [_currentLevel isLevelComplete:_geometricObjects];
@@ -634,6 +655,23 @@
 }
 
 #pragma mark Other
+- (void) askToResetLevel
+{
+    NSString* resetMessage = @"Resetting the level will remove all items you have constructed";
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Reset level"
+                                                        message:resetMessage
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"Reset", nil];
+    [alertView show];
+}
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        [self resetLevel];
+    }
+}
+
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     NSString * segueName = segue.identifier;

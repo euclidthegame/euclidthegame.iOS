@@ -257,6 +257,7 @@ const CGFloat kClosestTapLimit = 25.0f;
 
         } else {
             _temporaryLine.end.position = touchPoint;
+            _temporaryLine.temporary = YES;
             [self.delegate toolTipDidChange:@"Drag to a point defining the end point of the segment"];
         }
         [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
@@ -330,7 +331,7 @@ const CGFloat kClosestTapLimit = 25.0f;
         }
     }
     
-    if(!point && DistanceBetweenPoints(self.startPoint.position, touchPoint) > kClosestTapLimit / geoViewScale ) {
+    if(!point && DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit ) {
         [self reset];
     }
    
@@ -439,6 +440,7 @@ const CGFloat kClosestTapLimit = 25.0f;
             [self.delegate toolTipDidChange:@"Release to create line"];
         } else {
             _temporaryLine.end.position = touchPoint;
+            _temporaryLine.temporary = YES;
             [self.delegate toolTipDidChange:@"Drag to a second point that the line will pass through"];
         }
         [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
@@ -523,7 +525,7 @@ const CGFloat kClosestTapLimit = 25.0f;
         point = FindPointClosestToLine(tempLine, self.startPoint, self.delegate.geometryObjects, 8/geoViewScale);
     }
     
-    if(!point && DistanceBetweenPoints(self.startPoint.position, touchPoint) > kClosestTapLimit / geoViewScale ) {
+    if(!point && DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit) {
         [self reset];
     }
     
@@ -632,6 +634,7 @@ const CGFloat kClosestTapLimit = 25.0f;
             [self.delegate toolTipDidChange:@"Release to create circle"];
         } else {
             _temporaryCircle.pointOnRadius.position = touchPoint;
+            _temporaryCircle.temporary = YES;
             [self.delegate toolTipDidChange:@"Drag to a point that the circle will pass through"];
         }
         [self.delegate addTemporaryGeometricObjects:@[_temporaryCircle]];
@@ -716,7 +719,7 @@ const CGFloat kClosestTapLimit = 25.0f;
         point = FindPointClosestToCircle(tempCircle, self.delegate.geometryObjects, 8/geoViewScale);
     }
     
-    if(!point && DistanceBetweenPoints(self.center.position, touchPoint) > kClosestTapLimit / geoViewScale ) {
+    if(!point && DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit) {
         [self reset];
     }
     

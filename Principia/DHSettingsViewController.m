@@ -8,6 +8,8 @@
 
 #import "DHSettingsViewController.h"
 #import "DHSettings.h"
+#import "DHLevelResults.h"
+#import "DHGameCenterManager.h"
 
 @implementation DHSettingsViewController
 
@@ -23,13 +25,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    self.unlockAllLevelsSwitch.on = [DHSettings allLevelsUnlocked];
-    [self.unlockAllLevelsSwitch addTarget:self action:@selector(unlockLevels:) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    self.view.layer.cornerRadius = 10;
+    self.view.layer.masksToBounds = YES;
+    self.view.superview.backgroundColor = [UIColor clearColor];
 }
 
 - (void)didReceiveMemoryWarning
@@ -44,10 +46,6 @@
     return YES;
 }
 
-#pragma mark Other
-- (void)unlockLevels:(UISwitch*)sender
-{
-    [DHSettings setAllLevelsUnlocked:sender.isOn];
-}
+
 
 @end

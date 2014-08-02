@@ -40,5 +40,6 @@
 
 
 - (IBAction)showLeaderboards:(id)sender;
+- (IBAction)closeSettings:(UIStoryboardSegue *)unwindSegue;
 
 @end

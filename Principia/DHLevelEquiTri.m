@@ -114,10 +114,7 @@
             [object updatePosition];
         }
     }
-    [geometricObjects removeAllObjects];
     
-    
-
     
     
     
@@ -140,7 +137,7 @@
     DHLineSegment* sAD = [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:pD];
     DHLineSegment* sBC = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pC];
     DHLineSegment* sBD = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pD];
-
+    
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
         if ([object class] == [DHPoint class]) continue;
@@ -184,82 +181,130 @@
         if (LineObjectCoversSegment(object,sAD)) return  MidPointFromPoints(sAD.start.position,sAD.end.position);
         if (LineObjectCoversSegment(object,sBD)) return  MidPointFromPoints(sBD.start.position,sBD.end.position);
         if (LineObjectCoversSegment(object,sBC)) return  MidPointFromPoints(sBC.start.position,sBC.end.position);
-    
+        
     }
     return CGPointMake(NAN, NAN);
 }
 
-- (void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(UIView *)geometryView and:(UIView *)view {
+- (void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view {
+    
+    CGPoint offset = CGPointMake (geometryView.geoViewTransform.offset.x /100,geometryView.geoViewTransform.offset.y /100);
+    CGFloat scale =  pow(geometryView.geoViewTransform.scale,-0.01) ;
+    CGPoint oldOffset = geometryView.geoViewTransform.offset;
+    CGFloat oldScale = geometryView.geoViewTransform.scale;
+    CGFloat newScale = 1;
+    CGPoint newOffset = CGPointMake(0,0);
+    
+    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        oldOffset = geometryView.geoViewTransform.offset;
+        oldScale = geometryView.geoViewTransform.scale;
+        [geometryView.geoViewTransform setScale:newScale];
+        [geometryView centerContent];
+        newOffset = geometryView.geoViewTransform.offset;
+        [geometryView.geoViewTransform setOffset:oldOffset];
+        [geometryView.geoViewTransform setScale:oldScale];
+        offset = CGPointMake ((-newOffset.x + oldOffset.x) /100, (-newOffset.y+ oldOffset.y )/100);
+        scale =  pow((oldScale/newScale),-0.01) ;
+    }
+    for (int a=0; a<100; a++) {
+        [self performBlock:^{
+            [geometryView.geoViewTransform offsetWithVector:CGPointMake(-offset.x, -offset.y)];
+            [geometryView.geoViewTransform setScale:geometryView.geoViewTransform.scale *scale];
+            
+            [geometryView setNeedsDisplay];
+        } afterDelay:a*0.01];
+    }
     
     
-    
-    DHGeometryView* geoView = [[DHGeometryView alloc] initWithFrame:CGRectMake(geometryView.frame.origin.x, geometryView.frame.origin.y, geometryView.frame.size.width, geometryView.frame.size.height)];
-    
-    [view addSubview:geoView];
-    geoView.hideBorder = YES;
-    geoView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
-    geoView.opaque = NO;
-    
-    NSMutableArray* geometricObjects2 = [[NSMutableArray alloc]init];
-    
-    DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:480];
-    DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:480];
-    DHLineSegment* l1 = [[DHLineSegment alloc] init];
-    l1.start = p1;
-    l1.end = p2;
-    
-    [geometricObjects2 addObject:l1];
-    [geometricObjects2 addObject:p1];
-    [geometricObjects2 addObject:p2];
-    
-    _lineAB = l1;
-    
-    DHCircle* c1 = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
-    DHCircle* c2 = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
-    DHIntersectionPointCircleCircle* ip = [[DHIntersectionPointCircleCircle alloc] init];
-    ip.c1 = c1;
-    ip.c2 = c2;
-    ip.onPositiveY = YES;
-    [geometricObjects2 addObject:ip];
-    
-    DHLineSegment* sAC = [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:ip];
-    [geometricObjects2 insertObject:sAC atIndex:0];
-    
-    DHLineSegment* sBC = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:ip];
-    [geometricObjects2 insertObject:sBC atIndex:0];
-    geoView.geometricObjects = geometricObjects2;
-    
-    
-    [geoView setNeedsDisplay];
-    
-    
-    CABasicAnimation *animation = [CABasicAnimation animation];
-    animation.keyPath = @"position";
-    animation.fromValue = [NSValue valueWithCGPoint:CGPointMake(geoView.layer.position.x, geoView.layer.position.y)];
-    animation.toValue = [NSValue valueWithCGPoint:CGPointMake(353, 990)];
-    animation.duration = 3;
-    
-    CABasicAnimation *animation2 = [CABasicAnimation animation];
-    animation2.keyPath = @"transform.scale";
-    animation2.fromValue = [NSNumber numberWithFloat:0.8f];
-    animation2.toValue = [NSNumber numberWithFloat:0.18f];
-    animation2.duration = 3;
-    [animation2 setRemovedOnCompletion:NO];
-    
-    [geoView.layer addAnimation:animation forKey:@"basic1"];
-    [geoView.layer addAnimation:animation2 forKey:@"basic2"];
-    
-    geoView.transform = CGAffineTransformMakeScale(0.18, 0.18);
-    
-    geoView.layer.position = CGPointMake(353, 990);
-    [UIView
-     animateWithDuration:1.0 delay:3.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-         [toolControl setEnabled:YES forSegmentAtIndex:5];
-     }
-     completion:^(BOOL finished){
-              [geoView removeFromSuperview];}];
-    
+    [self performBlock:^{
+        LogF(geometryView.geoViewTransform.scale);
+        
+        DHGeometryView* geoView = [[DHGeometryView alloc] initWithFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, view.frame.size.height)];
+        [view addSubview:geoView];
+        geoView.hideBorder = YES;
+        geoView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
+        geoView.opaque = NO;
+        
+        DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:400 ];
+        DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:400 ];
+        DHLineSegment* l1 = [[DHLineSegment alloc] init];
+        l1.start = p1;
+        l1.end = p2;
+        _lineAB = l1;
+        DHCircle* c1 = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
+        DHCircle* c2 = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
+        DHIntersectionPointCircleCircle* ip = [[DHIntersectionPointCircleCircle alloc] init];
+        ip.c1 = c1;
+        ip.c2 = c2;
+        ip.onPositiveY = YES;
+        DHLineSegment* sAC = [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:ip];
+        DHLineSegment* sBC = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:ip];
+        
+        NSMutableArray* geometricObjects2 = [[NSMutableArray alloc]init];
+        [geometricObjects2 addObject:l1];
+        [geometricObjects2 addObject:p1];
+        [geometricObjects2 addObject:p2];
+        [geometricObjects2 addObject:ip];
+        [geometricObjects2 insertObject:sAC atIndex:0];
+        [geometricObjects2 insertObject:sBC atIndex:0];
+        geoView.geometricObjects = geometricObjects2;
+        
+        //adjust points to new coordinates
+        
+        CGPoint relPos = [geoView.superview convertPoint:geoView.frame.origin toView:geometryView];
+        p1.position = CGPointMake(p1.position.x + newOffset.x, p1.position.y - relPos.y + newOffset.y );
+        p2.position = CGPointMake(p2.position.x +newOffset.x  , p2.position.y - relPos.y +newOffset.y );
+        [geoView setNeedsDisplay];
+        
+        //getcoordinates of Equilateral triangle tool
+        UIView* segment5 = [toolControl.subviews objectAtIndex:5];
+        UIView* segment6 = [toolControl.subviews objectAtIndex:6];
+        CGPoint pos5 = [segment5.superview convertPoint:segment5.frame.origin toView:geoView];
+        CGPoint pos6 = [segment6.superview convertPoint:segment6.frame.origin toView:geoView];
+        
+        CGFloat xpos = (pos5.x + pos6.x )/2  ;
+        CGFloat ypos = view.frame.size.height - 21;
+        
+        CABasicAnimation *animation = [CABasicAnimation animation];
+        animation.keyPath = @"position";
+        animation.fromValue = [NSValue valueWithCGPoint:CGPointMake(geoView.layer.position.x, geoView.layer.position.y)];
+        animation.toValue = [NSValue valueWithCGPoint:CGPointMake(xpos, ypos)];
+        animation.duration = 4;
+        
+        CABasicAnimation *animation2 = [CABasicAnimation animation];
+        animation2.keyPath = @"transform.scale";
+        animation2.fromValue = [NSNumber numberWithFloat:1];
+        animation2.toValue = [NSNumber numberWithFloat:0.17f];
+        animation2.duration = 4;
+        
+        [geoView.layer addAnimation:animation forKey:@"basic1"];
+        [geoView.layer addAnimation:animation2 forKey:@"basic2"];
+        
+        geoView.transform = CGAffineTransformMakeScale(0.17, 0.17);
+        geoView.layer.position = CGPointMake(xpos, ypos);
+        
+        [self performBlock:^{
+            CABasicAnimation *animation3 = [CABasicAnimation animation];
+            animation3.keyPath = @"opacity";
+            animation3.fromValue = [NSNumber numberWithFloat:1];
+            animation3.toValue = [NSNumber numberWithFloat:0];
+            animation3.duration = 1;
+            [geoView.layer addAnimation:animation3 forKey:@"basic3"];
+            geoView.alpha = 0;
+            
+        } afterDelay:3.5];
+        [UIView
+         animateWithDuration:1.0 delay:4 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+             [toolControl setEnabled:YES forSegmentAtIndex:5];
+         }
+         completion:^(BOOL finished){
+             [geoView removeFromSuperview];
+         }];
+    } afterDelay:1.0];
     
 }
 
+
 @end
+
+

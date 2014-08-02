@@ -586,6 +586,19 @@ static DHPoint* FindClosestUniqueIntersectionPoint(CGPoint touchPoint, NSArray* 
     return closestPoint;
 }
 
+
+static BOOL Log(CGPoint point){
+    
+    NSLog(@"%f %f",point.x,point.y);
+    return YES;
+}
+
+static BOOL LogF(CGFloat f){
+    
+    NSLog(@"%f",f);
+    return YES;
+}
+
 #pragma clang diagnostic pop
 
 #endif

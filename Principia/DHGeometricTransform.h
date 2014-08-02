@@ -11,6 +11,7 @@
 
 @interface DHGeometricTransform : NSObject
 - (CGFloat)scale;
+- (CGPoint)offset;
 - (void)setScale:(CGFloat)scale;
 - (void)setOffset:(CGPoint)offset;
 - (void)offsetWithVector:(CGPoint)offset;

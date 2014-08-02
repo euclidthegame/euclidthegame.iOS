@@ -29,6 +29,11 @@
     return _geoTransformScale;
 }
 
+- (CGPoint) offset
+{
+    return _geoTransformOffset;
+}
+
 - (void)setOffset:(CGPoint)offset
 {
     _geoTransformOffset = offset;

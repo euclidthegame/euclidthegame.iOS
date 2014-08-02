@@ -14,6 +14,7 @@
 @interface DHLevelBisect () {
     DHRay* _lineAB;
     DHRay* _lineAC;
+    DHPoint* _pointA;
 }
 @end
 
@@ -75,6 +76,7 @@
     //[geometricObjects addObject:p2];
     //[geometricObjects addObject:p3];
     
+    _pointA = p1;
     _lineAB = l1;
     _lineAC = l2;
 }
@@ -197,33 +199,47 @@
     return CGPointMake(NAN, NAN);
 }
 - (void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view {
+   
+    DHPoint* p1 = [[DHPoint alloc] initWithPositionX:300 andY:300];
     
-    CGPoint offset = CGPointMake (geometryView.geoViewTransform.offset.x /100,geometryView.geoViewTransform.offset.y /100);
-    CGFloat scale =  pow(geometryView.geoViewTransform.scale,-0.01) ;
+    CGFloat steps = 100;
+    CGPoint dA = PointFromToWithSteps(_pointA.position, p1.position, steps);
+    
     CGPoint oldOffset = geometryView.geoViewTransform.offset;
     CGFloat oldScale = geometryView.geoViewTransform.scale;
     CGFloat newScale = 1;
     CGPoint newOffset = CGPointMake(0,0);
     
     if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
-        oldOffset = geometryView.geoViewTransform.offset;
-        oldScale = geometryView.geoViewTransform.scale;
         [geometryView.geoViewTransform setScale:newScale];
+        CGPoint oldPointA = _pointA.position;
+        _pointA.position = p1.position;
         [geometryView centerContent];
         newOffset = geometryView.geoViewTransform.offset;
         [geometryView.geoViewTransform setOffset:oldOffset];
         [geometryView.geoViewTransform setScale:oldScale];
-        offset = CGPointMake ((-newOffset.x + oldOffset.x) /100, (-newOffset.y+ oldOffset.y )/100);
-        scale =  pow((oldScale/newScale),-0.01) ;
+        _pointA.position = oldPointA;
     }
     
-    for (int a=0; a<100; a++) {
+    CGPoint offset = PointFromToWithSteps(oldOffset, newOffset, 100);
+    CGFloat scale =  pow((newScale/oldScale),0.01) ;
+    
+    
+    for (int a=0; a<steps; a++) {
         [self performBlock:^{
-            [geometryView.geoViewTransform offsetWithVector:CGPointMake(-offset.x, -offset.y)];
+            [geometryView.geoViewTransform offsetWithVector:CGPointMake(offset.x, offset.y)];
             [geometryView.geoViewTransform setScale:geometryView.geoViewTransform.scale *scale];
+            _pointA.position = CGPointMake(_pointA.position.x + dA.x,_pointA.position.y + dA.y);
+               
+            for (id object in geometryView.geometricObjects) {
+                if ([object respondsToSelector:@selector(updatePosition)]) {
+                    [object updatePosition];
+                }
+            }
             [geometryView setNeedsDisplay];
-        } afterDelay:a*0.01];
+        } afterDelay:a* (1/steps)];
     }
+    
     
     [self performBlock:^{
         DHGeometryView* geoView = [[DHGeometryView alloc] initWithFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, view.frame.size.height)];
@@ -253,7 +269,7 @@
         [geometricObjects2 addObject:l2];
         [geometricObjects2 addObject:p1];
         
-        geoView.geometricObjects = geometricObjects2;
+
         DHCircle* cAC = [[DHCircle alloc] initWithCenter:l2.start andPointOnRadius:l2.end];
         DHIntersectionPointLineCircle* ip = [[DHIntersectionPointLineCircle alloc] init];
         ip.c = cAC;
@@ -261,7 +277,7 @@
         DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:l2.end andPoint2:ip];
         DHLineSegment* rayBisector = [[DHLineSegment alloc] initWithStart:l1.start andEnd:mp];
         [geometricObjects2 insertObject:rayBisector atIndex:0];
-        
+        geoView.geometricObjects = geometricObjects2;
         //adjust points to new coordinates
         [geoView setNeedsDisplay];
         
@@ -283,14 +299,13 @@
         animation.keyPath = @"position";
         animation.fromValue = [NSValue valueWithCGPoint:CGPointMake(geoView.layer.position.x, geoView.layer.position.y)];
         animation.toValue = [NSValue valueWithCGPoint:CGPointMake(xpos, ypos)];
-        
-        animation.duration = 4;
+        animation.duration = 3;
         
         CABasicAnimation *animation2 = [CABasicAnimation animation];
         animation2.keyPath = @"transform.scale";
         animation2.fromValue = [NSNumber numberWithFloat:1];
         animation2.toValue = [NSNumber numberWithFloat:0.17];
-        animation2.duration = 4;
+        animation2.duration = 3;
         
         [geoView.layer addAnimation:animation forKey:@"basic1"];
         [geoView.layer addAnimation:animation2 forKey:@"basic2"];
@@ -307,15 +322,14 @@
             [geoView.layer addAnimation:animation3 forKey:@"basic3"];
             geoView.alpha = 0;
             
-        } afterDelay:3.5];
+        } afterDelay:2.8];
         [UIView
-         animateWithDuration:1.0 delay:4 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+         animateWithDuration:1.0 delay:3 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              [toolControl setEnabled:YES forSegmentAtIndex:7];
          }
          completion:^(BOOL finished){
              [geoView removeFromSuperview];
          }];
     } afterDelay:1.0];
-    
 }
 @end

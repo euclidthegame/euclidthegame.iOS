@@ -318,7 +318,7 @@
             
             [self performBlock:^{
                 [self showLevelCompleteMessage];
-            } afterDelay:6];
+            } afterDelay:4];
         }
         else{
         [self showLevelCompleteMessage];

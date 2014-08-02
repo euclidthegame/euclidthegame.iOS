@@ -10,10 +10,4 @@
 
 @interface DHSettingsViewController : UIViewController
 
-
-
-@property (nonatomic, weak) IBOutlet UISwitch* unlockAllLevelsSwitch;
-@property (nonatomic, weak) IBOutlet UIView* developerSettingsView;
-
-
 @end

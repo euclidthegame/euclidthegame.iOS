@@ -10,6 +10,7 @@
 
 @interface DHSettingsTableViewController : UITableViewController
 
+@property (nonatomic, weak) IBOutlet UISwitch* unlockAllLevelsSwitch;
 @property (nonatomic, weak) IBOutlet UISwitch* showWellDoneMessagesSwitch;
 @property (nonatomic, weak) IBOutlet UISwitch* showProgressPercentageSwitch;
 

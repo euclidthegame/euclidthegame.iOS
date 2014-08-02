@@ -39,6 +39,11 @@ static const NSUInteger kResetProgressAlertView = 1;
     self.showProgressPercentageSwitch.on = [DHSettings showProgressPercentage];
     [self.showProgressPercentageSwitch addTarget:self action:@selector(setShowProgressPercentage:)
                                 forControlEvents:UIControlEventValueChanged];
+    
+    self.unlockAllLevelsSwitch.on = [DHSettings allLevelsUnlocked];
+    [self.unlockAllLevelsSwitch addTarget:self action:@selector(unlockLevels:)
+                         forControlEvents:UIControlEventValueChanged];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -55,6 +60,11 @@ static const NSUInteger kResetProgressAlertView = 1;
 {
     [DHSettings setShowProgressPercentage:sender.isOn];
 }
+- (void)unlockLevels:(UISwitch*)sender
+{
+    [DHSettings setAllLevelsUnlocked:sender.isOn];
+}
+
 
 - (IBAction)resetAllProgress:(id)sender
 {
@@ -75,6 +85,29 @@ static const NSUInteger kResetProgressAlertView = 1;
         [DHLevelResults clearLevelResults];
         [[DHGameCenterManager sharedInstance] resetAchievements];
     }
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+#ifndef DEBUG
+    if(section == 2)
+    {
+        return 0;
+    }
+#endif
+
+    return [super tableView:tableView numberOfRowsInSection:section];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+#ifndef DEBUG
+    if (section == 2) {
+        return nil;
+    }
+#endif
+
+    return [super tableView:tableView titleForHeaderInSection:section];
 }
 
 @end

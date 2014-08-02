@@ -25,12 +25,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-#ifdef DEBUG
-    self.developerSettingsView.hidden = NO;
-#endif
-    
-
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -38,10 +32,6 @@
     self.view.layer.cornerRadius = 10;
     self.view.layer.masksToBounds = YES;
     self.view.superview.backgroundColor = [UIColor clearColor];
-    
-    self.unlockAllLevelsSwitch.on = [DHSettings allLevelsUnlocked];
-    [self.unlockAllLevelsSwitch addTarget:self action:@selector(unlockLevels:)
-                         forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)didReceiveMemoryWarning
@@ -54,12 +44,6 @@
 - (BOOL)prefersStatusBarHidden
 {
     return YES;
-}
-
-#pragma mark Other
-- (void)unlockLevels:(UISwitch*)sender
-{
-    [DHSettings setAllLevelsUnlocked:sender.isOn];
 }
 
 

@@ -19,6 +19,7 @@
 @property (nonatomic) NSUInteger id;
 @property (nonatomic) BOOL highlighted;
 @property (nonatomic) BOOL temporary;
+@property (nonatomic) CGFloat drawScale;
 @end
 
 

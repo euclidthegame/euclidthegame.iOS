@@ -27,6 +27,16 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 
 @implementation DHGeometricObject
 
+- (instancetype) init
+{
+    self = [super init];
+    
+    if (self) {
+        _drawScale = 1.0;
+    }
+    
+    return self;
+}
 
 @end
 
@@ -54,9 +64,11 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 }
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
-    CGFloat pointWidth = 10.0f;
+    CGFloat scale = self.drawScale;
+    CGFloat pointWidth = 10.0 * scale;
     CGPoint position = [transform geoToView:self.position];
-    CGRect rect = CGRectMake(position.x - pointWidth*0.5f, position.y - pointWidth*0.5f, pointWidth, pointWidth);
+    CGRect rect = CGRectMake(position.x - pointWidth*0.5f, position.y - pointWidth*0.5f,
+                             pointWidth, pointWidth);
     
     CGContextSaveGState(context);
     

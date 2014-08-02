@@ -27,6 +27,7 @@
     if (self) {
         // Initialization code
         _geoViewTransform = [[DHGeometricTransform alloc] init];
+        self.backgroundColor = [UIColor whiteColor];
        
     }
     return self;

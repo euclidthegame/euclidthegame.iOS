@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		681C8886198D0BF1005307F5 /* DHSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C8885198D0BF1005307F5 /* DHSettingsTableViewController.m */; };
+		681C8889198D4D02005307F5 /* DHLevelSelection2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C8888198D4D02005307F5 /* DHLevelSelection2ViewController.m */; };
+		681C888C198D4FA2005307F5 /* DHLevelSelection2LevelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C888B198D4FA2005307F5 /* DHLevelSelection2LevelCell.m */; };
 		68376935197C315700D53E21 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9E619587AEC00A97B86 /* XCTest.framework */; };
 		68376936197C315700D53E21 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
 		68376937197C315700D53E21 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
@@ -83,6 +85,10 @@
 /* Begin PBXFileReference section */
 		681C8884198D0BF1005307F5 /* DHSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHSettingsTableViewController.h; sourceTree = "<group>"; };
 		681C8885198D0BF1005307F5 /* DHSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHSettingsTableViewController.m; sourceTree = "<group>"; };
+		681C8887198D4D02005307F5 /* DHLevelSelection2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSelection2ViewController.h; sourceTree = "<group>"; };
+		681C8888198D4D02005307F5 /* DHLevelSelection2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSelection2ViewController.m; sourceTree = "<group>"; };
+		681C888A198D4FA2005307F5 /* DHLevelSelection2LevelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSelection2LevelCell.h; sourceTree = "<group>"; };
+		681C888B198D4FA2005307F5 /* DHLevelSelection2LevelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSelection2LevelCell.m; sourceTree = "<group>"; };
 		68376934197C315600D53E21 /* Euclid Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Euclid Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6837693A197C315700D53E21 /* Euclid Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Euclid Tests-Info.plist"; sourceTree = "<group>"; };
 		6837693C197C315700D53E21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -418,6 +424,10 @@
 				6866223F1972A7AB004DCFAC /* DHGameModeSelectionViewController.m */,
 				68F0AA13195A92A700A97B86 /* DHLevelSelectionViewController.h */,
 				68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */,
+				681C8887198D4D02005307F5 /* DHLevelSelection2ViewController.h */,
+				681C8888198D4D02005307F5 /* DHLevelSelection2ViewController.m */,
+				681C888A198D4FA2005307F5 /* DHLevelSelection2LevelCell.h */,
+				681C888B198D4FA2005307F5 /* DHLevelSelection2LevelCell.m */,
 				68F0AA23195CBCA200A97B86 /* DHLevelViewController.h */,
 				68F0AA24195CBCA200A97B86 /* DHLevelViewController.m */,
 				68F0A9DC19587AEC00A97B86 /* DHGeometryViewController.h */,
@@ -572,8 +582,10 @@
 				6872A7D8196FE25300823AF9 /* DHLevelHexagon.m in Sources */,
 				684708B21968112200C1FA83 /* DHLevelLineCopy.m in Sources */,
 				68F0A9D419587AEC00A97B86 /* main.m in Sources */,
+				681C888C198D4FA2005307F5 /* DHLevelSelection2LevelCell.m in Sources */,
 				686622431972B78E004DCFAC /* DHLevelPlayground.m in Sources */,
 				68F0AA481964889C00A97B86 /* DHGeometricObjectLabeler.m in Sources */,
+				681C8889198D4D02005307F5 /* DHLevelSelection2ViewController.m in Sources */,
 				6837694B197F64BD00D53E21 /* DHMathFuzzyComparisons.m in Sources */,
 				683D9685196D2A390057B62D /* DHLevelTriCircumcircle.m in Sources */,
 				68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */,

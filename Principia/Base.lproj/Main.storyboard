@@ -302,8 +302,30 @@
                                     <segue destination="ldx-oE-598" kind="unwind" unwindAction="closeSettings:" id="5PT-51-JWq"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VMu-TK-ICU">
+                                <rect key="frame" x="239" y="10" width="63" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SOU-G1-0Xe" userLabel="Line">
+                                <rect key="frame" x="0.0" y="39" width="540" height="1"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="vQd-tZ-5nl"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="SOU-G1-0Xe" secondAttribute="trailing" id="2D1-cd-ySm"/>
+                            <constraint firstItem="SOU-G1-0Xe" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" id="3mp-Na-yXX"/>
+                            <constraint firstAttribute="centerX" secondItem="VMu-TK-ICU" secondAttribute="centerX" id="f6S-ek-4T5"/>
+                            <constraint firstItem="VMu-TK-ICU" firstAttribute="top" secondItem="kzw-TJ-W3W" secondAttribute="bottom" constant="10" id="k1x-fN-ayd"/>
+                            <constraint firstItem="SOU-G1-0Xe" firstAttribute="top" secondItem="VMu-TK-ICU" secondAttribute="bottom" constant="8" id="qSZ-lL-51d"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="1aF-hG-qzg"/>
                     <connections>

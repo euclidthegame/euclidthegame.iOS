@@ -24,6 +24,10 @@
 {
     [super viewDidLoad];
     
+#ifdef DEBUG
+    self.developerSettingsView.hidden = NO;
+#endif
+    
     self.unlockAllLevelsSwitch.on = [DHSettings allLevelsUnlocked];
     [self.unlockAllLevelsSwitch addTarget:self action:@selector(unlockLevels:) forControlEvents:UIControlEventValueChanged];
 }

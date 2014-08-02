@@ -29,7 +29,16 @@
 #endif
     
     self.unlockAllLevelsSwitch.on = [DHSettings allLevelsUnlocked];
-    [self.unlockAllLevelsSwitch addTarget:self action:@selector(unlockLevels:) forControlEvents:UIControlEventValueChanged];
+    [self.unlockAllLevelsSwitch addTarget:self action:@selector(unlockLevels:)
+                         forControlEvents:UIControlEventValueChanged];
+
+    self.showWellDoneMessagesSwitch.on = [DHSettings showWellDoneMessages];
+    [self.showWellDoneMessagesSwitch addTarget:self action:@selector(setShowWellDoneMessages:)
+                              forControlEvents:UIControlEventValueChanged];
+
+    self.showProgressPercentageSwitch.on = [DHSettings showProgressPercentage];
+    [self.showProgressPercentageSwitch addTarget:self action:@selector(setShowProgressPercentage:)
+                                forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -56,5 +65,14 @@
 {
     [DHSettings setAllLevelsUnlocked:sender.isOn];
 }
+- (void)setShowWellDoneMessages:(UISwitch*)sender
+{
+    [DHSettings setShowWellDoneMessages:sender.isOn];
+}
+- (void)setShowProgressPercentage:(UISwitch*)sender
+{
+    [DHSettings setShowProgressPercentage:sender.isOn];
+}
+
 
 @end

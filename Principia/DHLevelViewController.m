@@ -16,6 +16,7 @@
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
 #import "DHLevels.h"
+#import "DHSettings.h"
 
 @implementation DHLevelViewController {
     NSMutableArray* _geometricObjects;
@@ -144,7 +145,6 @@
     } else {
         self.progressLabel.hidden = YES;
     }
-
     
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
@@ -172,6 +172,10 @@
         self.levelObjectiveView.hidden = NO;
         self.movesLabel.hidden = NO;
         self.progressLabel.hidden = NO;
+    }
+    
+    if ([DHSettings showProgressPercentage] == NO) {
+        self.progressLabel.hidden = YES;
     }
 }
 
@@ -363,7 +367,9 @@
     self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
     
     // If level supports progress hints, check new objects towards them
-    if ([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)]) {
+    if ([DHSettings showWellDoneMessages] &&
+        [_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)])
+    {
         CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
         if (!isnan(hintLocation.x)) {
             CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];

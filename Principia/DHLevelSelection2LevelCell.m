@@ -163,7 +163,7 @@
         
     } else {
         self.userInteractionEnabled = NO;
-        _titleLabel.textColor = [UIColor lightGrayColor];
+        _titleLabel.textColor = [UIColor colorWithRed:0.85 green:0.85 blue:0.85 alpha:1];
         _geometryView.alpha = 0.3;
 
         self.layer.shadowColor = [UIColor blackColor].CGColor;

@@ -17,6 +17,13 @@
 #import "DHGameCenterManager.h"
 #import "DHLevels.h"
 #import "DHSettings.h"
+#import "DHTransitionFromLevel.h"
+#import "DHLevelSelection2ViewController.h"
+
+@interface DHLevelViewController () <UINavigationControllerDelegate>
+
+@end
+
 
 @implementation DHLevelViewController {
     NSMutableArray* _geometricObjects;
@@ -116,6 +123,17 @@
     
     if ([_currentLevel respondsToSelector:@selector(positionMessagesForOrientation:)]) {
         [(id)_currentLevel positionMessagesForOrientation:orientation];
+    }
+    
+    self.navigationController.delegate = self;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    // Stop being the navigation controller's delegate
+    if (self.navigationController.delegate == self) {
+        self.navigationController.delegate = nil;
     }
 }
 
@@ -1134,6 +1152,19 @@
 
     [_levelInfoView removeFromSuperview];
     _levelInfoView = nil;
+}
+
+#pragma mark Transition delegate methods
+- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                                  animationControllerForOperation:(UINavigationControllerOperation)operation
+                                               fromViewController:(UIViewController *)fromVC
+                                                 toViewController:(UIViewController *)toVC {
+    if (fromVC == self && [toVC isKindOfClass:[DHLevelSelection2ViewController class]]) {
+        return [[DHTransitionFromLevel alloc] init];
+    }
+    else {
+        return nil;
+    }
 }
 
 @end

@@ -138,6 +138,9 @@
 - (void)setLevel:(DHLevel<DHLevel>*)level
 {
     _level = level;
+    [_geometryView.geometricObjects removeAllObjects];
+    [_geometryView.geoViewTransform setScale:1];
+    [_geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
     [_level createInitialObjects:_geometryView.geometricObjects];
     [_level createSolutionPreviewObjects:_geometryView.geometricObjects];
     for (DHGeometricObject* object in _geometryView.geometricObjects) {

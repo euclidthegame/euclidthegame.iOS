@@ -450,7 +450,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Developer settings (only visible in debug mode)" id="BXc-5O-1nL">
+                            <tableViewSection headerTitle="Hidden settings" id="BXc-5O-1nL">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="p5e-Nf-9DM">
                                         <rect key="frame" x="0.0" y="235" width="540" height="44"/>

@@ -14,6 +14,8 @@
 @property (nonatomic, weak) IBOutlet UISwitch* showWellDoneMessagesSwitch;
 @property (nonatomic, weak) IBOutlet UISwitch* showProgressPercentageSwitch;
 
+@property BOOL showHiddenSettings;
+
 - (IBAction)resetAllProgress:(id)sender;
 
 

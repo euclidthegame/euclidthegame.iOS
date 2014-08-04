@@ -24,6 +24,9 @@ static const NSUInteger kResetProgressAlertView = 1;
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        #ifdef DEBUG
+        //_showHiddenSettings = YES;
+        #endif
     }
     return self;
 }
@@ -44,6 +47,16 @@ static const NSUInteger kResetProgressAlertView = 1;
     [self.unlockAllLevelsSwitch addTarget:self action:@selector(unlockLevels:)
                          forControlEvents:UIControlEventValueChanged];
     
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(enableHiddenSettings)];
+    tap.numberOfTapsRequired = 2;
+    tap.numberOfTouchesRequired = 2;
+    [self.view addGestureRecognizer:tap];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -89,25 +102,27 @@ static const NSUInteger kResetProgressAlertView = 1;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#ifndef DEBUG
-    if(section == 2)
+    if(!self.showHiddenSettings && section == 2)
     {
         return 0;
     }
-#endif
 
     return [super tableView:tableView numberOfRowsInSection:section];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-#ifndef DEBUG
-    if (section == 2) {
+    if (!self.showHiddenSettings && section == 2) {
         return nil;
     }
-#endif
 
     return [super tableView:tableView titleForHeaderInSection:section];
+}
+
+- (void)enableHiddenSettings
+{
+    self.showHiddenSettings = YES;
+    [self.tableView reloadData];
 }
 
 @end

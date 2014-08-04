@@ -98,7 +98,8 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         CGContextSetLineWidth(context, 1.0);
         if (self.class == [DHPoint class] ||
             self.class == [DHPointOnCircle class] ||
-            self.class == [DHPointOnLine class]) {
+            self.class == [DHPointOnLine class] ||
+            self.class == [DHPointWithBlockConstraint class]) {
             CGContextSetRGBFillColor(context, kPointColor.r, kPointColor.g, kPointColor.b, kPointColor.a);
         } else {
             CGContextSetRGBFillColor(context, kPointColorFixed.r, kPointColorFixed.g,
@@ -461,6 +462,25 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     self.position = CGPointMake(self.startOfTranslation.position.x + translation.dx,
                                 self.startOfTranslation.position.y + translation.dy);
 }
+@end
+
+
+@implementation DHPointWithBlockConstraint {
+    DHConstraintBlock _constraintBlock;
+}
+
+- (void)setConstraintBlock:(DHConstraintBlock)constraintBlock
+{
+    _constraintBlock = constraintBlock;
+}
+
+- (void)updatePosition
+{
+    if (_constraintBlock) {
+        self.position = _constraintBlock();
+    }
+}
+
 @end
 
 

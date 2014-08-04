@@ -2,12 +2,13 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "Euclid-Logo.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "EuclidIcon_1024pt1x.png"
+      "filename" : "Euclid-Logo-2x.png"
     }
   ],
   "info" : {

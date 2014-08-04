@@ -12,54 +12,7 @@
 #import "DHLevels.h"
 #import "DHLevelViewController.h"
 #import "DHSettings.h"
-
-
-@interface DHTransitionToLevel : NSObject <UIViewControllerAnimatedTransitioning>
-
-@end
-
-@implementation DHTransitionToLevel
-
-- (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
-    return 0.8;
-}
-
-- (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
-    DHLevelSelection2ViewController *fromViewController = (DHLevelSelection2ViewController*)[transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-    DHLevelViewController *toViewController = (DHLevelViewController*)[transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    
-    UIView *containerView = [transitionContext containerView];
-    [containerView addSubview:toViewController.view];
-
-    // Get a snapshot of the thing cell we're transitioning from
-    DHLevelSelection2LevelCell *cell = (DHLevelSelection2LevelCell*)[fromViewController.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:toViewController.levelIndex inSection:0]];
-    
-    CGRect fromFrame = [containerView convertRect:cell.frame fromView:cell.superview];
-    CGRect toFrame = [transitionContext finalFrameForViewController:toViewController];
-    
-    toViewController.view.alpha = 0.3;
-    toViewController.view.frame = toFrame;
-    toViewController.view.clipsToBounds = YES;
-    toViewController.view.layer.anchorPoint = CGPointMake(0, 0);
-    toViewController.view.layer.position = fromFrame.origin;
-    toViewController.view.transform = CGAffineTransformMakeScale(fromFrame.size.width/toFrame.size.width,
-                                                                 fromFrame.size.height/toFrame.size.height);
-
-    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
-        // Fade in the second view controller's view
-        toViewController.view.alpha = 1.0;
-        toViewController.view.transform = CGAffineTransformIdentity;
-        toViewController.view.frame = [transitionContext finalFrameForViewController:toViewController];
-        
-    } completion:^(BOOL finished) {
-        // Clean up
-        // Declare that we've finished
-        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
-    }];
-}
-
-@end
-
+#import "DHTransitionToLevel.h"
 
 @interface DHLevelSelection2ViewController () <UINavigationControllerDelegate>
 
@@ -99,7 +52,15 @@
             forCellWithReuseIdentifier:@"cellIdentifier"];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self.collectionView reloadData];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
     [super viewDidAppear:animated];
     
     // Set outself as the navigation controller's delegate so we're asked for a transitioning object

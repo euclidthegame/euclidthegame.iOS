@@ -121,6 +121,11 @@
 - (instancetype)initWithCircle:(DHCircle*)circle andAngle:(CGFloat)angle;
 @end
 
+typedef CGPoint(^DHConstraintBlock)();
+@interface DHPointWithBlockConstraint : DHPoint
+- (void)setConstraintBlock:(DHConstraintBlock)constraintBlock;
+@end
+
 
 @interface DHBisectLine : DHLineObject
 @property (nonatomic, strong) DHLineObject* line1;

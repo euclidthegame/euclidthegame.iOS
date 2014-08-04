@@ -11,12 +11,18 @@
 #import "DHMath.h"
 #import "DHLevelResults.h"
 #import "DHGeometricObjectLabeler.h"
-#import "DHLevelInfoViewController.h"
 #import "DHGeometricTransform.h"
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
 #import "DHLevels.h"
 #import "DHSettings.h"
+#import "DHTransitionFromLevel.h"
+#import "DHLevelSelection2ViewController.h"
+
+@interface DHLevelViewController () <UINavigationControllerDelegate>
+
+@end
+
 
 @implementation DHLevelViewController {
     NSMutableArray* _geometricObjects;
@@ -117,6 +123,17 @@
     if ([_currentLevel respondsToSelector:@selector(positionMessagesForOrientation:)]) {
         [(id)_currentLevel positionMessagesForOrientation:orientation];
     }
+    
+    self.navigationController.delegate = self;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    // Stop being the navigation controller's delegate
+    if (self.navigationController.delegate == self) {
+        self.navigationController.delegate = nil;
+    }
 }
 
 #pragma mark Level related methods
@@ -152,7 +169,6 @@
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
     
-    [self setupTools];
     [self showDetailedLevelInstruction:nil];
     [self resetLevel];
     
@@ -184,6 +200,7 @@
 
 - (void)resetLevel
 {
+    [self setupTools];
     [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
     [self.geometryView.geoViewTransform setScale:1];
     [self.geometryView.geoViewTransform setRotation:0];
@@ -319,21 +336,31 @@
     if (self.levelCompleted == NO && [_currentLevel isLevelComplete:_geometricObjects])
     {
         self.levelCompleted = YES;
+        
+        // Disable further edits
+        _undoButton.enabled = false;
+        _redoButton.enabled = false;
+        _toolControl.selectedSegmentIndex = -1;
+        _toolInstruction.text = @"";
+        self.geometryViewController.currentTool = nil;
+        
         NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
         [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyCompleted];
         
         NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%lu", (unsigned long)self.currentGameMode];
         [DHLevelResults newResult:result forLevel:resultKey];
         
-        if ([_currentLevel respondsToSelector:@selector(animation:and:and:and:and:)]){
+        if ((self.currentGameMode == kDHGameModeNormal || self.currentGameMode == kDHGameModeNormalMinimumMoves)
+            && [_currentLevel respondsToSelector:@selector(animation:and:and:and:and:)])
+        {
             [_currentLevel animation:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view];
             
             [self performBlock:^{
                 [self showLevelCompleteMessage];
             } afterDelay:4];
         }
-        else{
-        [self showLevelCompleteMessage];
+        else {
+            [self showLevelCompleteMessage];
         }
         
         if (self.currentGameMode == kDHGameModeNormal) {
@@ -533,6 +560,13 @@
 
 - (void)toolChanged:(id)sender
 {
+    if (self.levelCompleted) {
+        _currentTool = nil;
+        _toolControl.selectedSegmentIndex = -1;
+        _toolInstruction.text = @"";
+        return;
+    }
+    
     _currentTool = nil;
     _currentTool = [[[_tools objectAtIndex:_toolControl.selectedSegmentIndex] alloc] init];
     assert(_currentTool);
@@ -566,6 +600,10 @@
 }
 - (void)toolTipDidChange:(NSString *)currentTip
 {
+    if (self.levelCompleted) {
+        return;
+    }
+    
     _toolInstruction.text = currentTip;
     if ([_currentTool active]) {
         _undoButton.enabled = YES;
@@ -1134,6 +1172,19 @@
 
     [_levelInfoView removeFromSuperview];
     _levelInfoView = nil;
+}
+
+#pragma mark Transition delegate methods
+- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                                  animationControllerForOperation:(UINavigationControllerOperation)operation
+                                               fromViewController:(UIViewController *)fromVC
+                                                 toViewController:(UIViewController *)toVC {
+    if (fromVC == self && [toVC isKindOfClass:[DHLevelSelection2ViewController class]]) {
+        return [[DHTransitionFromLevel alloc] init];
+    }
+    else {
+        return nil;
+    }
 }
 
 @end

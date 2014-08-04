@@ -58,15 +58,44 @@
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:250 andY:200];
-    DHPoint* pB = [[DHPoint alloc] initWithPositionX:400 andY:200];
+    //DHPoint* pB = [[DHPoint alloc] initWithPositionX:400 andY:200];
     DHPoint* pC = [[DHPoint alloc] initWithPositionX:100 andY:170];
     DHPoint* pD = [[DHPoint alloc] initWithPositionX:140 andY:110];
     DHPoint* pE = [[DHPoint alloc] initWithPositionX:120 andY:230];
     DHPoint* pF = [[DHPoint alloc] initWithPositionX:180 andY:300];
     
+    DHPointWithBlockConstraint* pB = [[DHPointWithBlockConstraint alloc] initWithPositionX:400 andY:200];
+    
     DHLineSegment* lAB = [[DHLineSegment alloc] initWithStart:pA andEnd:pB];
     DHLineSegment* lCD = [[DHLineSegment alloc] initWithStart:pC andEnd:pD];
     DHLineSegment* lEF = [[DHLineSegment alloc] initWithStart:pE andEnd:pF];
+
+    
+    pB.updatesPositionAutomatically = YES;
+    DHPointWithBlockConstraint* __weak weakpB = pB;
+    [pB setConstraintBlock:^CGPoint{
+        CGPoint newPBPos = weakpB.position;
+        
+        CGFloat distAB = DistanceBetweenPoints(pA.position, weakpB.position);
+        CGFloat distCD = DistanceBetweenPoints(pC.position, pD.position);
+        CGFloat distEF = DistanceBetweenPoints(pE.position, pF.position);
+        CGFloat maxLength = (distCD + distEF)*0.9;
+        CGFloat minLength = (MAX(distCD, distEF) - MIN(distCD, distEF))*1.1;
+        
+        if (distAB > maxLength) {
+            CGVector vAB = CGVectorNormalize(CGVectorBetweenPoints(pA.position, weakpB.position));
+            vAB = CGVectorMultiplyByScalar(vAB, maxLength);
+            newPBPos = CGPointFromPointByAddingVector(pA.position, vAB);
+        }
+        if (distAB < minLength) {
+            CGVector vAB = CGVectorNormalize(CGVectorBetweenPoints(pA.position, weakpB.position));
+            vAB = CGVectorMultiplyByScalar(vAB, minLength);
+            newPBPos = CGPointFromPointByAddingVector(pA.position, vAB);
+        }
+        
+        return newPBPos;
+    }];
+    
     
     [geometricObjects addObjectsFromArray:@[lAB, lCD, lEF, pA, pB, pC, pD, pE, pF]];
     

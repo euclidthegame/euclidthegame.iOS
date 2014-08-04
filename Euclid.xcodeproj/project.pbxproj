@@ -10,6 +10,8 @@
 		681C8886198D0BF1005307F5 /* DHSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C8885198D0BF1005307F5 /* DHSettingsTableViewController.m */; };
 		681C8889198D4D02005307F5 /* DHLevelSelection2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C8888198D4D02005307F5 /* DHLevelSelection2ViewController.m */; };
 		681C888C198D4FA2005307F5 /* DHLevelSelection2LevelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C888B198D4FA2005307F5 /* DHLevelSelection2LevelCell.m */; };
+		681C8890198ECE19005307F5 /* DHTransitionToLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C888F198ECE19005307F5 /* DHTransitionToLevel.m */; };
+		681C8893198ECEA0005307F5 /* DHTransitionFromLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C8892198ECEA0005307F5 /* DHTransitionFromLevel.m */; };
 		68376935197C315700D53E21 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9E619587AEC00A97B86 /* XCTest.framework */; };
 		68376936197C315700D53E21 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
 		68376937197C315700D53E21 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
@@ -39,7 +41,6 @@
 		6866224819779217004DCFAC /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6866224719779217004DCFAC /* StoreKit.framework */; };
 		6866224C197792BC004DCFAC /* DHGameCenterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6866224B197792BC004DCFAC /* DHGameCenterManager.m */; };
 		6866224F1977C304004DCFAC /* DHIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6866224E1977C304004DCFAC /* DHIAPManager.m */; };
-		6872A7CF196DD2BB00823AF9 /* DHLevelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */; };
 		6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */; };
 		6872A7D5196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D4196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m */; };
 		6872A7D8196FE25300823AF9 /* DHLevelHexagon.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D7196FE25300823AF9 /* DHLevelHexagon.m */; };
@@ -89,6 +90,10 @@
 		681C8888198D4D02005307F5 /* DHLevelSelection2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSelection2ViewController.m; sourceTree = "<group>"; };
 		681C888A198D4FA2005307F5 /* DHLevelSelection2LevelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSelection2LevelCell.h; sourceTree = "<group>"; };
 		681C888B198D4FA2005307F5 /* DHLevelSelection2LevelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSelection2LevelCell.m; sourceTree = "<group>"; };
+		681C888E198ECE19005307F5 /* DHTransitionToLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHTransitionToLevel.h; sourceTree = "<group>"; };
+		681C888F198ECE19005307F5 /* DHTransitionToLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHTransitionToLevel.m; sourceTree = "<group>"; };
+		681C8891198ECEA0005307F5 /* DHTransitionFromLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHTransitionFromLevel.h; sourceTree = "<group>"; };
+		681C8892198ECEA0005307F5 /* DHTransitionFromLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHTransitionFromLevel.m; sourceTree = "<group>"; };
 		68376934197C315600D53E21 /* Euclid Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Euclid Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6837693A197C315700D53E21 /* Euclid Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Euclid Tests-Info.plist"; sourceTree = "<group>"; };
 		6837693C197C315700D53E21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -140,8 +145,6 @@
 		6866224B197792BC004DCFAC /* DHGameCenterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGameCenterManager.m; sourceTree = "<group>"; };
 		6866224D1977C304004DCFAC /* DHIAPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHIAPManager.h; sourceTree = "<group>"; };
 		6866224E1977C304004DCFAC /* DHIAPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHIAPManager.m; sourceTree = "<group>"; };
-		6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelInfoViewController.h; sourceTree = "<group>"; };
-		6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelInfoViewController.m; sourceTree = "<group>"; };
 		6872A7D0196E548F00823AF9 /* DHGeometricTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGeometricTransform.h; sourceTree = "<group>"; };
 		6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGeometricTransform.m; sourceTree = "<group>"; };
 		6872A7D3196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelCircleTangentFromPoint.h; sourceTree = "<group>"; };
@@ -231,6 +234,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		681C888D198ECDF8005307F5 /* Custom view transitions */ = {
+			isa = PBXGroup;
+			children = (
+				681C888E198ECE19005307F5 /* DHTransitionToLevel.h */,
+				681C888F198ECE19005307F5 /* DHTransitionToLevel.m */,
+				681C8891198ECEA0005307F5 /* DHTransitionFromLevel.h */,
+				681C8892198ECEA0005307F5 /* DHTransitionFromLevel.m */,
+			);
+			name = "Custom view transitions";
+			sourceTree = "<group>";
+		};
 		68376938197C315700D53E21 /* Euclid Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -300,6 +314,7 @@
 				68F0A9D719587AEC00A97B86 /* DHAppDelegate.m */,
 				68F0A9D919587AEC00A97B86 /* Main.storyboard */,
 				68F0AA20195C377000A97B86 /* Views & View Controllers */,
+				681C888D198ECDF8005307F5 /* Custom view transitions */,
 				68F0AA1F195C375300A97B86 /* Math & Objects */,
 				68F0AA1E195C373800A97B86 /* Geometric Tools */,
 				68F0AA0A195A184C00A97B86 /* Levels */,
@@ -434,8 +449,6 @@
 				68F0A9DD19587AEC00A97B86 /* DHGeometryViewController.m */,
 				68F0A9FC1958BDD500A97B86 /* DHGeometryView.h */,
 				68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */,
-				6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */,
-				6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */,
 				68471127197843D6003B681B /* DHSettings.h */,
 				68471128197843D6003B681B /* DHSettings.m */,
 				6847112419783EE6003B681B /* DHSettingsViewController.h */,
@@ -498,7 +511,7 @@
 						TestTargetID = 68F0A9C319587AEC00A97B86;
 					};
 					68F0A9C319587AEC00A97B86 = {
-						DevelopmentTeam = HBR69794XS;
+						DevelopmentTeam = 99K4X6B359;
 						SystemCapabilities = {
 							com.apple.GameCenter = {
 								enabled = 1;
@@ -567,6 +580,7 @@
 				68F0AA15195A92A700A97B86 /* DHLevelSelectionViewController.m in Sources */,
 				683D9682196BEC680057B62D /* DHLevelTriIncircle.m in Sources */,
 				68F0AA011958C5AB00A97B86 /* DHGeometricObjects.m in Sources */,
+				681C8890198ECE19005307F5 /* DHTransitionToLevel.m in Sources */,
 				68F0A9D819587AEC00A97B86 /* DHAppDelegate.m in Sources */,
 				686014DB1969D3CE0004DD1E /* DHLevelCopyAngle.m in Sources */,
 				68376948197E2E4200D53E21 /* DHLevel.m in Sources */,
@@ -591,13 +605,13 @@
 				68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */,
 				6872A7DB197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.m in Sources */,
 				686014E11969E6920004DD1E /* DHLevelMakeTangent.m in Sources */,
+				681C8893198ECEA0005307F5 /* DHTransitionFromLevel.m in Sources */,
 				684708B51968A07D00C1FA83 /* DHLevelLineCopy2.m in Sources */,
 				68F0AA421963E10C00A97B86 /* DHLevelBisect.m in Sources */,
 				68F0AA04195969A300A97B86 /* DHGeometricTools.m in Sources */,
 				6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */,
 				684708AC196731C000C1FA83 /* DHLevelPerpendicularB.m in Sources */,
 				68F0AA2A195E00D800A97B86 /* DHLevelMidPoint.m in Sources */,
-				6872A7CF196DD2BB00823AF9 /* DHLevelInfoViewController.m in Sources */,
 				68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */,
 				6872A7E119702A1700823AF9 /* DHLevelPentagon.m in Sources */,
 				6847112619783EE6003B681B /* DHSettingsViewController.m in Sources */,

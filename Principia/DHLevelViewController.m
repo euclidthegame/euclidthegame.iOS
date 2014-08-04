@@ -138,11 +138,6 @@
 {
     self.firstMoveMade = NO;
     
-    [self.detailedInstructions setTitle:@"Full instruction" forState:UIControlStateNormal];
-    [self.detailedInstructions removeTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
-    [self.detailedInstructions addTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
     
     if (self.currentGameMode == kDHGameModeTutorial) {
         self.title = @"Tutorial";
@@ -203,6 +198,10 @@
 
 - (void)resetLevel
 {
+    [self.detailedInstructions setTitle:@"Full instruction" forState:UIControlStateNormal];
+    [self.detailedInstructions removeTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
+    [self.detailedInstructions addTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
+    
     [self setupTools];
     [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
     [self.geometryView.geoViewTransform setScale:1];

@@ -290,7 +290,26 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     }
     
     // Special case for intersection with circle/line where circle is define to point on the line
-    if ([_c.pointOnRadius class] == [DHPointOnLine class] && ((DHPointOnLine*)_c.pointOnRadius).line == _l) {
+    if (
+        ([_c.pointOnRadius class] == [DHPointOnLine class] && ((DHPointOnLine*)_c.pointOnRadius).line == _l)
+        
+        ||
+        
+        ([_c.pointOnRadius class] == [DHIntersectionPointLineCircle class] &&
+         ((DHIntersectionPointLineCircle*)_c.pointOnRadius).l == _l)
+        
+        ||
+        
+        ([_c.pointOnRadius class] == [DHIntersectionPointLineLine class] &&
+         ((DHIntersectionPointLineLine*)_c.pointOnRadius).l1 == _l)
+        
+        ||
+        
+        ([_c.pointOnRadius class] == [DHIntersectionPointLineLine class] &&
+         ((DHIntersectionPointLineLine*)_c.pointOnRadius).l2 == _l)
+
+        )
+    {
         // Interpret _preferEnd to define if overlap with pointOnRadius or not
         if (_preferEnd) {
             intersection = _c.pointOnRadius.position;

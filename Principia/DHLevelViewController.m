@@ -358,9 +358,6 @@
             [self performBlock:^{
                 [self showLevelCompleteMessage];
             } afterDelay:4];
-        
-            [self.detailedInstructions setTitle:@"Continue to next level" forState:UIControlStateNormal];
-            [self.detailedInstructions addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchDown];
         }
         else {
             [self showLevelCompleteMessage];
@@ -750,6 +747,7 @@
         } else {
             self.nextChallengeButton.hidden = NO;
             [self.nextChallengeButton setTitle:@"Continue to next level" forState:UIControlStateNormal];
+            [self.nextChallengeButton addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
         }
     }
     
@@ -770,6 +768,10 @@
                      }
                      completion:^(BOOL finished){
                      }];
+    
+    [self.detailedInstructions setTitle:@"Continue to next level" forState:UIControlStateNormal];
+    [self.detailedInstructions removeTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchDown];
+    [self.detailedInstructions addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (IBAction)loadNextLevel:(id)sender

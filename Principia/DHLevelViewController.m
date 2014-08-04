@@ -130,14 +130,14 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:10.0]];
+                                                           constant:12.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
                                                           attribute:NSLayoutAttributeRight
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:self.levelInstruction
                                                           attribute:NSLayoutAttributeRight
                                                          multiplier:1.0
-                                                           constant:0.0]];
+                                                           constant:-30.0]];
 
     /*[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
                                                           attribute:NSLayoutAttributeWidth
@@ -814,7 +814,7 @@
                      completion:^(BOOL finished){
                      }];
     
-    [self.detailedInstructions setTitle:@"Next level" forState:UIControlStateNormal];
+    [self.detailedInstructions setTitle:@"Next Level" forState:UIControlStateNormal];
     [self.detailedInstructions removeTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
     [self.detailedInstructions addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
 }

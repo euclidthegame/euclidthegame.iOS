@@ -377,10 +377,10 @@ const NSTimeInterval YLProgressBarProgressTime         = 0.5f;        // s
             [shadow stroke];
             
             // Draw the inner glow
-            [[UIColor colorWithRed:0 green:0 blue:0 alpha:0] set];
+            [[UIColor darkGrayColor] set];
             
-            UIBezierPath *glow  = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(_cornerRadius, 0, CGRectGetWidth(rect) - _cornerRadius * 2, 1)
-                                                             cornerRadius:0];
+            UIBezierPath *glow  = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, CGRectGetWidth(rect) , trackHeight)
+                                                             cornerRadius:_cornerRadius];
             [glow stroke];
         }
     }

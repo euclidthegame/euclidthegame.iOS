@@ -54,12 +54,7 @@ static NSMutableDictionary* s_LevelResults;
         return;
     }
     
-    BOOL written = [[self mutableLevelResults] writeToFile:path atomically:YES];
-    if (written) {
-        //NSLog(@"Wrote to file %@", path);
-    } else {
-        //NSLog(@"Unable to write to file: %@", path);
-    }
+    [[self mutableLevelResults] writeToFile:path atomically:YES];
 }
 #pragma mark - Manage level results data
 + (NSDictionary*)levelResults

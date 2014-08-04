@@ -41,7 +41,6 @@
 		6866224819779217004DCFAC /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6866224719779217004DCFAC /* StoreKit.framework */; };
 		6866224C197792BC004DCFAC /* DHGameCenterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6866224B197792BC004DCFAC /* DHGameCenterManager.m */; };
 		6866224F1977C304004DCFAC /* DHIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6866224E1977C304004DCFAC /* DHIAPManager.m */; };
-		6872A7CF196DD2BB00823AF9 /* DHLevelInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */; };
 		6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */; };
 		6872A7D5196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D4196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m */; };
 		6872A7D8196FE25300823AF9 /* DHLevelHexagon.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D7196FE25300823AF9 /* DHLevelHexagon.m */; };
@@ -146,8 +145,6 @@
 		6866224B197792BC004DCFAC /* DHGameCenterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGameCenterManager.m; sourceTree = "<group>"; };
 		6866224D1977C304004DCFAC /* DHIAPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHIAPManager.h; sourceTree = "<group>"; };
 		6866224E1977C304004DCFAC /* DHIAPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHIAPManager.m; sourceTree = "<group>"; };
-		6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelInfoViewController.h; sourceTree = "<group>"; };
-		6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelInfoViewController.m; sourceTree = "<group>"; };
 		6872A7D0196E548F00823AF9 /* DHGeometricTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGeometricTransform.h; sourceTree = "<group>"; };
 		6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGeometricTransform.m; sourceTree = "<group>"; };
 		6872A7D3196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelCircleTangentFromPoint.h; sourceTree = "<group>"; };
@@ -452,8 +449,6 @@
 				68F0A9DD19587AEC00A97B86 /* DHGeometryViewController.m */,
 				68F0A9FC1958BDD500A97B86 /* DHGeometryView.h */,
 				68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */,
-				6872A7CD196DD2BB00823AF9 /* DHLevelInfoViewController.h */,
-				6872A7CE196DD2BB00823AF9 /* DHLevelInfoViewController.m */,
 				68471127197843D6003B681B /* DHSettings.h */,
 				68471128197843D6003B681B /* DHSettings.m */,
 				6847112419783EE6003B681B /* DHSettingsViewController.h */,
@@ -617,7 +612,6 @@
 				6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */,
 				684708AC196731C000C1FA83 /* DHLevelPerpendicularB.m in Sources */,
 				68F0AA2A195E00D800A97B86 /* DHLevelMidPoint.m in Sources */,
-				6872A7CF196DD2BB00823AF9 /* DHLevelInfoViewController.m in Sources */,
 				68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */,
 				6872A7E119702A1700823AF9 /* DHLevelPentagon.m in Sources */,
 				6847112619783EE6003B681B /* DHSettingsViewController.m in Sources */,

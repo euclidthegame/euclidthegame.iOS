@@ -250,8 +250,6 @@
     
     
     [self performBlock:^{
-        LogF(geometryView.geoViewTransform.scale);
-        
         DHGeometryView* geoView = [[DHGeometryView alloc] initWithFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, view.frame.size.height)];
         [view addSubview:geoView];
         geoView.hideBorder = YES;

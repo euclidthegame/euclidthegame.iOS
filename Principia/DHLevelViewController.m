@@ -11,7 +11,6 @@
 #import "DHMath.h"
 #import "DHLevelResults.h"
 #import "DHGeometricObjectLabeler.h"
-#import "DHLevelInfoViewController.h"
 #import "DHGeometricTransform.h"
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
@@ -170,7 +169,6 @@
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
     
-    [self setupTools];
     [self showDetailedLevelInstruction:nil];
     [self resetLevel];
     
@@ -202,6 +200,7 @@
 
 - (void)resetLevel
 {
+    [self setupTools];
     [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
     [self.geometryView.geoViewTransform setScale:1];
     [self.geometryView.geoViewTransform setRotation:0];
@@ -337,6 +336,14 @@
     if (self.levelCompleted == NO && [_currentLevel isLevelComplete:_geometricObjects])
     {
         self.levelCompleted = YES;
+        
+        // Disable further edits
+        _undoButton.enabled = false;
+        _redoButton.enabled = false;
+        _toolControl.selectedSegmentIndex = -1;
+        _toolInstruction.text = @"";
+        self.geometryViewController.currentTool = nil;
+        
         NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
         [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyCompleted];
         
@@ -551,6 +558,13 @@
 
 - (void)toolChanged:(id)sender
 {
+    if (self.levelCompleted) {
+        _currentTool = nil;
+        _toolControl.selectedSegmentIndex = -1;
+        _toolInstruction.text = @"";
+        return;
+    }
+    
     _currentTool = nil;
     _currentTool = [[[_tools objectAtIndex:_toolControl.selectedSegmentIndex] alloc] init];
     assert(_currentTool);
@@ -584,6 +598,10 @@
 }
 - (void)toolTipDidChange:(NSString *)currentTip
 {
+    if (self.levelCompleted) {
+        return;
+    }
+    
     _toolInstruction.text = currentTip;
     if ([_currentTool active]) {
         _undoButton.enabled = YES;

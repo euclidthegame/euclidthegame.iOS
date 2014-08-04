@@ -814,7 +814,7 @@
                      completion:^(BOOL finished){
                      }];
     
-    [self.detailedInstructions setTitle:@"Next level >" forState:UIControlStateNormal];
+    [self.detailedInstructions setTitle:@"Next level" forState:UIControlStateNormal];
     [self.detailedInstructions removeTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
     [self.detailedInstructions addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
 }

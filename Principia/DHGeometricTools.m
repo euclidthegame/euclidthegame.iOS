@@ -59,7 +59,8 @@ const CGFloat kClosestTapLimit = 25.0f;
     DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
     if (point && ([point class] == [DHPoint class] ||
                   [point class] == [DHPointOnLine class] ||
-                  [point class] == [DHPointOnCircle class]) ) {
+                  [point class] == [DHPointOnCircle class] ||
+                  [point class] == [DHPointWithBlockConstraint class]) ) {
         self.point = point;
         self.point.highlighted = YES;
         self.touchStart = touchPoint;
@@ -70,7 +71,9 @@ const CGFloat kClosestTapLimit = 25.0f;
 }
 - (void)touchMoved:(UITouch*)touch
 {
-    if (self.point && [self.point class] == [DHPoint class]) {
+    if (self.point &&
+        ([self.point class] == [DHPoint class] || [self.point class] == [DHPointWithBlockConstraint class]))
+    {
         CGPoint touchPointInView = [touch locationInView:touch.view];
         CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
         

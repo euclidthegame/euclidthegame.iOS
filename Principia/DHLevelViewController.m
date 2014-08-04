@@ -350,15 +350,17 @@
         NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%lu", (unsigned long)self.currentGameMode];
         [DHLevelResults newResult:result forLevel:resultKey];
         
-        if ([_currentLevel respondsToSelector:@selector(animation:and:and:and:and:)]){
+        if ((self.currentGameMode == kDHGameModeNormal || self.currentGameMode == kDHGameModeNormalMinimumMoves)
+            && [_currentLevel respondsToSelector:@selector(animation:and:and:and:and:)])
+        {
             [_currentLevel animation:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view];
             
             [self performBlock:^{
                 [self showLevelCompleteMessage];
             } afterDelay:4];
         }
-        else{
-        [self showLevelCompleteMessage];
+        else {
+            [self showLevelCompleteMessage];
         }
         
         if (self.currentGameMode == kDHGameModeNormal) {

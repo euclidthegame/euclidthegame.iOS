@@ -132,12 +132,20 @@
                                                          multiplier:1.0
                                                            constant:10.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
+                                                          attribute:NSLayoutAttributeRight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.levelInstruction
+                                                          attribute:NSLayoutAttributeRight
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+
+    /*[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:450.0]];
+                                                           constant:450.0]];*/
 
     [self setupForLevel];
 }

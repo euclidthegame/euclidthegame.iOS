@@ -358,6 +358,9 @@
             [self performBlock:^{
                 [self showLevelCompleteMessage];
             } afterDelay:4];
+        
+            [self.detailedInstructions setTitle:@"Continue to next level" forState:UIControlStateNormal];
+            [self.detailedInstructions addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchDown];
         }
         else {
             [self showLevelCompleteMessage];

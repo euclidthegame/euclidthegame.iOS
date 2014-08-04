@@ -107,6 +107,7 @@
     _progressBar.trackTintColor = [UIColor darkGrayColor];
     _progressBar.progressTintColor = [[UIApplication sharedApplication] delegate].window.tintColor;
     _progressBar.type = YLProgressBarTypeRounded;
+    _progressBar.hideStripes = YES;
     [self.view addSubview:_progressBar];
     _progressBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
@@ -805,7 +806,7 @@
                      completion:^(BOOL finished){
                      }];
     
-    [self.detailedInstructions setTitle:@"Continue to next level" forState:UIControlStateNormal];
+    [self.detailedInstructions setTitle:@"Next level >" forState:UIControlStateNormal];
     [self.detailedInstructions removeTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
     [self.detailedInstructions addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
 }

@@ -83,17 +83,17 @@
     CGRect frame5 = message5.frame;
     
     if (UIInterfaceOrientationIsPortrait(orientation)) {
-        frame1.origin = CGPointMake(200,300);
-        frame2.origin = CGPointMake(200,320);
-        frame3.origin = CGPointMake(20,850);
-        frame4.origin = CGPointMake(20,870);
-        frame5.origin = CGPointMake(20,890);
+        frame1.origin = CGPointMake(200,260);
+        frame2.origin = CGPointMake(200,280);
+        frame3.origin = CGPointMake(20,810);
+        frame4.origin = CGPointMake(20,830);
+        frame5.origin = CGPointMake(20,850);
     } else {
-        frame1.origin = CGPointMake(300,100);
-        frame2.origin = CGPointMake(300,122);
-        frame3.origin = CGPointMake(20,590);
-        frame4.origin = CGPointMake(20,612);
-        frame5.origin = CGPointMake(20,634);
+        frame1.origin = CGPointMake(300,50);
+        frame2.origin = CGPointMake(300,72);
+        frame3.origin = CGPointMake(20,550);
+        frame4.origin = CGPointMake(20,572);
+        frame5.origin = CGPointMake(20,594);
     }
     
     message1.point = frame1.origin;

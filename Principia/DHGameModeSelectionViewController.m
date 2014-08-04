@@ -111,6 +111,63 @@
 }
 - (void)drawRect:(CGRect)rect
 {
+    
+
+    const CGPoint pieChartCenter = CGPointMake(self.bounds.size.width*0.5, 40);
+    CGFloat pieChartRadius = 22.0;
+    
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    
+    NSString* percentLabelText = [NSString stringWithFormat:@"%d%%", (uint)(self.percentComplete*100)];
+    NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:13],
+                                 NSParagraphStyleAttributeName: paragraphStyle,
+                                 NSForegroundColorAttributeName: [UIColor darkGrayColor]};
+    CGSize textSize = [percentLabelText sizeWithAttributes:attributes];
+    CGRect labelRect = CGRectMake(pieChartCenter.x -textSize.width*0.5,
+                                  pieChartCenter.y -textSize.height*0.5, textSize.width, textSize.height);
+    [percentLabelText drawInRect:labelRect withAttributes:attributes];
+    
+    
+    
+    CGFloat startAngle = -((float)M_PI / 2); // 90 degrees
+    CGFloat endAngle = ((2 * (float)M_PI) + startAngle);
+    UIBezierPath* bezierPath = [UIBezierPath bezierPath];
+    
+    // Create our arc, with the correct angles
+    [bezierPath addArcWithCenter:pieChartCenter
+                          radius:pieChartRadius
+                      startAngle:startAngle
+                        endAngle:(endAngle - startAngle) + startAngle
+                       clockwise:YES];
+    
+    
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [[UIColor lightGrayColor] setStroke];
+    CGContextAddPath(context, bezierPath.CGPath);
+    CGContextSetLineWidth(context, 3.0);
+    CGContextSetShadowWithColor(context, CGSizeMake(1.0, 1.0), 1.0, [UIColor lightGrayColor].CGColor);
+    CGContextStrokePath(context);
+    
+    
+    UIBezierPath* progress = [UIBezierPath bezierPath];
+    
+    // Create our arc, with the correct angles
+    [progress addArcWithCenter:pieChartCenter
+                        radius:pieChartRadius
+                    startAngle:startAngle
+                      endAngle:(endAngle - startAngle) * (self.percentComplete) + startAngle
+                     clockwise:YES];
+    
+    // Set the display for the path, and stroke it
+    progress.lineWidth = 4;
+    [self.tintColor setStroke];
+    [progress stroke];
+    
+    /*
     const CGPoint pieChartCenter = CGPointMake(self.bounds.size.width*0.5, 40);
     CGFloat pieChartRadius = 20.0;
     
@@ -160,7 +217,7 @@
     CGRect labelRect = CGRectMake(pieChartCenter.x - textSize.width*0.5f,
                                   pieChartCenter.y + pieChartRadius + 4, textSize.width, textSize.height);
     [percentLabelText drawInRect:labelRect withAttributes:attributes];
-    
+    */
 
 }
 - (void)setPercentComplete:(CGFloat)percentComplete

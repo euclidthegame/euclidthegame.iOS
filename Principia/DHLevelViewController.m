@@ -104,7 +104,7 @@
     [self.levelObjectiveView addGestureRecognizer:gesture];
     
     _progressBar = [[YLProgressBar alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
-    _progressBar.trackTintColor = [UIColor darkGrayColor];
+    _progressBar.trackTintColor = [UIColor lightGrayColor];
     _progressBar.progressTintColor = [[UIApplication sharedApplication] delegate].window.tintColor;
     _progressBar.type = YLProgressBarTypeRounded;
     _progressBar.hideStripes = YES;

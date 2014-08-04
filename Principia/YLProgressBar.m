@@ -354,13 +354,13 @@ const NSTimeInterval YLProgressBarProgressTime         = 0.5f;        // s
 - (void)drawTrack:(CGContextRef)context withRect:(CGRect)rect
 {
     // Define the progress bar pattern to clip all the content inside
-    UIBezierPath *roundedRect   = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, CGRectGetWidth(rect), CGRectGetHeight(rect))
+    UIBezierPath *roundedRect   = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(1, 1, CGRectGetWidth(rect)-2, CGRectGetHeight(rect))
                                                              cornerRadius:_cornerRadius];
     [roundedRect addClip];
     
     CGContextSaveGState(context);
     {
-        CGFloat trackHeight = (_type == YLProgressBarTypeRounded) ? CGRectGetHeight(rect) - 1 : CGRectGetHeight(rect);
+        CGFloat trackHeight = (_type == YLProgressBarTypeRounded) ? CGRectGetHeight(rect) -1 : CGRectGetHeight(rect);
         
         // Draw the track
         [self.trackTintColor set];
@@ -370,14 +370,14 @@ const NSTimeInterval YLProgressBarProgressTime         = 0.5f;        // s
         if (_type == YLProgressBarTypeRounded)
         {
             // Draw the white shadow
-            [[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.2] set];
+            [[UIColor colorWithRed:0 green:0 blue:0 alpha:0] set];
             
-            UIBezierPath *shadow    = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0.5f, 0, CGRectGetWidth(rect) - 1, trackHeight)
+            UIBezierPath *shadow    = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0.5f, 0, CGRectGetWidth(rect) , trackHeight)
                                                                  cornerRadius:_cornerRadius];
             [shadow stroke];
             
             // Draw the inner glow
-            [[UIColor colorWithRed:0 green:0 blue:0 alpha:0.4f] set];
+            [[UIColor colorWithRed:0 green:0 blue:0 alpha:0] set];
             
             UIBezierPath *glow  = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(_cornerRadius, 0, CGRectGetWidth(rect) - _cornerRadius * 2, 1)
                                                              cornerRadius:0];

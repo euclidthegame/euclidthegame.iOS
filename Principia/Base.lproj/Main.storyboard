@@ -185,9 +185,6 @@
                                         <state key="normal" title="Continue to next level">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <connections>
-                                            <action selector="loadNextLevel:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Z5N-py-v7W"/>
-                                        </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="600" translatesAutoresizingMaskIntoConstraints="NO" id="lZY-n7-yQ8" userLabel="LevelCompleteMessage">
                                         <rect key="frame" x="30" y="81" width="600" height="82"/>

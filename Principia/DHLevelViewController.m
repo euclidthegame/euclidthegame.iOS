@@ -85,10 +85,7 @@
     _redoButton = redoButtonItem;
     _resetButton = resetButtonItem;
     
-    
-    [self.detailedInstructions addTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchDown];
-    
-    
+
     _levelInstruction.layer.cornerRadius = 10.0f;
     
     // Set up completion message
@@ -140,6 +137,12 @@
 - (void)setupForLevel
 {
     self.firstMoveMade = NO;
+    
+    [self.detailedInstructions setTitle:@"Full instruction" forState:UIControlStateNormal];
+    [self.detailedInstructions removeTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
+    [self.detailedInstructions addTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    
     
     if (self.currentGameMode == kDHGameModeTutorial) {
         self.title = @"Tutorial";
@@ -747,6 +750,7 @@
         } else {
             self.nextChallengeButton.hidden = NO;
             [self.nextChallengeButton setTitle:@"Continue to next level" forState:UIControlStateNormal];
+            [self.nextChallengeButton addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
         }
     }
     
@@ -767,6 +771,10 @@
                      }
                      completion:^(BOOL finished){
                      }];
+    
+    [self.detailedInstructions setTitle:@"Continue to next level" forState:UIControlStateNormal];
+    [self.detailedInstructions removeTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.detailedInstructions addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (IBAction)loadNextLevel:(id)sender

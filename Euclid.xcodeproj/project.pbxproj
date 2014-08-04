@@ -12,6 +12,7 @@
 		681C888C198D4FA2005307F5 /* DHLevelSelection2LevelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C888B198D4FA2005307F5 /* DHLevelSelection2LevelCell.m */; };
 		681C8890198ECE19005307F5 /* DHTransitionToLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C888F198ECE19005307F5 /* DHTransitionToLevel.m */; };
 		681C8893198ECEA0005307F5 /* DHTransitionFromLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C8892198ECEA0005307F5 /* DHTransitionFromLevel.m */; };
+		681C8896199004C4005307F5 /* YLProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C8895199004C4005307F5 /* YLProgressBar.m */; };
 		68376935197C315700D53E21 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9E619587AEC00A97B86 /* XCTest.framework */; };
 		68376936197C315700D53E21 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
 		68376937197C315700D53E21 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
@@ -94,6 +95,8 @@
 		681C888F198ECE19005307F5 /* DHTransitionToLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHTransitionToLevel.m; sourceTree = "<group>"; };
 		681C8891198ECEA0005307F5 /* DHTransitionFromLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHTransitionFromLevel.h; sourceTree = "<group>"; };
 		681C8892198ECEA0005307F5 /* DHTransitionFromLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHTransitionFromLevel.m; sourceTree = "<group>"; };
+		681C8894199004C4005307F5 /* YLProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLProgressBar.h; sourceTree = "<group>"; };
+		681C8895199004C4005307F5 /* YLProgressBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLProgressBar.m; sourceTree = "<group>"; };
 		68376934197C315600D53E21 /* Euclid Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Euclid Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6837693A197C315700D53E21 /* Euclid Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Euclid Tests-Info.plist"; sourceTree = "<group>"; };
 		6837693C197C315700D53E21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -455,6 +458,8 @@
 				6847112519783EE6003B681B /* DHSettingsViewController.m */,
 				681C8884198D0BF1005307F5 /* DHSettingsTableViewController.h */,
 				681C8885198D0BF1005307F5 /* DHSettingsTableViewController.m */,
+				681C8894199004C4005307F5 /* YLProgressBar.h */,
+				681C8895199004C4005307F5 /* YLProgressBar.m */,
 			);
 			name = "Views & View Controllers";
 			sourceTree = "<group>";
@@ -597,6 +602,7 @@
 				684708B21968112200C1FA83 /* DHLevelLineCopy.m in Sources */,
 				68F0A9D419587AEC00A97B86 /* main.m in Sources */,
 				681C888C198D4FA2005307F5 /* DHLevelSelection2LevelCell.m in Sources */,
+				681C8896199004C4005307F5 /* YLProgressBar.m in Sources */,
 				686622431972B78E004DCFAC /* DHLevelPlayground.m in Sources */,
 				68F0AA481964889C00A97B86 /* DHGeometricObjectLabeler.m in Sources */,
 				681C8889198D4D02005307F5 /* DHLevelSelection2ViewController.m in Sources */,

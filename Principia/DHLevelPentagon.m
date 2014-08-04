@@ -25,6 +25,11 @@
 
 - (NSString*)levelDescription
 {
+    return (@"Construct a regular pentagon in the given circle with B as a vertex");
+}
+
+- (NSString*)levelDescriptionExtra
+{
     return (@"Construct a regular pentagon inscribed in the given circle with B as one of its vertices.");
 }
 

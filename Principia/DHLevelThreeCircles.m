@@ -26,7 +26,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct two new circles of radius AB where each pair of the three circles is tangent.");
+    return (@"Construct two circles of radius AB, mutually tangent and to the given circle");
 }
 
 - (NSString*)levelDescriptionExtra

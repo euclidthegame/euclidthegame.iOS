@@ -289,9 +289,31 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         return;
     }
     
-    DHIntersectionResult result = IntersectionTestLineCircle(_l, _c, _preferEnd);
-    if (result.intersect) {
-        intersection = result.intersectionPoint;
+    // Special case for intersection with circle/line where circle is define to point on the line
+    if ([_c.pointOnRadius class] == [DHPointOnLine class] && ((DHPointOnLine*)_c.pointOnRadius).line == _l) {
+        // Interpret _preferEnd to define if overlap with pointOnRadius or not
+        if (_preferEnd) {
+            intersection = _c.pointOnRadius.position;
+        } else {
+            DHIntersectionResult result1 = IntersectionTestLineCircle(_l, _c, YES);
+            DHIntersectionResult result2 = IntersectionTestLineCircle(_l, _c, NO);
+            if (result1.intersect) {
+                CGFloat dist1 = DistanceBetweenPoints(_c.pointOnRadius.position, result1.intersectionPoint);
+                CGFloat dist2 = DistanceBetweenPoints(_c.pointOnRadius.position, result2.intersectionPoint);
+                if (dist1 > dist2) {
+                    intersection = result1.intersectionPoint;
+                } else {
+                    intersection = result2.intersectionPoint;
+                }
+            }
+            
+        }
+    } else {
+        //Normal case
+        DHIntersectionResult result = IntersectionTestLineCircle(_l, _c, _preferEnd);
+        if (result.intersect) {
+            intersection = result.intersectionPoint;
+        }
     }
 
     self.position = intersection;

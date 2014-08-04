@@ -1167,8 +1167,11 @@
 - (void)hideDetailedLevelInstruction
 {
     _resetButton.enabled = YES;
-    if (_geometricObjectsForUndo.count > 0) _undoButton.enabled = YES;
-    if (_geometricObjectsForRedo.count > 0) _redoButton.enabled = YES;
+    
+    if (!self.levelCompleted) {
+        if (_geometricObjectsForUndo.count > 0) _undoButton.enabled = YES;
+        if (_geometricObjectsForRedo.count > 0) _redoButton.enabled = YES;
+    }
 
     [_levelInfoView removeFromSuperview];
     _levelInfoView = nil;

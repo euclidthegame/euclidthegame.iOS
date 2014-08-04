@@ -24,9 +24,7 @@ static const NSUInteger kResetProgressAlertView = 1;
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
-        #ifdef DEBUG
-        //_showHiddenSettings = YES;
-        #endif
+
     }
     return self;
 }

@@ -81,7 +81,7 @@
     DHIntersectionPointLineCircle* ip1 = [[DHIntersectionPointLineCircle alloc] init];
     ip1.c = c;
     ip1.l = _lineBC;
-    ip1.preferEnd = YES;
+    ip1.preferEnd = NO;
     DHLine* l1 = [[DHLine alloc] initWithStart:ip1 andEnd:p];
     DHIntersectionPointLineCircle* ip2 = [[DHIntersectionPointLineCircle alloc] init];
     ip2.c = c;

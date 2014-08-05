@@ -245,12 +245,12 @@
         CGPoint pos5 = [segment5.superview convertPoint:segment5.frame.origin toView:geoView];
         CGPoint pos6 = [segment6.superview convertPoint:segment6.frame.origin toView:geoView];
         
-        CGFloat xpos = (pos5.x + pos6.x )/2 -24 ;
-        CGFloat ypos =  view.frame.size.height - 45;
+        CGFloat xpos = (pos5.x + pos6.x )/2 -33 ;
+        CGFloat ypos =  view.frame.size.height - 50;
         
         if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
-            ypos = ypos +5;
-            xpos = xpos +28;
+            ypos = ypos +10;
+            xpos = xpos +35;
         }
         
         CABasicAnimation *animation = [CABasicAnimation animation];
@@ -262,7 +262,7 @@
         CABasicAnimation *animation2 = [CABasicAnimation animation];
         animation2.keyPath = @"transform.scale";
         animation2.fromValue = [NSNumber numberWithFloat:1];
-        animation2.toValue = [NSNumber numberWithFloat:0.17];
+        animation2.toValue = [NSNumber numberWithFloat:0.16];
         animation2.duration = 3;
         
         CABasicAnimation *animation3 = [CABasicAnimation animation];
@@ -277,7 +277,7 @@
         [geoView.layer addAnimation:animation3 forKey:@"basic3"];
         
         geoView.layer.position = CGPointMake(xpos, ypos);
-        geoView.transform = CGAffineTransformMakeScale(0.17, 0.17);
+        geoView.transform = CGAffineTransformMakeScale(0.16, 0.16);
         [geoView.layer setValue:[NSNumber numberWithFloat:2.1] forKeyPath:@"transform.rotation"];
         
         

@@ -288,7 +288,7 @@
         CGPoint pos6 = [segment6.superview convertPoint:segment6.frame.origin toView:geoView];
         
         CGFloat xpos = (pos5.x + pos6.x )/2 -2 ;
-        CGFloat ypos =  view.frame.size.height - 8;
+        CGFloat ypos =  view.frame.size.height +3;
         
         if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
             ypos = ypos - 19;

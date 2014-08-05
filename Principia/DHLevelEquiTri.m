@@ -279,7 +279,7 @@
         CGPoint pos6 = [segment6.superview convertPoint:segment6.frame.origin toView:geoView];
         
         CGFloat xpos = (pos5.x + pos6.x )/2  ;
-        CGFloat ypos = view.frame.size.height - 21;
+        CGFloat ypos = view.frame.size.height - 10;
         
         CABasicAnimation *animation = [CABasicAnimation animation];
         animation.keyPath = @"position";

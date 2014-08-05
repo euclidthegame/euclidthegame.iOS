@@ -150,7 +150,7 @@
             DHPoint* p = object;
             if (PointOnLine(p,_lineAB) || PointOnLine(object,_lineAC)) intersectionPointOK = YES;
         }
-        if (PointOnLine(object,b)) midPointOK = YES;
+        if (!EqualPoints(object,_pointA) && PointOnLine(object,b)) midPointOK = YES;
         if (EqualDirection(b,object))
         {
             DHLineObject * l = object;
@@ -161,7 +161,7 @@
             }
         }
     }
-    self.progress = (circleOK + intersectionPointOK + midPointOK + bisectOK)/4.0 * 100;
+    self.progress = ( midPointOK + bisectOK)/2.0 * 100;
     
     return NO;
 }

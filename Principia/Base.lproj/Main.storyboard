@@ -258,13 +258,6 @@
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Progress: 0%" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="49a-Bm-Jzm">
-                                <rect key="frame" x="6" y="65" width="88" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -275,9 +268,7 @@
                             <constraint firstItem="99O-ka-blD" firstAttribute="top" secondItem="bks-Fo-Osy" secondAttribute="bottom" constant="10" id="69a-lQ-Tar"/>
                             <constraint firstAttribute="centerY" secondItem="tbY-LX-K8w" secondAttribute="centerY" id="Byz-Oo-vvo"/>
                             <constraint firstAttribute="trailing" secondItem="2ux-1M-Bze" secondAttribute="trailing" id="JxT-oM-dFk"/>
-                            <constraint firstItem="49a-Bm-Jzm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="6" id="Kjb-sy-VkH"/>
                             <constraint firstAttribute="trailing" secondItem="99O-ka-blD" secondAttribute="trailing" constant="20" id="MO5-hx-Q9r"/>
-                            <constraint firstItem="49a-Bm-Jzm" firstAttribute="top" secondItem="Cqv-aF-aQU" secondAttribute="top" id="OLA-3h-LXM"/>
                             <constraint firstItem="2ux-1M-Bze" firstAttribute="top" secondItem="V5X-Pj-3WK" secondAttribute="bottom" id="S3t-Hj-uC3"/>
                             <constraint firstItem="V5X-Pj-3WK" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="XAp-SH-Hfz"/>
                             <constraint firstItem="99O-ka-blD" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="XdF-SP-ybo"/>
@@ -302,12 +293,12 @@
                         <outlet property="levelCompletionMessage" destination="tbY-LX-K8w" id="JTx-tJ-JQ1"/>
                         <outlet property="levelCompletionMessageAdditional" destination="lZY-n7-yQ8" id="tND-O7-ZlJ"/>
                         <outlet property="levelInstruction" destination="4Y1-gV-t0q" id="8Pd-2G-VSu"/>
+                        <outlet property="levelInstructionLabelConstraint" destination="7n6-GX-rHF" id="92S-Gn-wji"/>
                         <outlet property="levelObjectiveView" destination="V5X-Pj-3WK" id="q4u-kU-ngu"/>
                         <outlet property="movesLabel" destination="Cqv-aF-aQU" id="YUi-Dx-7TG"/>
                         <outlet property="movesLeftLabel" destination="kR3-Ig-OhP" id="voy-Nw-r6q"/>
                         <outlet property="nextChallengeButton" destination="I8c-3Y-Wds" id="V8I-os-beZ"/>
-                        <outlet property="progressLabel" destination="49a-Bm-Jzm" id="372-tz-8Ob"/>
-                        <outlet property="progressLabel2" destination="WTO-DQ-iQi" id="oc4-qE-DGH"/>
+                        <outlet property="progressLabel" destination="WTO-DQ-iQi" id="Izs-lE-ggD"/>
                         <outlet property="toolControl" destination="99O-ka-blD" id="G98-fw-tO9"/>
                         <outlet property="toolInstruction" destination="bks-Fo-Osy" id="oEd-GC-qdW"/>
                     </connections>
@@ -402,8 +393,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="540" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show &quot;Well done&quot;-messages" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T7E-u6-zGE">
-                                                    <rect key="frame" x="20" y="11" width="223" height="21"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show solution hint messages (&quot;Well done&quot;/&quot;Good choice&quot;)" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T7E-u6-zGE">
+                                                    <rect key="frame" x="20" y="11" width="417" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <nil key="highlightedColor"/>
@@ -422,7 +413,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="540" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show level progress percentage" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zb4-Ri-hjW">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show level progress bar" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zb4-Ri-hjW">
                                                     <rect key="frame" x="20" y="11" width="246" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>

@@ -108,19 +108,19 @@
     _progressBar.progressTintColor = [[UIApplication sharedApplication] delegate].window.tintColor;
     _progressBar.type = YLProgressBarTypeRounded;
     _progressBar.hideStripes = YES;
-    [self.view addSubview:_progressBar];
+    [self.levelObjectiveView addSubview:_progressBar];
     _progressBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
                                                           attribute:NSLayoutAttributeCenterY
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.progressLabel2
+                                                             toItem:self.progressLabel
                                                           attribute:NSLayoutAttributeCenterY
                                                          multiplier:1.0
                                                            constant:0.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
                                                           attribute:NSLayoutAttributeLeft
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.progressLabel2
+                                                             toItem:self.progressLabel
                                                           attribute:NSLayoutAttributeRight
                                                          multiplier:1.0
                                                            constant:10.0]];
@@ -213,7 +213,6 @@
     
     if (self.currentGameMode == kDHGameModeTutorial) {
         self.movesLabel.hidden = YES;
-        self.progressLabel.hidden = YES;
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
         self.heightToolBar.constant = 0;
@@ -224,18 +223,17 @@
     } else if (self.currentGameMode == kDHGameModePlayground) {
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
-        self.progressLabel.hidden = YES;
     } else {
         self.heightLevelObjectiveView.constant = 60;
         self.heightToolBar.constant = 70;
         self.levelObjectiveView.hidden = NO;
         self.movesLabel.hidden = NO;
-        self.progressLabel.hidden = NO;
     }
-    self.progressLabel.hidden = YES;
     
     if ([DHSettings showProgressPercentage] == NO) {
         self.progressLabel.hidden = YES;
+        _progressBar.hidden = YES;
+        self.levelInstructionLabelConstraint.constant = -self.levelInstruction.frame.size.height*0.5;
     }
 }
 
@@ -1241,7 +1239,6 @@
 
 - (void)setLevelProgress:(NSUInteger)progress
 {
-    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
     [_progressBar setProgress:progress/100.0 animated:YES];
 }
 

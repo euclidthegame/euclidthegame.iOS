@@ -64,7 +64,7 @@
     DHPoint* pE = [[DHPoint alloc] initWithPositionX:120 andY:230];
     DHPoint* pF = [[DHPoint alloc] initWithPositionX:180 andY:300];
     
-    DHPointWithBlockConstraint* pB = [[DHPointWithBlockConstraint alloc] initWithPositionX:400 andY:200];
+    DHPointWithBlockConstraint* pB = [[DHPointWithBlockConstraint alloc] initWithPositionX:390 andY:200];
     
     DHLineSegment* lAB = [[DHLineSegment alloc] initWithStart:pA andEnd:pB];
     DHLineSegment* lCD = [[DHLineSegment alloc] initWithStart:pC andEnd:pD];

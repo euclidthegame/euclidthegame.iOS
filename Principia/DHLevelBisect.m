@@ -15,6 +15,7 @@
     DHRay* _lineAB;
     DHRay* _lineAC;
     DHPoint* _pointA;
+    BOOL _dontrepeat;
 }
 @end
 
@@ -79,6 +80,7 @@
     _pointA = p1;
     _lineAB = l1;
     _lineAC = l2;
+    
 }
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
@@ -179,8 +181,9 @@
             DHCircle* c = object;
             if (EqualPoints(c.center,_lineAB.start)) return c.center.position;
         }
-        if ([object class] == [DHIntersectionPointLineCircle class])
+        if ([object class] == [DHIntersectionPointLineCircle class] && !_dontrepeat)
         {
+            _dontrepeat = YES;
             DHPoint* p = object;
             if (PointOnLine(p,_lineAB) || PointOnLine(object,_lineAC)) return p.position;
         }

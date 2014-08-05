@@ -446,13 +446,17 @@
     [self setLevelProgress:_currentLevel.progress];
     
     // If level supports progress hints, check new objects towards them
-    if ([DHSettings showWellDoneMessages] &&
-        [_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)])
+    if([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)])
     {
         CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
         if (!isnan(hintLocation.x)) {
             CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];
-            [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
+            if (_progressBar.progress < _currentLevel.progress) {
+                [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
+            }
+            else if ([DHSettings showWellDoneMessages]) {
+                [self showTemporaryMessage:[NSString stringWithFormat:@"Good choice !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
+            }
         }
     }
     
@@ -876,19 +880,19 @@
     if (originY < self.geometryView.frame.origin.y) {
         originY = self.geometryView.frame.origin.y;
     }
-    frame.origin = CGPointMake(originX, originY);
+    frame.origin = CGPointMake(roundf(originX), roundf(originY));
     frame.size = textSize;
     label.frame = frame;
     [self.geometryView addSubview:label];
-    [UIView animateWithDuration:1.0
+    [UIView animateWithDuration:0.5
                           delay:0.0
                         options: UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          label.alpha = 1;
                      }
                      completion:^(BOOL finished){
-                         [UIView animateWithDuration:1.0
-                                               delay:0.5
+                         [UIView animateWithDuration:0.5
+                                               delay:2.5
                                              options: UIViewAnimationOptionCurveEaseIn
                                           animations:^{
                                               label.alpha = 0;

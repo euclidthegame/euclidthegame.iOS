@@ -454,7 +454,7 @@
             if (_progressBar.progress < _currentLevel.progress) {
                 [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
             }
-            else if ([DHSettings showWellDoneMessages]) {
+            else if ([DHSettings showWellDoneMessages] && self.currentGameMode == kDHGameModeNormal ) {
                 [self showTemporaryMessage:[NSString stringWithFormat:@"Good choice !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
             }
         }

@@ -370,6 +370,7 @@ const NSTimeInterval YLProgressBarProgressTime         = 0.5f;        // s
         if (_type == YLProgressBarTypeRounded)
         {
             // Draw the white shadow
+/*
             [[UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.2] set];
             
             UIBezierPath *shadow    = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0.5f, 0, CGRectGetWidth(rect) - 1, trackHeight)
@@ -382,6 +383,7 @@ const NSTimeInterval YLProgressBarProgressTime         = 0.5f;        // s
             UIBezierPath *glow  = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, CGRectGetWidth(rect) , trackHeight)
                                                              cornerRadius:_cornerRadius];
             [glow stroke];
+ */
         }
     }
     CGContextRestoreGState(context);

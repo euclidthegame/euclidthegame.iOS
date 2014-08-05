@@ -464,7 +464,8 @@
         [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
     }
     
-    if (countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0) {
+    if (!self.levelCompleted && countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0)
+    {
         [self.geometryView setNeedsDisplay];
         [self showTemporaryMessage:@"You are out of moves and can only create points, undo or reset the level"
                            atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)

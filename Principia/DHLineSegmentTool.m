@@ -12,6 +12,7 @@
 @implementation DHLineSegmentTool {
     CGPoint _touchPointInViewStart;
     DHPoint* _temporaryInitialStartingPoint;
+    DHPoint* _temporaryEndPoint;
     DHLineSegment* _temporaryLine;
 }
 - (NSString*)initialToolTip
@@ -33,6 +34,7 @@
                                                                         geoViewScale);
         if (intersectionPoint) {
             if (!self.startPoint) _temporaryInitialStartingPoint = intersectionPoint;
+            else _temporaryEndPoint = intersectionPoint;
             point = intersectionPoint;
         }
     }
@@ -51,6 +53,10 @@
         DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
         _temporaryLine = [[DHLineSegment alloc] initWithStart:self.startPoint andEnd:endPoint];
         if (point && point != self.startPoint) {
+            if (_temporaryEndPoint) {
+                [self.delegate addTemporaryGeometricObjects:@[_temporaryEndPoint]];
+            }
+            
             _temporaryLine.end.position = point.position;
             [self.delegate toolTipDidChange:@"Release to create line segment"];
             
@@ -69,11 +75,15 @@
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
     
+    if (_temporaryEndPoint) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryEndPoint]];
+        _temporaryEndPoint = nil;        
+    }
+    
     if (!_temporaryLine && self.startPoint) {
         DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
         _temporaryLine = [[DHLineSegment alloc] initWithStart:self.startPoint andEnd:endPoint];
         [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
-        [touch.view setNeedsDisplay];
     }
     
     if (_temporaryLine) {
@@ -81,19 +91,25 @@
         DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
         if (!point) {
             point = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects, geoViewScale);
+            if (point) {
+                _temporaryEndPoint = point;
+            }
         }
         if (point && point != self.startPoint) {
             endPoint = point.position;
+            if (_temporaryEndPoint) {
+                [self.delegate addTemporaryGeometricObjects:@[_temporaryEndPoint]];
+            }
+            
             [self.delegate toolTipDidChange:@"Release to create line segment"];
             _temporaryLine.temporary = NO;
-            [touch.view setNeedsDisplay];
         } else {
             [self.delegate toolTipDidChange:@"Drag to a point defining the end point of the segment"];
             _temporaryLine.temporary = YES;
         }
         _temporaryLine.end.position = endPoint;
-        [touch.view setNeedsDisplay];
     }
+    [touch.view setNeedsDisplay];
 }
 - (void)touchEnded:(UITouch*)touch
 {
@@ -107,6 +123,10 @@
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
     
+    if (_temporaryEndPoint) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryEndPoint]];
+        _temporaryEndPoint = nil;
+    }
     if (_temporaryLine) {
         [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
         _temporaryLine = nil;
@@ -166,6 +186,10 @@
 }
 - (void)reset
 {
+    if (_temporaryEndPoint) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryEndPoint]];
+        _temporaryEndPoint = nil;
+    }
     if (_temporaryLine) {
         [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
         _temporaryLine = nil;
@@ -183,6 +207,9 @@
 
 - (void)dealloc
 {
+    if (_temporaryEndPoint) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryEndPoint]];
+    }
     if (_temporaryLine) {
         [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
     }

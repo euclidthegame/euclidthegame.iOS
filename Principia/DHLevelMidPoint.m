@@ -265,7 +265,7 @@ for (id object in objects){
         CGPoint pos6 = [segment6.superview convertPoint:segment6.frame.origin toView:geoView];
    
         CGFloat xpos = (pos5.x + pos6.x )/2  ;
-        CGFloat ypos =  view.frame.size.height - 18;
+        CGFloat ypos =  view.frame.size.height - 9;
         
         
         if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
@@ -281,14 +281,14 @@ for (id object in objects){
         CABasicAnimation *animation2 = [CABasicAnimation animation];
         animation2.keyPath = @"transform.scale";
         animation2.fromValue = [NSNumber numberWithFloat:1];
-        animation2.toValue = [NSNumber numberWithFloat:0.17];
+        animation2.toValue = [NSNumber numberWithFloat:0.16];
         animation2.duration = 3;
         
         [geoView.layer addAnimation:animation forKey:@"basic1"];
         [geoView.layer addAnimation:animation2 forKey:@"basic2"];
         geoView.layer.position = CGPointMake(xpos, ypos);
         
-        geoView.transform = CGAffineTransformMakeScale(0.17, 0.17);
+        geoView.transform = CGAffineTransformMakeScale(0.16, 0.16);
         
         [self performBlock:^{
             CABasicAnimation *animation3 = [CABasicAnimation animation];

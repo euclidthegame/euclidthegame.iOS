@@ -15,6 +15,7 @@
     DHRay* _lineAB;
     DHRay* _lineAC;
     DHPoint* _pointA;
+    BOOL _dontrepeat;
 }
 @end
 
@@ -79,6 +80,7 @@
     _pointA = p1;
     _lineAB = l1;
     _lineAC = l2;
+    
 }
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
@@ -150,7 +152,7 @@
             DHPoint* p = object;
             if (PointOnLine(p,_lineAB) || PointOnLine(object,_lineAC)) intersectionPointOK = YES;
         }
-        if (PointOnLine(object,b)) midPointOK = YES;
+        if (!EqualPoints(object,_pointA) && PointOnLine(object,b)) midPointOK = YES;
         if (EqualDirection(b,object))
         {
             DHLineObject * l = object;
@@ -161,7 +163,7 @@
             }
         }
     }
-    self.progress = (circleOK + intersectionPointOK + midPointOK + bisectOK)/4.0 * 100;
+    self.progress = ( midPointOK + bisectOK)/2.0 * 100;
     
     return NO;
 }
@@ -179,8 +181,9 @@
             DHCircle* c = object;
             if (EqualPoints(c.center,_lineAB.start)) return c.center.position;
         }
-        if ([object class] == [DHIntersectionPointLineCircle class])
+        if ([object class] == [DHIntersectionPointLineCircle class] && !_dontrepeat)
         {
+            _dontrepeat = YES;
             DHPoint* p = object;
             if (PointOnLine(p,_lineAB) || PointOnLine(object,_lineAC)) return p.position;
         }
@@ -288,7 +291,7 @@
         CGPoint pos6 = [segment6.superview convertPoint:segment6.frame.origin toView:geoView];
         
         CGFloat xpos = (pos5.x + pos6.x )/2 -2 ;
-        CGFloat ypos =  view.frame.size.height - 8;
+        CGFloat ypos =  view.frame.size.height +3;
         
         if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
             ypos = ypos - 19;

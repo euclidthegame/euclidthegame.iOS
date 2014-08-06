@@ -269,12 +269,12 @@
         CGPoint pos5 = [segment5.superview convertPoint:segment5.frame.origin toView:geoView];
         CGPoint pos6 = [segment6.superview convertPoint:segment6.frame.origin toView:geoView];
         
-        CGFloat xpos = (pos5.x + pos6.x )/2 +2 ;
-        CGFloat ypos =  view.frame.size.height - 25;
+        CGFloat xpos = (pos5.x + pos6.x )/2 -4 ;
+        CGFloat ypos =  view.frame.size.height - 18;
         
         if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
             ypos = ypos -23;
-            xpos = xpos +30;
+            xpos = xpos +29;
         }
         
         CABasicAnimation *animation = [CABasicAnimation animation];
@@ -286,7 +286,7 @@
         CABasicAnimation *animation2 = [CABasicAnimation animation];
         animation2.keyPath = @"transform.scale";
         animation2.fromValue = [NSNumber numberWithFloat:1];
-        animation2.toValue = [NSNumber numberWithFloat:0.15];
+        animation2.toValue = [NSNumber numberWithFloat:0.14];
         animation2.duration = 3;
         
         CABasicAnimation *animation3 = [CABasicAnimation animation];

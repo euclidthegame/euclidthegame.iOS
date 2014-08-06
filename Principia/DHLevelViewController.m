@@ -108,19 +108,19 @@
     _progressBar.progressTintColor = [[UIApplication sharedApplication] delegate].window.tintColor;
     _progressBar.type = YLProgressBarTypeRounded;
     _progressBar.hideStripes = YES;
-    [self.view addSubview:_progressBar];
+    [self.levelObjectiveView addSubview:_progressBar];
     _progressBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
                                                           attribute:NSLayoutAttributeCenterY
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.progressLabel2
+                                                             toItem:self.progressLabel
                                                           attribute:NSLayoutAttributeCenterY
                                                          multiplier:1.0
                                                            constant:0.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
                                                           attribute:NSLayoutAttributeLeft
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.progressLabel2
+                                                             toItem:self.progressLabel
                                                           attribute:NSLayoutAttributeRight
                                                          multiplier:1.0
                                                            constant:10.0]];
@@ -213,7 +213,6 @@
     
     if (self.currentGameMode == kDHGameModeTutorial) {
         self.movesLabel.hidden = YES;
-        self.progressLabel.hidden = YES;
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
         self.heightToolBar.constant = 0;
@@ -224,18 +223,17 @@
     } else if (self.currentGameMode == kDHGameModePlayground) {
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
-        self.progressLabel.hidden = YES;
     } else {
         self.heightLevelObjectiveView.constant = 60;
         self.heightToolBar.constant = 70;
         self.levelObjectiveView.hidden = NO;
         self.movesLabel.hidden = NO;
-        self.progressLabel.hidden = NO;
     }
-    self.progressLabel.hidden = YES;
     
     if ([DHSettings showProgressPercentage] == NO) {
         self.progressLabel.hidden = YES;
+        _progressBar.hidden = YES;
+        self.levelInstructionLabelConstraint.constant = -self.levelInstruction.frame.size.height*0.5;
     }
 }
 
@@ -326,7 +324,7 @@
     }
     if (countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0) {
         [self.geometryView setNeedsDisplay];
-        [self showTemporaryMessage:@"Sorry, out of moves, undo or reset the level"
+        [self showTemporaryMessage:@"You are out of moves, undo or reset the level."
                            atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)
                          withColor:[UIColor redColor]];
         return;
@@ -446,18 +444,30 @@
     [self setLevelProgress:_currentLevel.progress];
     
     // If level supports progress hints, check new objects towards them
-    if ([DHSettings showWellDoneMessages] &&
-        [_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)])
+    if([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)])
     {
         CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
         if (!isnan(hintLocation.x)) {
             CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];
-            [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
+            if (_progressBar.progress < _currentLevel.progress) {
+                [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
+            }
+            else if ([DHSettings showWellDoneMessages] && self.currentGameMode == kDHGameModeNormal ) {
+                [self showTemporaryMessage:[NSString stringWithFormat:@"Good choice !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
+            }
         }
     }
     
     if (self.currentGameMode == kDHGameModeTutorial) {
         [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
+    }
+    
+    if (!self.levelCompleted && countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0)
+    {
+        [self.geometryView setNeedsDisplay];
+        [self showTemporaryMessage:@"You are out of moves and can only create points, undo or reset the level"
+                           atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)
+                         withColor:[UIColor redColor]];
     }
 }
 
@@ -876,19 +886,19 @@
     if (originY < self.geometryView.frame.origin.y) {
         originY = self.geometryView.frame.origin.y;
     }
-    frame.origin = CGPointMake(originX, originY);
+    frame.origin = CGPointMake(roundf(originX), roundf(originY));
     frame.size = textSize;
     label.frame = frame;
     [self.geometryView addSubview:label];
-    [UIView animateWithDuration:1.0
+    [UIView animateWithDuration:0.5
                           delay:0.0
                         options: UIViewAnimationOptionCurveEaseIn
                      animations:^{
                          label.alpha = 1;
                      }
                      completion:^(BOOL finished){
-                         [UIView animateWithDuration:1.0
-                                               delay:0.5
+                         [UIView animateWithDuration:0.5
+                                               delay:2.5
                                              options: UIViewAnimationOptionCurveEaseIn
                                           animations:^{
                                               label.alpha = 0;
@@ -1229,7 +1239,6 @@
 
 - (void)setLevelProgress:(NSUInteger)progress
 {
-    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
     [_progressBar setProgress:progress/100.0 animated:YES];
 }
 

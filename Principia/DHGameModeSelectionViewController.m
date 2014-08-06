@@ -111,62 +111,80 @@
 }
 - (void)drawRect:(CGRect)rect
 {
-    
-
-    const CGPoint pieChartCenter = CGPointMake(self.bounds.size.width*0.5, 40);
+    const CGPoint pieChartCenter = CGPointMake(self.bounds.size.width*0.5, self.bounds.size.height*0.5);
     CGFloat pieChartRadius = 22.0;
-    
-    
-    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    paragraphStyle.alignment = NSTextAlignmentCenter;
-    
-    NSString* percentLabelText = [NSString stringWithFormat:@"%d%%", (uint)(self.percentComplete*100)];
-    NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:13],
-                                 NSParagraphStyleAttributeName: paragraphStyle,
-                                 NSForegroundColorAttributeName: [UIColor darkGrayColor]};
-    CGSize textSize = [percentLabelText sizeWithAttributes:attributes];
-    CGRect labelRect = CGRectMake(pieChartCenter.x -textSize.width*0.5,
-                                  pieChartCenter.y -textSize.height*0.5, textSize.width, textSize.height);
-    [percentLabelText drawInRect:labelRect withAttributes:attributes];
-    
-    
-    
-    CGFloat startAngle = -((float)M_PI / 2); // 90 degrees
-    CGFloat endAngle = ((2 * (float)M_PI) + startAngle);
-    UIBezierPath* bezierPath = [UIBezierPath bezierPath];
-    
-    // Create our arc, with the correct angles
-    [bezierPath addArcWithCenter:pieChartCenter
-                          radius:pieChartRadius
-                      startAngle:startAngle
-                        endAngle:(endAngle - startAngle) + startAngle
-                       clockwise:YES];
-    
-    
-    
     CGContextRef context = UIGraphicsGetCurrentContext();
-    [[UIColor lightGrayColor] setStroke];
-    CGContextAddPath(context, bezierPath.CGPath);
-    CGContextSetLineWidth(context, 3.0);
-    CGContextSetShadowWithColor(context, CGSizeMake(1.0, 1.0), 1.0, [UIColor lightGrayColor].CGColor);
-    CGContextStrokePath(context);
+
+    if (self.percentComplete == 1.0) {
+        // Draw checkmark
+        CGContextSetFillColorWithColor(context, self.tintColor.CGColor);
+        CGContextSetStrokeColorWithColor(context, self.tintColor.CGColor);
+        CGContextMoveToPoint(context, pieChartCenter.x, pieChartCenter.y);
+        CGContextAddLineToPoint(context, pieChartCenter.x+pieChartRadius, pieChartCenter.y);
+        CGContextAddArc(context, pieChartCenter.x, pieChartCenter.y, pieChartRadius, 0, 2*M_PI, 0);
+        CGContextDrawPath(context, kCGPathFillStroke);
+        
+        CGContextStrokeEllipseInRect(context, CGRectMake(pieChartCenter.x-pieChartRadius,
+                                                         pieChartCenter.y-pieChartRadius,
+                                                         pieChartRadius*2, pieChartRadius*2));
     
-    
-    UIBezierPath* progress = [UIBezierPath bezierPath];
-    
-    // Create our arc, with the correct angles
-    [progress addArcWithCenter:pieChartCenter
-                        radius:pieChartRadius
-                    startAngle:startAngle
-                      endAngle:(endAngle - startAngle) * (self.percentComplete) + startAngle
-                     clockwise:YES];
-    
-    // Set the display for the path, and stroke it
-    progress.lineWidth = 4;
-    [self.tintColor setStroke];
-    [progress stroke];
-    
+        CGContextSetLineWidth(context, 3.0);
+        CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
+        
+        CGContextMoveToPoint(context, pieChartCenter.x - pieChartRadius*0.5, pieChartCenter.y);
+        CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7, pieChartCenter.y + 7);
+        CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7 + 14, pieChartCenter.y + 7 - 14);
+        CGContextDrawPath(context, kCGPathStroke);
+    } else {
+        NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        paragraphStyle.alignment = NSTextAlignmentCenter;
+        
+        NSString* percentLabelText = [NSString stringWithFormat:@"%d%%", (uint)(self.percentComplete*100)];
+        NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:13],
+                                     NSParagraphStyleAttributeName: paragraphStyle,
+                                     NSForegroundColorAttributeName: [UIColor darkGrayColor]};
+        CGSize textSize = [percentLabelText sizeWithAttributes:attributes];
+        CGRect labelRect = CGRectMake(pieChartCenter.x -textSize.width*0.5,
+                                      pieChartCenter.y -textSize.height*0.5, textSize.width, textSize.height);
+        [percentLabelText drawInRect:labelRect withAttributes:attributes];
+        
+        
+        
+        CGFloat startAngle = -((float)M_PI / 2); // 90 degrees
+        CGFloat endAngle = ((2 * (float)M_PI) + startAngle);
+        UIBezierPath* bezierPath = [UIBezierPath bezierPath];
+        
+        // Create our arc, with the correct angles
+        [bezierPath addArcWithCenter:pieChartCenter
+                              radius:pieChartRadius
+                          startAngle:startAngle
+                            endAngle:(endAngle - startAngle) + startAngle
+                           clockwise:YES];
+        
+        //[[UIColor lightGrayColor] setStroke];
+        [[UIColor colorWithWhite:0.9 alpha:1] setStroke];
+        CGContextAddPath(context, bezierPath.CGPath);
+        CGContextSetLineWidth(context, 3.0);
+        CGContextSetShadowWithColor(context, CGSizeMake(1.0, 1.0), 1.0, [UIColor lightGrayColor].CGColor);
+        CGContextStrokePath(context);
+        
+        
+        UIBezierPath* progress = [UIBezierPath bezierPath];
+        
+        // Create our arc, with the correct angles
+        [progress addArcWithCenter:pieChartCenter
+                            radius:pieChartRadius
+                        startAngle:startAngle
+                          endAngle:(endAngle - startAngle) * (self.percentComplete) + startAngle
+                         clockwise:YES];
+        
+        // Set the display for the path, and stroke it
+        progress.lineWidth = 4;
+        CGContextSetShadowWithColor(context, CGSizeMake(0.0, 0.0), 0.0, [UIColor lightGrayColor].CGColor);
+        [self.tintColor setStroke];
+        [progress stroke];
+    }
     /*
     const CGPoint pieChartCenter = CGPointMake(self.bounds.size.width*0.5, 40);
     CGFloat pieChartRadius = 20.0;

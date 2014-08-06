@@ -15,6 +15,8 @@
     DHPoint* _pointA;
     DHPoint* _pointB;
     DHPoint* _pointC;
+    Message* _message1, *_message2, *_message3;
+    BOOL _step1finished;
 }
 
 @end
@@ -155,7 +157,7 @@
         }
     }
     
-    self.progress = (parallelLineOK + intersectingLineOK)/3.0*100;
+    self.progress = (parallelLineOK) *50;
     
     return NO;
 }
@@ -170,7 +172,11 @@
     tp.translationEnd = _lineAB.end;
     
     for (id object in objects){
-        if (EqualDirection(object,par1))  return MidPointFromLine(par1);
+        if (EqualDirection(object,par1))  {
+            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                _message3.alpha = 0;  } completion:nil];
+            return MidPointFromLine(par1);
+        }
         if (EqualDirection(object,lineAC)) return MidPointFromLine(lineAC);
         if (EqualDirection(object,par2))  return MidPointFromLine(par2);
         if (EqualPoints(object,tp)) return tp.position;
@@ -332,4 +338,70 @@
          }];
     } afterDelay:1.0];
 }
+
+- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+    
+    if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
+        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+        return;
+    }
+    
+    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    
+    _message1 = [[Message alloc] initWithMessage:@"You have just unlocked the parallel line tool." andPoint:CGPointMake(150,720)];
+    _message2 = [[Message alloc] initWithMessage:@"Tap on it to select it." andPoint:CGPointMake(150,740)];
+    _message3 = [[Message alloc] initWithMessage:@"This tool requires a line and a point." andPoint:CGPointMake(150,760)];
+    
+    
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
+        [_message1 position: CGPointMake(150,480)];
+        [_message2 position: CGPointMake(150,500)];
+        [_message3 position: CGPointMake(150,520)];
+    }
+    
+    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
+    [geometryView addSubview:hintView];
+    [hintView addSubview:_message1];
+    [hintView addSubview:_message2];
+    [hintView addSubview:_message3];
+    
+    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+        _message1.alpha = 1; } completion:nil];
+    
+    [self performBlock:^{
+        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+            _message2.alpha = 1; } completion:nil];
+    } afterDelay:3.0];
+    
+    [self performBlock:^{
+        _step1finished =YES;
+    } afterDelay:4.0];
+    
+    int segmentindex = 9; //parallel line tool
+    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-segmentindex];
+    UIView* tool = [toolSegment.subviews objectAtIndex:0];
+    
+    for (int a=0; a < 100; a++) {
+        [self performBlock:
+         ^{
+             if (toolControl.selectedSegmentIndex == segmentindex && _step1finished){
+                 _step1finished = NO;
+                 [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                     _message1.alpha = 0;
+                     _message2.alpha = 0;
+                     _message3.alpha = 1;
+                 } completion:nil];
+             }
+             else if (toolControl.selectedSegmentIndex != segmentindex && _step1finished){
+                 [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
+                  ^{tool.alpha = 0; } completion:^(BOOL finished){
+                      [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
+                       ^{tool.alpha = 1; } completion:nil];}];
+             }
+         } afterDelay:a];
+    }
+}
+
 @end

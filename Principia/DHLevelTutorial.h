@@ -17,9 +17,3 @@
 
 @end
 
-@interface Message : UILabel
-@property (nonatomic) CGPoint point;
-- (instancetype)initWithMessage:(NSString*)message andPoint:(CGPoint)point;
-- (void)text:(NSString*)string;
-- (void)text:(NSString*)string position:(CGPoint)point;
-@end

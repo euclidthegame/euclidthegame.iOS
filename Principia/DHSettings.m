@@ -41,7 +41,7 @@
 
 + (BOOL)showWellDoneMessages
 {
-    return [self getBoolSettingForKey:kSettingKey_ShowWellDoneMessages withDefault:YES];
+    return [self getBoolSettingForKey:kSettingKey_ShowWellDoneMessages withDefault:NO];
 }
 + (void)setShowWellDoneMessages:(BOOL)value
 {

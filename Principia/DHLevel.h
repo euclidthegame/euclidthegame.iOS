@@ -29,6 +29,7 @@
 - (CGPoint)testObjectsForProgressHints:(NSArray*)objects;
 - (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(UIView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heighToolControl and:(BOOL)update;
 - (void)animation:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view;
+- (void)hint:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton;
 - (NSString*)levelDescriptionExtra;
 @end
 
@@ -38,4 +39,12 @@
 
 @interface NSObject (Blocks)
 - (void)performBlock:(void (^)())block afterDelay:(NSTimeInterval)delay;
+@end
+
+@interface Message : UILabel
+@property (nonatomic) CGPoint point;
+- (instancetype)initWithMessage:(NSString*)message andPoint:(CGPoint)point;
+- (void)text:(NSString*)string;
+- (void)text:(NSString*)string position:(CGPoint)point;
+- (void)position:(CGPoint)point;
 @end

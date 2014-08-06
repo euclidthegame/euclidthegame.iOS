@@ -39,6 +39,7 @@
     UIBarButtonItem* _redoButton;
     UIBarButtonItem* _resetButton;
     
+    UILabel* turnHintOnLabel;
     CGPoint _tempGeoCenter;
     
     YLProgressBar* _progressBar;
@@ -185,6 +186,7 @@
 {
     self.firstMoveMade = NO;
     
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
     
     if (self.currentGameMode == kDHGameModeTutorial) {
         self.title = @"Tutorial";
@@ -203,6 +205,12 @@
     } else {
         self.maxNumberOfMoves = 0;
         self.movesLeftLabel.hidden = YES;
+    }
+    
+    [self.hintButton addTarget:self action:@selector(showHint:) forControlEvents:UIControlEventTouchUpInside];
+    
+    if (!([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)] && [DHSettings showWellDoneMessages] && self.currentGameMode == kDHGameModeNormal )) {
+        self.hintButton.hidden = YES;
     }
     
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
@@ -239,6 +247,14 @@
 
 - (void)resetLevel
 {
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+    
+    [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+    
+     if (!([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)] && [DHSettings showWellDoneMessages] && self.currentGameMode == kDHGameModeNormal )) {
+         self.hintButton.hidden = YES;
+     }
+    
     [self.detailedInstructions setTitle:@"Full instruction" forState:UIControlStateNormal];
     [self.detailedInstructions removeTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
     [self.detailedInstructions addTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
@@ -295,6 +311,8 @@
     // Reset current tool
     _currentTool = [[[_currentTool class] alloc] init];
     self.toolInstruction.text = [_currentTool initialToolTip];
+    
+
 }
 
 #pragma mark Helper functions for managing geometric objects
@@ -449,7 +467,7 @@
         CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
         if (!isnan(hintLocation.x)) {
             CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];
-            if (_progressBar.progress < _currentLevel.progress) {
+            if (_progressBar.progress < _currentLevel.progress/100.0) {
                 [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
             }
             else if ([DHSettings showWellDoneMessages] && self.currentGameMode == kDHGameModeNormal ) {
@@ -910,6 +928,13 @@
     
 }
 
+
+- (void)showHint:(id)sender {
+    if ([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)]) {
+        [_currentLevel hint:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:self.hintButton];
+    }
+}
+
 - (void)showDetailedLevelInstruction:(id)sender
 {
     if (_levelInfoView != nil) {
@@ -930,17 +955,20 @@
     UIButton* startButton = [UIButton buttonWithType:UIButtonTypeSystem];
     UILabel* titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     UILabel* objectiveLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    UILabel* showAgainLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    turnHintOnLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     UILabel* solutionPreviewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     DHGeometryView* geoView = [[DHGeometryView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-
+    UISwitch *hintSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 0,0)];
+    [hintSwitch addTarget:self action:@selector(changeSwitch:) forControlEvents:UIControlEventValueChanged];
+    
     [startButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [titleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     [objectiveLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     [geoView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [detailedInstructionView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [solutionPreviewLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [showAgainLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [turnHintOnLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [hintSwitch setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     detailedInstructionView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1.0];
 
@@ -950,7 +978,8 @@
     [detailedInstructionView addSubview:objectiveLabel];
     [detailedInstructionView addSubview:geoView];
     [detailedInstructionView addSubview:solutionPreviewLabel];
-    [detailedInstructionView addSubview:showAgainLabel];
+    [detailedInstructionView addSubview:turnHintOnLabel];
+    [detailedInstructionView addSubview:hintSwitch];
     
     [startButton addTarget:self action:@selector(hideDetailedLevelInstruction)
                              forControlEvents:UIControlEventTouchUpInside];
@@ -971,11 +1000,18 @@
     solutionPreviewLabel.text = @"Solution preview:";
     solutionPreviewLabel.textColor = [UIColor darkGrayColor];
     solutionPreviewLabel.font = [UIFont boldSystemFontOfSize:16.0];
-
-    showAgainLabel.text = @"(Tap the objective description above the drawing area at any time to show this again)";
-    showAgainLabel.textAlignment = NSTextAlignmentCenter;
-    showAgainLabel.textColor = [UIColor grayColor];
-    showAgainLabel.font = [UIFont systemFontOfSize:14.0];
+    
+    turnHintOnLabel.textAlignment = NSTextAlignmentLeft;
+    turnHintOnLabel.textColor = [UIColor darkGrayColor];
+    turnHintOnLabel.font = [UIFont boldSystemFontOfSize:16.0];
+    if ([DHSettings showWellDoneMessages]){
+        [hintSwitch setOn:YES];
+        turnHintOnLabel.text = @"Turn hints off:";
+    }
+    else{
+        [hintSwitch setOn:NO];
+        turnHintOnLabel.text = @"Turn hints on:";
+    }
 
     objectiveLabel.text = [_currentLevel levelDescription];
     objectiveLabel.textColor = [UIColor darkGrayColor];
@@ -1102,21 +1138,22 @@
                                                            constant:-8.0]];
 
     // Constraints for "Show again" label
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:showAgainLabel
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:turnHintOnLabel
                                                           attribute:NSLayoutAttributeLeft
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:detailedInstructionView
                                                           attribute:NSLayoutAttributeLeft
                                                          multiplier:1.0
                                                            constant:20.0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:showAgainLabel
+    /*[self.view addConstraint:[NSLayoutConstraint constraintWithItem:turnHintOnLabel
                                                           attribute:NSLayoutAttributeRight
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:detailedInstructionView
                                                           attribute:NSLayoutAttributeRight
                                                          multiplier:1.0
-                                                           constant:-20.0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:showAgainLabel
+                                                            constant:-20.0]];
+     */
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:turnHintOnLabel
                                                           attribute:NSLayoutAttributeBottom
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:startButton
@@ -1173,11 +1210,28 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:geoView
                                                           attribute:NSLayoutAttributeBottom
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:showAgainLabel
+                                                             toItem:turnHintOnLabel
                                                           attribute:NSLayoutAttributeTop
                                                          multiplier:1.0
                                                            constant:-8.0]];
     
+    // Constraints for hintswitch
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hintSwitch
+                                                          attribute:NSLayoutAttributeCenterY
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:turnHintOnLabel
+                                                          attribute:NSLayoutAttributeCenterY
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hintSwitch
+                                                          attribute:NSLayoutAttributeLeading
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:turnHintOnLabel
+                                                          attribute:NSLayoutAttributeTrailing
+                                                         multiplier:1.0
+                                                           constant:10.0]];
+
     
     detailedInstructionView.layer.cornerRadius = 10.0;
     detailedInstructionView.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -1235,6 +1289,21 @@
 
     [_levelInfoView removeFromSuperview];
     _levelInfoView = nil;
+}
+
+- (void)changeSwitch:(id)sender{
+
+    if([sender isOn]){
+        [DHSettings setShowWellDoneMessages:YES];
+        turnHintOnLabel.text = @"Turn hints off:";
+        self.hintButton.hidden = NO;
+
+    } else{
+        [DHSettings setShowWellDoneMessages:NO];
+        turnHintOnLabel.text = @"Turn hints on:";
+        self.hintButton.hidden = YES;
+    }
+    
 }
 
 - (void)setLevelProgress:(NSUInteger)progress

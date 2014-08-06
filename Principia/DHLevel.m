@@ -25,3 +25,44 @@
 }
 
 @end
+
+@implementation Message
+- (instancetype)initWithMessage:(NSString*)message andPoint:(CGPoint)point
+{
+    self = [super init];
+    if (self) {
+        self.alpha = 0;
+        self.text = message;
+        self.textColor = [UIColor darkGrayColor];
+        self.point = point;
+        CGRect frame = self.frame;
+        frame.origin = self.point;
+        self.frame = frame;
+        [self sizeToFit];
+    }
+    return self;
+}
+
+- (void)text:(NSString*)string{
+    self.text = [NSString stringWithString:string];
+    CGRect frame = self.frame;
+    frame.origin = self.point;
+    self.frame = frame;
+    [self sizeToFit];
+}
+- (void)text:(NSString*)string position:(CGPoint)point{
+    self.text = string;
+    self.point = point;
+    CGRect frame = self.frame;
+    frame.origin = self.point;
+    self.frame = frame;
+    [self sizeToFit];
+}
+- (void)position:(CGPoint)point{
+    self.point = point;
+    CGRect frame = self.frame;
+    frame.origin = self.point;
+    self.frame = frame;
+    [self sizeToFit];
+}
+@end

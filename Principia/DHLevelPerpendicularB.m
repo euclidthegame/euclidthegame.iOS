@@ -15,7 +15,9 @@
     DHPoint* _pointA;
     DHPoint* _pointB;
     DHLine* _lineA;
-    
+    Message* _message1, *_message2, *_message3, *_message4;
+    BOOL _step1finished;
+    BOOL pointOnLineOK;
 }
 
 @end
@@ -140,6 +142,15 @@
         id object = [geometricObjects objectAtIndex:index];
         if (object == _lineA.start || object == _pointB) continue;
         
+        
+        if ([object class] == [DHPointOnLine class]) {
+            DHPointOnLine* p = object;
+            if (PointOnLine(p, _lineA) ) {
+                pointOnLineOK = YES;
+                [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                    _message4.alpha = 0;  } completion:nil];
+            }
+        }
         if ([[object class]  isSubclassOfClass:[DHPoint class]]) {
             DHPoint* p = object;
             CGFloat distPB = DistanceBetweenPoints(p.position, _pointB.position);
@@ -196,6 +207,7 @@
 - (void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view {
     
     
+
     NSMutableArray* geometricObjects2 = [[NSMutableArray alloc]init];
     
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:320 andY:300];
@@ -321,4 +333,158 @@
          }];
     } afterDelay:1.0];
 }
+
+- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+    
+    if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
+        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+        return;
+    }
+    
+    if (pointOnLineOK) return;
+    
+    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    
+    _message1 = [[Message alloc] initWithMessage:@"We are given only one point." andPoint:CGPointMake(20,720)];
+    _message2 = [[Message alloc] initWithMessage:@"But most tools in the toolbar require at least 2 points! " andPoint:CGPointMake(20,740)];
+    _message3 = [[Message alloc] initWithMessage:@"A second point can be constructed using the point tool. Tap on it to select it." andPoint:CGPointMake(20,760)];
+    _message4 = [[Message alloc] initWithMessage:@"Good ! Let's start with constructing a point. For example, on the given line." andPoint:CGPointMake(20,780)];
+    
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
+        [_message1 position: CGPointMake(20,480)];
+        [_message2 position: CGPointMake(20,500)];
+        [_message3 position: CGPointMake(20,520)];
+        [_message4 position: CGPointMake(20,540)];
+    }
+    
+    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
+    [geometryView addSubview:hintView];
+    [hintView addSubview:_message1];
+    [hintView addSubview:_message2];
+    [hintView addSubview:_message3];
+    [hintView addSubview:_message4];
+    
+    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+        _message1.alpha = 1; } completion:nil];
+    
+    [self performBlock:^{
+        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+            _message2.alpha = 1; } completion:nil];
+    } afterDelay:3.0];
+    
+    [self performBlock:^{
+        _step1finished =YES;
+        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+            _message3.alpha = 1; } completion:nil];
+    } afterDelay:6.0];
+    
+    [self performBlock:^{
+        _step1finished =YES;
+    } afterDelay:10.0];
+    
+    int segmentindex = 0; //pointtool
+    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-segmentindex];
+    UIView* tool = [toolSegment.subviews objectAtIndex:0];
+    
+    for (int a=0; a < 100; a++) {
+        [self performBlock:
+         ^{
+             if (toolControl.selectedSegmentIndex == segmentindex && _step1finished){
+                 _step1finished = NO;
+                 [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                     _message1.alpha = 0;
+                     _message2.alpha = 0;
+                     _message3.alpha = 0;
+                     _message4.alpha = 1;
+                 } completion:nil];
+             }
+             else if (toolControl.selectedSegmentIndex != segmentindex && _step1finished){
+                 [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
+                  ^{tool.alpha = 0; } completion:^(BOOL finished){
+                      [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
+                       ^{tool.alpha = 1; } completion:nil];}];
+             }
+         } afterDelay:a];
+    }
+}
+
+- (void)hints:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+    
+    if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
+        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+        return;
+    }
+    
+    if (pointOnLineOK) return;
+    
+    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    
+    Message* message1 = [[Message alloc] initWithMessage:@"There is only one point given." andPoint:CGPointMake(20,720)];
+    Message* message2 = [[Message alloc] initWithMessage:@"But most tools in the toolbar require at least 2 points! " andPoint:CGPointMake(20,740)];
+    Message*  message3 = [[Message alloc] initWithMessage:@"A second point can be constructed using the point tool. Tap on it to select it." andPoint:CGPointMake(20,760)];
+    _message4 = [[Message alloc] initWithMessage:@"Good ! Let's start with constructing a point. For example, on the given line." andPoint:CGPointMake(20,780)];
+    
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
+        [message1 position: CGPointMake(20,480)];
+        [message2 position: CGPointMake(20,500)];
+        [message3 position: CGPointMake(20,520)];
+        [_message4 position: CGPointMake(20,540)];
+    }
+
+    
+    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
+    [geometryView addSubview:hintView];
+    [hintView addSubview:_message1];
+    [hintView addSubview:_message2];
+    [hintView addSubview:_message3];
+    [hintView addSubview:_message4];
+    
+    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+        _message1.alpha = 1; } completion:nil];
+    
+    [self performBlock:^{
+        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+            _message2.alpha = 1; } completion:nil];
+    } afterDelay:3.0];
+    
+    [self performBlock:^{
+        _step1finished =YES;
+        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+            _message3.alpha = 1; } completion:nil];
+    } afterDelay:6.0];
+    
+    [self performBlock:^{
+        _step1finished =YES;
+    } afterDelay:10.0];
+    
+    int segmentindex = 0; //pointtool
+    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-segmentindex];
+    UIView* tool = [toolSegment.subviews objectAtIndex:0];
+    
+    for (int a=0; a < 100; a++) {
+        [self performBlock:
+         ^{
+             if (toolControl.selectedSegmentIndex == segmentindex && _step1finished){
+                 _step1finished = NO;
+                 [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                     _message1.alpha = 0;
+                     _message2.alpha = 0;
+                     _message3.alpha = 0;
+                     _message4.alpha = 1;
+                 } completion:nil];
+             }
+             else if (toolControl.selectedSegmentIndex != segmentindex && _step1finished){
+                 [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
+                  ^{tool.alpha = 0; } completion:^(BOOL finished){
+                      [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
+                       ^{tool.alpha = 1; } completion:nil];}];
+             }
+         } afterDelay:a];
+    }
+}
+
 @end

@@ -32,6 +32,7 @@
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* heightToolBar;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* levelInstructionLabelConstraint;
 
+@property (nonatomic, strong) IBOutlet UIButton* hintButton;
 @property (nonatomic, weak) DHGeometryViewController* geometryViewController;
 @property (nonatomic, strong) NSMutableArray* levelArray;
 @property (nonatomic) NSUInteger levelIndex;

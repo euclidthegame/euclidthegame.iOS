@@ -25,6 +25,11 @@
 
 - (NSString*)levelDescription
 {
+    return (@"Construct two points, cutting the given segment into three equal pieces");
+}
+
+- (NSString*)levelDescriptionExtra
+{
     return (@"Construct two points, such that the segment is cut into three equal pieces.");
 }
 

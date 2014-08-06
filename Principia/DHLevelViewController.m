@@ -18,6 +18,7 @@
 #import "DHSettings.h"
 #import "DHTransitionFromLevel.h"
 #import "DHLevelSelection2ViewController.h"
+#import "YLProgressBar.h"
 
 @interface DHLevelViewController () <UINavigationControllerDelegate>
 
@@ -39,6 +40,8 @@
     UIBarButtonItem* _resetButton;
     
     CGPoint _tempGeoCenter;
+    
+    YLProgressBar* _progressBar;
 }
 
 #pragma mark Life-cycle
@@ -100,6 +103,50 @@
     [self.levelObjectiveView setUserInteractionEnabled:YES];
     [self.levelObjectiveView addGestureRecognizer:gesture];
     
+    _progressBar = [[YLProgressBar alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    _progressBar.trackTintColor = [UIColor lightGrayColor];
+    _progressBar.progressTintColor = [[UIApplication sharedApplication] delegate].window.tintColor;
+    _progressBar.type = YLProgressBarTypeRounded;
+    _progressBar.hideStripes = YES;
+    [self.view addSubview:_progressBar];
+    _progressBar.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
+                                                          attribute:NSLayoutAttributeCenterY
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.progressLabel2
+                                                          attribute:NSLayoutAttributeCenterY
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
+                                                          attribute:NSLayoutAttributeLeft
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.progressLabel2
+                                                          attribute:NSLayoutAttributeRight
+                                                         multiplier:1.0
+                                                           constant:10.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:12.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
+                                                          attribute:NSLayoutAttributeRight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.levelInstruction
+                                                          attribute:NSLayoutAttributeRight
+                                                         multiplier:1.0
+                                                           constant:-30.0]];
+
+    /*[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:450.0]];*/
+
     [self setupForLevel];
 }
 
@@ -158,12 +205,6 @@
         self.movesLeftLabel.hidden = YES;
     }
     
-    if ([_currentLevel respondsToSelector:@selector(progress)] && _currentGameMode != kDHGameModePlayground) {
-        self.progressLabel.hidden = NO;
-    } else {
-        self.progressLabel.hidden = YES;
-    }
-    
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
     
@@ -183,6 +224,7 @@
     } else if (self.currentGameMode == kDHGameModePlayground) {
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
+        self.progressLabel.hidden = YES;
     } else {
         self.heightLevelObjectiveView.constant = 60;
         self.heightToolBar.constant = 70;
@@ -190,6 +232,7 @@
         self.movesLabel.hidden = NO;
         self.progressLabel.hidden = NO;
     }
+    self.progressLabel.hidden = YES;
     
     if ([DHSettings showProgressPercentage] == NO) {
         self.progressLabel.hidden = YES;
@@ -242,7 +285,7 @@
     [self.geometryView setNeedsDisplay];
     self.levelCompletionMessage.hidden = YES;
     
-    self.progressLabel.text = @"Progress: 0%";
+    [self setLevelProgress:0];
 
     [_geometricObjectsForRedo removeAllObjects];
     [_geometricObjectsForUndo removeAllObjects];
@@ -400,7 +443,7 @@
     }
     
     // Update the progress indicator
-    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
+    [self setLevelProgress:_currentLevel.progress];
     
     // If level supports progress hints, check new objects towards them
     if ([DHSettings showWellDoneMessages] &&
@@ -676,7 +719,7 @@
     if (!complete) {
         self.levelCompleted = NO;
     }
-    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
+    [self setLevelProgress:_currentLevel.progress];
     
     [self.geometryView setNeedsDisplay];
 }
@@ -771,7 +814,7 @@
                      completion:^(BOOL finished){
                      }];
     
-    [self.detailedInstructions setTitle:@"Continue to next level" forState:UIControlStateNormal];
+    [self.detailedInstructions setTitle:@"Next Level" forState:UIControlStateNormal];
     [self.detailedInstructions removeTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
     [self.detailedInstructions addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -1182,6 +1225,12 @@
 
     [_levelInfoView removeFromSuperview];
     _levelInfoView = nil;
+}
+
+- (void)setLevelProgress:(NSUInteger)progress
+{
+    self.progressLabel.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)_currentLevel.progress];
+    [_progressBar setProgress:progress/100.0 animated:YES];
 }
 
 #pragma mark Transition delegate methods

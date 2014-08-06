@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="Wl7-qG-pok">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Level Selection View Controller - Select a level-->
@@ -133,8 +134,8 @@
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Level instructions" lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="598" translatesAutoresizingMaskIntoConstraints="NO" id="4Y1-gV-t0q">
-                                        <rect key="frame" x="20" y="20" width="598" height="20"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Level instructions" lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="624" translatesAutoresizingMaskIntoConstraints="NO" id="4Y1-gV-t0q">
+                                        <rect key="frame" x="10" y="7" width="624" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="deviceRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -142,21 +143,33 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WOF-xF-LlD">
-                                        <rect key="frame" x="644" y="14" width="113" height="33"/>
+                                        <rect key="frame" x="649" y="14" width="108" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="108" id="ns2-iW-PP8"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                         <state key="normal" title="Full instruction">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Progress:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WTO-DQ-iQi">
+                                        <rect key="frame" x="10" y="33" width="69" height="20"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="centerY" secondItem="4Y1-gV-t0q" secondAttribute="centerY" id="7n6-GX-rHF"/>
-                                    <constraint firstAttribute="trailing" secondItem="4Y1-gV-t0q" secondAttribute="trailing" constant="150" id="8tY-p7-8kk"/>
+                                    <constraint firstAttribute="centerY" secondItem="4Y1-gV-t0q" secondAttribute="bottom" constant="3" id="7n6-GX-rHF"/>
                                     <constraint firstAttribute="trailing" secondItem="WOF-xF-LlD" secondAttribute="trailing" constant="11" id="H5i-Bt-tHf"/>
+                                    <constraint firstItem="WTO-DQ-iQi" firstAttribute="top" secondItem="4Y1-gV-t0q" secondAttribute="bottom" constant="6" id="K8i-RO-cBI"/>
                                     <constraint firstAttribute="height" constant="60" id="UQi-lV-ZOm"/>
-                                    <constraint firstItem="4Y1-gV-t0q" firstAttribute="leading" secondItem="V5X-Pj-3WK" secondAttribute="leading" constant="20" id="cSa-w4-Guy"/>
+                                    <constraint firstItem="WOF-xF-LlD" firstAttribute="leading" secondItem="4Y1-gV-t0q" secondAttribute="trailing" constant="15" id="Uzo-hG-CQr"/>
+                                    <constraint firstItem="4Y1-gV-t0q" firstAttribute="leading" secondItem="WTO-DQ-iQi" secondAttribute="leading" id="X5L-Xh-6xJ"/>
+                                    <constraint firstItem="4Y1-gV-t0q" firstAttribute="leading" secondItem="V5X-Pj-3WK" secondAttribute="leading" constant="10" id="cSa-w4-Guy"/>
                                     <constraint firstAttribute="centerY" secondItem="WOF-xF-LlD" secondAttribute="centerY" id="itl-SV-CQo"/>
                                 </constraints>
                             </view>
@@ -294,6 +307,7 @@
                         <outlet property="movesLeftLabel" destination="kR3-Ig-OhP" id="voy-Nw-r6q"/>
                         <outlet property="nextChallengeButton" destination="I8c-3Y-Wds" id="V8I-os-beZ"/>
                         <outlet property="progressLabel" destination="49a-Bm-Jzm" id="372-tz-8Ob"/>
+                        <outlet property="progressLabel2" destination="WTO-DQ-iQi" id="oc4-qE-DGH"/>
                         <outlet property="toolControl" destination="99O-ka-blD" id="G98-fw-tO9"/>
                         <outlet property="toolInstruction" destination="bks-Fo-Osy" id="oEd-GC-qdW"/>
                     </connections>

@@ -27,7 +27,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a circle with center C that cuts off a line segment on the given line that has the same length as segment AB.");
+    return (@"Construct a circle at C, cutting off a segment of length AB on the given line");
 }
 
 - (NSString*)levelDescriptionExtra

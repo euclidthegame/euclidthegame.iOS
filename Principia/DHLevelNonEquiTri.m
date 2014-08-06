@@ -28,7 +28,7 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a triangle whose sides have the same length as the given segments using segment AB as base.");
+    return (@"Construct a triangle with AB as base and sides of length CD and EF");
 }
 
 - (NSString*)levelDescriptionExtra

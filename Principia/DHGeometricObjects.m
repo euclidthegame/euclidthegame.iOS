@@ -62,6 +62,16 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     
     return self;
 }
+- (instancetype) initWithPosition:(CGPoint)position
+{
+    self = [super init];
+    
+    if (self) {
+        _position = position;
+    }
+    
+    return self;
+}
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
     CGFloat scale = self.drawScale;

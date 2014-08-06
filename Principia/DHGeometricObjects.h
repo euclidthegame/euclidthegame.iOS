@@ -28,6 +28,7 @@
 @property (nonatomic) CGPoint position;
 @property (nonatomic) BOOL updatesPositionAutomatically;
 - (instancetype) initWithPositionX:(CGFloat)x andY:(CGFloat)y;
+- (instancetype) initWithPosition:(CGPoint)position;
 - (void)updatePosition;
 @end
 

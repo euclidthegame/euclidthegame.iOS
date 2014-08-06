@@ -9,7 +9,10 @@
 #import "DHGeometricTools.h"
 #import "DHMath.h"
 
-@implementation DHPointTool
+@implementation DHPointTool {
+    DHPoint* _temporaryPoint;
+    DHGeometricObject* _temporarySnapTo;
+}
 - (NSString*)initialToolTip
 {
     return @"Tap anywhere to create a new point, or hold down on an existing free (gray) point to move it";
@@ -23,6 +26,8 @@
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
+    self.touchStart = touchPoint;
+
     DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
     if (point && ([point class] == [DHPoint class] ||
                   [point class] == [DHPointOnLine class] ||
@@ -30,11 +35,51 @@
                   [point class] == [DHPointWithBlockConstraint class]) ) {
         self.point = point;
         self.point.highlighted = YES;
-        self.touchStart = touchPoint;
         [self.delegate toolTipDidChange:@"Move the point to the desired location and release"];
         [touch.view setNeedsDisplay];
+    } else {
+        // No moveable point found near touch point, create a new temporary point
+
+        // Check if there are any objects to snap to nearby
+        id closestObject = FindClosestIntersectableNearPoint(touchPoint, self.delegate.geometryObjects,
+                                                             kClosestTapLimit / geoViewScale);
+        
+        // If a close object to snap to was found, create a point fixed to the object, else a free point
+        if (closestObject != nil) {
+            _temporarySnapTo = closestObject;
+            _temporarySnapTo.highlighted = YES;
+            if ([[closestObject class] isSubclassOfClass:[DHLineObject class]]) {
+                DHLineObject* line = closestObject;
+                
+                CGPoint closestPointOnLine = ClosestPointOnLineFromPosition(touchPoint, line);
+                CGFloat tValue = CGVectorDotProduct(line.vector,
+                                                    CGVectorBetweenPoints(line.start.position,closestPointOnLine))/CGVectorDotProduct(line.vector, line.vector);
+                
+                _temporaryPoint = [[DHPointOnLine alloc] initWithLine:line andTValue:tValue];
+            }
+            if ([[closestObject class] isSubclassOfClass:[DHCircle class]]) {
+                DHCircle* circle = closestObject;
+                
+                CGVector vCenterTouchPoint = CGVectorBetweenPoints(circle.center.position, touchPoint);
+                CGFloat angle = CGVectorAngleBetween(vCenterTouchPoint, CGVectorMake(1, 0));
+                
+                if (touchPoint.y < circle.center.position.y) {
+                    angle = 2*M_PI - angle;
+                }
+                
+                _temporaryPoint = [[DHPointOnCircle alloc] initWithCircle:circle andAngle:angle];
+            }
+        } else {
+            _temporaryPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
+        }
+        
+        if (_temporaryPoint) {
+            self.point = _temporaryPoint;
+            [self.delegate addTemporaryGeometricObjects:@[_temporaryPoint]];
+            [self.delegate toolTipDidChange:@"Move the point to the desired location and release"];
+            [touch.view setNeedsDisplay];
+        }
     }
-    
 }
 - (void)touchMoved:(UITouch*)touch
 {
@@ -91,91 +136,40 @@
 }
 - (void)touchEnded:(UITouch*)touch
 {
-    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
-    
+    if (_temporaryPoint) {
+        [self.delegate addGeometricObject:_temporaryPoint];
+        [self reset];
+        return;
+    }
+
     if (self.point) {
-        self.point.highlighted = NO;
-        self.point = nil;
-        [self.delegate toolTipDidChange:self.initialToolTip];
+        // If a point is being moved, simply reset and exit early
+        [self reset];
         [touch.view setNeedsDisplay];
-    } else {
-        CGPoint touchPointInView = [touch locationInView:touch.view];
-        CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
-        
-        // Check if there are any objects to snap to nearby
-        NSArray* nearObjects = FindIntersectablesNearPoint(touchPoint, self.delegate.geometryObjects,
-                                                           kClosestTapLimit / geoViewScale);
-        id<DHGeometricObject> closestObject = nil;
-        CGFloat closestDistance = kClosestTapLimit / geoViewScale;
-        
-        if (nearObjects.count > 0) {
-            for (id object in nearObjects) {
-                if ([[object class] isSubclassOfClass:[DHLineObject class]]) {
-                    CGFloat dist = DistanceFromPositionToLine(touchPoint, object);
-                    if (dist < closestDistance) {
-                        closestDistance = dist;
-                        closestObject = object;
-                    }
-                }
-                if ([[object class] isSubclassOfClass:[DHCircle class]]) {
-                    CGFloat dist = DistanceFromPositionToCircle(touchPoint, object);
-                    if (dist < closestDistance) {
-                        closestDistance = dist;
-                        closestObject = object;
-                    }
-                }
-            }
-        }
-        
-        // If a close object to snap to was found, create a point fixed to the object, else a free point
-        if (closestObject != nil) {
-            if ([[closestObject class] isSubclassOfClass:[DHLineObject class]]) {
-                DHLineObject* line = closestObject;
-                
-                CGPoint closestPointOnLine = ClosestPointOnLineFromPosition(touchPoint, line);
-                CGFloat tValue = CGVectorDotProduct(line.vector, CGVectorBetweenPoints(line.start.position, closestPointOnLine))/CGVectorDotProduct(line.vector, line.vector);
-                
-                DHPointOnLine* point = [[DHPointOnLine alloc] init];
-                point.line = line;
-                point.tValue = tValue;
-                [self.delegate addGeometricObject:point];
-            }
-            if ([[closestObject class] isSubclassOfClass:[DHCircle class]]) {
-                DHCircle* circle = closestObject;
-                
-                CGVector vCenterTouchPoint = CGVectorBetweenPoints(circle.center.position, touchPoint);
-                CGFloat angle = CGVectorAngleBetween(vCenterTouchPoint, CGVectorMake(1, 0));
-                
-                if (touchPoint.y < circle.center.position.y) {
-                    angle = 2*M_PI - angle;
-                }
-                
-                DHPointOnCircle* point = [[DHPointOnCircle alloc] init];
-                point.circle = circle;
-                point.angle = angle;
-                [self.delegate addGeometricObject:point];
-                
-            }
-        } else {
-            DHPoint* point = [[DHPoint alloc] init];
-            point.position = touchPoint;
-            [self.delegate addGeometricObject:point];
-        }
+        return;
     }
 }
 - (BOOL)active
 {
-    return false;
+    return NO;
 }
 - (void)reset
 {
+    if (_temporaryPoint) {
+        [self.delegate removeTemporaryGeometricObjects:@[_temporaryPoint]];
+        _temporaryPoint = nil;
+    }
+    
+    _temporarySnapTo.highlighted = NO;
+    self.point.highlighted = NO;
+    self.point = nil;
     self.associatedTouch = 0;
+    [self.delegate toolTipDidChange:self.initialToolTip];
 }
 
 - (void)dealloc
 {
-    if (self.point) {
-        self.point.highlighted = NO;
-    }
+    _temporarySnapTo.highlighted = NO;
+    self.point.highlighted = NO;
 }
 @end

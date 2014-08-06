@@ -185,11 +185,9 @@
 {
     if (_temporaryLine) {
         [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
-        _temporaryLine = nil;
     }
     if (_temporaryInitialStartingPoint) {
         [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
-        _temporaryInitialStartingPoint = nil;
     }
     self.startPoint.highlighted = NO;
 }

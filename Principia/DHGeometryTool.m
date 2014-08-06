@@ -8,6 +8,8 @@
 
 #import "DHGeometryTool.h"
 
+const CGFloat kClosestTapLimit = 25.0f;
+
 @implementation DHGeometryTool
 
 @end

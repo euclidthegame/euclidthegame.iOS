@@ -34,6 +34,7 @@
     if ([allTouches count] == 2) {
         twoFingers = YES;
         [_currentTool reset];
+        [_currentTool.delegate toolTipDidChange:@"Use two fingers to pan or zoom"];
     }
     else {
         twoFingers = NO;
@@ -98,6 +99,11 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    if (twoFingers) {
+        [_currentTool.delegate toolTipDidChange:_currentTool.initialToolTip];
+        twoFingers = NO;
+    }
+    
     for (UITouch* touch in touches) {
         if ([_currentTool associatedTouch] == (intptr_t)touch) {
             [_currentTool touchEnded:touch];

@@ -13,6 +13,13 @@
 		681C8890198ECE19005307F5 /* DHTransitionToLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C888F198ECE19005307F5 /* DHTransitionToLevel.m */; };
 		681C8893198ECEA0005307F5 /* DHTransitionFromLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C8892198ECEA0005307F5 /* DHTransitionFromLevel.m */; };
 		681C8896199004C4005307F5 /* YLProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C8895199004C4005307F5 /* YLProgressBar.m */; };
+		681C88991991E04F005307F5 /* DHLineSegmentTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C88981991E04F005307F5 /* DHLineSegmentTool.m */; };
+		681C889C1991E0D6005307F5 /* DHGeometryTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C889B1991E0D6005307F5 /* DHGeometryTool.m */; };
+		681C889F1991EDA2005307F5 /* DHPointTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C889E1991EDA2005307F5 /* DHPointTool.m */; };
+		681C88A21991F12D005307F5 /* DHTriangleTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C88A11991F12D005307F5 /* DHTriangleTool.m */; };
+		681C88A41991F5AB005307F5 /* DHLineTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C88A31991F5AB005307F5 /* DHLineTool.m */; };
+		681C88A61991F5E4005307F5 /* DHIntersectTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C88A51991F5E4005307F5 /* DHIntersectTool.m */; };
+		681C88A81991F63F005307F5 /* DHBisectTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C88A71991F63F005307F5 /* DHBisectTool.m */; };
 		68376935197C315700D53E21 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9E619587AEC00A97B86 /* XCTest.framework */; };
 		68376936197C315700D53E21 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
 		68376937197C315700D53E21 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
@@ -97,6 +104,14 @@
 		681C8892198ECEA0005307F5 /* DHTransitionFromLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHTransitionFromLevel.m; sourceTree = "<group>"; };
 		681C8894199004C4005307F5 /* YLProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLProgressBar.h; sourceTree = "<group>"; };
 		681C8895199004C4005307F5 /* YLProgressBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLProgressBar.m; sourceTree = "<group>"; };
+		681C88981991E04F005307F5 /* DHLineSegmentTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLineSegmentTool.m; sourceTree = "<group>"; };
+		681C889A1991E0D6005307F5 /* DHGeometryTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGeometryTool.h; sourceTree = "<group>"; };
+		681C889B1991E0D6005307F5 /* DHGeometryTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGeometryTool.m; sourceTree = "<group>"; };
+		681C889E1991EDA2005307F5 /* DHPointTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHPointTool.m; sourceTree = "<group>"; };
+		681C88A11991F12D005307F5 /* DHTriangleTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHTriangleTool.m; sourceTree = "<group>"; };
+		681C88A31991F5AB005307F5 /* DHLineTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLineTool.m; sourceTree = "<group>"; };
+		681C88A51991F5E4005307F5 /* DHIntersectTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHIntersectTool.m; sourceTree = "<group>"; };
+		681C88A71991F63F005307F5 /* DHBisectTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHBisectTool.m; sourceTree = "<group>"; };
 		68376934197C315600D53E21 /* Euclid Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Euclid Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6837693A197C315700D53E21 /* Euclid Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Euclid Tests-Info.plist"; sourceTree = "<group>"; };
 		6837693C197C315700D53E21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -413,6 +428,14 @@
 			children = (
 				68F0AA02195969A300A97B86 /* DHGeometricTools.h */,
 				68F0AA03195969A300A97B86 /* DHGeometricTools.m */,
+				681C889A1991E0D6005307F5 /* DHGeometryTool.h */,
+				681C889B1991E0D6005307F5 /* DHGeometryTool.m */,
+				681C889E1991EDA2005307F5 /* DHPointTool.m */,
+				681C88A51991F5E4005307F5 /* DHIntersectTool.m */,
+				681C88981991E04F005307F5 /* DHLineSegmentTool.m */,
+				681C88A31991F5AB005307F5 /* DHLineTool.m */,
+				681C88A11991F12D005307F5 /* DHTriangleTool.m */,
+				681C88A71991F63F005307F5 /* DHBisectTool.m */,
 			);
 			name = "Geometric Tools";
 			sourceTree = "<group>";
@@ -581,6 +604,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6866224C197792BC004DCFAC /* DHGameCenterManager.m in Sources */,
+				681C88991991E04F005307F5 /* DHLineSegmentTool.m in Sources */,
 				68F0AA15195A92A700A97B86 /* DHLevelSelectionViewController.m in Sources */,
 				683D9682196BEC680057B62D /* DHLevelTriIncircle.m in Sources */,
 				68F0AA011958C5AB00A97B86 /* DHGeometricObjects.m in Sources */,
@@ -592,8 +616,10 @@
 				68F0A9DE19587AEC00A97B86 /* DHGeometryViewController.m in Sources */,
 				68F0AA3C1961DE5100A97B86 /* DHLevelTutorial.m in Sources */,
 				684708BE19693C0700C1FA83 /* DHLevelNonEquiTri.m in Sources */,
+				681C88A61991F5E4005307F5 /* DHIntersectTool.m in Sources */,
 				684708B81968A68500C1FA83 /* DHLevelMakeCompass.m in Sources */,
 				6872A7DE197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m in Sources */,
+				681C889C1991E0D6005307F5 /* DHGeometryTool.m in Sources */,
 				68F0A9FE1958BDD500A97B86 /* DHGeometryView.m in Sources */,
 				683D9688196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m in Sources */,
 				68F0AA25195CBCA200A97B86 /* DHLevelViewController.m in Sources */,
@@ -613,6 +639,8 @@
 				681C8893198ECEA0005307F5 /* DHTransitionFromLevel.m in Sources */,
 				684708B51968A07D00C1FA83 /* DHLevelLineCopy2.m in Sources */,
 				68F0AA421963E10C00A97B86 /* DHLevelBisect.m in Sources */,
+				681C88A21991F12D005307F5 /* DHTriangleTool.m in Sources */,
+				681C889F1991EDA2005307F5 /* DHPointTool.m in Sources */,
 				68F0AA04195969A300A97B86 /* DHGeometricTools.m in Sources */,
 				6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */,
 				684708AC196731C000C1FA83 /* DHLevelPerpendicularB.m in Sources */,
@@ -621,6 +649,7 @@
 				6872A7E119702A1700823AF9 /* DHLevelPentagon.m in Sources */,
 				6847112619783EE6003B681B /* DHSettingsViewController.m in Sources */,
 				683D968B196D465E0057B62D /* DHLevelCircleToTangent.m in Sources */,
+				681C88A81991F63F005307F5 /* DHBisectTool.m in Sources */,
 				6872A7D5196FDE1800823AF9 /* DHLevelCircleTangentFromPoint.m in Sources */,
 				684708BB196903F500C1FA83 /* DHLevelLineCopyOnLine.m in Sources */,
 				68F0AA3F1961F3B000A97B86 /* DHLevelResults.m in Sources */,
@@ -629,6 +658,7 @@
 				684708AF1967496600C1FA83 /* DHLevelParallellLines.m in Sources */,
 				686622401972A7AB004DCFAC /* DHGameModeSelectionViewController.m in Sources */,
 				68F0AA45196420C700A97B86 /* DHLevelPerpendicular.m in Sources */,
+				681C88A41991F5AB005307F5 /* DHLineTool.m in Sources */,
 				68471129197843D6003B681B /* DHSettings.m in Sources */,
 				681C8886198D0BF1005307F5 /* DHSettingsTableViewController.m in Sources */,
 				6866224F1977C304004DCFAC /* DHIAPManager.m in Sources */,

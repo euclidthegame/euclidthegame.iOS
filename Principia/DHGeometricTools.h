@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DHGeometricObjects.h"
 #import "DHGeometricTransform.h"
+#import "DHGeometryTool.h"
 
 typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 {
@@ -29,50 +30,14 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
     DHAllToolsAvailable = NSUIntegerMax
 };
 
-
-@protocol DHGeometryToolDelegate <NSObject>
-- (NSArray*)geometryObjects;
-- (DHGeometricTransform*)geoViewTransform;
-- (void)toolTipDidChange:(NSString*)currentTip;
-- (void)addGeometricObject:(id)object;
-- (void)addGeometricObjects:(NSArray*)objects;
-- (void)addTemporaryGeometricObjects:(NSArray*)objects;
-- (void)removeTemporaryGeometricObjects:(NSArray *)objects;
-- (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color;
-- (void)updateAllPositions;
-@end
-
-
-@protocol DHGeometryTool <NSObject>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
-- (NSString*)initialToolTip;
-- (void)touchBegan:(UITouch*)touch;
-- (void)touchMoved:(UITouch*)touch;
-- (void)touchEnded:(UITouch*)touch;
-- (BOOL)active;
-- (void)reset;
-@end
-
-@interface DHGeometryTool : NSObject
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
-@end
-
-
-@interface DHZoomPanTool : DHGeometryTool <DHGeometryTool>
-@end
-
 @interface DHPointTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* point;
 @property (nonatomic) CGPoint touchStart;
 @end
 
-
 @interface DHLineSegmentTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
-
 
 @interface DHCircleTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* center;
@@ -93,7 +58,6 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 @interface DHTriangleTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
-
 
 @interface DHBisectTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHLineObject* firstLine;

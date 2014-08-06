@@ -109,8 +109,19 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         
         if (self.class == [DHPointOnCircle class] || self.class == [DHPointOnLine class])
         {
-            CGContextSetRGBStrokeColor(context, kLineColor.r, kLineColor.g, kLineColor.b, 1.0);
-            CGContextStrokeEllipseInRect(context, rect);
+            BOOL hideBorder = NO;
+            if (self.class == [DHPointOnCircle class]) {
+                DHPointOnCircle* p = (DHPointOnCircle*)self;
+                hideBorder = p.hideBorder;
+            }
+            if (self.class == [DHPointOnLine class]) {
+                DHPointOnLine* p = (DHPointOnLine*)self;
+                hideBorder = p.hideBorder;
+            }
+            if (!hideBorder) {
+                CGContextSetRGBStrokeColor(context, kLineColor.r, kLineColor.g, kLineColor.b, 1.0);
+                CGContextStrokeEllipseInRect(context, rect);
+            }
         }
     }
     

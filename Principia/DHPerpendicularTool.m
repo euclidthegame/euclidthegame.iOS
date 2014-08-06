@@ -9,14 +9,22 @@
 #import "DHGeometricTools.h"
 #import "DHMath.h"
 
-@implementation DHPerpendicularTool
+@implementation DHPerpendicularTool {
+    DHPerpendicularLine* _tempPerpLine;
+    DHPoint* _tempPoint;
+}
 - (NSString*)initialToolTip
 {
     return @"Tap a line you wish to make a line perpendicular to";
 }
 - (void)touchBegan:(UITouch*)touch
 {
+    /*CGPoint touchPointInView = [touch locationInView:touch.view];
+    CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
+    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
     
+    if (self.line == nil) {
+    }*/
 }
 - (void)touchMoved:(UITouch*)touch
 {

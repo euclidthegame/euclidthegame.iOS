@@ -65,16 +65,14 @@
     DHPoint* pAEnd = [[DHPoint alloc] initWithPositionX:pAEndPoint.x andY:pAEndPoint.y];
     
     DHLineSegment* pALine = [[DHLineSegment alloc] initWithStart:pAStart andEnd:pAEnd];
-    DHPointOnLine* pA = [[DHPointOnLine alloc] init];
-    pA.tValue = 0.2;
-    pA.line = pALine;
+    DHPointOnLine* pA = [[DHPointOnLine alloc] initWithLine:pALine andTValue:0.2];
+    pA.hideBorder = YES;
     
     DHPoint* pB1 = [[DHPoint alloc] initWithPositionX:250 andY:400];
     DHPoint* pB2 = [[DHPoint alloc] initWithPositionX:250 andY:300];
     DHCircle* cB = [[DHCircle alloc] initWithCenter:pB1 andPointOnRadius:pB2];
-    DHPointOnCircle* pB = [[DHPointOnCircle alloc] init];
-    pB.circle = cB;
-    pB.angle = (2*0.65)*M_PI;
+    DHPointOnCircle* pB = [[DHPointOnCircle alloc] initWithCircle:cB andAngle:(2*0.65)*M_PI];
+    pB.hideBorder = YES;
     
     DHRay* lA1 = [[DHRay alloc] initWithStart:pA andEnd:pA1];
     DHRay* lA2 = [[DHRay alloc] initWithStart:pA andEnd:pA2];

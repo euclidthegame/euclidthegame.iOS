@@ -112,12 +112,14 @@
 @interface DHPointOnLine : DHPoint
 @property (nonatomic, strong) DHLineObject* line;
 @property (nonatomic) CGFloat tValue; // Value between 0 and 1 indicating distance from start to end
+@property (nonatomic) BOOL hideBorder;
 - (instancetype)initWithLine:(DHLineObject*)line andTValue:(CGFloat)tValue;
 @end
 
 @interface DHPointOnCircle : DHPoint
 @property (nonatomic, strong) DHCircle* circle;
 @property (nonatomic) CGFloat angle; // Angle of rotation from positive x-axis to point
+@property (nonatomic) BOOL hideBorder;
 - (instancetype)initWithCircle:(DHCircle*)circle andAngle:(CGFloat)angle;
 @end
 

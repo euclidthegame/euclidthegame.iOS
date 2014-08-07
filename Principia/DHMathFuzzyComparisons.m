@@ -298,3 +298,29 @@ BOOL EqualRadius (id circle1, id circle2){
     }
     return NO;
 }
+
+BOOL LineObjectTangentToCircle(id lineObject, id circle)
+{
+    if ([lineObject isKindOfClass:[DHLineObject class]] && [circle isKindOfClass:[DHCircle class]]){
+        DHLineObject* l = lineObject;
+        DHCircle* c = circle;
+        CGFloat cRadius = c.radius;
+        
+        CGPoint closestPointOnLine = ClosestPointOnLineFromPosition(c.center.position, l);
+        // Ensure closest point is on the radius
+        CGFloat distCP = DistanceBetweenPoints(c.center.position, closestPointOnLine);
+        if (!EqualScalarValues(cRadius, distCP)) {
+            return NO;
+        }
+        
+        // Ensure line object is perpendicular to line from circle center to radius
+        DHPoint* pClosest = [[DHPoint alloc] initWithPosition:closestPointOnLine];
+        DHLineSegment* s = [[DHLineSegment alloc] initWithStart:c.center andEnd:pClosest];
+        DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] initWithLine:s andPoint:pClosest];
+        if (EqualDirection(perpLine, l)) {
+            return YES;
+        }
+        
+    }
+    return NO;
+}

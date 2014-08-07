@@ -13,20 +13,21 @@
 
 typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 {
-    DHPointToolAvailable = 1 << 0,
-    DHLineSegmentToolAvailable = 1 << 1,
-    DHLineToolAvailable = 1 << 2,
-    DHCircleToolAvailable = 1 << 3,
-    DHIntersectToolAvailable = 1 << 4,
-    DHMidpointToolAvailable = 1 << 5,
-    DHMoveToolAvailable = 1 << 6,
-    DHTriangleToolAvailable = 1 << 7,
-    DHBisectToolAvailable = 1 << 8,
-    DHPerpendicularToolAvailable = 1 << 9,
-    DHParallelToolAvailable = 1 << 10,
-    DHTranslateToolAvailable_Weak = 1 << 11,
-    DHTranslateToolAvailable = 1 << 12,
-    DHCompassToolAvailable = 1 << 13,
+    DHPointToolAvailable            = 1 << 0,
+    DHLineSegmentToolAvailable      = 1 << 1,
+    DHLineToolAvailable             = 1 << 2,
+    DHCircleToolAvailable           = 1 << 3,
+    DHIntersectToolAvailable        = 1 << 4,
+    DHMidpointToolAvailable_Weak    = 1 << 5,
+    DHMidpointToolAvailable         = 1 << 6,
+    DHMoveToolAvailable             = 1 << 7,
+    DHTriangleToolAvailable         = 1 << 8,
+    DHBisectToolAvailable           = 1 << 9,
+    DHPerpendicularToolAvailable    = 1 << 10,
+    DHParallelToolAvailable         = 1 << 11,
+    DHTranslateToolAvailable_Weak   = 1 << 12,
+    DHTranslateToolAvailable        = 1 << 13,
+    DHCompassToolAvailable          = 1 << 14,
     DHAllToolsAvailable = NSUIntegerMax
 };
 
@@ -49,6 +50,8 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 
 @interface DHMidPointTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
+@property (nonatomic, weak) DHCircle* circle;
+@property (nonatomic) BOOL disableCircles;
 @end
 
 @interface DHLineTool : DHGeometryTool <DHGeometryTool>

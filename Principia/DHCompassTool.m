@@ -53,18 +53,24 @@
         DHPoint* point= FindPointClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
         DHLineSegment* line = nil;
         
-        // Prefer existing points first, line segment second, and new intersections third
+        // Prefer existing points first, line segment second, new intersections third, circle fourth
         if (!point) {
             line = FindLineSegmentClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
         }
         if (!point && !line) {
             point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
-            if (!self.firstPoint) {
+            if (point && !self.firstPoint) {
                 _tempIntersectionPoint1 = point;
                 [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint1]];
-            } else if (!self.secondPoint) {
+            } else if (point && !self.secondPoint) {
                 _tempIntersectionPoint2 = point;
                 [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint2]];
+            }
+        }
+        if (!point && !line) {
+            DHCircle* circle = FindCircleClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
+            if (circle) {
+                line = [[DHLineSegment alloc]initWithStart:circle.center andEnd:circle.pointOnRadius];
             }
         }
         

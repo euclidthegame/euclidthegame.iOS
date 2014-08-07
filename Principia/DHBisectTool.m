@@ -58,14 +58,26 @@
                     return;
                 }
                 
-                DHBisectLine* bl = [[DHBisectLine alloc] init];
-                bl.line1 = self.firstLine;
-                bl.line2 = line;
+                BOOL createPerpendicular = YES;
                 
-                DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] init];
-                perpLine.line = bl;
-                perpLine.point = bl.start;
-                [self.delegate addGeometricObjects:@[bl, perpLine]];
+                if ([_firstLine isKindOfClass:[DHLineSegment class]] &&
+                    [line isKindOfClass:[DHLineSegment class]]) {
+                    
+                    if (_firstLine.start == line.start || _firstLine.start == line.end ||
+                        _firstLine.end == line.start || _firstLine.end == line.end)
+                    {
+                        createPerpendicular = NO;
+                    }
+                }
+                
+                DHBisectLine* bl = [[DHBisectLine alloc] initWithLine:self.firstLine andLine:line];
+                
+                if (createPerpendicular) {
+                    DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] initWithLine:bl andPoint:bl.start];
+                    [self.delegate addGeometricObjects:@[bl, perpLine]];
+                } else {
+                    [self.delegate addGeometricObjects:@[bl]];
+                }
                 
                 self.firstLine.highlighted = false;
                 self.firstLine = nil;
@@ -106,9 +118,10 @@
                 DHBisectLine* bl = [[DHBisectLine alloc] init];
                 bl.line1 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:self.firstPoint];
                 bl.line2 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:point];
-                DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] initWithLine:bl andPoint:bl.start];
+                [objectsToAdd addObjectsFromArray:@[bl]];
                 
-                [objectsToAdd addObjectsFromArray:@[bl, perpLine]];
+                //DHPerpendicularLine* perpLine = [[DHPerpendicularLine alloc] initWithLine:bl andPoint:bl.start];
+                //[objectsToAdd addObjectsFromArray:@[bl, perpLine]];
                 
                 [self.delegate addGeometricObjects:objectsToAdd];
                 

@@ -815,6 +815,20 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     CGVector v1 = CGVectorNormalize(self.line1.vector);
     CGVector v2 = CGVectorNormalize(self.line2.vector);
     
+    // If defined by two line segments sharing an end point, ensure to provide inner bisector
+    if ([_line1 isKindOfClass:[DHLineSegment class]] && [_line2 isKindOfClass:[DHLineSegment class]]) {
+        if (_line1.start == _line2.end) {
+            v2 = CGVectorInvert(v2);
+        }
+        if (_line2.start == _line1.end) {
+            v1 = CGVectorInvert(v1);
+        }
+        if (_line1.end == _line2.end) {
+            v1 = CGVectorInvert(v1);
+            v2 = CGVectorInvert(v2);
+        }
+    }
+    
     _endPointCache.position = CGPointMake(startPos.x + v1.dx + v2.dx, startPos.y + v1.dy + v2.dy);
     return _endPointCache;
 }

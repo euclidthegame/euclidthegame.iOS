@@ -45,6 +45,7 @@
         _tempPerpLine = [[DHPerpendicularLine alloc] initWithLine:self.line andPoint:_tempPoint];
         _tempPerpLine.temporary = YES;
         [self.delegate addTemporaryGeometricObjects:@[_tempPerpLine]];
+        [self.delegate toolTipDidChange:@"Swipe to a point that the perpendicular line should pass through"];
         
         DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
         if (!point) {
@@ -57,9 +58,8 @@
         if (point) {
             _tempPerpLine.temporary = NO;
             _tempPerpLine.point = point;
+            point.highlighted = YES;
             [self.delegate toolTipDidChange:@"Release to create perpendicular line"];
-        } else {
-            [self.delegate toolTipDidChange:@"Swipe to a point that the perpendicular line should pass through"];
         }
         
         [touch.view setNeedsDisplay];
@@ -77,6 +77,10 @@
         _tempIntersectionPoint = nil;
     }
     if (_tempPerpLine) {
+        _tempPerpLine.point.highlighted = NO;
+        _tempPoint.position = touchPoint;
+        _tempPerpLine.point = _tempPoint;
+        
         DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
         if (!point) {
             point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
@@ -85,14 +89,18 @@
                 [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint]];
             }
         }
+        // If still no point, see if there is a point close to the line and snap to it
+        if (!point) {
+            point = FindPointClosestToLine(_tempPerpLine, nil, self.delegate.geometryObjects, 8/geoViewScale);
+        }
+        
         if (point) {
             _tempPerpLine.temporary = NO;
             _tempPerpLine.point = point;
+            point.highlighted = YES;
             [self.delegate toolTipDidChange:@"Release to create perpendicular line"];
         } else {
             _tempPerpLine.temporary = YES;
-            _tempPoint.position = touchPoint;
-            _tempPerpLine.point = _tempPoint;
             [self.delegate toolTipDidChange:@"Swipe to a point that the perpendicular line should pass through"];
         }
         [touch.view setNeedsDisplay];
@@ -104,8 +112,7 @@
     NSMutableArray* objectsToAdd = [[NSMutableArray alloc] initWithCapacity:2];
     
     if (_tempPerpLine) {
-        [self.delegate removeTemporaryGeometricObjects:@[_tempPerpLine]];
-        
+        _tempPerpLine.highlighted = NO;
         if (_tempPerpLine.point == _tempPoint) {
             if(DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit) {
                 [self reset];
@@ -119,14 +126,8 @@
             }
             [self reset];
         }
-        
-        _tempPerpLine = nil;
-        _tempPoint = nil;
     }
-    if (_tempIntersectionPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint]];
-        _tempIntersectionPoint = nil;
-    }
+    [self resetTemporaryObjects];
     
     if (objectsToAdd.count > 0) {
         [self.delegate addGeometricObjects:objectsToAdd];
@@ -144,25 +145,29 @@
 }
 - (void)reset
 {
-    if (_tempIntersectionPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint]];
-        _tempIntersectionPoint = nil;
-    }
-    if (_tempPerpLine) {
-        [self.delegate removeTemporaryGeometricObjects:@[_tempPerpLine]];
-        _tempPerpLine = nil;
-        _tempPoint = nil;
-    }
+    [self resetTemporaryObjects];
  
     self.line.highlighted = NO;
     self.line = nil;
     [self.delegate toolTipDidChange:self.initialToolTip];
     self.associatedTouch = 0;
 }
+- (void)resetTemporaryObjects
+{
+    if (_tempIntersectionPoint) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint]];
+        _tempIntersectionPoint = nil;
+    }
+    if (_tempPerpLine) {
+        _tempPerpLine.point.highlighted = NO;
+        [self.delegate removeTemporaryGeometricObjects:@[_tempPerpLine]];
+        _tempPerpLine = nil;
+        _tempPoint = nil;
+    }
+}
 - (void)dealloc
 {
-    if (_tempIntersectionPoint) [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint]];
-    if (_tempPerpLine) [self.delegate removeTemporaryGeometricObjects:@[_tempPerpLine]];
+    [self resetTemporaryObjects];
     
     self.line.highlighted = NO;
 }

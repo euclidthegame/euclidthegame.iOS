@@ -351,14 +351,15 @@ static DHPoint* FindPointClosestToCircle(DHCircle* c, NSArray* geometricObjects,
     return closestPoint;
 }
 
-static DHPoint* FindPointClosestToLine(DHLine* l, DHPoint* p, NSArray* geometricObjects, CGFloat maxDistance)
+// NOTE: DHPoint p is skipped and not returned
+static DHPoint* FindPointClosestToLine(DHLineObject* l, DHPoint* p, NSArray* geometricObjects, CGFloat maxDistance)
 {
     DHPoint* closestPoint = nil;
     CGFloat closestPointDistance = maxDistance;
     
-    NSMutableArray* tempobjects = [[NSMutableArray alloc]initWithArray:geometricObjects];
-    [tempobjects removeObject:p];
-    for (id object in tempobjects) {
+    for (id object in geometricObjects) {
+        if (object == p) continue;
+        
         if ([[object class] isSubclassOfClass:[DHPoint class]]) {
             CGFloat distance = DistanceFromPointToLine(object, l);
             

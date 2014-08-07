@@ -87,7 +87,7 @@
             start.position = CGPointMake(start.position.x + delta.x,start.position.y + delta.y);
             [start updatePosition];
             [geometryView setNeedsDisplay];
-        } afterDelay:a* (time/100.0)];
+        } afterDelay:a* (1/100.0)];
     }
 }
 -(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView {

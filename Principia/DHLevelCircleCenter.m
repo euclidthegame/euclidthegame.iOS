@@ -71,7 +71,6 @@
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
 {
     BOOL complete = [self isLevelCompleteHelper:geometricObjects];
-    
     if (!complete) {
         return NO;
     }
@@ -89,7 +88,6 @@
     }
     
     complete = [self isLevelCompleteHelper:geometricObjects];
-    
     _pointC.position = pointA;
     _pointR.position = pointB;
     for (id object in geometricObjects) {
@@ -115,12 +113,12 @@
 - (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
     
     for (id object in objects){
-    
+        
         if(EqualPoints(object, _pointC)) return _pointC.position;
     }
-
     
-return CGPointMake(NAN, NAN);
+    
+    return CGPointMake(NAN, NAN);
 }
 
 - (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
@@ -156,7 +154,7 @@ return CGPointMake(NAN, NAN);
     Message* message2 = [[Message alloc] initWithMessage:@"And let's draw a line segment connecting two points on the circle." andPoint:CGPointMake(200,340)];
     Message* message3 = [[Message alloc] initWithMessage:@"We can drop a perpendicular from the center to the line segment." andPoint:CGPointMake(200,360)];
     Message* message4 = [[Message alloc] initWithMessage:@"How can we construct such a point ?" andPoint:CGPointMake(200,380)];
-        Message* message5 = [[Message alloc] initWithMessage:@"How can we construct such a point ?" andPoint:CGPointMake(200,400)];
+    Message* message5 = [[Message alloc] initWithMessage:@"How can we construct such a point ?" andPoint:CGPointMake(200,400)];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {
@@ -179,7 +177,7 @@ return CGPointMake(NAN, NAN);
     DHPerpendicularLine* perp = [[DHPerpendicularLine alloc]initWithLine:segment andPoint:_pointC];
     DHMidPoint* intersection = [[DHMidPoint alloc]initWithPoint1:p1 andPoint2:p2];
     intersection.label = @"D";
-
+    
     DHGeometryView* segmentView = [[DHGeometryView alloc]initWithObjects:@[segment,p1,p2] andSuperView:geometryView];
     
     DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[perp,intersection] andSuperView:geometryView];
@@ -190,11 +188,11 @@ return CGPointMake(NAN, NAN);
     
     UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
     [geometryView addSubview:hintView];
-
-
-
+    
+    
+    
     [hintView addSubview:segmentsView];
-        [hintView addSubview:segmentView];
+    [hintView addSubview:segmentView];
     [hintView addSubview:perpView];
     [hintView addSubview:centerView];
     [hintView addSubview:message1];
@@ -205,57 +203,57 @@ return CGPointMake(NAN, NAN);
     [hintView addSubview:message5];
     
     if (!hint1_OK) {
-    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-        message1.alpha = 1; } completion:^(BOOL finished){ }];
-    [self fadeIn:centerView withDuration:2];
-    
-    [self afterDelay:4.0 performBlock:^{
         [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            message2.alpha = 1; } completion:^(BOOL finished){ }];
-        [self fadeIn:segmentView withDuration:2];
-    }];
-    
-    [self afterDelay:8.0 performBlock:^{
-        [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            message3.alpha = 1; } completion:^(BOOL finished){ }];
-        [self fadeIn:perpView withDuration:2];
-    }];
-    
-    [self afterDelay:12.0 performBlock:^{
-        [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-        message1.alpha = 0;
-        message2.alpha =0 ;
-        message3.alpha = 0;
-        } completion:nil];
-    }];
-    
-    [self afterDelay:14.0 performBlock:^{
-        [message1 text:@"It looks like D is the midpoint of line segment BC."];
-        [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            message1.alpha = 1;
-        }completion:^(BOOL finished){ }];
+            message1.alpha = 1; } completion:^(BOOL finished){ }];
+        [self fadeIn:centerView withDuration:2];
         
-    }];
-    [self afterDelay:18.0 performBlock:^{
-        [message2 text:@"This follows from the Pythagoras Theorem."];
+        [self afterDelay:4.0 performBlock:^{
+            [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                message2.alpha = 1; } completion:^(BOOL finished){ }];
+            [self fadeIn:segmentView withDuration:2];
+        }];
+        
+        [self afterDelay:8.0 performBlock:^{
+            [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                message3.alpha = 1; } completion:^(BOOL finished){ }];
+            [self fadeIn:perpView withDuration:2];
+        }];
+        
+        [self afterDelay:12.0 performBlock:^{
+            [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                message1.alpha = 0;
+                message2.alpha =0 ;
+                message3.alpha = 0;
+            } completion:nil];
+        }];
+        
+        [self afterDelay:14.0 performBlock:^{
+            [message1 text:@"It looks like D is the midpoint of line segment BC."];
+            [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                message1.alpha = 1;
+            }completion:^(BOOL finished){ }];
+            
+        }];
+        [self afterDelay:18.0 performBlock:^{
+            [message2 text:@"This follows from the Pythagoras Theorem."];
             [self fadeIn:segmentsView withDuration:2];
-        [self fadeIn:message2 withDuration:1];
-    }];
-    
-    [self afterDelay:22.0 performBlock:^{
-        [message3 text:@"AD² + CD² = AC² and AD²+ BD² = AB²"];
-        [self fadeIn:message3 withDuration:1];
-    }];
-    
-    [self afterDelay:26.0 performBlock:^{
-        [message4 text:@"          CD² = AC² and          BD² = AB²"];
-        [self fadeIn:message4 withDuration:1];
-    }];
-    [self afterDelay:30.0 performBlock:^{
-        [message5 text:@"As AC = AB, it follows that CD must be equal to BD."];
-        [self fadeIn:message5 withDuration:1];
-        hint1_OK = YES;
-    }];
+            [self fadeIn:message2 withDuration:1];
+        }];
+        
+        [self afterDelay:22.0 performBlock:^{
+            [message3 text:@"AD² + CD² = AC² and AD²+ BD² = AB²"];
+            [self fadeIn:message3 withDuration:1];
+        }];
+        
+        [self afterDelay:26.0 performBlock:^{
+            [message4 text:@"          CD² = AC² and          BD² = AB²"];
+            [self fadeIn:message4 withDuration:1];
+        }];
+        [self afterDelay:30.0 performBlock:^{
+            [message5 text:@"As AC = AB, it follows that CD must be equal to BD."];
+            [self fadeIn:message5 withDuration:1];
+            hint1_OK = YES;
+        }];
     }
     else if (!hint2_OK){
         segment.temporary = YES;
@@ -270,7 +268,7 @@ return CGPointMake(NAN, NAN);
             [message2 text:@"We can draw a perpendicular from the midpoint."];
             [self fadeIn:perpView withDuration:2];
             [self fadeIn:message2 withDuration:1];
-         }];
+        }];
         [self afterDelay:8.0 performBlock:^{
             [message3 text:@"And we know that this line passes through the center of the circle."];
             [self fadeIn:message3 withDuration:1];
@@ -288,7 +286,7 @@ return CGPointMake(NAN, NAN);
         }];
         [self afterDelay:16.0 performBlock:^{
             [self movePointOnCircle:p2 toAngle:3.0-2*M_PI withDuration:4 inView:segmentView];
-             hint2_OK = YES;
+            hint2_OK = YES;
         }];
         
         
@@ -297,4 +295,39 @@ return CGPointMake(NAN, NAN);
     
 }
 
+-(void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view {
+    
+    DHCircle* circle = [[DHCircle alloc]initWithCenter:_pointC andPointOnRadius:_pointR];
+    DHGeometryView* animationView = [[DHGeometryView alloc]initWithObjects:@[_pointC,circle] andSuperView:view andGeometryView:geometryView];
+    
+    [view addSubview:animationView];
+    
+    UIView* segment1= [toolControl.subviews objectAtIndex:4];
+    UIView* segment2 = [toolControl.subviews objectAtIndex:5];
+    CGPoint pos1 = [segment1.superview convertPoint:segment1.frame.origin toView:animationView];
+    CGPoint pos2 = [segment2.superview convertPoint:segment2.frame.origin toView:animationView];
+    CGFloat xpos = (pos1.x + pos2.x )/2;
+    CGFloat ypos =  pos2.y;
+    
+    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        ypos = ypos;
+        xpos = xpos;
+    }
+    
+    DHPoint* endpointC = [[DHPoint alloc]initWithPositionX:xpos andY:ypos-30];
+    DHPoint* endpointR = [[DHPoint alloc]initWithPositionX:pos1.x -15 andY:ypos-30];
+    
+    [self movePointFrom:_pointC to:endpointC withDuration:4.0 inView:animationView];
+    [self movePointFrom:_pointR to:endpointR withDuration:4.0 inView:animationView];
+    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-6];
+    UIImageView* tool = [toolSegment.subviews objectAtIndex:0];
+    
+    [self afterDelay:3.0 performBlock:^{
+        [self fadeOut:animationView withDuration:1.0];
+    }];
+    [self afterDelay:4.0 performBlock:^{
+        tool.image = [UIImage imageNamed:@"toolMidpointImproved"];
+        [animationView removeFromSuperview];
+    }];
+}
 @end

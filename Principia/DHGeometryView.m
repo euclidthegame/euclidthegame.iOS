@@ -51,12 +51,32 @@
     return self;
 }
 
+//makes an animation view
+- (instancetype)initWithObjects:(NSArray*)objects andSuperView:(UIView*)view andGeometryView:(DHGeometryView*)geometryView
+{
+    self = [super initWithFrame:CGRectMake(geometryView.frame.origin.x,geometryView.frame
+                                           .origin.y,view.frame.size.width,view.frame.size.height)];
+    if (self) {
+        // Initialization code
+        _geoViewTransform = [[DHGeometricTransform alloc] init];
+        self.hideBorder = YES;
+        self.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
+        self.opaque = NO;
+        CGPoint relativeOffset = [geometryView.superview convertPoint:geometryView.frame.origin toView:view];
+        CGPoint newOffset = CGPointMake(geometryView.geoViewTransform.offset.x+relativeOffset.x, geometryView.geoViewTransform.offset.y+relativeOffset.y);
+        [_geoViewTransform setOffset:newOffset];
+        [_geoViewTransform setScale:geometryView.geoViewTransform.scale];
+        self.geometricObjects = [[NSMutableArray alloc]initWithArray:objects];    }
+    return self;
+}
+
+
 
 - (void)drawRect:(CGRect)rect
 {
     if (self.keepContentCenteredAndZoomedIn) {
         const CGFloat pointMargin = 20.0;
-
+        
         // Determine size of contents and scale/translate view to fit and center all items
         CGFloat minX = CGFLOAT_MAX;
         CGFloat minY = CGFLOAT_MAX;
@@ -72,7 +92,7 @@
                 if (pos.x - pointMargin < minX) minX = pos.x - pointMargin;
                 if (pos.y - pointMargin < minY) minY = pos.y - pointMargin;
             }
-
+            
             if ([[object class] isSubclassOfClass:[DHLineSegment class]]) {
                 {
                     DHLineSegment* l = object;
@@ -93,7 +113,7 @@
                     if (pos.y - pointMargin < minY) minY = pos.y - pointMargin;
                 }
             }
-
+            
             if ([[object class] isSubclassOfClass:[DHLine class]]) {
                 DHLine* l = object;
                 CGPoint pos = l.start.position;
@@ -138,7 +158,7 @@
         CGPoint offset = CGPointMake(-(centerView.x - geoViewSize.width*0.5), -(centerView.y - geoViewSize.height*0.5));
         [self.geoViewTransform setOffset:offset];
     }
-
+    
     // Drawing code
     CGContextRef context = UIGraphicsGetCurrentContext();
     

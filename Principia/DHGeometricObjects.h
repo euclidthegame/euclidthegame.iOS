@@ -93,6 +93,7 @@
 @property (nonatomic, strong) DHPoint* startOfTranslation;
 @property (nonatomic, strong) DHPoint* translationStart;
 @property (nonatomic, strong) DHPoint* translationEnd;
+- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2 andOrigin:(DHPoint*)pO;
 - (instancetype)initStart:(DHPoint*)start end:(DHPoint*)end newStart:(DHPoint*)newStart;
 @end
 

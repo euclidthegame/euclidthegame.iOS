@@ -640,6 +640,12 @@
             tool.disableWhenOnSameLine = YES;
         }
     }
+    if (availableTools & DHMidpointToolAvailable_Weak && availableTools != DHAllToolsAvailable) {
+        if ([_currentTool class] == [DHMidPointTool class]) {
+            DHMidPointTool* tool = _currentTool;
+            tool.disableCircles = YES;
+        }
+    }
     
     if (self.currentGameMode == kDHGameModeTutorial) {
         [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:YES];

@@ -396,7 +396,6 @@ static DHLineObject* FindLineClosestToPoint(CGPoint point, NSArray* geometricObj
     return closestLine;
 }
 
-
 static DHLineSegment* FindLineSegmentClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
 {
     DHLineSegment* closestLine = nil;
@@ -418,6 +417,26 @@ static DHLineSegment* FindLineSegmentClosestToPoint(CGPoint point, NSArray* geom
     }
     
     return closestLine;
+}
+
+static DHCircle* FindCircleClosestToPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
+{
+    DHCircle* closestCircle = nil;
+    CGFloat closestDistance = maxDistance;
+    
+    for (id object in geometricObjects) {
+        if ([object class] == [DHCircle class]) {
+            DHCircle* currentCircle = object;
+            CGFloat distance = DistanceFromPositionToCircle(point, currentCircle);
+            
+            if (distance < closestDistance) {
+                closestCircle = object;
+                closestDistance = distance;
+            }
+        }
+    }
+    
+    return closestCircle;
 }
 
 static NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)

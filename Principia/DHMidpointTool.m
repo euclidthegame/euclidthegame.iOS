@@ -39,10 +39,11 @@
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
+    NSArray* geoObjects = self.delegate.geometryObjects;
     
-    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
     if (!point) {
-        DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
+        DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects, geoViewScale);
         if (intersectionPoint) {
             if (!self.startPoint) _temporaryInitialStartingPoint = intersectionPoint;
             point = intersectionPoint;
@@ -75,8 +76,7 @@
         [touch.view setNeedsDisplay];
     } else if (!self.startPoint && !point) {
         // If no starting point and no point was close, check if a line segment was tapped
-        DHLineSegment* segment = FindLineSegmentClosestToPoint(touchPoint, self.delegate.geometryObjects,
-                                                               kClosestTapLimit / geoViewScale);
+        DHLineSegment* segment = FindLineSegmentClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
         if (segment) {
             _temporarySegment = segment;
             segment.highlighted = YES;
@@ -84,6 +84,18 @@
             [self.delegate addTemporaryGeometricObjects:@[_temporaryMidPoint]];
             [self.delegate toolTipDidChange:_temporaryTooltipFinished];
             [touch.view setNeedsDisplay];
+        } else if(!self.disableCircles) {
+            // Finally, if no line was found check if a circle was tapped
+            DHCircle* circle = FindCircleClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
+            if (circle) {
+                self.circle = circle;
+                circle.highlighted = YES;
+                if (circle.center.label.length == 0) {
+                    [self.delegate addTemporaryGeometricObjects:@[self.circle.center]];
+                }
+                [self.delegate toolTipDidChange:_temporaryTooltipFinished];
+                [touch.view setNeedsDisplay];
+            }
         }
     }
 }
@@ -95,6 +107,13 @@
     
     if (_temporarySegment) {
         if (DistanceFromPositionToLine(touchPoint, _temporarySegment) > kClosestTapLimit / geoViewScale) {
+            [self reset];
+            [touch.view setNeedsDisplay];
+        }
+        return;
+    }
+    if (self.circle) {
+        if (DistanceFromPositionToCircle(touchPoint, self.circle) > kClosestTapLimit / geoViewScale) {
             [self reset];
             [touch.view setNeedsDisplay];
         }
@@ -138,6 +157,11 @@
         DHMidPoint* midPoint = [[DHMidPoint alloc] initWithPoint1:_temporarySegment.start
                                                         andPoint2:_temporarySegment.end];
         [self.delegate addGeometricObjects:@[midPoint]];
+        [self reset];
+        return;
+    }
+    if (self.circle) {
+        [self.delegate addGeometricObjects:@[self.circle.center]];
         [self reset];
         return;
     }
@@ -196,7 +220,7 @@
 }
 - (BOOL)active
 {
-    if (self.startPoint) {
+    if (self.startPoint || self.circle) {
         return YES;
     }
     return NO;
@@ -210,6 +234,11 @@
     if (_temporaryInitialStartingPoint) {
         [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
         _temporaryInitialStartingPoint = nil;
+    }
+    if (self.circle) {
+        [self.delegate removeTemporaryGeometricObjects:@[self.circle.center]];
+        self.circle.highlighted = NO;
+        self.circle = nil;
     }
     
     _temporarySegment.highlighted = NO;
@@ -226,6 +255,11 @@
     _temporarySegment.highlighted = NO;
     self.startPoint.highlighted = NO;
     
+    if (self.circle) {
+        [self.delegate removeTemporaryGeometricObjects:@[self.circle.center]];
+        self.circle.highlighted = NO;
+        self.circle = nil;
+    }
     if (_temporaryMidPoint) {
         [self.delegate removeTemporaryGeometricObjects:@[_temporaryMidPoint]];
         _temporaryMidPoint = nil;

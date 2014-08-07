@@ -166,6 +166,8 @@ return CGPointMake(NAN, NAN);
         [message4 position: CGPointMake(150,560)];
     }
     
+    hint1_OK = YES;
+    
     _pointC.label = @"A";
     DHGeometryView* centerView = [[DHGeometryView alloc]initWithObjects:@[_pointC] andSuperView:geometryView];
     DHCircle* circle = [[DHCircle alloc] initWithCenter:_pointC andPointOnRadius:_pointR];
@@ -174,11 +176,13 @@ return CGPointMake(NAN, NAN);
     DHPointOnCircle* p2 = [[DHPointOnCircle alloc]initWithCircle:circle andAngle:3.0];
     p2.label = @"C";
     DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:p1 andEnd:p2];
-    DHGeometryView* segmentView = [[DHGeometryView alloc]initWithObjects:@[segment,p1,p2,] andSuperView:geometryView];
     
     DHPerpendicularLine* perp = [[DHPerpendicularLine alloc]initWithLine:segment andPoint:_pointC];
-    DHIntersectionPointLineLine* intersection = [[DHIntersectionPointLineLine alloc]initWithLine:perp andLine:segment];
+    DHMidPoint* intersection = [[DHMidPoint alloc]initWithPoint1:p1 andPoint2:p2];
     intersection.label = @"D";
+
+    DHGeometryView* segmentView = [[DHGeometryView alloc]initWithObjects:@[segment,p1,p2] andSuperView:geometryView];
+    
     DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[perp,intersection] andSuperView:geometryView];
     
     DHLineSegment* segment2 = [[DHLineSegment alloc]initWithStart:p1 andEnd:_pointC];
@@ -189,16 +193,17 @@ return CGPointMake(NAN, NAN);
     [geometryView addSubview:hintView];
 
 
+
+    [hintView addSubview:segmentsView];
+        [hintView addSubview:segmentView];
+    [hintView addSubview:perpView];
+    [hintView addSubview:centerView];
     [hintView addSubview:message1];
     [hintView addSubview:message2];
     [hintView addSubview:message3];
     [hintView addSubview:message4];
     
     [hintView addSubview:message5];
-    [hintView addSubview:segmentsView];
-        [hintView addSubview:segmentView];
-    [hintView addSubview:perpView];
-    [hintView addSubview:centerView];
     
     if (!hint1_OK) {
     [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
@@ -233,11 +238,9 @@ return CGPointMake(NAN, NAN);
         
     }];
     [self afterDelay:18.0 performBlock:^{
-        [message2 text:@"This follows from the Pythagors Theorem."];
+        [message2 text:@"This follows from the Pythagoras Theorem."];
             [self fadeIn:segmentsView withDuration:2];
-        [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message2.alpha = 1;
-        } completion:^(BOOL finished){ }];
+        [self fadeIn:message2 withDuration:1];
     }];
     
     [self afterDelay:22.0 performBlock:^{
@@ -260,28 +263,36 @@ return CGPointMake(NAN, NAN);
         perp.temporary = YES;
         
         [self afterDelay:0.0 performBlock:^{
-            [message1 text:@"Hence, if we draw a line segment connecting the two points on the cirlce."];
+            [message1 text:@"Hence, if we draw a line segment connecting the two points on the circle."];
             [self fadeIn:message1 withDuration:1];
             [self fadeIn:segmentView withDuration:2];
         }];
         [self afterDelay:4.0 performBlock:^{
             [message2 text:@"We can draw a perpendicular from the midpoint."];
-            [self fadeIn:message2 withDuration:1];
             [self fadeIn:perpView withDuration:2];
-        }];
+            [self fadeIn:message2 withDuration:1];
+         }];
         [self afterDelay:8.0 performBlock:^{
             [message3 text:@"And we know that this line passes through the center of the circle."];
             [self fadeIn:message3 withDuration:1];
             hint2_OK = YES;
+            [segmentView.geometricObjects addObjectsFromArray:@[perp,intersection]];
+            [segmentView setNeedsDisplay];
+            [self fadeOut:perpView withDuration:0];
         }];
         
         [self afterDelay:12.0 performBlock:^{
             [message4 text:@"For any points B and C on the circle."];
             [self fadeIn:message4 withDuration:1];
-            [self movePointOnCircle:p2 toAngle:3.0+2*M_PI withDuration:2 inView:segmentView];
-            [self movePointOnCircle:p1 toAngle:1.5+2*M_PI withDuration:2 inView:segmentView];
+            [self movePointOnCircle:p1 toAngle:1.5+2*M_PI withDuration:4 inView:segmentView];
             hint2_OK = YES;
         }];
+        [self afterDelay:16.0 performBlock:^{
+            [self movePointOnCircle:p2 toAngle:3.0-2*M_PI withDuration:4 inView:segmentView];
+             hint2_OK = YES;
+        }];
+        
+        
         
     }
     

@@ -323,10 +323,12 @@
     UIImageView* tool = [toolSegment.subviews objectAtIndex:0];
     
     [self afterDelay:3.0 performBlock:^{
+        [self fadeOut:tool withDuration:1.0];
         [self fadeOut:animationView withDuration:1.0];
     }];
     [self afterDelay:4.0 performBlock:^{
         tool.image = [UIImage imageNamed:@"toolMidpointImproved"];
+        [self fadeIn:tool withDuration:1.0];
         [animationView removeFromSuperview];
     }];
 }

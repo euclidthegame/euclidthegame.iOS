@@ -62,6 +62,16 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     
     return self;
 }
+- (instancetype) initWithPosition:(CGPoint)position
+{
+    self = [super init];
+    
+    if (self) {
+        _position = position;
+    }
+    
+    return self;
+}
 - (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
 {
     CGFloat scale = self.drawScale;
@@ -105,8 +115,24 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
             CGContextSetRGBFillColor(context, kPointColorFixed.r, kPointColorFixed.g,
                                      kPointColorFixed.b, kPointColorFixed.a);
         }
-        CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
         CGContextFillEllipseInRect(context, rect);
+        
+        if (self.class == [DHPointOnCircle class] || self.class == [DHPointOnLine class])
+        {
+            BOOL hideBorder = NO;
+            if (self.class == [DHPointOnCircle class]) {
+                DHPointOnCircle* p = (DHPointOnCircle*)self;
+                hideBorder = p.hideBorder;
+            }
+            if (self.class == [DHPointOnLine class]) {
+                DHPointOnLine* p = (DHPointOnLine*)self;
+                hideBorder = p.hideBorder;
+            }
+            if (!hideBorder) {
+                CGContextSetRGBStrokeColor(context, kLineColor.r, kLineColor.g, kLineColor.b, 1.0);
+                CGContextStrokeEllipseInRect(context, rect);
+            }
+        }
     }
     
     CGContextRestoreGState(context);
@@ -482,6 +508,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 
 
 @implementation DHTranslatedPoint
+- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2 andOrigin:(DHPoint*)pO
+{
+    self = [super init];
+    if (self) {
+        _startOfTranslation = pO;
+        _translationStart = p1;
+        _translationEnd = p2;
+        [self updatePosition];
+    }
+    return self;
+}
 - (void)setStartOfTranslation:(DHPoint *)startOfTranslation
 {
     _startOfTranslation = startOfTranslation;
@@ -768,6 +805,20 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     CGVector v1 = CGVectorNormalize(self.line1.vector);
     CGVector v2 = CGVectorNormalize(self.line2.vector);
     
+    // If defined by two line segments sharing an end point, ensure to provide inner bisector
+    if ([_line1 isKindOfClass:[DHLineSegment class]] && [_line2 isKindOfClass:[DHLineSegment class]]) {
+        if (_line1.start == _line2.end) {
+            v2 = CGVectorInvert(v2);
+        }
+        if (_line2.start == _line1.end) {
+            v1 = CGVectorInvert(v1);
+        }
+        if (_line1.end == _line2.end) {
+            v1 = CGVectorInvert(v1);
+            v2 = CGVectorInvert(v2);
+        }
+    }
+    
     _endPointCache.position = CGPointMake(startPos.x + v1.dx + v2.dx, startPos.y + v1.dy + v2.dy);
     return _endPointCache;
 }
@@ -847,7 +898,12 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     
     CGRect rect = CGRectMake(position.x - radius, position.y - radius, radius*2, radius*2);
     
-    if(self.temporary) {
+    if (self.highlighted) {
+        CGContextSetLineWidth(context, 3.0);
+        CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
+        CGContextSetRGBStrokeColor(context, kLineColorHighlighted.r, kLineColorHighlighted.g,
+                                   kLineColorHighlighted.b, kLineColorHighlighted.a);
+    } else if(self.temporary) {
         CGContextSetLineDash(context,0,kDashPattern,kDashPatternItems);
         CGContextSetLineWidth(context, 1.0);
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);

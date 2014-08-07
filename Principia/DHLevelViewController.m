@@ -569,9 +569,16 @@
             [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
         }
         
-        [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolMidpoint"] atIndex:index++ animated:NO];
+        if (availableTools & DHMidpointToolAvailable) {
+            [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolMidpointImproved"]
+                                         atIndex:index++ animated:NO];
+        } else {
+            [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolMidpoint"]
+                                         atIndex:index++ animated:NO];
+        }
+        
         [_tools addObject:[DHMidPointTool class]];
-        if ((availableTools & DHMidpointToolAvailable) == NO) {
+        if ((availableTools & (DHMidpointToolAvailable | DHMidpointToolAvailable_Weak)) == NO) {
             [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
         }
         
@@ -626,7 +633,6 @@
     _currentTool = [[[_tools objectAtIndex:_toolControl.selectedSegmentIndex] alloc] init];
     assert(_currentTool);
     self.geometryViewController.currentTool = _currentTool;
-    _toolInstruction.text = [_currentTool initialToolTip];
     _currentTool.delegate = self;
     [self.geometryView setNeedsDisplay];
     
@@ -640,6 +646,14 @@
             tool.disableWhenOnSameLine = YES;
         }
     }
+    if (availableTools & DHMidpointToolAvailable_Weak && availableTools != DHAllToolsAvailable) {
+        if ([_currentTool class] == [DHMidPointTool class]) {
+            DHMidPointTool* tool = _currentTool;
+            tool.disableCircles = YES;
+        }
+    }
+    
+    _toolInstruction.text = [_currentTool initialToolTip];    
     
     if (self.currentGameMode == kDHGameModeTutorial) {
         [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:YES];

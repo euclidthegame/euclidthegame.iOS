@@ -9,70 +9,36 @@
 #import <Foundation/Foundation.h>
 #import "DHGeometricObjects.h"
 #import "DHGeometricTransform.h"
+#import "DHGeometryTool.h"
 
 typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 {
-    DHPointToolAvailable = 1 << 0,
-    DHLineSegmentToolAvailable = 1 << 1,
-    DHLineToolAvailable = 1 << 2,
-    DHCircleToolAvailable = 1 << 3,
-    DHIntersectToolAvailable = 1 << 4,
-    DHMidpointToolAvailable = 1 << 5,
-    DHMoveToolAvailable = 1 << 6,
-    DHTriangleToolAvailable = 1 << 7,
-    DHBisectToolAvailable = 1 << 8,
-    DHPerpendicularToolAvailable = 1 << 9,
-    DHParallelToolAvailable = 1 << 10,
-    DHTranslateToolAvailable_Weak = 1 << 11,
-    DHTranslateToolAvailable = 1 << 12,
-    DHCompassToolAvailable = 1 << 13,
+    DHPointToolAvailable            = 1 << 0,
+    DHLineSegmentToolAvailable      = 1 << 1,
+    DHLineToolAvailable             = 1 << 2,
+    DHCircleToolAvailable           = 1 << 3,
+    DHIntersectToolAvailable        = 1 << 4,
+    DHMidpointToolAvailable_Weak    = 1 << 5,
+    DHMidpointToolAvailable         = 1 << 6,
+    DHMoveToolAvailable             = 1 << 7,
+    DHTriangleToolAvailable         = 1 << 8,
+    DHBisectToolAvailable           = 1 << 9,
+    DHPerpendicularToolAvailable    = 1 << 10,
+    DHParallelToolAvailable         = 1 << 11,
+    DHTranslateToolAvailable_Weak   = 1 << 12,
+    DHTranslateToolAvailable        = 1 << 13,
+    DHCompassToolAvailable          = 1 << 14,
     DHAllToolsAvailable = NSUIntegerMax
 };
-
-
-@protocol DHGeometryToolDelegate <NSObject>
-- (NSArray*)geometryObjects;
-- (DHGeometricTransform*)geoViewTransform;
-- (void)toolTipDidChange:(NSString*)currentTip;
-- (void)addGeometricObject:(id)object;
-- (void)addGeometricObjects:(NSArray*)objects;
-- (void)addTemporaryGeometricObjects:(NSArray*)objects;
-- (void)removeTemporaryGeometricObjects:(NSArray *)objects;
-- (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color;
-- (void)updateAllPositions;
-@end
-
-
-@protocol DHGeometryTool <NSObject>
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
-- (NSString*)initialToolTip;
-- (void)touchBegan:(UITouch*)touch;
-- (void)touchMoved:(UITouch*)touch;
-- (void)touchEnded:(UITouch*)touch;
-- (BOOL)active;
-- (void)reset;
-@end
-
-@interface DHGeometryTool : NSObject
-@property (nonatomic, weak) id<DHGeometryToolDelegate> delegate;
-@property (nonatomic) intptr_t associatedTouch;
-@end
-
-
-@interface DHZoomPanTool : DHGeometryTool <DHGeometryTool>
-@end
 
 @interface DHPointTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* point;
 @property (nonatomic) CGPoint touchStart;
 @end
 
-
 @interface DHLineSegmentTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
-
 
 @interface DHCircleTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* center;
@@ -84,6 +50,8 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 
 @interface DHMidPointTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
+@property (nonatomic, weak) DHCircle* circle;
+@property (nonatomic) BOOL disableCircles;
 @end
 
 @interface DHLineTool : DHGeometryTool <DHGeometryTool>
@@ -93,7 +61,6 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 @interface DHTriangleTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* startPoint;
 @end
-
 
 @interface DHBisectTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHLineObject* firstLine;

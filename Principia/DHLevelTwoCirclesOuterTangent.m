@@ -71,6 +71,9 @@
 
     DHPointOnLine* pA = [[DHPointOnLine alloc] initWithLine:lA andTValue:0.5];
     DHPointOnLine* pB = [[DHPointOnLine alloc] initWithLine:lB andTValue:0];
+    pA.hideBorder = YES;
+    pB.hideBorder = YES;
+    
     DHPoint* pRadiusA = [[DHPoint alloc] initWithPositionX:pA.position.x+40 andY:pA.position.y];
     DHPoint* pRadiusB = [[DHPoint alloc] initWithPositionX:pB.position.x-80 andY:pB.position.y];
     

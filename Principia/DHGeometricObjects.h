@@ -28,6 +28,7 @@
 @property (nonatomic) CGPoint position;
 @property (nonatomic) BOOL updatesPositionAutomatically;
 - (instancetype) initWithPositionX:(CGFloat)x andY:(CGFloat)y;
+- (instancetype) initWithPosition:(CGPoint)position;
 - (void)updatePosition;
 @end
 
@@ -92,6 +93,7 @@
 @property (nonatomic, strong) DHPoint* startOfTranslation;
 @property (nonatomic, strong) DHPoint* translationStart;
 @property (nonatomic, strong) DHPoint* translationEnd;
+- (instancetype)initWithPoint1:(DHPoint*)p1 andPoint2:(DHPoint*)p2 andOrigin:(DHPoint*)pO;
 @end
 
 
@@ -112,12 +114,14 @@
 @interface DHPointOnLine : DHPoint
 @property (nonatomic, strong) DHLineObject* line;
 @property (nonatomic) CGFloat tValue; // Value between 0 and 1 indicating distance from start to end
+@property (nonatomic) BOOL hideBorder;
 - (instancetype)initWithLine:(DHLineObject*)line andTValue:(CGFloat)tValue;
 @end
 
 @interface DHPointOnCircle : DHPoint
 @property (nonatomic, strong) DHCircle* circle;
 @property (nonatomic) CGFloat angle; // Angle of rotation from positive x-axis to point
+@property (nonatomic) BOOL hideBorder;
 - (instancetype)initWithCircle:(DHCircle*)circle andAngle:(CGFloat)angle;
 @end
 

@@ -14,7 +14,9 @@
     CGPoint _touchPointInViewStart;
     DHTranslatedPoint* _tempTransPoint;
     DHCircle* _tempCircle;
-    DHPoint* _tempIntersectionPoint;
+    DHPoint* _tempIntersectionCenter;
+    DHPoint* _tempIntersectionPoint1;
+    DHPoint* _tempIntersectionPoint2;
     DHPoint* _tempCenter;
     NSString* _tooltipTempUnfinished;
     NSString* _tooltipTempFinished;
@@ -49,6 +51,23 @@
     
     if (self.firstPoint == nil || self.secondPoint == nil) {
         DHPoint* point= FindPointClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
+        DHLineSegment* line = nil;
+        
+        // Prefer existing points first, line segment second, and new intersections third
+        if (!point) {
+            line = FindLineSegmentClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
+        }
+        if (!point && !line) {
+            point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
+            if (!self.firstPoint) {
+                _tempIntersectionPoint1 = point;
+                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint1]];
+            } else if (!self.secondPoint) {
+                _tempIntersectionPoint2 = point;
+                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint2]];
+            }
+        }
+        
         if (point && self.firstPoint == nil) {
             self.firstPoint = point;
             self.firstPoint.highlighted = YES;
@@ -58,16 +77,13 @@
             self.secondPoint.highlighted = YES;
             [self.delegate toolTipDidChange:_toolTipPartial];
             endDefinedThisInteraction = YES;
-        } else if (self.firstPoint == nil) {
-            DHLineSegment* line = FindLineSegmentClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
-            if (line) {
-                self.radiusSegment = line;
-                self.firstPoint = line.start;
-                self.secondPoint = line.end;
-                self.radiusSegment.highlighted = YES;
-                [self.delegate toolTipDidChange:_toolTipPartial];
-                endDefinedThisInteraction = YES;
-            }
+        } else if (self.firstPoint == nil && line) {
+            self.radiusSegment = line;
+            self.firstPoint = line.start;
+            self.secondPoint = line.end;
+            self.radiusSegment.highlighted = YES;
+            [self.delegate toolTipDidChange:_toolTipPartial];
+            endDefinedThisInteraction = YES;
         }
     }
     
@@ -84,9 +100,9 @@
             DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
             if (!point) {
                 point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
-                if (point && point.label.length == 0) {
-                    _tempIntersectionPoint = point;
-                    [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint]];
+                if (point) {
+                    _tempIntersectionCenter = point;
+                    [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionCenter]];
                 }
             }
             if (point) {
@@ -109,9 +125,9 @@
     NSArray *geoObjects = self.delegate.geometryObjects;
     const CGFloat tapLimitInGeo = kClosestTapLimit / geoViewScale;
     
-    if (_tempIntersectionPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint]];
-        _tempIntersectionPoint = nil;
+    if (_tempIntersectionCenter) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionCenter]];
+        _tempIntersectionCenter = nil;
     }
     if (_tempCircle) {
         if (self.radiusSegment || (_tempCircle.center != self.firstPoint && _tempCircle.center != self.secondPoint)) {
@@ -126,8 +142,8 @@
         if (!point) {
             point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
             if (point && point.label.length == 0) {
-                _tempIntersectionPoint = point;
-                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint]];
+                _tempIntersectionCenter = point;
+                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionCenter]];
             }
         }
         if (point) {
@@ -153,7 +169,7 @@
         }
         
         if (_tempCircle.center != _tempCenter) {
-            if (_tempIntersectionPoint) [objectsToAdd addObject:_tempIntersectionPoint];
+            if (_tempIntersectionCenter) [objectsToAdd addObject:_tempIntersectionCenter];
             [objectsToAdd addObject:_tempCircle];
             [self.delegate addGeometricObjects:objectsToAdd];
             [self reset];
@@ -176,6 +192,16 @@
 - (void)reset
 {
     [self resetTemporaryObjects];
+    
+    if (_tempIntersectionPoint1) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint1]];
+        _tempIntersectionPoint1 = nil;
+    }
+    if (_tempIntersectionPoint2) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint2]];
+        _tempIntersectionPoint2 = nil;
+    }
+    
     self.radiusSegment.highlighted = NO;
     self.firstPoint.highlighted = NO;
     self.secondPoint.highlighted = NO;
@@ -192,112 +218,24 @@
         [self.delegate removeTemporaryGeometricObjects:@[_tempCircle]];
         _tempCircle = nil;
     }
-    if (_tempIntersectionPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint]];
-        _tempIntersectionPoint = nil;
+    if (_tempCircle) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempCircle]];
+        _tempCircle = nil;
+    }
+    if (_tempIntersectionCenter) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionCenter]];
+        _tempIntersectionCenter = nil;
     }
 }
 - (void)dealloc
 {
     [self resetTemporaryObjects];
+    
+    if (_tempIntersectionPoint1) [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint1]];
+    if (_tempIntersectionPoint2) [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint2]];
+    
     self.radiusSegment.highlighted = NO;
     self.firstPoint.highlighted = NO;
     self.secondPoint.highlighted = NO;
 }
 @end
-
-
-#if 0
-@implementation DHCompassTool
-- (NSString*)initialToolTip
-{
-    return @"Tap two points or a line segment to define the radius, followed by a third point to mark the center";
-}
-- (void)touchBegan:(UITouch*)touch
-{
-    
-}
-- (void)touchMoved:(UITouch*)touch
-{
-    
-}
-- (void)touchEnded:(UITouch*)touch
-{
-    CGPoint touchPointInView = [touch locationInView:touch.view];
-    CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
-    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
-    NSArray* geoObjects = self.delegate.geometryObjects;
-    
-    DHPoint* point= FindPointClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
-    DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects, geoViewScale);
-    
-    // Prefers normal point selection above automatic intersection
-    if (intersectionPoint && !(point)) {
-        [self.delegate addGeometricObject:intersectionPoint];
-        point = intersectionPoint;
-    }
-    
-    if (point) {
-        if (self.firstPoint) {
-            if (self.secondPoint) {
-                DHTranslatedPoint* pointOnRadius = [[DHTranslatedPoint alloc] init];
-                pointOnRadius.startOfTranslation = point;
-                pointOnRadius.translationStart = self.firstPoint;
-                pointOnRadius.translationEnd = self.secondPoint;
-                
-                DHCircle* circle = [[DHCircle alloc] initWithCenter:point andPointOnRadius:pointOnRadius];
-                [self.delegate addGeometricObject:circle];
-                
-                [self reset];
-            } else if (point != self.firstPoint) {
-                self.secondPoint = point;
-                point.highlighted = YES;
-                [self.delegate toolTipDidChange:@"Tap on a third point to mark the center of the circle"];
-                [touch.view setNeedsDisplay];
-            }
-        } else {
-            self.firstPoint = point;
-            point.highlighted = YES;
-            [self.delegate toolTipDidChange:@"Tap on a second point to mark the radius of the circle"];
-            [touch.view setNeedsDisplay];
-        }
-    } else if (self.firstPoint == nil) {
-        DHLineSegment* segment = FindLineSegmentClosestToPoint(touchPoint, self.delegate.geometryObjects,
-                                                               kClosestTapLimit / geoViewScale);
-        if (segment) {
-            self.firstPoint = segment.start;
-            self.secondPoint = segment.end;
-            self.radiusSegment = segment;
-            segment.highlighted = YES;
-            [self.delegate toolTipDidChange:@"Tap on a point to mark the center of the circle"];
-            [touch.view setNeedsDisplay];
-        }
-    }
-}
-- (BOOL)active
-{
-    if (self.firstPoint || self.secondPoint || self.radiusSegment) {
-        return YES;
-    }
-    
-    return NO;
-}
-- (void)reset
-{
-    self.firstPoint.highlighted = NO;
-    self.secondPoint.highlighted = NO;
-    self.radiusSegment.highlighted = NO;
-    self.firstPoint = nil;
-    self.secondPoint = nil;
-    self.radiusSegment = nil;
-    [self.delegate toolTipDidChange:self.initialToolTip];
-    self.associatedTouch = 0;
-}
-- (void)dealloc
-{
-    self.firstPoint.highlighted = NO;
-    self.secondPoint.highlighted = NO;
-    self.radiusSegment.highlighted = NO;
-}
-@end
-#endif

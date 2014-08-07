@@ -14,6 +14,8 @@
     DHTranslatedPoint* _tempTransPoint;
     DHLineSegment* _tempTransSegment;
     DHPoint* _tempIntersectionPoint;
+    DHPoint* _tempIntersectionPoint1;
+    DHPoint* _tempIntersectionPoint2;    
     DHPoint* _tempStart;
     NSString* _tooltipTempUnfinished;
     NSString* _tooltipTempFinished;
@@ -48,6 +50,23 @@
  
     if (self.start == nil || self.end == nil) {
         DHPoint* point= FindPointClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
+        DHLineSegment* line = nil;
+
+        // Prefer existing points first, line segment second, and new intersections third
+        if (!point) {
+            line = FindLineSegmentClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
+        }
+        if (!point && !line) {
+            point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
+            if (!self.start) {
+                _tempIntersectionPoint1 = point;
+                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint1]];
+            } else if (!self.end) {
+                _tempIntersectionPoint2 = point;
+                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint2]];
+            }
+        }
+        
         if (point && self.start == nil) {
             self.start = point;
             self.start.highlighted = YES;
@@ -57,16 +76,13 @@
             self.end.highlighted = YES;
             [self.delegate toolTipDidChange:_toolTipPartial];
             endDefinedThisInteraction = YES;
-        } else if (self.start == nil) {
-            DHLineSegment* line = FindLineSegmentClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
-            if (line) {
-                self.segment = line;
-                self.start = line.start;
-                self.end = line.end;
-                self.segment.highlighted = YES;
-                [self.delegate toolTipDidChange:_toolTipPartial];
-                endDefinedThisInteraction = YES;
-            }
+        } else if (self.start == nil && line) {
+            self.segment = line;
+            self.start = line.start;
+            self.end = line.end;
+            self.segment.highlighted = YES;
+            [self.delegate toolTipDidChange:_toolTipPartial];
+            endDefinedThisInteraction = YES;
         }
     }
     
@@ -190,6 +206,16 @@
 - (void)reset
 {
     [self resetTemporaryObjects];
+
+    if (_tempIntersectionPoint1) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint1]];
+        _tempIntersectionPoint1 = nil;
+    }
+    if (_tempIntersectionPoint2) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint2]];
+        _tempIntersectionPoint2 = nil;
+    }
+    
     self.segment.highlighted = NO;
     self.start.highlighted = NO;
     self.end.highlighted = NO;
@@ -217,6 +243,9 @@
 - (void)dealloc
 {
     [self resetTemporaryObjects];
+    if (_tempIntersectionPoint1) [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint1]];
+    if (_tempIntersectionPoint2) [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint2]];
+    
     self.segment.highlighted = NO;
     self.start.highlighted = NO;
     self.end.highlighted = NO;

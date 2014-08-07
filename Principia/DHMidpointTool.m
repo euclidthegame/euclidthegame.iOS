@@ -30,7 +30,11 @@
 }
 - (NSString*)initialToolTip
 {
-    return @"Tap a line segment or two points two create a midpoint";
+    if (self.disableCircles) {
+        return @"Tap a line segment or two points two create a midpoint";
+    }
+    
+    return @"Tap a line segment or two points two create a midpoint, or a circle to create a point at its center";
 }
 - (void)touchBegan:(UITouch*)touch
 {

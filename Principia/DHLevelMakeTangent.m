@@ -11,8 +11,7 @@
 #import "DHGeometricObjects.h"
 
 @interface DHLevelMakeTangent () {
-    DHPoint* _pointA;
-    DHPoint* _pointB;
+    DHCircle* _circle;
 }
 
 @end
@@ -26,12 +25,12 @@
 
 - (NSString*)levelDescription
 {
-    return (@"Construct a line (segment) at B tangent to the circle. ");
+    return (@"Construct a line (segment) tangent to the given circle");
 }
 
 - (NSString*)levelDescriptionExtra
 {
-    return (@"Construct a line (segment) at B tangent to the circle. \n\n"
+    return (@"Construct a line (segment) tangent to the circle. \n\n"
             @"A tangent line to a circle is a line that only touches the circle at one point.");
 }
 
@@ -63,19 +62,15 @@
     circle.pointOnRadius = pB;
     
     [geometricObjects addObject:circle];
-    [geometricObjects addObject:pA];
-    [geometricObjects addObject:pB];
  
-    _pointA = pA;
-    _pointB = pB;
+    _circle = circle;
 }
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_pointA andEnd:_pointB];
-    DHPerpendicularLine* pl = [[DHPerpendicularLine alloc] init];
-    pl.line = r;
-    pl.point = _pointB;
+    
+    DHLineSegment* r = [[DHLineSegment alloc] initWithStart:_circle.center andEnd:_circle.pointOnRadius];
+    DHPerpendicularLine* pl = [[DHPerpendicularLine alloc] initWithLine:r andPoint:r.end];
     
     [objects insertObject:pl atIndex:0];
 }
@@ -88,12 +83,15 @@
         return NO;
     }
     
-    // Move A and B and ensure solution holds
-    CGPoint pointA = _pointA.position;
-    CGPoint pointB = _pointB.position;
+    DHPoint* pCenter = _circle.center;
+    DHPoint* pRadius = _circle.pointOnRadius;
     
-    _pointA.position = CGPointMake(pointA.x - 1, pointA.y - 1);
-    _pointB.position = CGPointMake(pointB.x + 1, pointB.y + 1);
+    // Move A and B and ensure solution holds
+    CGPoint pointA = pCenter.position;
+    CGPoint pointB = pRadius.position;
+    
+    pCenter.position = CGPointMake(pointA.x - 1, pointA.y - 1);
+    pRadius.position = CGPointMake(pointB.x + 1, pointB.y + 1);
     for (id object in geometricObjects) {
         if ([object respondsToSelector:@selector(updatePosition)]) {
             [object updatePosition];
@@ -102,8 +100,9 @@
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
-    _pointA.position = pointA;
-    _pointB.position = pointB;
+    pCenter.position = pointA;
+    pRadius.position = pointB;
+    
     for (id object in geometricObjects) {
         if ([object respondsToSelector:@selector(updatePosition)]) {
             [object updatePosition];
@@ -115,36 +114,32 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    CGVector vAB = CGVectorNormalize(CGVectorBetweenPoints(_pointA.position, _pointB.position));
-
+    BOOL tangentOK = NO;
+    
     for (id object in geometricObjects) {
-        if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
-        
-        DHLineObject* l = object;
-        if (!PointOnLine(_pointB, l)) continue;
-        
-        CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), vAB);
-        if (fabs(lDotBC) < 0.00001) {
-            self.progress = 100;
-            return YES;
+        if (LineObjectTangentToCircle(object, _circle)) {
+            tangentOK = YES;
+            break;
         }
+    }
+    
+    if (tangentOK) {
+        self.progress = 100;
+        return YES;
     }
     
     return NO;
 }
 - (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
     
-    DHLineSegment* sAB = [[DHLineSegment alloc] initWithStart:_pointA andEnd:_pointB];
+    /*DHLineSegment* sAB = [[DHLineSegment alloc] initWithStart:_pointA andEnd:_pointB];
     DHPerpendicularLine *perp = [[DHPerpendicularLine alloc]initWithLine:sAB andPoint:_pointB];
     
     for (id object in objects){
-        
-        
         if(EqualDirection(object,sAB)) return MidPointFromLine(sAB);
         if(EqualDirection(perp, object)) return _pointB.position;
     
-    }
-    
+    }*/
     
     return CGPointMake(NAN, NAN);
 }

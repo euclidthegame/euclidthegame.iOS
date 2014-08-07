@@ -58,10 +58,10 @@
         }
         if (!point && !line) {
             point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
-            if (!self.start) {
+            if (point && !self.start) {
                 _tempIntersectionPoint1 = point;
                 [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint1]];
-            } else if (!self.end) {
+            } else if (point && !self.end) {
                 _tempIntersectionPoint2 = point;
                 [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint2]];
             }

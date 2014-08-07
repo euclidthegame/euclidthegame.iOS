@@ -292,6 +292,7 @@
         [self afterDelay:4.0 performBlock:^{
             [message2 text:@"We know that the line must pass through the center of the incircle. "];
             [self fadeIn:message2 withDuration:1.0];
+            hint2_OK = YES;
         }];
     }
     

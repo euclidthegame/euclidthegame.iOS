@@ -14,6 +14,19 @@
     DHPerpendicularLine* _tempPerpLine;
     DHPoint* _tempPoint;
     DHPoint* _tempIntersectionPoint;
+    NSString* _tooltipTempUnfinished;
+    NSString* _tooltipTempFinished;
+    NSString* _toolTipPartial;
+}
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        _tooltipTempUnfinished = @"Drag to a point that the perpendicular line should pass through";
+        _tooltipTempFinished = @"Release to create perpendicular line";
+        _toolTipPartial = @"Tap a point that the perpendicular line should pass through";
+    }
+    return self;
 }
 - (NSString*)initialToolTip
 {
@@ -33,7 +46,7 @@
         if (line) {
             self.line = line;
             line.highlighted = true;
-            [self.delegate toolTipDidChange:@"Swipe to a point that the perpendicular line should pass through"];
+            [self.delegate toolTipDidChange:_tooltipTempUnfinished];
             _tempPoint = [[DHPoint alloc] initWithPosition:touchPoint];
             _tempPerpLine = [[DHPerpendicularLine alloc] initWithLine:self.line andPoint:_tempPoint];
             _tempPerpLine.temporary = YES;
@@ -45,7 +58,7 @@
         _tempPerpLine = [[DHPerpendicularLine alloc] initWithLine:self.line andPoint:_tempPoint];
         _tempPerpLine.temporary = YES;
         [self.delegate addTemporaryGeometricObjects:@[_tempPerpLine]];
-        [self.delegate toolTipDidChange:@"Swipe to a point that the perpendicular line should pass through"];
+        [self.delegate toolTipDidChange:_tooltipTempUnfinished];
         
         DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
         if (!point) {
@@ -59,7 +72,7 @@
             _tempPerpLine.temporary = NO;
             _tempPerpLine.point = point;
             point.highlighted = YES;
-            [self.delegate toolTipDidChange:@"Release to create perpendicular line"];
+            [self.delegate toolTipDidChange:_tooltipTempFinished];
         }
         
         [touch.view setNeedsDisplay];
@@ -98,10 +111,10 @@
             _tempPerpLine.temporary = NO;
             _tempPerpLine.point = point;
             point.highlighted = YES;
-            [self.delegate toolTipDidChange:@"Release to create perpendicular line"];
+            [self.delegate toolTipDidChange:_tooltipTempFinished];
         } else {
             _tempPerpLine.temporary = YES;
-            [self.delegate toolTipDidChange:@"Swipe to a point that the perpendicular line should pass through"];
+            [self.delegate toolTipDidChange:_tooltipTempUnfinished];
         }
         [touch.view setNeedsDisplay];
     }
@@ -117,7 +130,7 @@
             if(DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit) {
                 [self reset];
             } else {
-                [self.delegate toolTipDidChange:@"Tap a point that the perpendicular line should pass through"];
+                [self.delegate toolTipDidChange:_toolTipPartial];
             }
         } else {
             [objectsToAdd addObject:_tempPerpLine];

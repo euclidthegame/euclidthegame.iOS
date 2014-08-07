@@ -351,14 +351,15 @@ static DHPoint* FindPointClosestToCircle(DHCircle* c, NSArray* geometricObjects,
     return closestPoint;
 }
 
-static DHPoint* FindPointClosestToLine(DHLine* l, DHPoint* p, NSArray* geometricObjects, CGFloat maxDistance)
+// NOTE: DHPoint p is skipped and not returned
+static DHPoint* FindPointClosestToLine(DHLineObject* l, DHPoint* p, NSArray* geometricObjects, CGFloat maxDistance)
 {
     DHPoint* closestPoint = nil;
     CGFloat closestPointDistance = maxDistance;
     
-    NSMutableArray* tempobjects = [[NSMutableArray alloc]initWithArray:geometricObjects];
-    [tempobjects removeObject:p];
-    for (id object in tempobjects) {
+    for (id object in geometricObjects) {
+        if (object == p) continue;
+        
         if ([[object class] isSubclassOfClass:[DHPoint class]]) {
             CGFloat distance = DistanceFromPointToLine(object, l);
             
@@ -419,8 +420,6 @@ static DHLineSegment* FindLineSegmentClosestToPoint(CGPoint point, NSArray* geom
     return closestLine;
 }
 
-
-
 static NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
 {
     const CGFloat maxDistanceLimit = maxDistance;
@@ -447,6 +446,27 @@ static NSArray* FindIntersectablesNearPoint(CGPoint point, NSArray* geometricObj
     
     return foundObjects;
 }
+
+static id FindClosestIntersectableNearPoint(CGPoint point, NSArray* geometricObjects, CGFloat maxDistance)
+{
+    CGFloat closestDistance = maxDistance;
+    
+    id foundObject = nil;
+    
+    for (id object in geometricObjects) {
+        CGFloat dist = CGFLOAT_MAX;
+        
+        if ([object class] == [DHCircle class]) dist = DistanceFromPositionToCircle(point, object);
+        if ([[object class] isSubclassOfClass:[DHLineObject class]]) dist = DistanceFromPositionToLine(point, object);
+        if (dist < closestDistance) {
+            closestDistance = dist;
+            foundObject = object;
+        }
+    }
+    
+    return foundObject;
+}
+
 
 static NSMutableArray* CreateIntersectionPointsBetweenObjects(NSArray* nearObjects)
 {

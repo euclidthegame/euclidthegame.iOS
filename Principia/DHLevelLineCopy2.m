@@ -63,13 +63,11 @@
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:180 andY:200];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:330 andY:150];
     
-    DHLineSegment* l1 = [[DHLineSegment alloc] init];
-    l1.start = p1;
-    l1.end = p2;
+    DHLineSegment* l1 = [[DHLineSegment alloc] initWithStart:p1 andEnd:p2];
+    DHLine* lHidden = [[DHLine alloc] initWithStart:p1 andEnd:p2];
     
-    DHPointOnLine* p3 = [[DHPointOnLine alloc] init];
-    p3.line = l1;
-    p3.tValue = 1.4;
+    DHPointOnLine* p3 = [[DHPointOnLine alloc] initWithLine:lHidden andTValue:1.4];
+    p3.hideBorder = YES;
     
     [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];

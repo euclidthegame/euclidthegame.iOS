@@ -68,7 +68,8 @@
 {
     DHPointOnLine* pC = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:1/3.0];
     DHPointOnLine* pD = [[DHPointOnLine alloc] initWithLine:_lAB andTValue:2/3.0];
-    
+    pC.hideBorder = YES;
+    pD.hideBorder = YES;
     [objects addObject:pC];
     [objects addObject:pD];
 }

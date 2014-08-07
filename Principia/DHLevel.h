@@ -39,8 +39,8 @@
 @property (nonatomic, weak) DHGeometryView* geometryView;
 @property (nonatomic, weak) UIView* view;
 - (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color andTime:(CGFloat)time;
-- (void)fadeIn:(DHGeometryView*)view withDuration:(CGFloat)time;
-- (void)fadeOut:(DHGeometryView*)view withDuration:(CGFloat)time;
+- (void)fadeIn:(UIView*)view withDuration:(CGFloat)time;
+- (void)fadeOut:(UIView*)view withDuration:(CGFloat)time;
 - (void)movePointFrom:(DHPoint*)start to:(DHPoint*)end withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView;
 - (void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView;
 @end

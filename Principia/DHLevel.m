@@ -61,7 +61,7 @@
     
 }
 
--(void)fadeIn:(DHGeometryView*)view withDuration:(CGFloat)time {
+-(void)fadeIn:(UIView*)view withDuration:(CGFloat)time {
     CABasicAnimation *animation = [CABasicAnimation animation];
     animation.keyPath = @"opacity";
     animation.fromValue = [NSNumber numberWithFloat:0];
@@ -70,7 +70,6 @@
     [view.layer addAnimation:animation forKey:nil];
     [view.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
 }
-
 -(void)fadeOut:(DHGeometryView*)view withDuration:(CGFloat)time {
     CABasicAnimation *animation = [CABasicAnimation animation];
     animation.keyPath = @"opacity";

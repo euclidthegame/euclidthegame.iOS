@@ -57,7 +57,7 @@
             self.end.highlighted = YES;
             [self.delegate toolTipDidChange:_toolTipPartial];
             endDefinedThisInteraction = YES;
-        } else {
+        } else if (self.start == nil) {
             DHLineSegment* line = FindLineSegmentClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
             if (line) {
                 self.segment = line;
@@ -113,7 +113,9 @@
         _tempIntersectionPoint = nil;
     }
     if (_tempTransSegment) {
-        _tempTransSegment.start.highlighted = NO;
+        if (self.segment || (_tempTransSegment.start != self.start && _tempTransSegment.start != self.end)) {
+            _tempTransSegment.start.highlighted = NO;
+        }
         _tempTransSegment.start = _tempStart;
         _tempTransPoint.startOfTranslation = _tempStart;
         _tempStart.position = touchPoint;
@@ -146,7 +148,9 @@
     NSMutableArray* objectsToAdd = [[NSMutableArray alloc] initWithCapacity:3];
     
     if (_tempTransSegment) {
-        _tempTransSegment.start.highlighted = NO;
+        if (self.segment || (_tempTransSegment.start != self.start && _tempTransSegment.start != self.end)) {
+            _tempTransSegment.start.highlighted = NO;
+        }
         
         if (_tempTransSegment.start != _tempStart) {
             
@@ -162,7 +166,7 @@
                 }
             }
             
-            if (_tempTransSegment.start.label.length == 0) [objectsToAdd addObject:_tempTransSegment.start];
+            if (_tempIntersectionPoint) [objectsToAdd addObject:_tempIntersectionPoint];
             [objectsToAdd addObject:_tempTransSegment];
             [objectsToAdd addObject:_tempTransPoint];
             [self.delegate addGeometricObjects:objectsToAdd];

@@ -17,7 +17,7 @@
 @property (nonatomic) BOOL hideBorder;
 @property (nonatomic, strong) DHGeometricTransform* geoViewTransform;
 @property (nonatomic) BOOL keepContentCenteredAndZoomedIn;
-
+- (instancetype)initWithObjects:(NSArray*)objects andSuperView:(DHGeometryView*)geometryView;
 - (CGPoint)getCenterInGeoCoordinates;
 - (void)centerOnGeoCoordinate:(CGPoint)geoCoord;
 - (void)centerContent;

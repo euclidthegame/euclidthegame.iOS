@@ -482,6 +482,17 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
 
 
 @implementation DHTranslatedPoint
+- (instancetype)initStart:(DHPoint*)start end:(DHPoint*)end newStart:(DHPoint*)newStart
+{
+    self = [super init];
+    if (self) {
+        _startOfTranslation = newStart;
+        _translationStart = start;
+        _translationEnd = end;
+    }
+    return self;
+}
+
 - (void)setStartOfTranslation:(DHPoint *)startOfTranslation
 {
     _startOfTranslation = startOfTranslation;
@@ -827,6 +838,15 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     if (self) {
         self.center = center;
         self.pointOnRadius = pointOnRadius;
+    }
+    return self;
+}
+- (instancetype)initWithCenter:(DHPoint*)center andRadius:(CGFloat)radius
+{
+    self = [super init];
+    if (self) {
+        self.center = center;
+        self.pointOnRadius = [[DHPoint alloc]initWithPositionX:self.center.position.x + radius andY:self.center.position.y];
     }
     return self;
 }

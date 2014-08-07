@@ -342,7 +342,10 @@
         return;
     }
     
-    if (pointOnLineOK) return;
+    if (pointOnLineOK) {
+        [self showTemporaryMessage:@"The point on the line is a good first step. Use it to your advantage!" atPoint:CGPointMake(100,50) withColor:[UIColor darkGrayColor] andTime:10.0];
+        return;
+    }
     
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     
@@ -418,7 +421,10 @@
         return;
     }
     
-    if (pointOnLineOK) return;
+    if (pointOnLineOK){
+        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:5.0];
+        return;
+    }
     
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     

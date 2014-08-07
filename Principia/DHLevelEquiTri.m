@@ -13,6 +13,7 @@
     DHLineSegment* _lineAB;
     DHPoint* _pointA;
     DHPoint* _pointB;
+    BOOL cBA_OK, cAB_OK;
 }
 @end
 
@@ -129,6 +130,8 @@
     BOOL sBC_OK = NO;
     BOOL sAD_OK = NO;
     BOOL sBD_OK = NO;
+    cAB_OK = NO;
+    cBA_OK = NO;
     
     DHTrianglePoint* pC = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
     DHTrianglePoint* pD = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.end andPoint2:_lineAB.start];
@@ -137,10 +140,17 @@
     DHLineSegment* sBC = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pC];
     DHLineSegment* sBD = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:pD];
     
+    DHCircle* cAB = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
+    DHCircle* cBA = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
+
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
         if ([object class] == [DHPoint class]) continue;
         if (object == _lineAB) continue;
+        
+        if (EqualCircles(object,cAB)) cAB_OK = YES;
+        if (EqualCircles(object, cBA)) cBA_OK = YES;
+
         if (LineObjectCoversSegment(object,sAC)) sAC_OK = YES;
         if (LineObjectCoversSegment(object,sAD)) sAD_OK = YES;
         if (LineObjectCoversSegment(object,sBC)) sBC_OK = YES;
@@ -334,8 +344,15 @@
         [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
           return;
     }
+
+    
+    if (cBA_OK && cAB_OK) {
+        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:5.0];
+        return;
+    }
     
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    
     
     for (int a=0; a<90; a++) {
         [self performBlock:^{
@@ -347,7 +364,7 @@
     Message* message2 = [[Message alloc] initWithMessage:@"Every point on the circle has the same distance to the center." andPoint:CGPointMake(150,120)];
     Message* message3 = [[Message alloc] initWithMessage:@"Hence, segment AC has the same length as segment AB." andPoint:CGPointMake(150,140)];
     Message* message4 = [[Message alloc] initWithMessage:@"For every point C on the circle." andPoint:CGPointMake(150,160)];
-
+    
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {
         [message1 position: CGPointMake(150,500)];
@@ -362,9 +379,16 @@
     pC.label = @"C";
     DHLineSegment* segmentAC = [[DHLineSegment alloc] initWithStart:c1.center andEnd:pC];
     segmentAC.temporary = YES;
-    
-   
 
+    if (cAB_OK) {
+        c1 = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
+        c1.temporary = YES;
+        pC = [[DHPointOnCircle alloc] initWithCircle:c1 andAngle:M_PI * 0.10 + M_PI];
+        pC.label = @"C";
+        segmentAC = [[DHLineSegment alloc] initWithStart:c1.center andEnd:pC];
+        segmentAC.temporary = YES;
+    }
+    
     DHGeometryView* circleView = [[DHGeometryView alloc] initWithFrame:geometryView.frame];
     circleView.hideBorder = YES;
     circleView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
@@ -460,7 +484,9 @@
     
     for (int a=0; a<steps; a++) {
         [self performBlock:^{
-            pC.angle = - M_PI * (((a*(2.2333))/900.0) + 0.10);
+            
+            if (cAB_OK) pC.angle =   M_PI * (((a*(2.2333))/900.0) + 1.10);
+            else pC.angle = - M_PI * (((a*(2.2333))/900.0) + 0.10);
             [pC updatePosition];
             [pointCView setNeedsDisplay];
             [lineACView setNeedsDisplay];

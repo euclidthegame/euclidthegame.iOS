@@ -15,6 +15,7 @@
     DHLine* _givenLine;
     Message* _message1, *_message2, *_message3;
     BOOL _step1finished;
+    BOOL perpendicularLineOK ;
 }
 
 @end
@@ -120,7 +121,7 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    BOOL perpendicularLineOK = NO;
+    perpendicularLineOK = NO;
     
     for (int index = 0; index < geometricObjects.count; ++index) {
         id object = [geometricObjects objectAtIndex:index];
@@ -129,6 +130,8 @@
         DHLineObject* l = object;
         
         if (l.tMin < 0 && l.tMax > 1 && LinesPerpendicular(l, _givenLine)) {
+            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                _message3.alpha = 0;  } completion:nil];
             perpendicularLineOK = YES;
         }
         
@@ -155,8 +158,7 @@
     
     for (id object in objects){
         if (EqualDirection(object,perp1))  {
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message3.alpha = 0;  } completion:nil];
+
             return _pointA.position;
         }
         if (EqualDirection(object,perp2))  return _pointA.position;
@@ -316,6 +318,12 @@
         [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
         return;
     }
+    
+    if (perpendicularLineOK){
+        [self showTemporaryMessage:@"No more hints available."  atPoint:CGPointMake(100,50) withColor:[UIColor darkGrayColor] andTime:10.0];
+        return;
+    }
+    
     
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     

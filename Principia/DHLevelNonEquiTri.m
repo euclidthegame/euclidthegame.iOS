@@ -15,6 +15,8 @@
     DHLineSegment* _lineCD;
     DHLineSegment* _lineEF;
     DHPoint* requiredPoint;
+    BOOL hint1_OK;
+    BOOL hint2_OK;
 }
 
 @end
@@ -280,4 +282,164 @@
     }
     return CGPointMake(NAN, NAN);
 }
+
+
+- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+    
+    
+    if ([hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+        for (int a=0; a<90; a++) {
+            [self performBlock:^{
+                heightToolBar.constant= -20 + a;
+            } afterDelay:a* (1/90.0) ];
+        }
+        if (!hint1_OK){        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
+        else {[hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
+        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+        return;
+    }
+    
+    if (hint2_OK) {
+        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
+        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+        hint1_OK = NO;
+        hint2_OK = NO;
+        return;
+    }
+    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    for (int a=0; a<90; a++) {
+        [self performBlock:^{
+            heightToolBar.constant= 70 - a;
+        } afterDelay:a* (1/90.0) ];
+    }
+    
+    Message* message1 = [[Message alloc] initWithMessage:@"We are looking for a point G such that:" andPoint:CGPointMake(450,100)];
+    Message* message2 = [[Message alloc] initWithMessage:@"  1. AG = CD" andPoint:CGPointMake(450,120)];
+    Message* message3 = [[Message alloc] initWithMessage:@"  2. BG = EF" andPoint:CGPointMake(450,140)];
+    Message* message4 = [[Message alloc] initWithMessage:@"How can we construct such a point ?" andPoint:CGPointMake(450,160)];
+    
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
+        [message1 position: CGPointMake(150,500)];
+        [message2 position: CGPointMake(150,520)];
+        [message3 position: CGPointMake(150,540)];
+        [message4 position: CGPointMake(150,560)];
+    }
+    
+    DHTranslatedPoint* tp1 = [[DHTranslatedPoint alloc] initStart:_lineCD.start end:_lineCD.end newStart:_lineAB.start];
+    DHTranslatedPoint* tp2 = [[DHTranslatedPoint alloc] initStart:_lineEF.start end:_lineEF.end newStart:_lineAB.end];
+    DHCircle* c1 = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:tp1];
+    DHCircle* c2 = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:tp2];
+    DHIntersectionPointCircleCircle* pG = [[DHIntersectionPointCircleCircle alloc] initWithCircle1:c1 andCircle2:c2 onPositiveY:YES];
+    pG.label = @"G";
+    
+    DHPoint* pointC = [[DHPoint alloc]initWithPositionX:_lineCD.start.position.x andY:_lineCD.start.position.y];
+    DHPoint* pointD = [[DHPoint alloc]initWithPositionX:_lineCD.end.position.x andY:_lineCD.end.position.y];
+    DHLineSegment* tempSegment = [[DHLineSegment alloc]initWithStart:pointC andEnd:pointD];
+    tempSegment.temporary = YES;
+    
+    DHCircle* cCD = [[DHCircle alloc] initWithCenter:pointC andPointOnRadius:pointD];
+    cCD.temporary = YES;
+
+    DHPoint* pointE = [[DHPoint alloc]initWithPositionX:_lineEF.start.position.x andY:_lineEF.start.position.y];
+    DHPoint* pointF = [[DHPoint alloc]initWithPositionX:_lineEF.end.position.x andY:_lineEF.end.position.y];
+    DHLineSegment* tempSegmentEF = [[DHLineSegment alloc]initWithStart:pointE andEnd:pointF];
+    tempSegmentEF.temporary = YES;
+    
+    DHGeometryView* pointGView = [[DHGeometryView alloc] initWithObjects:@[pG] andSuperView:geometryView];
+    DHGeometryView* moveCD = [[DHGeometryView alloc] initWithObjects:@[pointC,pointD,tempSegment] andSuperView:geometryView];
+    DHGeometryView* moveEF = [[DHGeometryView alloc]initWithObjects:@[pointE,pointF,tempSegmentEF] andSuperView:geometryView];
+    
+    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+    [geometryView addSubview:hintView];
+    [hintView addSubview:message1];
+    [hintView addSubview:message2];
+    [hintView addSubview:message3];
+    [hintView addSubview:message4];
+    [hintView addSubview:moveCD];
+    [hintView addSubview:moveEF];
+    [hintView addSubview:pointGView];
+    
+    //hint 1
+    if (!hint1_OK){
+    
+    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+        message1.alpha = 1; } completion:^(BOOL finished){ }];
+    [self fadeIn:pointGView withDuration:2];
+    
+    [self performBlock:^{
+        
+        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+            message2.alpha = 1; } completion:^(BOOL finished){     }];
+
+        [self fadeIn:moveCD withDuration:0.5];
+        [self movePointFrom:pointC to:_lineAB.start withDuration:1.5 inView:moveCD];
+        [self movePointFrom:pointD to:pG withDuration:1.5 inView:moveCD];
+        
+    } afterDelay:4.0];
+    
+    [self performBlock:^{
+        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+            message3.alpha = 1; } completion:^(BOOL finished){     }];
+        [self fadeIn:moveEF withDuration:0.5];
+        [self movePointFrom:pointE to:pG withDuration:1.5 inView:moveEF];
+        [self movePointFrom:pointF to:_lineAB.end withDuration:1.5 inView:moveEF];
+        
+    } afterDelay:8.0];
+    
+    [self performBlock:^{
+        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+            message4.alpha = 1; } completion:^(BOOL finished){hint1_OK = YES;    }];
+    } afterDelay:12.0];
+    }
+    
+    //hint 2
+    else if(!hint2_OK){
+        [message1 text:@"Circles have a very usefull property." position:CGPointMake(250, 20)];
+        [message2 text:@"Every point on the circle, has the same distance to the center." position:CGPointMake(250,40) ];
+        [message3 text:@"Note that a circle can be \"moved\" using the compass tool." position:CGPointMake(250,60) ];
+        DHCircle* cCD = [[DHCircle alloc] initWithCenter:pointC andPointOnRadius:pointD];
+        cCD.temporary = YES;
+        DHCircle* cEF = [[DHCircle alloc] initWithCenter:pointF andPointOnRadius:pointE];
+        cEF.temporary = YES;
+
+        DHTranslatedPoint* tpE = [[DHTranslatedPoint alloc]initStart:pointF end:pointE newStart:_lineAB.end];
+
+        DHPointOnCircle* p1 = [[DHPointOnCircle alloc] initWithCircle:cCD andAngle: -M_PI];
+        DHPointOnCircle* p2 = [[DHPointOnCircle alloc] initWithCircle:cEF andAngle: -M_PI];
+
+        DHGeometryView* cView = [[DHGeometryView alloc] initWithObjects:@[cCD,cEF,pointC,pointF] andSuperView:geometryView];
+        DHGeometryView* pView = [[DHGeometryView alloc] initWithObjects:@[p1,p2] andSuperView:geometryView];
+        
+        [hintView addSubview:cView];
+        [hintView addSubview:pView];
+        
+        [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+            message1.alpha = 1; } completion:^(BOOL finished){ }];
+        [self fadeIn:cView withDuration:2];
+
+        [self performBlock:^{
+            [self fadeIn:pView withDuration:2];
+            [self movePointOnCircle:p1 toAngle:M_PI + 0.33 withDuration:4 inView:pView];
+            [self movePointOnCircle:p2 toAngle:M_PI +0.25 withDuration:4 inView:pView];
+            
+            [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                message2.alpha = 1; } completion:^(BOOL finished){hint2_OK = YES; }];
+
+        } afterDelay:4.0];
+        [self afterDelay:8.0 performBlock:^{
+            [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                message3.alpha = 1; } completion:^(BOOL finished){hint2_OK = YES; }];
+        }];
+        
+        [self afterDelay:11.0 performBlock:^{
+            [self fadeOut:pView withDuration:0.1];
+            [self movePointFrom:pointC to:_lineAB.start withDuration:1.5 inView:cView];
+            [self movePointFrom:pointD to:tp1 withDuration:1.5 inView:cView];
+            [self movePointFrom:pointF to:_lineAB.end withDuration:1.5 inView:cView];
+            [self movePointFrom:pointE to:tpE withDuration:1.5 inView:cView];
+        }];
+    }
+}
+
 @end

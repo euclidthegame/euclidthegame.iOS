@@ -16,6 +16,8 @@
     DHPoint* _pointB;
     Message* _message1, *_message2, *_message3, *_message4;
     BOOL _step1finished;
+    BOOL pointOnMidLineOK;
+    BOOL secondPontOnMidLineOK;
 }
 
 @end
@@ -117,8 +119,8 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    BOOL pointOnMidLineOK = NO;
-    BOOL secondPontOnMidLineOK = NO;
+    pointOnMidLineOK = NO;
+    secondPontOnMidLineOK = NO;
     BOOL midPointOK = NO;
     self.progress =0 ;
     
@@ -324,6 +326,12 @@ for (id object in objects){
         [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
         return;
     }
+    
+    if (pointOnMidLineOK && secondPontOnMidLineOK) {
+        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:5.0];
+        return;
+    }
+    
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     
     _message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(150,720)];

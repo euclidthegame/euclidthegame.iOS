@@ -65,6 +65,9 @@
     
     _tools = [[NSMutableArray alloc] init];
     
+    _currentLevel.geometryView = self.geometryView;
+    _currentLevel.view = self.view;
+    
     [_toolControl addTarget:self
                      action:@selector(toolChanged:)
            forControlEvents:UIControlEventValueChanged];
@@ -981,6 +984,10 @@
     [detailedInstructionView addSubview:turnHintOnLabel];
     [detailedInstructionView addSubview:hintSwitch];
     
+    if (!self.currentGameMode == kDHGameModeNormal) {
+        turnHintOnLabel.hidden = YES;
+        hintSwitch.hidden  = YES;
+    }
     [startButton addTarget:self action:@selector(hideDetailedLevelInstruction)
                              forControlEvents:UIControlEventTouchUpInside];
     

@@ -31,14 +31,23 @@
 - (void)animation:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view;
 - (void)hint:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton;
 - (NSString*)levelDescriptionExtra;
+
 @end
 
 @interface DHLevel : NSObject
 @property NSUInteger progress;
+@property (nonatomic, weak) DHGeometryView* geometryView;
+@property (nonatomic, weak) UIView* view;
+- (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color andTime:(CGFloat)time;
+- (void)fadeIn:(DHGeometryView*)view withDuration:(CGFloat)time;
+- (void)fadeOut:(DHGeometryView*)view withDuration:(CGFloat)time;
+- (void)movePointFrom:(DHPoint*)start to:(DHPoint*)end withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView;
+- (void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView;
 @end
 
 @interface NSObject (Blocks)
 - (void)performBlock:(void (^)())block afterDelay:(NSTimeInterval)delay;
+- (void)afterDelay:(NSTimeInterval)delay performBlock:(void (^)())block;
 @end
 
 @interface Message : UILabel
@@ -48,3 +57,6 @@
 - (void)text:(NSString*)string position:(CGPoint)point;
 - (void)position:(CGPoint)point;
 @end
+
+
+

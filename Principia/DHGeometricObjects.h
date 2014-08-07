@@ -62,6 +62,7 @@
 @property (nonatomic, strong) DHPoint* pointOnRadius;
 @property (nonatomic, readonly) CGFloat radius;
 - (instancetype)initWithCenter:(DHPoint*)center andPointOnRadius:(DHPoint*)pointOnRadius;
+- (instancetype)initWithCenter:(DHPoint*)center andRadius:(CGFloat)radius;
 @end
 
 
@@ -92,6 +93,7 @@
 @property (nonatomic, strong) DHPoint* startOfTranslation;
 @property (nonatomic, strong) DHPoint* translationStart;
 @property (nonatomic, strong) DHPoint* translationEnd;
+- (instancetype)initStart:(DHPoint*)start end:(DHPoint*)end newStart:(DHPoint*)newStart;
 @end
 
 

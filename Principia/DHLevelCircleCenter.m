@@ -166,7 +166,6 @@ return CGPointMake(NAN, NAN);
         [message4 position: CGPointMake(150,560)];
     }
     
-    hint1_OK = YES;
     
     _pointC.label = @"A";
     DHGeometryView* centerView = [[DHGeometryView alloc]initWithObjects:@[_pointC] andSuperView:geometryView];

@@ -165,7 +165,9 @@
         return;
     }
     if (self.circle) {
-        [self.delegate addGeometricObjects:@[self.circle.center]];
+        DHMidPoint* midPoint = [[DHMidPoint alloc] initWithPoint1:self.circle.center
+                                                        andPoint2:self.circle.center];
+        [self.delegate addGeometricObjects:@[midPoint]];
         [self reset];
         return;
     }

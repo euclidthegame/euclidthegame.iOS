@@ -45,7 +45,7 @@
 
 - (NSUInteger)minimumNumberOfMoves
 {
-    return 2;
+    return 3;
 }
 - (NSUInteger)minimumNumberOfMovesPrimitiveOnly
 {

@@ -45,7 +45,7 @@
         DHLineObject* line = FindLineClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
         if (line) {
             self.line = line;
-            line.highlighted = true;
+            line.highlighted = YES;
             [self.delegate toolTipDidChange:_tooltipTempUnfinished];
             _tempPoint = [[DHPoint alloc] initWithPosition:touchPoint];
             _tempParaLine = [[DHParallelLine alloc] initWithLine:self.line andPoint:_tempPoint];

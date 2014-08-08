@@ -103,9 +103,7 @@
             _tempLine.temporary = NO;
             _tempLine.end.highlighted = YES;
 
-            if (_tempIntersectionEnd) {
-                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionEnd]];
-            }            
+            if (_tempIntersectionEnd) [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionEnd]];
             
             [self.delegate toolTipDidChange:@"Release to create line"];
         } else {

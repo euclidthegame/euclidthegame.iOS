@@ -297,39 +297,79 @@
 
 -(void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view {
     
-    DHCircle* circle = [[DHCircle alloc]initWithCenter:_pointC andPointOnRadius:_pointR];
-    DHGeometryView* animationView = [[DHGeometryView alloc]initWithObjects:@[_pointC,circle] andSuperView:view andGeometryView:geometryView];
     
-    [view addSubview:animationView];
-    
-    UIView* segment1= [toolControl.subviews objectAtIndex:4];
-    UIView* segment2 = [toolControl.subviews objectAtIndex:5];
-    CGPoint pos1 = [segment1.superview convertPoint:segment1.frame.origin toView:animationView];
-    CGPoint pos2 = [segment2.superview convertPoint:segment2.frame.origin toView:animationView];
-    CGFloat xpos = (pos1.x + pos2.x )/2;
-    CGFloat ypos =  pos2.y;
+    CGFloat steps = 100;
+    CGPoint oldOffset = geometryView.geoViewTransform.offset;
+    CGFloat oldScale = geometryView.geoViewTransform.scale;
+    CGFloat newScale = 1;
+    CGPoint newOffset = CGPointMake(0,0);
     
     if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
-        ypos = ypos;
-        xpos = xpos;
+        [geometryView.geoViewTransform setScale:newScale];
+        [geometryView centerContent];
+        newOffset = geometryView.geoViewTransform.offset;
+        [geometryView.geoViewTransform setOffset:oldOffset];
+        [geometryView.geoViewTransform setScale:oldScale];
+
     }
     
-    DHPoint* endpointC = [[DHPoint alloc]initWithPositionX:xpos andY:ypos-30];
-    DHPoint* endpointR = [[DHPoint alloc]initWithPositionX:pos1.x -15 andY:ypos-30];
+    CGPoint offset = PointFromToWithSteps(oldOffset, newOffset, 100);
+    CGFloat scale =  pow((newScale/oldScale),0.01) ;
     
-    [self movePointFrom:_pointC to:endpointC withDuration:4.0 inView:animationView];
-    [self movePointFrom:_pointR to:endpointR withDuration:4.0 inView:animationView];
-    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-6];
-    UIImageView* tool = [toolSegment.subviews objectAtIndex:0];
     
-    [self afterDelay:3.0 performBlock:^{
-        [self fadeOut:tool withDuration:1.0];
-        [self fadeOut:animationView withDuration:1.0];
+    for (int a=0; a<steps; a++) {
+        [self performBlock:^{
+            [geometryView.geoViewTransform offsetWithVector:CGPointMake(offset.x, offset.y)];
+            [geometryView.geoViewTransform setScale:geometryView.geoViewTransform.scale *scale];
+            [geometryView setNeedsDisplay];
+        } afterDelay:a* (1/steps)];
+    }
+
+    [self afterDelay:1.0 performBlock:^{
+        DHCircle* circle = [[DHCircle alloc]initWithCenter:_pointC andPointOnRadius:_pointR];
+        DHGeometryView* animationView = [[DHGeometryView alloc]initWithObjects:@[_pointC,circle] andSuperView:view andGeometryView:geometryView];
+        
+        [view addSubview:animationView];
+        
+        UIView* segment1= [toolControl.subviews objectAtIndex:4];
+        UIView* segment2 = [toolControl.subviews objectAtIndex:5];
+        CGPoint pos1 = [segment1.superview convertPoint:segment1.frame.origin toView:animationView];
+        CGPoint pos2 = [segment2.superview convertPoint:segment2.frame.origin toView:animationView];
+        pos1 = CGPointMake(pos1.x -newOffset.x, pos1.y - newOffset.y);
+        pos2 = CGPointMake(pos2.x - newOffset.x, pos2.y - newOffset.y);
+        CGFloat xpos = (pos1.x + pos2.x )/2 ;
+        CGFloat ypos =  pos2.y;
+        CGFloat radius = pos1.x -15;
+        
+        if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+            radius = radius - 10;
+        }
+        
+        DHPoint* endpointC = [[DHPoint alloc]initWithPositionX:xpos andY:ypos-30];
+        DHPoint* endpointR = [[DHPoint alloc]initWithPositionX:radius andY:ypos-30];
+
+         [self movePointFrom:_pointC to:endpointC withDuration:4.0 inView:animationView];
+         [self movePointFrom:_pointR to:endpointR withDuration:4.0 inView:animationView];
+         UIView* toolSegment = [toolControl.subviews objectAtIndex:11-6];
+         UIImageView* tool = [toolSegment.subviews objectAtIndex:0];
+         
+         [self afterDelay:3.0 performBlock:^{
+         [self fadeOut:tool withDuration:1.0];
+             [self fadeOut:animationView withDuration:1.5];
+         }];
+         [self afterDelay:4.0 performBlock:^{
+             
+             tool.image = [UIImage imageNamed:@"toolMidpointImproved"];
+         [self fadeIn:tool withDuration:1.0];
+
+         }];
+        [self afterDelay:5.0 performBlock:^{
+            [animationView removeFromSuperview];
+        }];
+  
+        
     }];
-    [self afterDelay:4.0 performBlock:^{
-        tool.image = [UIImage imageNamed:@"toolMidpointImproved"];
-        [self fadeIn:tool withDuration:1.0];
-        [animationView removeFromSuperview];
-    }];
+    
+
 }
 @end

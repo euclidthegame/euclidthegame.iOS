@@ -808,6 +808,7 @@
         [completionMessageText setString:@"Well done! You are now ready to begin with Level 1."];
         self.nextChallengeButton.hidden = NO;
         [self.nextChallengeButton setTitle:@"Go to Level 1." forState:UIControlStateNormal];
+        [self.nextChallengeButton addTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
     } else {
         // If this is the last level, show special completion message and hide the "Next level" button
         if (self.levelIndex >= self.levelArray.count - 1) {

@@ -11,9 +11,10 @@
 
 @implementation DHLineSegmentTool {
     CGPoint _touchPointInViewStart;
-    DHPoint* _temporaryInitialStartingPoint;
-    DHPoint* _temporaryEndPoint;
-    DHLineSegment* _temporaryLine;
+    DHPoint* _tempIntersectionStart;
+    DHPoint* _tempIntersectionEnd;
+    DHPoint* _tempEndPoint;
+    DHLineSegment* _tempSegment;
 }
 - (NSString*)initialToolTip
 {
@@ -33,8 +34,8 @@
         DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,
                                                                         geoViewScale);
         if (intersectionPoint) {
-            if (!self.startPoint) _temporaryInitialStartingPoint = intersectionPoint;
-            else _temporaryEndPoint = intersectionPoint;
+            if (!self.startPoint) _tempIntersectionStart = intersectionPoint;
+            else _tempIntersectionEnd = intersectionPoint;
             point = intersectionPoint;
         }
     }
@@ -42,30 +43,29 @@
     if (!self.startPoint && point) {
         // If no starting yet and point was found, use as starting point and highlight it
         self.startPoint = point;
-        point.highlighted = true;
+        point.highlighted = YES;
         [self.delegate toolTipDidChange:@"Drag to a point defining the end point of the segment"];
         
-        if (_temporaryInitialStartingPoint) {
-            [self.delegate addTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
+        if (_tempIntersectionStart) {
+            [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionStart]];
         }
         [touch.view setNeedsDisplay];
     } else if (self.startPoint) {
-        DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
-        _temporaryLine = [[DHLineSegment alloc] initWithStart:self.startPoint andEnd:endPoint];
+        _tempEndPoint = [[DHPoint alloc] initWithPosition:touchPoint];
+        _tempSegment = [[DHLineSegment alloc] initWithStart:self.startPoint andEnd:_tempEndPoint];
         if (point && point != self.startPoint) {
-            if (_temporaryEndPoint) {
-                [self.delegate addTemporaryGeometricObjects:@[_temporaryEndPoint]];
+            if (_tempIntersectionEnd) {
+                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionEnd]];
             }
-            
-            _temporaryLine.end.position = point.position;
+            _tempSegment.end = point;
+            _tempSegment.end.highlighted = YES;
             [self.delegate toolTipDidChange:@"Release to create line segment"];
             
         } else {
-            _temporaryLine.end.position = touchPoint;
-            _temporaryLine.temporary = YES;
+            _tempSegment.temporary = YES;
             [self.delegate toolTipDidChange:@"Drag to a point defining the end point of the segment"];
         }
-        [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
+        [self.delegate addTemporaryGeometricObjects:@[_tempSegment]];
         [touch.view setNeedsDisplay];
     }
 }
@@ -74,40 +74,43 @@
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
+    NSArray* geoObjects = self.delegate.geometryObjects;
     
-    if (_temporaryEndPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryEndPoint]];
-        _temporaryEndPoint = nil;        
+    if (_tempIntersectionEnd) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionEnd]];
+        _tempIntersectionEnd = nil;
     }
     
-    if (!_temporaryLine && self.startPoint) {
-        DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
-        _temporaryLine = [[DHLineSegment alloc] initWithStart:self.startPoint andEnd:endPoint];
-        [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
+    if (!_tempSegment && self.startPoint) {
+        _tempEndPoint = [[DHPoint alloc] initWithPosition:touchPoint];
+        _tempSegment = [[DHLineSegment alloc] initWithStart:self.startPoint andEnd:_tempEndPoint];
+        [self.delegate addTemporaryGeometricObjects:@[_tempSegment]];
     }
     
-    if (_temporaryLine) {
-        CGPoint endPoint = touchPoint;
-        DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    if (_tempSegment) {
+        _tempSegment.end.highlighted = NO;
+        _tempEndPoint.position = touchPoint;
+        
+        DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
         if (!point) {
-            point = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects, geoViewScale);
-            if (point) {
-                _temporaryEndPoint = point;
-            }
+            point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects, geoViewScale);
+            if (point) _tempIntersectionEnd = point;
         }
         if (point && point != self.startPoint) {
-            endPoint = point.position;
-            if (_temporaryEndPoint) {
-                [self.delegate addTemporaryGeometricObjects:@[_temporaryEndPoint]];
+            _tempSegment.end = point;
+            _tempSegment.temporary = NO;
+            _tempSegment.end.highlighted = YES;
+
+            if (_tempIntersectionEnd) {
+                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionEnd]];
             }
             
             [self.delegate toolTipDidChange:@"Release to create line segment"];
-            _temporaryLine.temporary = NO;
         } else {
+            _tempSegment.temporary = YES;
+            _tempSegment.end = _tempEndPoint;
             [self.delegate toolTipDidChange:@"Drag to a point defining the end point of the segment"];
-            _temporaryLine.temporary = YES;
         }
-        _temporaryLine.end.position = endPoint;
     }
     [touch.view setNeedsDisplay];
 }
@@ -118,62 +121,35 @@
         return;
     }
     NSMutableArray* objectsToAdd = [[NSMutableArray alloc] initWithCapacity:3];
-    
     CGPoint touchPointInView = [touch locationInView:touch.view];
-    CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
-    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
     
-    if (_temporaryEndPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryEndPoint]];
-        _temporaryEndPoint = nil;
-    }
-    if (_temporaryLine) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
-        _temporaryLine = nil;
-        [self.delegate toolTipDidChange:@"Tap on a second point to mark the end the line segment"];
-        [touch.view setNeedsDisplay];
-    }
-    if (_temporaryInitialStartingPoint) {
-        [objectsToAdd addObject:_temporaryInitialStartingPoint];
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
-        _temporaryInitialStartingPoint = nil;
-        [touch.view setNeedsDisplay];
-    }
-    
-    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
-    // Prefer normal point selection above automatic intersection
-    if (!point) {
-        DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
-        if (intersectionPoint && !CGPointEqualToPoint(intersectionPoint.position, self.startPoint.position)) {
-            point = intersectionPoint;
-            [objectsToAdd addObject:intersectionPoint];
+    if (_tempSegment) {
+        _tempSegment.end.highlighted = NO;
+        [self.delegate removeTemporaryGeometricObjects:@[_tempSegment]];
+        
+        if (_tempSegment.end != _tempEndPoint) {
+            _tempSegment.temporary = NO;
+            [objectsToAdd addObject:_tempSegment];
+            
+            if (_tempIntersectionStart) [objectsToAdd addObject:_tempIntersectionStart];
+            if (_tempIntersectionEnd) [objectsToAdd addObject:_tempIntersectionEnd];
+            [self.delegate addGeometricObjects:objectsToAdd];
+            
+            [self reset];
+        } else {
+            
+            if(DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit ) {
+                [self reset];
+            } else {
+                _tempSegment = nil;
+                _tempEndPoint = nil;
+                [self.delegate toolTipDidChange:@"Tap on a second point to mark the end the line segment"];
+            }
         }
-    }
-    
-    if(!point && DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit ) {
-        [self reset];
-    }
-    
-    if (self.startPoint && point && point != self.startPoint) {
-        DHLineSegment* line = [[DHLineSegment alloc] init];
-        line.start = self.startPoint;
-        line.end = point;
-        
-        [objectsToAdd addObject:line];
-        
-        self.startPoint.highlighted = false;
-        self.startPoint = nil;
-        
-        [self.delegate addGeometricObjects:objectsToAdd];
-        [objectsToAdd removeAllObjects];
-        [self.delegate toolTipDidChange:self.initialToolTip];
-    }
-    if (objectsToAdd.count > 0) {
-        [self.delegate addGeometricObjects:objectsToAdd];
-    }
-    if (self.startPoint) {
+    } else if (self.startPoint) {
         [self.delegate toolTipDidChange:@"Tap on a second point to mark the end the line segment"];
     }
+    
     [touch.view setNeedsDisplay];
 }
 - (BOOL)active
@@ -186,18 +162,10 @@
 }
 - (void)reset
 {
-    if (_temporaryEndPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryEndPoint]];
-        _temporaryEndPoint = nil;
-    }
-    if (_temporaryLine) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
-        _temporaryLine = nil;
-    }
-    if (_temporaryInitialStartingPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
-        _temporaryInitialStartingPoint = nil;
-    }
+    _tempEndPoint = nil;
+    DHToolTempObjectCleanup(_tempSegment);
+    DHToolTempObjectCleanup(_tempIntersectionStart);
+    DHToolTempObjectCleanup(_tempIntersectionEnd);
     
     self.startPoint.highlighted = NO;
     self.startPoint = nil;
@@ -207,15 +175,9 @@
 
 - (void)dealloc
 {
-    if (_temporaryEndPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryEndPoint]];
-    }
-    if (_temporaryLine) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
-    }
-    if (_temporaryInitialStartingPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
-    }
+    DHToolTempObjectCleanup(_tempSegment);
+    DHToolTempObjectCleanup(_tempIntersectionStart);
+    DHToolTempObjectCleanup(_tempIntersectionEnd);
     self.startPoint.highlighted = NO;
 }
 @end

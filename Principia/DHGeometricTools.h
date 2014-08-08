@@ -31,6 +31,11 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
     DHAllToolsAvailable = NSUIntegerMax
 };
 
+#define DHToolTempObjectCleanup(object) if (object) { \
+                                            [self.delegate removeTemporaryGeometricObjects:@[object]]; \
+                                            object = nil; \
+                                        }
+
 @interface DHPointTool : DHGeometryTool <DHGeometryTool>
 @property (nonatomic, weak) DHPoint* point;
 @property (nonatomic) CGPoint touchStart;

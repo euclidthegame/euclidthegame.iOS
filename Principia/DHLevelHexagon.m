@@ -12,6 +12,8 @@
 
 @interface DHLevelHexagon () {
     DHLineSegment* _lineAB;
+    BOOL hint1_OK;
+    BOOL hint2_OK;
 }
 
 @end
@@ -217,6 +219,31 @@
     return CGPointMake(NAN, NAN);
 }
 
+-(void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint *)heightToolBar and:(UIButton *)hintButton{
+if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
+    [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+    [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+    return;
+}
+
+if (!hint1_OK) {
+    [self showTemporaryMessage:@"You can find all the required points, using only one tool." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:4.0];
+    hint1_OK = YES;
+    return;
+}
+else if (!hint2_OK) {
+        [self showTemporaryMessage:@"Try the circle tool." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:4.0];
+    hint2_OK = YES;
+    return;
+    }
+else{
+    [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:4.0];
+        hint1_OK = NO;
+    hint2_OK = NO;
+    return;
+        
+    }
+}
 
 @end
 

@@ -146,7 +146,6 @@
         [self.delegate addGeometricObjects:objectsToAdd];
     }
     [touch.view setNeedsDisplay];
-
 }
 - (BOOL)active
 {
@@ -167,10 +166,7 @@
 }
 - (void)resetTemporaryObjects
 {
-    if (_tempIntersectionPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint]];
-        _tempIntersectionPoint = nil;
-    }
+    DHToolTempObjectCleanup(_tempIntersectionPoint);
     if (_tempPerpLine) {
         _tempPerpLine.point.highlighted = NO;
         [self.delegate removeTemporaryGeometricObjects:@[_tempPerpLine]];

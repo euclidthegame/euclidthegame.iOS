@@ -11,8 +11,10 @@
 
 @implementation DHLineTool {
     CGPoint _touchPointInViewStart;
-    DHPoint* _temporaryInitialStartingPoint;
-    DHLine* _temporaryLine;
+    DHPoint* _tempIntersectionStart;
+    DHPoint* _tempIntersectionEnd;
+    DHPoint* _tempEndPoint;
+    DHLine* _tempLine;
 }
 - (NSString*)initialToolTip
 {
@@ -30,33 +32,34 @@
     if (!point) {
         DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
         if (intersectionPoint) {
-            if (!self.startPoint) _temporaryInitialStartingPoint = intersectionPoint;
+            if (!self.startPoint) _tempIntersectionStart = intersectionPoint;
+            else _tempIntersectionEnd = intersectionPoint;
             point = intersectionPoint;
         }
     }
     
-    
     if (!self.startPoint && point) {
         self.startPoint = point;
-        point.highlighted = true;
+        point.highlighted = YES;
         [self.delegate toolTipDidChange:@"Drag to a second point that the line will pass through"];
         
-        if (_temporaryInitialStartingPoint) {
-            [self.delegate addTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
+        if (_tempIntersectionStart) {
+            [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionStart]];
         }
         [touch.view setNeedsDisplay];
     } else if (self.startPoint) {
-        DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
-        _temporaryLine = [[DHLine alloc] initWithStart:self.startPoint andEnd:endPoint];
+        _tempEndPoint = [[DHPoint alloc] initWithPosition:touchPoint];
+        _tempLine = [[DHLine alloc] initWithStart:self.startPoint andEnd:_tempEndPoint];
         if (point && point != self.startPoint) {
-            _temporaryLine.end.position = point.position;
+            _tempLine.end = point;
+            _tempLine.end.highlighted = YES;
             [self.delegate toolTipDidChange:@"Release to create line"];
         } else {
-            _temporaryLine.end.position = touchPoint;
-            _temporaryLine.temporary = YES;
+            _tempLine.end.position = touchPoint;
+            _tempLine.temporary = YES;
             [self.delegate toolTipDidChange:@"Drag to a second point that the line will pass through"];
         }
-        [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
+        [self.delegate addTemporaryGeometricObjects:@[_tempLine]];
         [touch.view setNeedsDisplay];
     }
 }
@@ -65,36 +68,48 @@
     CGPoint touchPointInView = [touch locationInView:touch.view];
     CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
     CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
+    NSArray* geoObjects = self.delegate.geometryObjects;
     
-    if (!_temporaryLine && self.startPoint) {
-        DHPoint* endPoint = [[DHPoint alloc] initWithPositionX:touchPoint.x andY:touchPoint.y];
-        _temporaryLine = [[DHLine alloc] initWithStart:self.startPoint andEnd:endPoint];
-        [self.delegate addTemporaryGeometricObjects:@[_temporaryLine]];
+    if (_tempIntersectionEnd) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionEnd]];
+        _tempIntersectionEnd = nil;
+    }
+    
+    if (!_tempLine && self.startPoint) {
+        _tempEndPoint = [[DHPoint alloc] initWithPosition:touchPoint];
+        _tempLine = [[DHLine alloc] initWithStart:self.startPoint andEnd:_tempEndPoint];
+        [self.delegate addTemporaryGeometricObjects:@[_tempLine]];
         [touch.view setNeedsDisplay];
     }
     
-    if (_temporaryLine) {
-        CGPoint endPoint = touchPoint;
-        DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
+    if (_tempLine) {
+        _tempLine.end.highlighted = NO;
+        _tempEndPoint.position = touchPoint;
+        _tempLine.end = _tempEndPoint;
+        
+        DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
         if (!point) {
-            point = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects, geoViewScale);
+            point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects, geoViewScale);
+            if (point) _tempIntersectionEnd = point;
         }
         
         //if still no point, see if there is a point close to the line and snap to it
         if (!point) {
-            _temporaryLine.end.position = touchPoint;
-            point = FindPointClosestToLine(_temporaryLine, self.startPoint, self.delegate.geometryObjects, 8/geoViewScale);
+            point = FindPointClosestToLine(_tempLine, self.startPoint, geoObjects, 8/geoViewScale);
         }
         
         if (point && point != self.startPoint) {
-            endPoint = point.position;
+            _tempLine.end = point;
+            _tempLine.temporary = NO;
+            _tempLine.end.highlighted = YES;
+
+            if (_tempIntersectionEnd) [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionEnd]];
+            
             [self.delegate toolTipDidChange:@"Release to create line"];
-            _temporaryLine.temporary = NO;
         } else {
             [self.delegate toolTipDidChange:@"Drag to a second point that the line will pass through"];
-            _temporaryLine.temporary = YES;
+            _tempLine.temporary = YES;
         }
-        _temporaryLine.end.position = endPoint;
         [touch.view setNeedsDisplay];
     }
 }
@@ -105,63 +120,35 @@
         return;
     }
     NSMutableArray* objectsToAdd = [[NSMutableArray alloc] initWithCapacity:3];
-    
     CGPoint touchPointInView = [touch locationInView:touch.view];
-    CGPoint touchPoint = [[self.delegate geoViewTransform] viewToGeo:touchPointInView];
-    CGFloat geoViewScale = [[self.delegate geoViewTransform] scale];
     
-    if (_temporaryLine) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
-        _temporaryLine = nil;
-        [self.delegate toolTipDidChange:@"Tap on a second point that the line will pass through"];
-        [touch.view setNeedsDisplay];
-    }
-    if (_temporaryInitialStartingPoint) {
-        [objectsToAdd addObject:_temporaryInitialStartingPoint];
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
-        _temporaryInitialStartingPoint = nil;
-        [touch.view setNeedsDisplay];
-    }
-    
-    DHPoint* point = FindPointClosestToPoint(touchPoint, self.delegate.geometryObjects, kClosestTapLimit / geoViewScale);
-    // Prefer normal point selection above automatic intersection
-    if (!point) {
-        DHPoint* intersectionPoint = FindClosestUniqueIntersectionPoint(touchPoint, self.delegate.geometryObjects,geoViewScale);
-        if (intersectionPoint && !CGPointEqualToPoint(intersectionPoint.position, self.startPoint.position)) {
-            point = intersectionPoint;
-            [objectsToAdd addObject:intersectionPoint];
+    if (_tempLine) {
+        _tempLine.end.highlighted = NO;
+        [self.delegate removeTemporaryGeometricObjects:@[_tempLine]];
+        
+        if (_tempLine.end != _tempEndPoint) {
+            _tempLine.temporary = NO;
+            [objectsToAdd addObject:_tempLine];
+            
+            if (_tempIntersectionStart) [objectsToAdd addObject:_tempIntersectionStart];
+            if (_tempIntersectionEnd) [objectsToAdd addObject:_tempIntersectionEnd];
+            [self.delegate addGeometricObjects:objectsToAdd];
+            
+            [self reset];
+        } else {
+            
+            if(DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit ) {
+                [self reset];
+            } else {
+                _tempLine = nil;
+                _tempEndPoint = nil;
+                [self.delegate toolTipDidChange:@"Tap on a second point that the line should pass through"];
+            }
         }
-    }
-    //if still no point, see if there is a point close to the line and snap to it
-    if (!point) {
-        DHLine* tempLine = [[DHLine alloc]initWithStart:self.startPoint andEnd:[[DHPoint alloc]initWithPositionX:touchPoint.x andY:touchPoint.y]];
-        point = FindPointClosestToLine(tempLine, self.startPoint, self.delegate.geometryObjects, 8/geoViewScale);
+    } else if (self.startPoint) {
+        [self.delegate toolTipDidChange:@"Tap on a second point that the line should pass through"];
     }
     
-    if(!point && DistanceBetweenPoints(_touchPointInViewStart, touchPointInView) > kClosestTapLimit) {
-        [self reset];
-    }
-    
-    if (self.startPoint && point && point != self.startPoint) {
-        DHLine* line = [[DHLine alloc] init];
-        line.start = self.startPoint;
-        line.end = point;
-        
-        [objectsToAdd addObject:line];
-        
-        self.startPoint.highlighted = false;
-        self.startPoint = nil;
-        
-        [self.delegate addGeometricObjects:objectsToAdd];
-        [objectsToAdd removeAllObjects];
-        [self.delegate toolTipDidChange:self.initialToolTip];
-    }
-    if (objectsToAdd.count > 0) {
-        [self.delegate addGeometricObjects:objectsToAdd];
-    }
-    if (self.startPoint) {
-        [self.delegate toolTipDidChange:@"Tap on a second point that the line will pass through"];
-    }
     [touch.view setNeedsDisplay];
 }
 - (BOOL)active
@@ -174,14 +161,19 @@
 }
 - (void)reset
 {
-    if (_temporaryLine) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
-        _temporaryLine = nil;
+    _tempEndPoint = nil;
+    if (_tempLine) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempLine]];
+        _tempLine = nil;
     }
-    if (_temporaryInitialStartingPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
-        _temporaryInitialStartingPoint = nil;
+    if (_tempIntersectionStart) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionStart]];
+        _tempIntersectionStart = nil;
     }
+    if (_tempIntersectionEnd) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionEnd]];
+        _tempIntersectionEnd = nil;
+    }    
     
     self.startPoint.highlighted = NO;
     self.startPoint = nil;
@@ -191,14 +183,14 @@
 
 - (void)dealloc
 {
-    if (_temporaryLine) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryLine]];
-        _temporaryLine = nil;
+    DHToolTempObjectCleanup(_tempLine);
+    if (_tempIntersectionStart) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionStart]];
+        _tempIntersectionStart = nil;
     }
-    if (_temporaryInitialStartingPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryInitialStartingPoint]];
-        _temporaryInitialStartingPoint = nil;
-    }
+    if (_tempIntersectionEnd) {
+        [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionEnd]];
+    }    
     self.startPoint.highlighted = NO;
 }
 @end

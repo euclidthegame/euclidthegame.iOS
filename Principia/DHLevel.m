@@ -94,11 +94,22 @@
     CGFloat startAngle = point.angle;
     for (int a=0; a<time * 100; a++) {
         [self performBlock:^{
-            point.angle = startAngle + (endAngle -startAngle)* a/(time * 100) ;
+            point.angle = startAngle + (endAngle -startAngle)* a/(time * 100.0) ;
             [point updatePosition];
             [geometryView setNeedsDisplay];
         } afterDelay:a/100.0];
     }
+}
+-(void)movePointOnLine:(DHPointOnLine*)point toTValue:(CGFloat)tValue withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView {
+        CGFloat startValue = point.tValue;
+        for (int a=0; a<time * 100; a++) {
+            [self performBlock:^{
+                point.tValue = startValue + (tValue - startValue) * a/(time* 100.0);
+                NSLog(@"%f %i",point.tValue, a);
+                [point updatePosition];
+                [geometryView setNeedsDisplay];
+            } afterDelay:a/100.0];
+        }
 }
 
 @end

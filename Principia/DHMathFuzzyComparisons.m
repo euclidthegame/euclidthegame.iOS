@@ -150,10 +150,6 @@ BOOL EqualCircles(id circle1, id circle2)
         } else {
             return NO;
         }
-        /*if (EqualPoints(c1.center, c2.center) &&
-            EqualPoints(c1.pointOnRadius, c2.pointOnRadius))
-            return YES;
-        else return NO;*/
     }
     else return NO;
 }

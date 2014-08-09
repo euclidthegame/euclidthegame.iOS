@@ -27,7 +27,7 @@
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects;
 - (NSUInteger)minimumNumberOfMovesPrimitiveOnly;
 - (CGPoint)testObjectsForProgressHints:(NSArray*)objects;
-- (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(UIView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heighToolControl and:(BOOL)update;
+- (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heighToolControl and:(BOOL)update;
 - (void)animation:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view;
 - (void)hint:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton;
 - (NSString*)levelDescriptionExtra;

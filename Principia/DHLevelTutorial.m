@@ -67,6 +67,13 @@
     _levelComplete = NO;
     _currentStep = 1;
     
+    [self.geometryView.layer setValue:[NSNumber numberWithFloat:0.0] forKeyPath:@"opacity"];
+    [geometricObjects addObject:_pointA];
+    [geometricObjects addObject:_pointB];
+    
+    
+    
+    
     message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,300)];
     message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,320)];
     message3 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,850)];
@@ -118,7 +125,7 @@
     return _levelComplete;
 }
 
-- (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstruction and:(UIView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolControl and:(BOOL)update
+- (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstruction and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolControl and:(BOOL)update
 {
     
     if (_noRepeat && update) return;
@@ -158,7 +165,6 @@
     }
     if (_currentStep == 1) {
         // remove toolbar
-        toolControl.alpha = 0;
         toolInstruction.alpha = 0;
         _currentStep = 2;
         
@@ -168,20 +174,19 @@
              [view addSubview:message1];
          }
          completion:^(BOOL finished){
-             
-             [geometricObjects addObject:_pointA];
-             [geometricObjects addObject:_pointB];
-             [geometryView setNeedsDisplay];
+             DHPoint* pointA = [[DHPoint alloc]initWithPosition:_pointA.position];
+             DHPoint* pointB = [[DHPoint alloc]initWithPosition:_pointB.position];
+             DHGeometryView* tempView = [[DHGeometryView alloc]initWithObjects:@[pointA,pointB] supView:geometryView addTo:view];
+             [self fadeIn:tempView withDuration:1.0];
              [UIView
               animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                   [message2 text:@"They are labeled with capital letters."]; message2.alpha = 1;
                   [view addSubview:message2];
               }
               completion:^(BOOL finished){
-                  
-                  _pointA.label =@"A";
-                  _pointB.label =@"B";
-                  [geometryView setNeedsDisplay];
+                  [self fadeIn:geometryView withDuration:1.0];
+                  [self fadeOut:tempView withDuration:1.0];
+
                   [UIView
                    animateWithDuration:1.5 delay:1.5 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                        [message3 text:@"Other objects can be constructed from points using the toolbar below."];
@@ -191,15 +196,23 @@
 
                    }
                    completion:^(BOOL finished){
-                        heightToolControl.constant = 70;
-                       [UIView
+                       for (int a=0; a<180; a++) {
+                           [self performBlock:^{
+                               self.heightToolbar.constant= -20 + a*0.5;
+                           } afterDelay:a* (1/90.0) ];
+                       }
+                        [UIView
                         animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                             [message4 text:@"Let's start by constructing a line segment. Tap on the tool to select it."];
                             [view addSubview:message4];
                             message4.alpha = 1;
                         }
                         completion:^(BOOL finished){
+                        
+                         [UIView
+                          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                             [toolControl setEnabled:YES forSegmentAtIndex:2];
+                          } completion:nil];
                              }]; }]; }]; }];
     }
     else if (_currentStep == 2 && toolControl.selectedSegmentIndex == 2 ) {

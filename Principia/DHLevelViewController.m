@@ -240,7 +240,7 @@
         self.movesLabel.hidden = YES;
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
-        self.heightToolBar.constant = 0;
+        self.heightToolBar.constant = -20;
         _redoButton.title = nil;
         _undoButton.title = nil;
         _resetButton.title = nil;

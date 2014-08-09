@@ -343,9 +343,6 @@
             
             hint1_OK = YES;
         }];
-        [self afterDelay:20.0 performBlock:^{
-            hint1_OK = YES;
-        }];
     }
     
     

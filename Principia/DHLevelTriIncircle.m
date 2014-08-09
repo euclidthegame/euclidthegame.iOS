@@ -196,7 +196,7 @@
         return;
     }
     
-    [geometryView setUserInteractionEnabled:NO];
+    
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     for (int a=0; a<90; a++) {
         [self performBlock:^{
@@ -269,7 +269,7 @@
         [self afterDelay:9.0 performBlock:^{
             [self fadeIn:message3 withDuration:1.0];
         }];
-        [self afterDelay:15.0 performBlock:^{
+        [self afterDelay:14.0 performBlock:^{
             [self fadeIn:message4 withDuration:1.0];
             [self fadeIn:bView withDuration:2.0];
             hint1_OK = YES;

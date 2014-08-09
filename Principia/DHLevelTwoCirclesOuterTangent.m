@@ -256,7 +256,7 @@
         return;
     }
     
-    if (hint2_OK) {
+    if (hint1_OK) {
         [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
         [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
         hint1_OK = NO;
@@ -269,12 +269,12 @@
             heightToolBar.constant= 70 - a;
         } afterDelay:a* (1/90.0) ];
     }
-    
+    [self afterDelay:1.0 :^{
     Message* message1 = [[Message alloc] initWithMessage:@"The line we are looking for must be tangent to both circles." andPoint:CGPointMake(50,500)];
     Message* message2 = [[Message alloc] initWithMessage:@"As the line is tangent to the circle, it makes right angles at both tangent points." andPoint:CGPointMake(50,520)];
     Message* message3 = [[Message alloc] initWithMessage:@"What if we translate the tangent to point A?" andPoint:CGPointMake(50,540)];
     Message* message4 = [[Message alloc] initWithMessage:@"We then get a right trangle ABC. " andPoint:CGPointMake(50,560)];
-    Message* message5 = [[Message alloc] initWithMessage:@"Which mean that the translated line segment is tangent to the following circle." andPoint:CGPointMake(50,580)];
+    Message* message5 = [[Message alloc] initWithMessage:@"Which means that the translated line segment is tangent to the following circle." andPoint:CGPointMake(50,580)];
     Message* message6 = [[Message alloc] initWithMessage:@"Can you construct that circle ?" andPoint:CGPointMake(50,600)];
     
     
@@ -336,17 +336,26 @@
     
     
     DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[AC,BD] andSuperView:geometryView];
-    DHGeometryView* translatedView = [[DHGeometryView alloc]initWithObjects:@[tP,tSegment] andSuperView:geometryView];
+    DHGeometryView* translatedView = [[DHGeometryView alloc]initWithObjects:@[tSegment,tP] andSuperView:geometryView];
     DHGeometryView* triangleView = [[DHGeometryView alloc]initWithObjects:@[AB] andSuperView:geometryView];
     DHGeometryView* circleView = [[DHGeometryView alloc]initWithObjects:@[circle] andSuperView:geometryView];
     
     UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+    hintView.backgroundColor = [UIColor whiteColor];
+    
+    DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+    oldObjects.hideBorder = NO;
+    [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+    
     [geometryView addSubview:hintView];
     [hintView addSubview:perpView];
-    [hintView addSubview:tangentView];
-    [hintView addSubview:translatedView];
-    [hintView addSubview:triangleView];
     [hintView addSubview:circleView];
+    
+    [hintView addSubview:translatedView];
+    
+    [hintView addSubview:triangleView];
+    [hintView addSubview:oldObjects];
+    [hintView addSubview:tangentView];
     
     [hintView addSubview:message1];
     [hintView addSubview:message2];
@@ -382,6 +391,7 @@
             hint1_OK = YES;
         }];
     }
+    }];
 
 }
 -(void)hideHint {

@@ -968,7 +968,9 @@
 
 - (void)showHint:(id)sender {
     if ([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)]) {
+
         [_currentLevel hint:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:self.hintButton];
+        [_currentTool reset];
     }
 }
 

@@ -228,7 +228,7 @@
         return;
     }
     
-    if (hint2_OK) {
+    if (hint1_OK) {
         [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
         [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
         hint1_OK = NO;
@@ -297,18 +297,29 @@
     
     
     DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[AC,BD] andSuperView:geometryView];
-    DHGeometryView* translatedView = [[DHGeometryView alloc]initWithObjects:@[tP,tSegment] andSuperView:geometryView];
-    DHGeometryView* triangleView = [[DHGeometryView alloc]initWithObjects:@[AB,triangleSegment] andSuperView:geometryView];
+    DHGeometryView* translatedView = [[DHGeometryView alloc]initWithObjects:@[tSegment,tP] andSuperView:geometryView];
+    DHGeometryView* triangleView = [[DHGeometryView alloc]initWithObjects:@[AB,triangleSegment,tP] andSuperView:geometryView];
     DHGeometryView* circleView = [[DHGeometryView alloc]initWithObjects:@[circle] andSuperView:geometryView];
     
+    [self afterDelay:1.0 :^{
     UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
-    [geometryView addSubview:hintView];
-    [hintView addSubview:perpView];
-    [hintView addSubview:tangentView];
-    [hintView addSubview:translatedView];
-    [hintView addSubview:triangleView];
-    [hintView addSubview:circleView];
+    hintView.backgroundColor = [UIColor whiteColor];
     
+    DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+    oldObjects.hideBorder = NO;
+    [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+    
+    [geometryView addSubview:hintView];
+
+
+        [hintView addSubview:perpView];
+        [hintView addSubview:circleView];
+        
+        [hintView addSubview:translatedView];
+        
+        [hintView addSubview:triangleView];
+        [hintView addSubview:oldObjects];
+        [hintView addSubview:tangentView];
     [hintView addSubview:message1];
     [hintView addSubview:message2];
     [hintView addSubview:message3];
@@ -343,6 +354,7 @@
             hint1_OK = YES;
         }];
     }
+        }];
     
 }
 -(void)hideHint {

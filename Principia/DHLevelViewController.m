@@ -67,6 +67,10 @@
     
     _currentLevel.geometryView = self.geometryView;
     _currentLevel.view = self.view;
+    _currentLevel.hintButton = self.hintButton;
+    _currentLevel.toolControl = self.toolControl;
+    _currentLevel.heightToolbar = self.heightToolBar;
+    
     
     [_toolControl addTarget:self
                      action:@selector(toolChanged:)
@@ -640,6 +644,7 @@
     _toolControl.selectedSegmentIndex = UISegmentedControlNoSegment;
     _currentTool = nil;
     self.geometryViewController.currentTool = _currentTool;
+    self.geometryViewController.currentLevel = _currentLevel;
     _toolInstruction.text = nil;
     
 }

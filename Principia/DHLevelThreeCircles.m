@@ -201,5 +201,10 @@
     return CGPointMake(NAN, NAN);
 }
 
+-(void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint *)heightToolBar and:(UIButton *)hintButton{
+    
+    [self showTemporaryMessage:@"There are no hints available for the this level." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:4.0];
+    return;
+}
 @end
 

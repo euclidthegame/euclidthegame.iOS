@@ -165,19 +165,10 @@
 }
 -(void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint *)heightToolBar and:(UIButton *)hintButton {
     
-    if ([hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
-        for (int a=0; a<90; a++) {
-            [self performBlock:^{
-                heightToolBar.constant= -20 + a;
-            } afterDelay:a* (1/90.0) ];
-        }
-        if (!hint1_OK){[hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
-        else {[hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
-        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-        [geometryView setUserInteractionEnabled:YES];
+    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+        [self hideHint];
         return;
     }
-    
     if (hint1_OK) {
         [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
         [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
@@ -185,7 +176,6 @@
         return;
     }
     
-    [geometryView setUserInteractionEnabled:NO];
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     for (int a=0; a<90; a++) {
         [self performBlock:^{
@@ -263,6 +253,18 @@
     }
 
     
+}
+
+-(void)hideHint {
+    for (int a=0; a<90; a++) {
+        [self performBlock:^{
+            self.heightToolbar.constant= -20 + a;
+        } afterDelay:a* (1/90.0) ];
+    }
+    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
+    else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+    return;
 }
 @end
 

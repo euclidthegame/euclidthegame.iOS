@@ -333,11 +333,12 @@ for (id object in objects){
     }
     
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    
-    _message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(150,720)];
-    _message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(150,740)];
-    _message3 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(150,760)];
-    _message4 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(150,780)];
+    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
+    [geometryView addSubview:hintView];
+    _message1 = [[Message alloc] initAtPoint:CGPointMake(150,720) addTo:hintView];
+    _message2 = [[Message alloc] initAtPoint:CGPointMake(150,740) addTo:hintView];
+    _message3 = [[Message alloc] initAtPoint:CGPointMake(150,760) addTo:hintView];
+    _message4 = [[Message alloc] initAtPoint:CGPointMake(150,780) addTo:hintView];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {
@@ -347,23 +348,15 @@ for (id object in objects){
         [_message4 position: CGPointMake(150,540)];
     }
     
-    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
-    [geometryView addSubview:hintView];
-    [hintView addSubview:_message1];
-    [hintView addSubview:_message2];
-    [hintView addSubview:_message3];
-    [hintView addSubview:_message4];
-    
     [_message1 text:@"You have just unlocked the equilateral triangle tool."];
-    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-        _message1.alpha = 1; } completion:nil];
+    [self fadeIn:_message1 withDuration:2.0];
     
-    [self performBlock:^{
+    [self afterDelay:3.0 :^{
         _step1finished =YES;
         [_message2 text:@"Tap on it to select it." ];
         [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
             _message2.alpha = 1; } completion:nil];
-    } afterDelay:3.0];
+    }];
     
     UIView* toolSegment = [toolControl.subviews objectAtIndex:11-5];
     UIView* tool = [toolSegment.subviews objectAtIndex:0];
@@ -373,11 +366,12 @@ for (id object in objects){
          ^{
              if (toolControl.selectedSegmentIndex == 5 && _step1finished){
                  _step1finished = NO;
+                 [_message3 text:@"If the triangle tool is selected, you can use it by tapping on two points."];
+                 [_message4 text:@"Note that it matters which point you tap first!"];
                  [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                      _message1.alpha = 0;
                      _message2.alpha = 0;
-                     [_message3 text:@"If the triangle tool is selected, you can use it by tapping on two points."];
-                     [_message4 text:@"Note that it matters which point you tap first!"];
+
                      _message3.alpha = 1;
                      _message4.alpha = 1;
                  } completion:nil];

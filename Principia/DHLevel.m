@@ -70,6 +70,21 @@
     [view.layer addAnimation:animation forKey:nil];
     [view.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
 }
+
+-(void)fadeInViews:(NSArray*)array withDuration:(CGFloat)time {
+    CABasicAnimation *animation = [CABasicAnimation animation];
+    animation.keyPath = @"opacity";
+    animation.fromValue = [NSNumber numberWithFloat:0];
+    animation.toValue = [NSNumber numberWithFloat:1];
+    animation.duration = time;
+    
+    for (id object in array) {
+        UIView* view = object;
+    [view.layer addAnimation:animation forKey:nil];
+    [view.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+    }
+}
+
 -(void)fadeOut:(DHGeometryView*)view withDuration:(CGFloat)time {
     CABasicAnimation *animation = [CABasicAnimation animation];
     animation.keyPath = @"opacity";
@@ -100,6 +115,20 @@
         } afterDelay:a/100.0];
     }
 }
+-(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inViews:(NSArray*)array {
+    CGFloat startAngle = point.angle;
+    for (int a=0; a<time * 100; a++) {
+        [self performBlock:^{
+            point.angle = startAngle + (endAngle -startAngle)* a/(time * 100.0) ;
+            [point updatePosition];
+            for (id object in array){
+                DHGeometryView* geometryView = object;
+                [geometryView setNeedsDisplay];
+            }
+        } afterDelay:a/100.0];
+    }
+}
+
 -(void)movePointOnLine:(DHPointOnLine*)point toTValue:(CGFloat)tValue withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView {
         CGFloat startValue = point.tValue;
         for (int a=0; a<time * 100; a++) {
@@ -111,6 +140,7 @@
             } afterDelay:a/100.0];
         }
 }
+
 
 @end
 
@@ -127,6 +157,11 @@
     [self performSelector:@selector(performBlock:) withObject:block_ afterDelay:delay];
 }
 - (void)afterDelay:(NSTimeInterval)delay performBlock:(void (^)())block {
+    void (^block_)() = [block copy]; // autorelease this if you're not using ARC
+    [self performSelector:@selector(performBlock:) withObject:block_ afterDelay:delay];
+}
+
+- (void)afterDelay:(NSTimeInterval)delay :(void (^)())block {
     void (^block_)() = [block copy]; // autorelease this if you're not using ARC
     [self performSelector:@selector(performBlock:) withObject:block_ afterDelay:delay];
 }
@@ -150,7 +185,21 @@
     }
     return self;
 }
-
+- (instancetype)initAtPoint:(CGPoint)point addTo:(UIView*)view
+{
+    self = [super init];
+    if (self) {
+        self.alpha = 0;
+        self.textColor = [UIColor darkGrayColor];
+        self.point = point;
+        CGRect frame = self.frame;
+        frame.origin = self.point;
+        self.frame = frame;
+        [self sizeToFit];
+        [view addSubview:self];
+    }
+    return self;
+}
 - (void)text:(NSString*)string{
     self.text = [NSString stringWithString:string];
     CGRect frame = self.frame;

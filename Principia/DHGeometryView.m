@@ -51,6 +51,25 @@
     return self;
 }
 
+//makes a hidden "subview" of a geometryView and adds to a view as subivew
+- (instancetype)initWithObjects:(NSArray*)objects supView:(DHGeometryView*)geometryView addTo:(UIView*)view
+{
+    self = [super initWithFrame:geometryView.frame];
+    if (self) {
+        // Initialization code
+        _geoViewTransform = [[DHGeometricTransform alloc] init];
+        self.hideBorder = YES;
+        self.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
+        self.opaque = NO;
+        [_geoViewTransform setOffset:geometryView.geoViewTransform.offset];
+        [_geoViewTransform setScale:geometryView.geoViewTransform.scale];
+        self.geometricObjects = [[NSMutableArray alloc]initWithArray:objects];
+        [self.layer setValue:[NSNumber numberWithFloat:0.0] forKeyPath:@"opacity"];
+        [view addSubview:self];
+    }
+    return self;
+}
+
 //makes an animation view
 - (instancetype)initWithObjects:(NSArray*)objects andSuperView:(UIView*)view andGeometryView:(DHGeometryView*)geometryView
 {
@@ -69,8 +88,6 @@
         self.geometricObjects = [[NSMutableArray alloc]initWithArray:objects];    }
     return self;
 }
-
-
 
 - (void)drawRect:(CGRect)rect
 {

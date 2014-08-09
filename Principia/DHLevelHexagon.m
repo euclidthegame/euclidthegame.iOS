@@ -220,11 +220,7 @@
 }
 
 -(void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint *)heightToolBar and:(UIButton *)hintButton{
-if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
-    [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-    [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-    return;
-}
+
 
 if (!hint1_OK) {
     [self showTemporaryMessage:@"You can find all the required points, using only one tool." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:4.0];

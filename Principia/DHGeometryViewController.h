@@ -13,6 +13,7 @@
 
 @interface DHGeometryViewController : UIViewController
 
+@property (nonatomic, strong) DHLevel<DHLevel>* currentLevel;
 @property (nonatomic, strong) id<DHGeometryTool> currentTool;
 @property (nonatomic, strong) IBOutlet DHGeometryView* geometryView;
 

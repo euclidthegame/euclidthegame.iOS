@@ -18,6 +18,7 @@
 @property (nonatomic, strong) DHGeometricTransform* geoViewTransform;
 @property (nonatomic) BOOL keepContentCenteredAndZoomedIn;
 - (instancetype)initWithObjects:(NSArray*)objects andSuperView:(DHGeometryView*)geometryView;
+- (instancetype)initWithObjects:(NSArray*)objects supView:(DHGeometryView*)geometryView addTo:(UIView*)view;
 - (instancetype)initWithObjects:(NSArray*)objects andSuperView:(UIView*)view andGeometryView:(DHGeometryView*)geometryView;
 - (CGPoint)getCenterInGeoCoordinates;
 - (void)centerOnGeoCoordinate:(CGPoint)geoCoord;

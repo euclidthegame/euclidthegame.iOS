@@ -45,6 +45,14 @@
             }
         }
     }
+    
+    if ([self.currentLevel respondsToSelector:@selector(hideHint)]) {
+            if ([self.currentLevel.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+        [self.currentLevel hideHint];
+            }
+    }
+    
+    
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event

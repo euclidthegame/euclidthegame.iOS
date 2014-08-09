@@ -334,7 +334,8 @@
         CGFloat ypos =  pos2.y;
         CGFloat radius = pos1.x -15;
         
-        if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
             radius = radius - 10;
         }
         

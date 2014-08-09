@@ -222,7 +222,8 @@
     CGFloat newScale = 1;
     CGPoint newOffset = CGPointMake(0,0);
     
-    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
         [geometryView.geoViewTransform setScale:newScale];
         CGPoint oldPointA = _pointA.position;
         CGPoint oldPointB = _pointB.position;
@@ -339,7 +340,10 @@
     }
     
     if (cBA_OK && cAB_OK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:5.0];
+        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
+        [geometryView addSubview:message0];
+        [self fadeIn:message0 withDuration:1.0];
+        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
         return;
     }
     
@@ -348,71 +352,77 @@
     //hidetoolbar
     for (int a=0; a<90; a++) {[self afterDelay:a*(1/90.0) :^{heightToolBar.constant= 70 - a;}];}
     
+    [self afterDelay:1.0 :^{
+        
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        hintView.backgroundColor = [UIColor whiteColor];
+        
+        DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+        oldObjects.hideBorder = NO;
+        [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+        
+        [geometryView addSubview:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,100) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,120) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,140) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,160) addTo:hintView];
+        
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(150,500)];
+            [message2 position: CGPointMake(150,520)];
+            [message3 position: CGPointMake(150,540)];
+            [message4 position: CGPointMake(150,560)];
+        }
+        
+        DHCircle* c1 = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
+        c1.temporary = YES;
+        
+        DHPointOnCircle* pC = [[DHPointOnCircle alloc] initWithCircle:c1 andAngle:- M_PI * 0.10];
+        pC.label = @"C";
+        
+        DHLineSegment* segmentAC = [[DHLineSegment alloc] initWithStart:c1.center andEnd:pC];
+        segmentAC.temporary = YES;
+        
+        //if left circle already constructed, construct the other one
+        if (cAB_OK) {
+            c1 = [c1 initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
+            pC = [pC initWithCircle:c1 andAngle:M_PI * 0.10 + M_PI];
+            segmentAC = [segmentAC initWithStart:c1.center andEnd:pC];
+        }
+        
+        
+        DHGeometryView* circleView = [[DHGeometryView alloc] initWithObjects:@[c1] supView:geometryView addTo:hintView];
+        DHGeometryView* lineACView = [[DHGeometryView alloc] initWithObjects:@[segmentAC] supView:geometryView addTo:hintView];
+        DHGeometryView* pointCView = [[DHGeometryView alloc] initWithObjects:@[pC] supView:geometryView addTo:hintView];
+        [hintView addSubview:oldObjects];
+        
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"Circles have a very usefull property."];
+            [self fadeInViews:@[message1,circleView] withDuration:2.0];
+        }];
+        
+        [self afterDelay:4.0 :^{
+            [message2 text:@"Every point on the circle has the same distance to the center."];
+            [self fadeInViews:@[message2,pointCView] withDuration:2.0];
+        }];
+        
+        [self afterDelay:8.0 :^{
+            [message3 text:@"Hence, segment AC has the same length as segment AB."];
+            [self fadeInViews:@[message3,lineACView] withDuration:2.0];
+        }];
+        
+        [self afterDelay:12.0 :^{
+            [message4 text:@"For any point C on the circle."];
+            [self fadeIn:message4 withDuration:2.0];
+            if (cAB_OK) [self movePointOnCircle:pC toAngle:3.333*M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
+            else        [self movePointOnCircle:pC toAngle:2.3333*-M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
+        }];
+    }];
     
-    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
-    hintView.backgroundColor = [UIColor whiteColor];
-    DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
-    [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
-    
-    [geometryView addSubview:hintView];
-    Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,100) addTo:hintView];
-    Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,120) addTo:hintView];
-    Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,140) addTo:hintView];
-    Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,160) addTo:hintView];
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
     }
-
-    DHCircle* c1 = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
-    c1.temporary = YES;
-    
-    DHPointOnCircle* pC = [[DHPointOnCircle alloc] initWithCircle:c1 andAngle:- M_PI * 0.10];
-    pC.label = @"C";
-    
-    DHLineSegment* segmentAC = [[DHLineSegment alloc] initWithStart:c1.center andEnd:pC];
-    segmentAC.temporary = YES;
-    
-    //if left circle already constructed, construct the other one
-    if (cAB_OK) {
-        c1 = [c1 initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
-        pC = [pC initWithCircle:c1 andAngle:M_PI * 0.10 + M_PI];
-        segmentAC = [segmentAC initWithStart:c1.center andEnd:pC];
-    }
-    
-
-    DHGeometryView* circleView = [[DHGeometryView alloc] initWithObjects:@[c1] supView:geometryView addTo:hintView];
-    DHGeometryView* lineACView = [[DHGeometryView alloc] initWithObjects:@[segmentAC] supView:geometryView addTo:hintView];
-    DHGeometryView* pointCView = [[DHGeometryView alloc] initWithObjects:@[pC] supView:geometryView addTo:hintView];
-    [hintView addSubview:oldObjects];
-    
-    
-    [self afterDelay:0.2 :^{
-        [message1 text:@"Circles have a very usefull property."];
-        [self fadeInViews:@[message1,circleView] withDuration:2.0];
-    }];
-    
-    [self afterDelay:4.0 :^{
-        [message2 text:@"Every point on the circle has the same distance to the center."];
-        [self fadeInViews:@[message2,pointCView] withDuration:2.0];
-    }];
-    
-    [self afterDelay:8.0 :^{
-        [message3 text:@"Hence, segment AC has the same length as segment AB."];
-        [self fadeInViews:@[message3,lineACView] withDuration:2.0];
-    }];
-    
-    [self afterDelay:12.0 :^{
-        [message4 text:@"For every point C on the circle."];
-        [self fadeIn:message4 withDuration:2.0];
-        if (cAB_OK) [self movePointOnCircle:pC toAngle:3.333*M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
-        else        [self movePointOnCircle:pC toAngle:2.3333*-M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
-    }];
-}
 
 -(void)hideHint {
         for (int a=0; a<90; a++) {

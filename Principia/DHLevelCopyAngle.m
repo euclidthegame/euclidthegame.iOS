@@ -59,7 +59,7 @@
 {
     DHPoint* pAStart = [[DHPoint alloc] initWithPositionX:50 andY:190];
     DHPoint* pA1 = [[DHPoint alloc] initWithPositionX:210 andY:120];
-    DHPoint* pA2 = [[DHPoint alloc] initWithPositionX:200 andY:190];
+    DHPoint* pA2 = [[DHPoint alloc] initWithPositionX:250 andY:190];
     DHMidPoint* pAEndTemp1 = [[DHMidPoint alloc] initWithPoint1:pA1 andPoint2:pA2];
     CGVector pARange = CGVectorMultiplyByScalar(CGVectorBetweenPoints(pAStart.position, pAEndTemp1.position),0.8);
     CGPoint pAEndPoint = CGPointFromPointByAddingVector(pAStart.position, pARange);
@@ -233,7 +233,7 @@
         } afterDelay:a* (1/90.0) ];
     }
     
-    Message* message1 = [[Message alloc] initWithMessage:@"Let's first try to make the following triangle." andPoint:CGPointMake(430,40)];
+    Message* message1 = [[Message alloc] initWithMessage:@"Let's first make the following triangle." andPoint:CGPointMake(430,40)];
     Message* message2 = [[Message alloc] initWithMessage:@"Place point C on one of the rays." andPoint:CGPointMake(430,60)];
     Message* message3 = [[Message alloc] initWithMessage:@"Place point D on the other ray." andPoint:CGPointMake(430,80)];
     Message* message4 = [[Message alloc] initWithMessage:@"We can now construct the triangle ACD." andPoint:CGPointMake(430,100)];
@@ -246,23 +246,64 @@
 
     DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:pointC andEnd:pointD];
     
+    DHPoint* tempA = [[DHPoint alloc]initWithPosition:_rayA1.start.position];
+    DHPoint* tempC = [[DHPoint alloc]initWithPosition:pointC.position];
+    DHPoint* tempD = [[DHPoint alloc]initWithPosition:pointD.position];
+    DHLineSegment* tempS1 = [[DHLineSegment alloc]initWithStart:tempA andEnd:tempC];
+    tempS1.temporary = YES;
+    DHLineSegment* tempS2 = [[DHLineSegment alloc]initWithStart:tempA andEnd:tempD];
+    tempS2.temporary = YES;
+    DHLineSegment* tempS3 = [[DHLineSegment alloc]initWithStart:tempC andEnd:tempD];
+    tempS3.temporary = YES;
+    
+    
+    DHCircle* c1 = [[DHCircle alloc] initWithCenter:_rayA2.start andPointOnRadius:_rayA2.end];
+    DHIntersectionPointLineCircle* ip1 = [[DHIntersectionPointLineCircle alloc] init];
+    ip1.c = c1;
+    ip1.l = _rayA1;
+    
+    DHTranslatedPoint* tp1 = [[DHTranslatedPoint alloc] init];
+    tp1.startOfTranslation = _pointB;
+    tp1.translationStart = _rayA1.start;
+    tp1.translationEnd = _rayA2.end;
+    
+    DHCircle* c2 = [[DHCircle alloc] initWithCenter:_pointB andPointOnRadius:tp1];
+    
+    DHIntersectionPointLineCircle* ip2 = [[DHIntersectionPointLineCircle alloc] init];
+    ip2.c = c2;
+    ip2.l = _rayB;
+    
+    DHTranslatedPoint* tp2 = [[DHTranslatedPoint alloc] init];
+    tp2.startOfTranslation = ip2;
+    tp2.translationStart = _rayA2.end;
+    tp2.translationEnd = ip1;
+    
+    DHCircle* c3 = [[DHCircle alloc] initWithCenter:ip2 andPointOnRadius:tp2];
+    
+    DHIntersectionPointCircleCircle* ip3 = [[DHIntersectionPointCircleCircle alloc] init];
+    ip3.c1 = c2;
+    ip3.c2 = c3;
+    ip3.onPositiveY = YES;
+    
+    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+    [geometryView addSubview:hintView];
     
     DHGeometryView* cView = [[DHGeometryView alloc]initWithObjects:@[pointC] andSuperView:geometryView];
     DHGeometryView* dView = [[DHGeometryView alloc]initWithObjects:@[pointD] andSuperView:geometryView];
     DHGeometryView* segmentView = [[DHGeometryView alloc]initWithObjects:@[segment] andSuperView:geometryView];
     
+    DHGeometryView* tempView = [[DHGeometryView alloc]initWithObjects:@[tempS1,tempS2,tempS3,tempA,tempC,tempD] supView:geometryView addTo:hintView];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
-        [message4 position: CGPointMake(150,580)];
+        [message1 position: CGPointMake(50,100)];
+        [message2 position: CGPointMake(50,120)];
+        [message3 position: CGPointMake(50,140)];
+        [message4 position: CGPointMake(50,160)];
+        [message5 position: CGPointMake(50,180)];
     }
     
-    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
-    [geometryView addSubview:hintView];
+
     
     [hintView addSubview:segmentView];
     [hintView  addSubview:cView];
@@ -294,9 +335,17 @@
         }];
         [self afterDelay:16.0 performBlock:^{
             [self fadeIn:message5 withDuration:1.0];
+            
+            [self fadeIn:tempView withDuration:0.0];
+            [self movePointFrom:tempA to:_rayB.start withDuration:3.0 inView:tempView];
+            [self movePointFrom:tempC to:ip3 withDuration:3.0 inView:tempView];
+            [self movePointFrom:tempD to:ip2 withDuration:3.0 inView:tempView];
+            
             hint1_OK = YES;
         }];
-        
+        [self afterDelay:20.0 performBlock:^{
+            hint1_OK = YES;
+        }];
     }
     
     

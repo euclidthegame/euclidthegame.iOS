@@ -199,7 +199,8 @@
     CGFloat newScale = 1;
     CGPoint newOffset = CGPointMake(0,0);
     
-    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
         [geometryView.geoViewTransform setScale:newScale];
         CGPoint oldPointA = _pointA.position;
         _pointA.position = p3.position;
@@ -256,7 +257,8 @@
         CGFloat xpos = (pos5.x + pos6.x )/2 -33 ;
         CGFloat ypos =  view.frame.size.height - 50;
         
-        if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
             ypos = ypos +10;
             xpos = xpos +35;
         }
@@ -320,7 +322,10 @@
     }
     
     if (perpendicularLineOK){
-        [self showTemporaryMessage:@"No more hints available."  atPoint:CGPointMake(100,50) withColor:[UIColor darkGrayColor] andTime:10.0];
+        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
+        [geometryView addSubview:message0];
+        [self fadeIn:message0 withDuration:1.0];
+        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
         return;
     }
     

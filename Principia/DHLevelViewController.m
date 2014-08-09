@@ -191,7 +191,17 @@
 #pragma mark Level related methods
 - (void)setupForLevel
 {
+    _currentLevel.geometryView = self.geometryView;
+    _currentLevel.view = self.view;
+    _currentLevel.hintButton = self.hintButton;
+    _currentLevel.toolControl = self.toolControl;
+    _currentLevel.heightToolbar = self.heightToolBar;
+    
     self.firstMoveMade = NO;
+    
+    //turn hints off every new level
+    [DHSettings setShowWellDoneMessages:NO];
+    self.geometryViewController.currentLevel = _currentLevel;
     
     [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
     
@@ -290,7 +300,8 @@
             [_geometricObjects insertObject:object atIndex:0];
         }
     }
-    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
         [self.geometryView centerContent];
     }
     
@@ -875,7 +886,7 @@
 
 - (IBAction)loadNextLevel:(id)sender
 {
-    
+    [DHSettings setShowWellDoneMessages:NO];
 
     if (self.levelArray) {
         self.levelIndex = self.levelIndex + 1;

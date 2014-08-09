@@ -286,12 +286,10 @@
 
 - (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
     
-    
     if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
         [self hideHint];
         return;
     }
-    
     if (hint2_OK) {
         [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
         [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
@@ -440,8 +438,9 @@
             self.heightToolbar.constant= -20 + a;
         } afterDelay:a* (1/90.0) ];
     }
-    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
+    if (!hint1_OK){[self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
     else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
+    
     [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
     return;
 }

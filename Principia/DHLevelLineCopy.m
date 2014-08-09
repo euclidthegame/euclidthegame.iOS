@@ -192,12 +192,13 @@
         [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
         return;
     }
-    
     if (parallelLineOK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:5.0];
+        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
+        [geometryView addSubview:message0];
+        [self fadeIn:message0 withDuration:1.0];
+        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
         return;
     }
-    
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     
     _message1 = [[Message alloc] initWithMessage:@"You have just unlocked the parallel line tool." andPoint:CGPointMake(150,720)];
@@ -290,7 +291,8 @@
     CGFloat newScale = 1;
     CGPoint newOffset = CGPointMake(0,0);
     
-    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
         [geometryView.geoViewTransform setScale:newScale];
         CGPoint oldPointA = _pointA.position;
         _pointA.position = p1.position;
@@ -355,7 +357,8 @@
         CGFloat xpos = (pos5.x + pos6.x )/2 -4 ;
         CGFloat ypos =  view.frame.size.height - 12;
         
-        if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
             ypos = ypos -15 ;
             xpos = xpos ;
         }

@@ -234,7 +234,8 @@
     CGFloat newScale = 1;
     CGPoint newOffset = CGPointMake(0,0);
     
-    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
         [geometryView.geoViewTransform setScale:newScale];
         CGPoint oldPointA = _pointB.position;
         _pointB.position = p3.position;
@@ -291,7 +292,8 @@
         CGFloat xpos = (pos5.x + pos6.x )/2 -4 ;
         CGFloat ypos =  view.frame.size.height +7;
         
-        if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
             ypos = ypos - 36;
             xpos = xpos + 4;
         }
@@ -343,7 +345,10 @@
     }
     
     if (pointOnLineOK) {
-        [self showTemporaryMessage:@"The point on the line is a good first step. Use it to your advantage!" atPoint:CGPointMake(100,50) withColor:[UIColor darkGrayColor] andTime:10.0];
+        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
+        [geometryView addSubview:message0];
+        [self fadeIn:message0 withDuration:1.0];
+        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
         return;
     }
     
@@ -422,7 +427,7 @@
     }
     
     if (pointOnLineOK){
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:5.0];
+        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,100) withColor:[UIColor darkGrayColor] andTime:5.0];
         return;
     }
     

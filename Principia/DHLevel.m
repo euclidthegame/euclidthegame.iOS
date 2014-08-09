@@ -134,7 +134,6 @@
         for (int a=0; a<time * 100; a++) {
             [self performBlock:^{
                 point.tValue = startValue + (tValue - startValue) * a/(time* 100.0);
-                NSLog(@"%f %i",point.tValue, a);
                 [point updatePosition];
                 [geometryView setNeedsDisplay];
             } afterDelay:a/100.0];

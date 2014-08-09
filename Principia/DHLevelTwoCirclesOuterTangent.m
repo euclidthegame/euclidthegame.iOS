@@ -61,6 +61,9 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
+    hint1_OK = NO;
+    hint2_OK = NO;
+    
     // Hidden objects used to restricted allowed movement of initial objects to avoid overlapping configuration
     DHPoint* pAStart = [[DHPoint alloc] initWithPositionX:170 andY:400];
     DHPoint* pAEnd = [[DHPoint alloc] initWithPositionX:230 andY:400];

@@ -60,6 +60,9 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
+    hint1_OK = NO;
+    hint2_OK = NO;
+    
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:200 andY:300];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:400 andY:300];
     DHPoint* pRadiusA = [[DHPoint alloc] initWithPositionX:pA.position.x+0 andY:pA.position.y+80];
@@ -79,6 +82,9 @@
     _circleB = cB;
     _pRadiusA = pRadiusA;
     _pRadiusB = pRadiusB;
+    
+    hint1_OK = NO;
+    hint2_OK = NO;
 }
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects

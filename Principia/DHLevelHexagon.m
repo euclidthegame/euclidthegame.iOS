@@ -49,6 +49,9 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
+    hint1_OK = NO;
+    hint2_OK = NO;
+    
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:300 andY:400];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:450 andY:400];
     

@@ -315,6 +315,9 @@
     _currentTool = [[[_currentTool class] alloc] init];
     self.toolInstruction.text = [_currentTool initialToolTip];
     
+    [_currentLevel isLevelComplete:_geometricObjects];
+    [self.geometryView setUserInteractionEnabled:YES];
+    
 
 }
 
@@ -1028,11 +1031,11 @@
     turnHintOnLabel.font = [UIFont boldSystemFontOfSize:16.0];
     if ([DHSettings showWellDoneMessages]){
         [hintSwitch setOn:YES];
-        turnHintOnLabel.text = @"Turn hints off:";
+        turnHintOnLabel.text = @"Show hints: ";
     }
     else{
         [hintSwitch setOn:NO];
-        turnHintOnLabel.text = @"Turn hints on:";
+        turnHintOnLabel.text = @"Show hints: ";
     }
 
     objectiveLabel.text = [_currentLevel levelDescription];
@@ -1317,12 +1320,10 @@
 
     if([sender isOn]){
         [DHSettings setShowWellDoneMessages:YES];
-        turnHintOnLabel.text = @"Turn hints off:";
         self.hintButton.hidden = NO;
 
     } else{
         [DHSettings setShowWellDoneMessages:NO];
-        turnHintOnLabel.text = @"Turn hints on:";
         self.hintButton.hidden = YES;
     }
     

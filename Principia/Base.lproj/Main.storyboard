@@ -134,8 +134,8 @@
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Level instructions" lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="620" translatesAutoresizingMaskIntoConstraints="NO" id="4Y1-gV-t0q">
-                                        <rect key="frame" x="10" y="7" width="620" height="20"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Objective: " lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="625" translatesAutoresizingMaskIntoConstraints="NO" id="4Y1-gV-t0q">
+                                        <rect key="frame" x="10" y="7" width="625" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="deviceRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -178,7 +178,7 @@
                                     <constraint firstAttribute="trailing" secondItem="WOF-xF-LlD" secondAttribute="trailing" constant="11" id="H5i-Bt-tHf"/>
                                     <constraint firstItem="WTO-DQ-iQi" firstAttribute="top" secondItem="4Y1-gV-t0q" secondAttribute="bottom" constant="6" id="K8i-RO-cBI"/>
                                     <constraint firstAttribute="height" constant="60" id="UQi-lV-ZOm"/>
-                                    <constraint firstItem="WOF-xF-LlD" firstAttribute="leading" secondItem="4Y1-gV-t0q" secondAttribute="trailing" constant="15" id="Uzo-hG-CQr"/>
+                                    <constraint firstItem="WOF-xF-LlD" firstAttribute="leading" secondItem="4Y1-gV-t0q" secondAttribute="trailing" constant="10" id="Uzo-hG-CQr"/>
                                     <constraint firstItem="4Y1-gV-t0q" firstAttribute="leading" secondItem="WTO-DQ-iQi" secondAttribute="leading" id="X5L-Xh-6xJ"/>
                                     <constraint firstItem="WOF-xF-LlD" firstAttribute="leading" secondItem="Vwg-gq-9dL" secondAttribute="leading" id="YC0-40-E9J"/>
                                     <constraint firstItem="4Y1-gV-t0q" firstAttribute="leading" secondItem="V5X-Pj-3WK" secondAttribute="leading" constant="10" id="cSa-w4-Guy"/>

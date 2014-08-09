@@ -16,6 +16,7 @@
     DHPoint* _pointB;
     DHPoint* _pointHidden;
     DHRay* _rayB;
+    BOOL hint1_OK;
 }
 
 @end
@@ -212,6 +213,101 @@
     }
     return CGPointMake(NAN, NAN);
 }
+-(void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint *)heightToolBar and:(UIButton *)hintButton {
+    
+    if ([hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+        for (int a=0; a<90; a++) {
+            [self performBlock:^{
+                heightToolBar.constant= -20 + a;
+            } afterDelay:a* (1/90.0) ];
+        }
+        if (!hint1_OK){[hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
+        else {[hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
+        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+        [geometryView setUserInteractionEnabled:YES];
+        return;
+    }
+    
+    if (hint1_OK) {
+        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
+        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+        hint1_OK = NO;
+        return;
+    }
+    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    for (int a=0; a<90; a++) {
+        [self performBlock:^{
+            heightToolBar.constant= 70 - a;
+        } afterDelay:a* (1/90.0) ];
+    }
+    
+    Message* message1 = [[Message alloc] initWithMessage:@"Let's first try to make the following triangle." andPoint:CGPointMake(430,40)];
+    Message* message2 = [[Message alloc] initWithMessage:@"Place point C on one of the rays." andPoint:CGPointMake(430,60)];
+    Message* message3 = [[Message alloc] initWithMessage:@"Place point D on the other ray." andPoint:CGPointMake(430,80)];
+    Message* message4 = [[Message alloc] initWithMessage:@"We can now construct the triangle ACD." andPoint:CGPointMake(430,100)];
+    Message* message5 = [[Message alloc] initWithMessage:@"Can you make a congruent triangle at B?" andPoint:CGPointMake(430,120)];
+    
+    DHPoint* pointC = [[DHPoint alloc]initWithPosition:_rayA1.end.position];
+    pointC.label = @"C";
+    DHPoint* pointD = [[DHPoint alloc]initWithPosition:_rayA2.end.position];
+    pointD.label = @"D";
 
+    DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:pointC andEnd:pointD];
+    
+    
+    DHGeometryView* cView = [[DHGeometryView alloc]initWithObjects:@[pointC] andSuperView:geometryView];
+    DHGeometryView* dView = [[DHGeometryView alloc]initWithObjects:@[pointD] andSuperView:geometryView];
+    DHGeometryView* segmentView = [[DHGeometryView alloc]initWithObjects:@[segment] andSuperView:geometryView];
+    
+    
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
+        [message1 position: CGPointMake(150,500)];
+        [message2 position: CGPointMake(150,520)];
+        [message3 position: CGPointMake(150,540)];
+        [message4 position: CGPointMake(150,560)];
+        [message4 position: CGPointMake(150,580)];
+    }
+    
+    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+    [geometryView addSubview:hintView];
+    
+    [hintView addSubview:segmentView];
+    [hintView  addSubview:cView];
+    [hintView  addSubview:dView];
+    
+    [hintView addSubview:message1];
+    [hintView addSubview:message2];
+    [hintView addSubview:message3];
+    [hintView addSubview:message4];
+    [hintView addSubview:message5];
+    
+    
+    
+    if (!hint1_OK) {
+        [self afterDelay:0.0 performBlock:^{
+            [self fadeIn:message1 withDuration:1.0];
+        }];
+        [self afterDelay:4.0 performBlock:^{
+            [self fadeIn:message2 withDuration:1.0];
+            [self fadeIn:cView withDuration:1.0];
+        }];
+        [self afterDelay:8.0 performBlock:^{
+            [self fadeIn:message3 withDuration:1.0];
+            [self fadeIn:dView withDuration:1.0];
+        }];
+        [self afterDelay:12.0 performBlock:^{
+            [self fadeIn:message4 withDuration:1.0];
+            [self fadeIn:segmentView withDuration:1.0];
+        }];
+        [self afterDelay:16.0 performBlock:^{
+            [self fadeIn:message5 withDuration:1.0];
+            hint1_OK = YES;
+        }];
+        
+    }
+    
+    
+}
 
 @end

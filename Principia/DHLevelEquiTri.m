@@ -342,6 +342,8 @@
         }
         [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
         [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+        [geometryView setUserInteractionEnabled:YES];
+        
           return;
     }
 
@@ -353,6 +355,7 @@
     
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     
+    [geometryView setUserInteractionEnabled:NO];
     
     for (int a=0; a<90; a++) {
         [self performBlock:^{

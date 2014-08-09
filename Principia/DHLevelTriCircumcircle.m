@@ -182,6 +182,7 @@
         if (!hint1_OK){[hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
         else {[hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
         [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+        [geometryView setUserInteractionEnabled:YES];
         return;
     }
     
@@ -192,6 +193,8 @@
         hint2_OK = NO;
         return;
     }
+    
+    [geometryView setUserInteractionEnabled:NO];
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     for (int a=0; a<90; a++) {
         [self performBlock:^{

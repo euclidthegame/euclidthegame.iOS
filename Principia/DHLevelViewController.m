@@ -422,6 +422,7 @@
         // Disable further edits
         _undoButton.enabled = false;
         _redoButton.enabled = false;
+        _toolControl.selectedSegmentIndex = 1;
         _toolControl.selectedSegmentIndex = -1;
         _toolInstruction.text = @"";
         self.geometryViewController.currentTool = nil;

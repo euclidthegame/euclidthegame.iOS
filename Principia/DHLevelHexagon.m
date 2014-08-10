@@ -222,26 +222,51 @@
     return CGPointMake(NAN, NAN);
 }
 
--(void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint *)heightToolBar and:(UIButton *)hintButton{
 
-
-if (!hint1_OK) {
-    [self showTemporaryMessage:@"You can find all the required points, using only one tool." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:4.0];
-    hint1_OK = YES;
-    return;
-}
-else if (!hint2_OK) {
-        [self showTemporaryMessage:@"Try the circle tool." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:4.0];
-    hint2_OK = YES;
-    return;
+- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+    
+    
+    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+        [self hideHint];
+        return;
     }
-else{
-    [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:4.0];
+    
+    if (hint1_OK && hint2_OK) {
+        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
+        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
         hint1_OK = NO;
-    hint2_OK = NO;
-    return;
-        
+        hint2_OK = NO;
+        return;
     }
+    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+    [geometryView addSubview:hintView];
+    if (!hint1_OK) {
+        Message* message1 = [[Message alloc] initWithMessage:@"You can find all the required points, using only one tool." andPoint:CGPointMake(150,150)];
+        [hintView addSubview:message1];
+        [self fadeIn:message1 withDuration:1.0];
+        hint1_OK = YES;
+        return;
+    }
+    else if (!hint2_OK) {
+        Message* message2 = [[Message alloc] initWithMessage:@"Try the circle tool." andPoint:CGPointMake(150,150)];
+        [hintView addSubview:message2];
+        [self fadeIn:message2 withDuration:1.0];
+        hint2_OK = YES;
+        return;
+    }
+    
+}
+-(void)hideHint {
+    for (int a=0; a<90; a++) {
+        [self performBlock:^{
+            self.heightToolbar.constant= -20 + a;
+        } afterDelay:a* (1/90.0) ];
+    }
+    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
+    else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+    return;
 }
 
 @end

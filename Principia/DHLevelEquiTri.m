@@ -400,7 +400,7 @@
         
         
         [self afterDelay:0.0:^{
-            [message1 text:@"Circles have a very usefull property."];
+            [message1 text:@"Circles have a very useful property."];
             [self fadeInViews:@[message1,circleView] withDuration:2.0];
         }];
         

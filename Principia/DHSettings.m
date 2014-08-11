@@ -57,4 +57,14 @@
     [self setBoolSettingForKey:kSettingKey_ShowProgressPercentage toValue:value];
 }
 
++ (BOOL)showHints
+{
+    return [self getBoolSettingForKey:kSettingKey_ShowHints withDefault:NO];
+}
++ (void)setShowHints:(BOOL)value
+{
+    [self setBoolSettingForKey:kSettingKey_ShowHints toValue:value];
+}
+
+
 @end

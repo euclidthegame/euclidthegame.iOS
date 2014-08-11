@@ -199,8 +199,8 @@
     
     self.firstMoveMade = NO;
     
-    //turn hints off every new level
-    [DHSettings setShowWellDoneMessages:NO];
+    // Turn hints off every new level
+    [DHSettings setShowHints:NO];
     self.geometryViewController.currentLevel = _currentLevel;
     
     [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
@@ -226,7 +226,8 @@
     
     [self.hintButton addTarget:self action:@selector(showHint:) forControlEvents:UIControlEventTouchUpInside];
     
-    if (!([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)] && [DHSettings showWellDoneMessages] && self.currentGameMode == kDHGameModeNormal )) {
+    if (!([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)] &&
+          [DHSettings showHints] && self.currentGameMode == kDHGameModeNormal )) {
         self.hintButton.hidden = YES;
     }
     
@@ -268,7 +269,8 @@
     
     [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
     
-     if (!([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)] && [DHSettings showWellDoneMessages] && self.currentGameMode == kDHGameModeNormal )) {
+     if (!([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)] &&
+           [DHSettings showHints] && self.currentGameMode == kDHGameModeNormal )) {
          self.hintButton.hidden = YES;
      }
     
@@ -480,9 +482,6 @@
         }
     }
     
-    // Update the progress indicator
-    [self setLevelProgress:_currentLevel.progress];
-    
     // If level supports progress hints, check new objects towards them
     if([_currentLevel respondsToSelector:@selector(testObjectsForProgressHints:)])
     {
@@ -492,11 +491,14 @@
             if (_progressBar.progress < _currentLevel.progress/100.0) {
                 [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
             }
-            else if ([DHSettings showWellDoneMessages] && self.currentGameMode == kDHGameModeNormal ) {
+            else if ([DHSettings showHints] && self.currentGameMode == kDHGameModeNormal ) {
                 [self showTemporaryMessage:[NSString stringWithFormat:@"Good choice !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
             }
         }
     }
+    
+    // Update the progress indicator
+    [self setLevelProgress:_currentLevel.progress];
     
     if (self.currentGameMode == kDHGameModeTutorial) {
         [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
@@ -887,7 +889,7 @@
 
 - (IBAction)loadNextLevel:(id)sender
 {
-    [DHSettings setShowWellDoneMessages:NO];
+    [DHSettings setShowHints:NO];
 
     if (self.levelArray) {
         self.levelIndex = self.levelIndex + 1;
@@ -1048,7 +1050,7 @@
     turnHintOnLabel.textAlignment = NSTextAlignmentLeft;
     turnHintOnLabel.textColor = [UIColor darkGrayColor];
     turnHintOnLabel.font = [UIFont boldSystemFontOfSize:16.0];
-    if ([DHSettings showWellDoneMessages]){
+    if ([DHSettings showHints]){
         [hintSwitch setOn:YES];
         turnHintOnLabel.text = @"Show hints: ";
     }
@@ -1338,11 +1340,11 @@
 - (void)changeSwitch:(id)sender{
 
     if([sender isOn]){
-        [DHSettings setShowWellDoneMessages:YES];
+        [DHSettings setShowHints:YES];
         self.hintButton.hidden = NO;
 
     } else{
-        [DHSettings setShowWellDoneMessages:NO];
+        [DHSettings setShowHints:NO];
         self.hintButton.hidden = YES;
     }
     

@@ -122,17 +122,21 @@
     pointOnMidLineOK = NO;
     secondPontOnMidLineOK = NO;
     BOOL midPointOK = NO;
-    self.progress =0 ;
+    BOOL lineThroughMidPointOK = NO;
+    self.progress = 0;
     
     DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
     DHPerpendicularLine* midLine = [[DHPerpendicularLine alloc] initWithLine:_initialLine andPoint:mp];
     
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
+    for (id object in geometricObjects) {
+        if (object != _initialLine && !EqualDirection(_initialLine, object) && PointOnLine(mp, object)) {
+            lineThroughMidPointOK = YES;
+        }
+        
         if ([[object class] isSubclassOfClass:[DHPoint class]] == NO) continue;
         if (object == _initialLine.start || object == _initialLine.end) continue;
         
-        if (EqualPoints(object,mp)) {
+        if (EqualPoints(object,mp) && [object class] != [DHPointOnLine class]) {
             midPointOK = YES;
         }
         DHPoint* p = object;
@@ -154,6 +158,8 @@
     if (midPointOK) {
         self.progress = 100;
         return YES;
+    } else if (lineThroughMidPointOK) {
+        self.progress = 50;
     }
     
     return NO;
@@ -161,24 +167,24 @@
 
 - (CGPoint)testObjectsForProgressHints:(NSArray *)objects
 {
-
-DHCircle* cAB = [[DHCircle alloc] initWithCenter:_initialLine.start andPointOnRadius:_initialLine.end];
-DHCircle* cBA = [[DHCircle alloc] initWithCenter:_initialLine.end andPointOnRadius:_initialLine.start];
-DHTrianglePoint* pTop = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
-DHTrianglePoint* pBottom = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.end andPoint2:_initialLine.start];
-DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:pBottom andEnd:pTop];
-DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
-
-for (id object in objects){
-    if (EqualCircles(object,cAB)) return cAB.center.position;
-    if (EqualCircles(object,cBA)) return cBA.center.position;
-    if (EqualPoints(object, pTop)) return pTop.position;
-    if (EqualPoints(object,pBottom)) return pBottom.position;
-    if (LineObjectCoversSegment(object,segment)) return MidPointFromPoints(segment.start.position,segment.end.position);
-    if (EqualPoints(object,mp)) return mp.position;
-}
+    
+    DHCircle* cAB = [[DHCircle alloc] initWithCenter:_initialLine.start andPointOnRadius:_initialLine.end];
+    DHCircle* cBA = [[DHCircle alloc] initWithCenter:_initialLine.end andPointOnRadius:_initialLine.start];
+    DHTrianglePoint* pTop = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
+    DHTrianglePoint* pBottom = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.end andPoint2:_initialLine.start];
+    DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:pBottom andEnd:pTop];
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
+    
+    for (id object in objects){
+        if (EqualCircles(object,cAB)) return cAB.center.position;
+        if (EqualCircles(object,cBA)) return cBA.center.position;
+        if (EqualPoints(object, pTop)) return pTop.position;
+        if (EqualPoints(object,pBottom)) return pBottom.position;
+        if (LineObjectCoversSegment(object,segment)) return MidPointFromPoints(segment.start.position,segment.end.position);
+        if (EqualPoints(object,mp)) return mp.position;
+    }
     return CGPointMake(NAN, NAN);
-
+    
 }
 
 - (void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view {
@@ -358,7 +364,9 @@ for (id object in objects){
     
     [self afterDelay:3.0 :^{
         _step1finished =YES;
-        [_message2 text:@"Tap on it to select it." ];
+        if (toolControl.selectedSegmentIndex !=5) {
+            [_message2 text:@"Tap on it to select it." ];
+        }
         [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
             _message2.alpha = 1; } completion:nil];
     }];

@@ -11,6 +11,7 @@
 static NSString* const kSettingKey_AllLevelsUnlocked = @"AllLevelsUnlocked";
 static NSString* const kSettingKey_ShowWellDoneMessages = @"ShowWellDoneMessages";
 static NSString* const kSettingKey_ShowProgressPercentage = @"ShowProgressPercentage";
+static NSString* const kSettingKey_ShowHints = @"ShowHints";
 
 @interface DHSettings : NSObject
 
@@ -23,5 +24,7 @@ static NSString* const kSettingKey_ShowProgressPercentage = @"ShowProgressPercen
 + (BOOL)showProgressPercentage;
 + (void)setShowProgressPercentage:(BOOL)value;
 
++ (BOOL)showHints;
++ (void)setShowHints:(BOOL)value;
 
 @end

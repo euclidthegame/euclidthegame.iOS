@@ -488,7 +488,7 @@
         CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
         if (!isnan(hintLocation.x)) {
             CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];
-            if (_progressBar.progress < _currentLevel.progress/100.0) {
+            if (_progressBar.progress < _currentLevel.progress/100.0 && [DHSettings showWellDoneMessages]) {
                 [self showTemporaryMessage:[NSString stringWithFormat:@"Well done !"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
             }
             else if ([DHSettings showHints] && self.currentGameMode == kDHGameModeNormal ) {

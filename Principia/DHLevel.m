@@ -290,4 +290,11 @@
     NSTimeInterval elapsedTime = -[_timerStart timeIntervalSinceNow];
     self.alpha = 0.4*cos(elapsedTime*0.5*M_PI)+0.6;
 }
+- (void)dealloc
+{
+    if (_flashTimer && [_flashTimer isValid])
+    {
+        [_flashTimer invalidate];
+    }
+}
 @end

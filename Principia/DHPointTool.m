@@ -155,10 +155,7 @@
 }
 - (void)reset
 {
-    if (_temporaryPoint) {
-        [self.delegate removeTemporaryGeometricObjects:@[_temporaryPoint]];
-        _temporaryPoint = nil;
-    }
+    DHToolTempObjectCleanup(_temporaryPoint);
     
     _temporarySnapTo.highlighted = NO;
     self.point.highlighted = NO;
@@ -169,6 +166,8 @@
 
 - (void)dealloc
 {
+    DHToolTempObjectCleanup(_temporaryPoint);
+
     _temporarySnapTo.highlighted = NO;
     self.point.highlighted = NO;
 }

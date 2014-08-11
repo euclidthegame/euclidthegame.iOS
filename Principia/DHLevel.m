@@ -61,7 +61,8 @@
     
 }
 
--(void)fadeIn:(UIView*)view withDuration:(CGFloat)time {
+-(void)fadeIn:(UIView*)view withDuration:(CGFloat)time
+{
     CABasicAnimation *animation = [CABasicAnimation animation];
     animation.keyPath = @"opacity";
     animation.fromValue = [NSNumber numberWithFloat:0];
@@ -71,7 +72,8 @@
     [view.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
 }
 
--(void)fadeInViews:(NSArray*)array withDuration:(CGFloat)time {
+-(void)fadeInViews:(NSArray*)array withDuration:(CGFloat)time
+{
     CABasicAnimation *animation = [CABasicAnimation animation];
     animation.keyPath = @"opacity";
     animation.fromValue = [NSNumber numberWithFloat:0];
@@ -85,7 +87,8 @@
     }
 }
 
--(void)fadeOut:(DHGeometryView*)view withDuration:(CGFloat)time {
+-(void)fadeOut:(DHGeometryView*)view withDuration:(CGFloat)time
+{
     CABasicAnimation *animation = [CABasicAnimation animation];
     animation.keyPath = @"opacity";
     animation.fromValue = [NSNumber numberWithFloat:1];
@@ -95,7 +98,8 @@
     [view.layer setValue:[NSNumber numberWithFloat:0.0] forKeyPath:@"opacity"];
 }
 
--(void)movePointFrom:(DHPoint*)start to:(DHPoint*)end withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView {
+-(void)movePointFrom:(DHPoint*)start to:(DHPoint*)end withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView
+{
     CGPoint delta = PointFromToWithSteps(start.position, end.position,time*100);
     for (int a=0; a<roundf(time*100.0); a++) {
         [self performBlock:^{
@@ -105,7 +109,10 @@
         } afterDelay:a* (1/100.0)];
     }
 }
--(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView {
+
+-(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle
+            withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView
+{
     CGFloat startAngle = point.angle;
     for (int a=0; a<time * 100; a++) {
         [self performBlock:^{
@@ -115,13 +122,15 @@
         } afterDelay:a/100.0];
     }
 }
--(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inViews:(NSArray*)array {
+-(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle
+            withDuration:(CGFloat)time inViews:(NSArray*)views
+{
     CGFloat startAngle = point.angle;
     for (int a=0; a<time * 100; a++) {
         [self performBlock:^{
             point.angle = startAngle + (endAngle -startAngle)* a/(time * 100.0) ;
             [point updatePosition];
-            for (id object in array){
+            for (id object in views){
                 DHGeometryView* geometryView = object;
                 [geometryView setNeedsDisplay];
             }
@@ -129,7 +138,9 @@
     }
 }
 
--(void)movePointOnLine:(DHPointOnLine*)point toTValue:(CGFloat)tValue withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView {
+-(void)movePointOnLine:(DHPointOnLine*)point toTValue:(CGFloat)tValue
+          withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView
+{
         CGFloat startValue = point.tValue;
         for (int a=0; a<time * 100; a++) {
             [self performBlock:^{
@@ -140,6 +151,33 @@
         }
 }
 
+- (void)slideOutToolbarWithConstraint:(NSLayoutConstraint*)heightToolBar
+{
+    for (int a=0; a<90; a++) {
+        [self afterDelay:a*(1/90.0) :^{heightToolBar.constant= 70 - a;}];
+    }
+}
+
+- (void)slideInToolbarWithConstraint:(NSLayoutConstraint*)heightToolBar
+{
+    for (int a=0; a<90; a++) {
+        [self performBlock:^{
+            self.heightToolbar.constant= -20 + a;
+        } afterDelay:a* (1/90.0) ];
+    }
+}
+
+- (void)showEndHintMessageInView:(UIView*)view
+{
+    Message* message5 = [[Message alloc] initAtPoint:CGPointMake(view.frame.size.width/2-140,
+                                                                 view.frame.size.height-40)
+                                               addTo:view];
+    [message5 text:@"< Tap anywhere to resume the game >"];
+    [self fadeIn:message5 withDuration:2.0];
+    [self afterDelay:2.1 :^{
+        message5.flash = YES;
+    }];
+}
 
 @end
 
@@ -168,7 +206,10 @@
 
 @end
 
-@implementation Message
+@implementation Message {
+    NSTimer* _flashTimer;
+    NSDate* _timerStart;
+}
 - (instancetype)initWithMessage:(NSString*)message andPoint:(CGPoint)point
 {
     self = [super init];
@@ -220,5 +261,33 @@
     frame.origin = self.point;
     self.frame = frame;
     [self sizeToFit];
+}
+- (void)setFlash:(BOOL)flash
+{
+    _flash = flash;
+    if (_flash) {
+        if (_flashTimer == nil)
+        {
+            _flashTimer = [NSTimer timerWithTimeInterval:1/30.0
+                                                   target:self
+                                                selector:@selector(updateFlashState:)
+                                                 userInfo:nil
+                                                  repeats:YES];
+            [[NSRunLoop currentRunLoop] addTimer:_flashTimer forMode:NSRunLoopCommonModes];
+            _timerStart = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
+        }
+    } else {
+        if (_flashTimer && [_flashTimer isValid])
+        {
+            [_flashTimer invalidate];
+        }
+        
+        _flashTimer = nil;
+    }
+}
+- (void)updateFlashState:(NSTimer *)timer
+{
+    NSTimeInterval elapsedTime = -[_timerStart timeIntervalSinceNow];
+    self.alpha = 0.4*cos(elapsedTime*0.5*M_PI)+0.6;
 }
 @end

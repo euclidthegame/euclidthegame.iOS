@@ -31,6 +31,11 @@
     return (@"Construct a point at the center of the given circle.");
 }
 
+- (NSString *)additionalCompletionMessage
+{
+    return (@"You enhanced the midpoint tool, it can now also create points at the center of circles!");
+}
+
 - (NSUInteger)minimumNumberOfMoves
 {
     return 3;

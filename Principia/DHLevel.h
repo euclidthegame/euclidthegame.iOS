@@ -51,6 +51,9 @@
 - (void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView;
 -(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inViews:(NSArray*)array;
 -(void)movePointOnLine:(DHPointOnLine*)point toTValue:(CGFloat)tValue withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView ;
+- (void)slideOutToolbarWithConstraint:(NSLayoutConstraint*)heightToolBar;
+- (void)slideInToolbarWithConstraint:(NSLayoutConstraint*)heightToolBar;
+- (void)showEndHintMessageInView:(UIView*)view;
 @end
 
 @interface NSObject (Blocks)
@@ -61,6 +64,7 @@
 
 @interface Message : UILabel
 @property (nonatomic) CGPoint point;
+@property (nonatomic) BOOL flash;
 - (instancetype)initWithMessage:(NSString*)message andPoint:(CGPoint)point;
 - (instancetype)initAtPoint:(CGPoint)point addTo:(UIView*)view;
 - (void)text:(NSString*)string;

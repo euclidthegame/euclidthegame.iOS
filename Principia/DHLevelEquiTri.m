@@ -332,7 +332,8 @@
     
 }
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton
+{
   
     if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
         [self hideHint];
@@ -349,8 +350,7 @@
     
     [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
     
-    //hidetoolbar
-    for (int a=0; a<90; a++) {[self afterDelay:a*(1/90.0) :^{heightToolBar.constant= 70 - a;}];}
+    [self slideOutToolbarWithConstraint:heightToolBar];
     
     [self afterDelay:1.0 :^{
         
@@ -420,19 +420,19 @@
             if (cAB_OK) [self movePointOnCircle:pC toAngle:3.333*M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
             else        [self movePointOnCircle:pC toAngle:2.3333*-M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
         }];
-    }];
-    
-    }
 
--(void)hideHint {
-        for (int a=0; a<90; a++) {
-            [self performBlock:^{
-                self.heightToolbar.constant= -20 + a;
-            } afterDelay:a* (1/90.0) ];
-        }
-        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-        return;
+        [self afterDelay:18.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+    
+    }];
+}
+
+- (void)hideHint
+{
+    [self slideInToolbarWithConstraint:self.heightToolbar];
+    [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
 }
 
 @end

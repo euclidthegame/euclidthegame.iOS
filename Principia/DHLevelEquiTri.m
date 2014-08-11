@@ -8,6 +8,7 @@
 
 #import "DHLevelEquiTri.h"
 #import "DHGeometryView.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelEquiTri() {
     DHLineSegment* _lineAB;
@@ -332,10 +333,12 @@
     
 }
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton
+- (void)showHint
 {
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
+    NSLayoutConstraint* heightToolBar = self.levelViewController.heightToolBar;
   
-    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+    if (self.showingHint) {
         [self hideHint];
         return;
     }
@@ -348,11 +351,12 @@
         return;
     }
     
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    self.showingHint = YES;
     
     [self slideOutToolbarWithConstraint:heightToolBar];
     
     [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
         
         UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
         hintView.backgroundColor = [UIColor whiteColor];
@@ -392,7 +396,6 @@
             segmentAC = [segmentAC initWithStart:c1.center andEnd:pC];
         }
         
-        
         DHGeometryView* circleView = [[DHGeometryView alloc] initWithObjects:@[c1] supView:geometryView addTo:hintView];
         DHGeometryView* lineACView = [[DHGeometryView alloc] initWithObjects:@[segmentAC] supView:geometryView addTo:hintView];
         DHGeometryView* pointCView = [[DHGeometryView alloc] initWithObjects:@[pC] supView:geometryView addTo:hintView];
@@ -421,7 +424,7 @@
             else        [self movePointOnCircle:pC toAngle:2.3333*-M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
         }];
 
-        [self afterDelay:18.0 :^{
+        [self afterDelay:2.0 :^{
             [self showEndHintMessageInView:hintView];
         }];
     
@@ -430,8 +433,9 @@
 
 - (void)hideHint
 {
+    [self.levelViewController hintFinished];
     [self slideInToolbarWithConstraint:self.heightToolbar];
-    [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+    self.showingHint = NO;
     [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
 }
 

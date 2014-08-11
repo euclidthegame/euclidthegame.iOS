@@ -160,17 +160,6 @@
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vwg-gq-9dL">
-                                        <rect key="frame" x="645" y="27" width="112" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="112" id="mSk-Wf-p7Q"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <state key="normal" title="Show hint">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -180,10 +169,8 @@
                                     <constraint firstAttribute="height" constant="60" id="UQi-lV-ZOm"/>
                                     <constraint firstItem="WOF-xF-LlD" firstAttribute="leading" secondItem="4Y1-gV-t0q" secondAttribute="trailing" constant="10" id="Uzo-hG-CQr"/>
                                     <constraint firstItem="4Y1-gV-t0q" firstAttribute="leading" secondItem="WTO-DQ-iQi" secondAttribute="leading" id="X5L-Xh-6xJ"/>
-                                    <constraint firstItem="WOF-xF-LlD" firstAttribute="leading" secondItem="Vwg-gq-9dL" secondAttribute="leading" id="YC0-40-E9J"/>
                                     <constraint firstItem="4Y1-gV-t0q" firstAttribute="leading" secondItem="V5X-Pj-3WK" secondAttribute="leading" constant="10" id="cSa-w4-Guy"/>
                                     <constraint firstItem="WOF-xF-LlD" firstAttribute="centerY" secondItem="4Y1-gV-t0q" secondAttribute="centerY" id="mi1-hI-2Gd"/>
-                                    <constraint firstItem="WTO-DQ-iQi" firstAttribute="centerY" secondItem="Vwg-gq-9dL" secondAttribute="centerY" id="uzw-9r-ktY"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tbY-LX-K8w" userLabel="LevelComplete" colorLabel="IBBuiltInLabel-Green">
@@ -303,10 +290,10 @@
                         <outlet property="geometryView" destination="2ux-1M-Bze" id="om1-wG-s4P"/>
                         <outlet property="heightLevelObjectiveView" destination="UQi-lV-ZOm" id="haK-uK-jQF"/>
                         <outlet property="heightToolBar" destination="zAV-e7-iiH" id="Gcm-Hc-h0J"/>
-                        <outlet property="hintButton" destination="Vwg-gq-9dL" id="bUO-A8-ykl"/>
                         <outlet property="levelCompletionMessage" destination="tbY-LX-K8w" id="JTx-tJ-JQ1"/>
                         <outlet property="levelCompletionMessageAdditional" destination="lZY-n7-yQ8" id="tND-O7-ZlJ"/>
                         <outlet property="levelInstruction" destination="4Y1-gV-t0q" id="8Pd-2G-VSu"/>
+                        <outlet property="levelInstructionButtonConstraint" destination="mi1-hI-2Gd" id="fR3-Wx-38r"/>
                         <outlet property="levelInstructionLabelConstraint" destination="7n6-GX-rHF" id="92S-Gn-wji"/>
                         <outlet property="levelObjectiveView" destination="V5X-Pj-3WK" id="q4u-kU-ngu"/>
                         <outlet property="movesLabel" destination="Cqv-aF-aQU" id="YUi-Dx-7TG"/>

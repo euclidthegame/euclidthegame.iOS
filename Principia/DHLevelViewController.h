@@ -31,8 +31,8 @@
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* heightLevelObjectiveView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* heightToolBar;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* levelInstructionLabelConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* levelInstructionButtonConstraint;
 
-@property (nonatomic, strong) IBOutlet UIButton* hintButton;
 @property (nonatomic, weak) DHGeometryViewController* geometryViewController;
 @property (nonatomic, strong) NSMutableArray* levelArray;
 @property (nonatomic) NSUInteger levelIndex;
@@ -49,6 +49,7 @@
 - (IBAction)loadNextLevel:(id)sender;
 - (IBAction)hideCompletionMessage:(id)sender;
 - (void)showDetailedLevelInstruction:(id)sender;
+- (void)hintFinished;
 
 // Geometry tool delegate methods
 - (NSArray*)geometryObjects;

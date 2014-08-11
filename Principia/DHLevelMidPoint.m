@@ -327,6 +327,8 @@
     } afterDelay:1.0];
     
 }
+
+#if 0
 - (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
     
     if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
@@ -398,4 +400,53 @@
          } afterDelay:a];
     }
 }
+#endif
+
+- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+    
+    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+        [self hideHint];
+        return;
+    }
+    
+    if (pointOnMidLineOK && secondPontOnMidLineOK) {
+        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
+        [geometryView addSubview:message0];
+        [self fadeIn:message0 withDuration:1.0];
+        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
+        return;
+    }
+    
+    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    
+    [self slideOutToolbarWithConstraint:heightToolBar];
+    
+    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
+    [geometryView addSubview:hintView];
+    _message1 = [[Message alloc] initAtPoint:CGPointMake(150,720) addTo:hintView];
+    _message2 = [[Message alloc] initAtPoint:CGPointMake(150,740) addTo:hintView];
+    _message3 = [[Message alloc] initAtPoint:CGPointMake(150,760) addTo:hintView];
+    _message4 = [[Message alloc] initAtPoint:CGPointMake(150,780) addTo:hintView];
+    
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
+        [_message1 position: CGPointMake(150,480)];
+        [_message2 position: CGPointMake(150,500)];
+        [_message3 position: CGPointMake(150,520)];
+        [_message4 position: CGPointMake(150,540)];
+    }
+    
+    [_message1 text:@"You have just unlocked the equilateral triangle tool."];
+    [self fadeIn:_message1 withDuration:2.0];
+    
+
+}
+
+- (void)hideHint
+{
+    [self slideInToolbarWithConstraint:self.heightToolbar];
+    [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+}
+
 @end

@@ -38,8 +38,8 @@
     UIBarButtonItem* _undoButton;
     UIBarButtonItem* _redoButton;
     UIBarButtonItem* _resetButton;
+    UIBarButtonItem* _hintButton;
     
-    UILabel* turnHintOnLabel;
     CGPoint _tempGeoCenter;
     
     YLProgressBar* _progressBar;
@@ -67,17 +67,16 @@
     
     _currentLevel.geometryView = self.geometryView;
     _currentLevel.view = self.view;
-    _currentLevel.hintButton = self.hintButton;
     _currentLevel.toolControl = self.toolControl;
     _currentLevel.heightToolbar = self.heightToolBar;
-    
     
     [_toolControl addTarget:self
                      action:@selector(toolChanged:)
            forControlEvents:UIControlEventValueChanged];
     
-    // Set up according to level
-    UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
+    // Set up navigation toolbar
+    UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain
+                                                                 target:self action:nil];
     UIBarButtonItem *resetButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset"
                                                                            style:UIBarButtonItemStylePlain
                                                                           target:self
@@ -90,13 +89,18 @@
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
                                                                        action:@selector(redoMove)];
+    UIBarButtonItem *hintButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hint"
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(showHint:)];
     self.navigationItem.rightBarButtonItem = resetButtonItem;
-    self.navigationItem.rightBarButtonItems = @[resetButtonItem, separator, redoButtonItem, undoButtonItem];
+    self.navigationItem.rightBarButtonItems = @[resetButtonItem, separator, redoButtonItem, undoButtonItem,
+                                                separator];
     _undoButton = undoButtonItem;
     _redoButton = redoButtonItem;
     _resetButton = resetButtonItem;
+    _hintButton = hintButtonItem;
     
-
     _levelInstruction.layer.cornerRadius = 10.0f;
     
     // Set up completion message
@@ -147,14 +151,6 @@
                                                          multiplier:1.0
                                                            constant:-30.0]];
 
-    /*[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_progressBar
-                                                          attribute:NSLayoutAttributeWidth
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:nil
-                                                          attribute:NSLayoutAttributeNotAnAttribute
-                                                         multiplier:1.0
-                                                           constant:450.0]];*/
-
     [self setupForLevel];
 }
 
@@ -191,9 +187,9 @@
 #pragma mark Level related methods
 - (void)setupForLevel
 {
+    _currentLevel.levelViewController = self;
     _currentLevel.geometryView = self.geometryView;
     _currentLevel.view = self.view;
-    _currentLevel.hintButton = self.hintButton;
     _currentLevel.toolControl = self.toolControl;
     _currentLevel.heightToolbar = self.heightToolBar;
     
@@ -224,12 +220,7 @@
         self.movesLeftLabel.hidden = YES;
     }
     
-    [self.hintButton addTarget:self action:@selector(showHint:) forControlEvents:UIControlEventTouchUpInside];
-    
-    if (!([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)] &&
-          [DHSettings showHints] && self.currentGameMode == kDHGameModeNormal )) {
-        self.hintButton.hidden = YES;
-    }
+    [self showOrHideHintButton];
     
     NSString* levelInstruction = [@"Objective: " stringByAppendingString:[_currentLevel levelDescription]];
     _levelInstruction.text = levelInstruction;
@@ -259,7 +250,9 @@
     if ([DHSettings showProgressPercentage] == NO) {
         self.progressLabel.hidden = YES;
         _progressBar.hidden = YES;
-        self.levelInstructionLabelConstraint.constant = -self.levelInstruction.frame.size.height*0.5;
+        if ([DHSettings showHints] == NO) {
+            self.levelInstructionLabelConstraint.constant = -self.levelInstruction.frame.size.height*0.5;
+        }
     }
 }
 
@@ -267,12 +260,7 @@
 {
     [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
     
-    [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-    
-     if (!([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)] &&
-           [DHSettings showHints] && self.currentGameMode == kDHGameModeNormal )) {
-         self.hintButton.hidden = YES;
-     }
+    [self showOrHideHintButton];
     
     [self.detailedInstructions setTitle:@"Full instruction" forState:UIControlStateNormal];
     [self.detailedInstructions removeTarget:self action:@selector(loadNextLevel:) forControlEvents:UIControlEventTouchUpInside];
@@ -806,6 +794,62 @@
     }
     
 }
+#pragma mark Hint related methods
+- (void)showHint:(id)sender
+{
+    UIBarButtonItem *closeHintButton = [[UIBarButtonItem alloc] initWithTitle:@"Close hint"
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(hideHint:)];
+
+    [self.navigationItem setRightBarButtonItems:@[closeHintButton] animated:YES];
+    _detailedInstructions.enabled = NO;
+    
+    if ([_currentLevel respondsToSelector:@selector(showHint)]) {
+        [_currentLevel showHint];
+        [_currentTool reset];
+    }
+}
+- (void)hideHint:(id)sender
+{
+    if ([_currentLevel respondsToSelector:@selector(hideHint)]) {
+        [_currentLevel hideHint];
+    }
+}
+- (void)changeSwitch:(id)sender
+{
+    if([sender isOn]){
+        [DHSettings setShowHints:YES];
+    } else{
+        [DHSettings setShowHints:NO];
+    }
+    [self showOrHideHintButton];
+}
+- (void)showOrHideHintButton
+{
+    NSMutableArray *buttons = [self.navigationItem.rightBarButtonItems mutableCopy];
+    
+    if ([DHSettings showHints]) {
+        if (![buttons containsObject:_hintButton]) {
+            [buttons addObject:_hintButton];
+            [self.navigationItem setRightBarButtonItems:buttons animated:YES];
+        }
+    } else {
+        if ([buttons containsObject:_hintButton]) {
+            [buttons removeObject:_hintButton];
+            [self.navigationItem setRightBarButtonItems:buttons animated:YES];
+        }
+    }
+}
+- (void)hintFinished
+{
+    _detailedInstructions.enabled = YES;
+    UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain
+                                                                 target:self action:nil];
+    
+    self.navigationItem.rightBarButtonItems = @[_resetButton, separator, _redoButton, _undoButton,
+                                                separator, _hintButton];
+}
 
 #pragma mark Other
 - (void) askToResetLevel
@@ -968,17 +1012,11 @@
     
 }
 
-
-- (void)showHint:(id)sender {
-    if ([_currentLevel respondsToSelector:@selector(hint:and:and:and:and:and:and:)]) {
-
-        [_currentLevel hint:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:self.hintButton];
-        [_currentTool reset];
-    }
-}
-
 - (void)showDetailedLevelInstruction:(id)sender
 {
+    if (_detailedInstructions.enabled == NO) {
+        return;
+    }
     if (_levelInfoView != nil) {
         return;
     }
@@ -997,7 +1035,7 @@
     UIButton* startButton = [UIButton buttonWithType:UIButtonTypeSystem];
     UILabel* titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     UILabel* objectiveLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    turnHintOnLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    UILabel* turnHintOnLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     UILabel* solutionPreviewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     DHGeometryView* geoView = [[DHGeometryView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     UISwitch *hintSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 0,0)];
@@ -1335,19 +1373,6 @@
 
     [_levelInfoView removeFromSuperview];
     _levelInfoView = nil;
-}
-
-- (void)changeSwitch:(id)sender{
-
-    if([sender isOn]){
-        [DHSettings setShowHints:YES];
-        self.hintButton.hidden = NO;
-
-    } else{
-        [DHSettings setShowHints:NO];
-        self.hintButton.hidden = YES;
-    }
-    
 }
 
 - (void)setLevelProgress:(NSUInteger)progress

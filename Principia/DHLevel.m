@@ -154,7 +154,9 @@
 - (void)slideOutToolbarWithConstraint:(NSLayoutConstraint*)heightToolBar
 {
     for (int a=0; a<90; a++) {
-        [self afterDelay:a*(1/90.0) :^{heightToolBar.constant= 70 - a;}];
+        [self afterDelay:a*(1/90.0) :^{
+            heightToolBar.constant= 70 - a;
+        }];
     }
 }
 

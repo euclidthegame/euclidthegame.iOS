@@ -12,6 +12,8 @@
 #import "DHMath.h"
 #import "DHGeometryView.h"
 
+@class DHLevelViewController;
+
 @protocol DHLevel <NSObject>
 
 @required
@@ -30,6 +32,7 @@
 - (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heighToolControl and:(BOOL)update;
 - (void)animation:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view;
 - (void)hint:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton;
+- (void)showHint;
 - (NSString*)levelDescriptionExtra;
 - (void)hideHint;
 
@@ -37,11 +40,13 @@
 
 @interface DHLevel : NSObject
 @property NSUInteger progress;
+@property BOOL showingHint;
+@property (nonatomic, weak) DHLevelViewController* levelViewController;
 @property (nonatomic, weak) DHGeometryView* geometryView;
 @property (nonatomic, weak) UIView* view;
-@property (nonatomic,weak) UIButton* hintButton;
-@property (nonatomic,weak) UISegmentedControl* toolControl;
-@property (nonatomic,weak) NSLayoutConstraint* heightToolbar;
+@property (nonatomic, weak) UIButton* hintButton;
+@property (nonatomic, weak) UISegmentedControl* toolControl;
+@property (nonatomic, weak) NSLayoutConstraint* heightToolbar;
 
 - (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color andTime:(CGFloat)time;
 - (void)fadeIn:(UIView*)view withDuration:(CGFloat)time;

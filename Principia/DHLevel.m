@@ -111,6 +111,20 @@
     }
 }
 
+-(void)movePoint:(DHPoint*)point toPosition:(CGPoint)end withDuration:(CGFloat)time inViews:(NSArray*)geometryViews;
+{
+    CGPoint delta = PointFromToWithSteps(point.position, end,time*100);
+    for (int a=0; a<roundf(time*100.0); a++) {
+        [self performBlock:^{
+            point.position = CGPointMake(point.position.x + delta.x,point.position.y + delta.y);
+            [point updatePosition];
+            for (id view in geometryViews) {
+                [view setNeedsDisplay];
+            }
+        } afterDelay:a* (1/100.0)];
+    }
+}
+
 -(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle
             withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView
 {

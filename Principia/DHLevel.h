@@ -51,6 +51,7 @@
 - (void)fadeIn:(UIView*)view withDuration:(CGFloat)time;
 - (void)fadeOut:(UIView*)view withDuration:(CGFloat)time;
 - (void)fadeInViews:(NSArray*)array withDuration:(CGFloat)time;
+- (void)movePoint:(DHPoint*)point toPosition:(CGPoint)end withDuration:(CGFloat)time inViews:(NSArray*)geometryViews;
 - (void)movePointFrom:(DHPoint*)start to:(DHPoint*)end withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView;
 - (void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView;
 -(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inViews:(NSArray*)array;

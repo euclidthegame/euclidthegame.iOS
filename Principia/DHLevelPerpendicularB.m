@@ -10,6 +10,7 @@
 
 #import <CoreGraphics/CGBase.h>
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelPerpendicularB () {
     DHPoint* _pointA;
@@ -497,5 +498,97 @@
          } afterDelay:a];
     }
 }
+
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
+    
+    if (self.showingHint) {
+        [self hideHint];
+        return;
+    }
+    
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
+    UIView* hintView = [[UIView alloc] initWithFrame:geometryView.frame];
+    hintView.backgroundColor = [UIColor whiteColor];
+    hintView.layer.opacity = 0;
+    [geometryView addSubview:hintView];
+    [self fadeInViews:@[hintView] withDuration:1.0];
+    
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        
+        CGFloat centerX = geometryView.center.x;
+        
+        DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX-50 andY:300];
+        DHPoint* p2 = [[DHPoint alloc] initWithPositionX:centerX+50 andY:300];
+        DHPoint* p3 = [[DHPoint alloc] initWithPositionX:centerX andY:100];
+        
+        DHLineSegment* s12 = [[DHLineSegment alloc] initWithStart:p1 andEnd:p2];
+        DHLineSegment* s13 = [[DHLineSegment alloc] initWithStart:p1 andEnd:p3];
+        DHLineSegment* s23 = [[DHLineSegment alloc] initWithStart:p2 andEnd:p3];
+        s12.temporary = s13.temporary = s23.temporary = YES;
+        
+        DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:p1 andPoint2:p2];
+        DHLineSegment* s3MP = [[DHLineSegment alloc] initWithStart:p3 andEnd:mp];
+        DHLineSegment* s12H = [[DHLineSegment alloc] initWithStart:p1 andEnd:p2];
+        mp.temporary = YES;
+        s3MP.highlighted = YES;
+        s12H.highlighted = YES;
+        
+        DHGeometryView* triView = [[DHGeometryView alloc] initWithObjects:@[s12, s13, s23]
+                                                                  supView:geometryView addTo:hintView];
+        DHGeometryView* perpView = [[DHGeometryView alloc] initWithObjects:@[s3MP, s12H, mp]
+                                                                  supView:geometryView addTo:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,400) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,420) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,440) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,460) addTo:hintView];
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(150,500)];
+            [message2 position: CGPointMake(150,520)];
+            [message3 position: CGPointMake(150,540)];
+            [message4 position: CGPointMake(150,560)];
+        }
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"For an isosceles triangle (with two equal sides) it can be proved"];
+            [self fadeInViews:@[message1, triView] withDuration:3.0];
+        }];
+        
+        [self afterDelay:4.0 :^{
+            [message2 text:@"that a line from the tip to the midpoint of its base"];
+            [self fadeInViews:@[message2, perpView] withDuration:3.0];
+        }];
+        
+        [self afterDelay:8.0 :^{
+            [message3 text:@"will always be perpendicular to the base, regardless of the angle."];
+            [self fadeInViews:@[message3] withDuration:3.0];
+            [self movePoint:p1 toPosition:CGPointMake(p1.position.x-100, p1.position.y)
+               withDuration:4.0 inViews:@[triView, perpView]];
+            [self movePoint:p2 toPosition:CGPointMake(p2.position.x+100, p2.position.y)
+               withDuration:4.0 inViews:@[triView, perpView]];
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
+}
+
+- (void)hideHint
+{
+    [self.levelViewController hintFinished];
+    [self slideInToolbar];
+    self.showingHint = NO;
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+}
+
 
 @end

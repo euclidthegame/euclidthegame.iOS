@@ -9,9 +9,10 @@
 #import "DHLevelMidPoint.h"
 #import <CoreGraphics/CGBase.h>
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelMidPoint () {
-    DHLineSegment* _initialLine;
+    DHLineSegment* _lineAB;
     DHPoint* _pointA;
     DHPoint* _pointB;
     Message* _message1, *_message2, *_message3, *_message4;
@@ -61,8 +62,8 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
-    DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:300];
-    DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:300];
+    DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:400];
+    DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:400];
     DHLineSegment* l1 = [[DHLineSegment alloc] init];
     l1.start = p1;
     l1.end = p2;
@@ -71,7 +72,7 @@
     [geometricObjects addObject:p1];
     [geometricObjects addObject:p2];
     
-    _initialLine = l1;
+    _lineAB = l1;
     _pointA = p1;
     _pointB = p2;
 }
@@ -79,8 +80,8 @@
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
     DHMidPoint* mid = [[DHMidPoint alloc] init];
-    mid.start = _initialLine.start;
-    mid.end = _initialLine.end;
+    mid.start = _lineAB.start;
+    mid.end = _lineAB.end;
     [objects addObject:mid];
 }
 
@@ -93,11 +94,11 @@
     }
     
     // Move A and B and ensure solution holds
-    CGPoint pointA = _initialLine.start.position;
-    CGPoint pointB = _initialLine.end.position;
+    CGPoint pointA = _lineAB.start.position;
+    CGPoint pointB = _lineAB.end.position;
     
-    _initialLine.start.position = CGPointMake(100, 100);
-    _initialLine.end.position = CGPointMake(400, 400);
+    _lineAB.start.position = CGPointMake(100, 100);
+    _lineAB.end.position = CGPointMake(400, 400);
     for (id object in geometricObjects) {
         if ([object respondsToSelector:@selector(updatePosition)]) {
             [object updatePosition];
@@ -106,8 +107,8 @@
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
-    _initialLine.start.position = pointA;
-    _initialLine.end.position = pointB;
+    _lineAB.start.position = pointA;
+    _lineAB.end.position = pointB;
     for (id object in geometricObjects) {
         if ([object respondsToSelector:@selector(updatePosition)]) {
             [object updatePosition];
@@ -125,16 +126,16 @@
     BOOL lineThroughMidPointOK = NO;
     self.progress = 0;
     
-    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
-    DHPerpendicularLine* midLine = [[DHPerpendicularLine alloc] initWithLine:_initialLine andPoint:mp];
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
+    DHPerpendicularLine* midLine = [[DHPerpendicularLine alloc] initWithLine:_lineAB andPoint:mp];
     
     for (id object in geometricObjects) {
-        if (object != _initialLine && !EqualDirection(_initialLine, object) && PointOnLine(mp, object)) {
+        if (object != _lineAB && !EqualDirection(_lineAB, object) && PointOnLine(mp, object)) {
             lineThroughMidPointOK = YES;
         }
         
         if ([[object class] isSubclassOfClass:[DHPoint class]] == NO) continue;
-        if (object == _initialLine.start || object == _initialLine.end) continue;
+        if (object == _lineAB.start || object == _lineAB.end) continue;
         
         if (EqualPoints(object,mp) && [object class] != [DHPointOnLine class]) {
             midPointOK = YES;
@@ -155,6 +156,11 @@
     }
     
     //self.progress = (pointOnMidLineOK + secondPontOnMidLineOK + midPointOK)/3.0 * 100;
+    
+    if (pointOnMidLineOK && secondPontOnMidLineOK) {
+        [self.levelViewController noMoreHints];
+    }
+    
     if (midPointOK) {
         self.progress = 100;
         return YES;
@@ -168,12 +174,12 @@
 - (CGPoint)testObjectsForProgressHints:(NSArray *)objects
 {
     
-    DHCircle* cAB = [[DHCircle alloc] initWithCenter:_initialLine.start andPointOnRadius:_initialLine.end];
-    DHCircle* cBA = [[DHCircle alloc] initWithCenter:_initialLine.end andPointOnRadius:_initialLine.start];
-    DHTrianglePoint* pTop = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
-    DHTrianglePoint* pBottom = [[DHTrianglePoint alloc] initWithPoint1:_initialLine.end andPoint2:_initialLine.start];
+    DHCircle* cAB = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
+    DHCircle* cBA = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
+    DHTrianglePoint* pTop = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
+    DHTrianglePoint* pBottom = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.end andPoint2:_lineAB.start];
     DHLineSegment* segment = [[DHLineSegment alloc]initWithStart:pBottom andEnd:pTop];
-    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_initialLine.start andPoint2:_initialLine.end];
+    DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
     
     for (id object in objects){
         if (EqualCircles(object,cAB)) return cAB.center.position;
@@ -194,10 +200,10 @@
     DHLineSegment* l1 = [[DHLineSegment alloc] init];
     l1.start = p1;
     l1.end = p2;
-    _initialLine = l1;
+    _lineAB = l1;
     DHMidPoint* mid = [[DHMidPoint alloc] init];
-    mid.start = _initialLine.start;
-    mid.end = _initialLine.end;
+    mid.start = _lineAB.start;
+    mid.end = _lineAB.end;
     
     CGFloat steps = 100;
     CGPoint dA = PointFromToWithSteps(_pointA.position, p1.position, steps);
@@ -402,50 +408,91 @@
 }
 #endif
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)showHint {
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+    if (self.showingHint == YES) {
         [self hideHint];
         return;
     }
     
-    if (pointOnMidLineOK && secondPontOnMidLineOK) {
-        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
-        [geometryView addSubview:message0];
-        [self fadeIn:message0 withDuration:1.0];
-        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
-        return;
-    }
+    self.showingHint = YES;
     
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    [self slideOutToolbar];
     
-    [self slideOutToolbarWithConstraint:heightToolBar];
-    
-    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
-    [geometryView addSubview:hintView];
-    _message1 = [[Message alloc] initAtPoint:CGPointMake(150,720) addTo:hintView];
-    _message2 = [[Message alloc] initAtPoint:CGPointMake(150,740) addTo:hintView];
-    _message3 = [[Message alloc] initAtPoint:CGPointMake(150,760) addTo:hintView];
-    _message4 = [[Message alloc] initAtPoint:CGPointMake(150,780) addTo:hintView];
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [_message1 position: CGPointMake(150,480)];
-        [_message2 position: CGPointMake(150,500)];
-        [_message3 position: CGPointMake(150,520)];
-        [_message4 position: CGPointMake(150,540)];
-    }
-    
-    [_message1 text:@"You have just unlocked the equilateral triangle tool."];
-    [self fadeIn:_message1 withDuration:2.0];
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        hintView.backgroundColor = [UIColor whiteColor];
+        
+        DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+        oldObjects.hideBorder = NO;
+        [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+        [hintView addSubview:oldObjects];
+        
+        [geometryView addSubview:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,100) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,120) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,140) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,160) addTo:hintView];
+        
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(150,500)];
+            [message2 position: CGPointMake(150,520)];
+            [message3 position: CGPointMake(150,540)];
+            [message4 position: CGPointMake(150,560)];
+        }
+        
+        DHTrianglePoint* tp1 = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
+        DHTrianglePoint* tp2 = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.end andPoint2:_lineAB.start];
+        
+        DHLineSegment* segmentAC = [[DHLineSegment alloc] initWithStart:tp1 andEnd:tp2];
+        segmentAC.temporary = YES;
+        DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
+        mp.temporary = YES;
+        
+        DHGeometryView* segmentView = [[DHGeometryView alloc] initWithObjects:@[segmentAC]
+                                                                     supView:geometryView addTo:hintView];
+        DHGeometryView* mpView = [[DHGeometryView alloc] initWithObjects:@[mp]
+                                                                      supView:geometryView addTo:hintView];
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"To create a point that is always located at the midpoint,"];
+            [self fadeInViews:@[message1] withDuration:2.0];
+        }];
+        
+        [self afterDelay:3.0 :^{
+            [message2 text:@"we need to construct a line that passes through the midpoint."];
+            [self fadeInViews:@[message2,segmentView] withDuration:2.0];
+        }];
+        
+        [self afterDelay:6.0 :^{
+            [message3 text:@"Then construct an intersection point with the segment AB."];
+            [self fadeInViews:@[message3, mpView] withDuration:2.0];
+        }];
+        
+        [self afterDelay:9.0 :^{
+            [message4 text:@"Look for a tool that provides points over/under segment AB's midpoint!"];
+            [self fadeIn:message4 withDuration:2.0];
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
     
 
 }
 
 - (void)hideHint
 {
-    [self slideInToolbarWithConstraint:self.heightToolbar];
-    [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
+    self.showingHint = NO;
+    [self.levelViewController hintFinished];
+    [self slideInToolbar];
     [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
 }
 

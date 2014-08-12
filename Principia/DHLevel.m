@@ -7,6 +7,7 @@
 //
 
 #import "DHLevel.h"
+#import "DHLevelViewController.h"
 
 @implementation DHLevel
 
@@ -151,8 +152,9 @@
         }
 }
 
-- (void)slideOutToolbarWithConstraint:(NSLayoutConstraint*)heightToolBar
+- (void)slideOutToolbar
 {
+    NSLayoutConstraint* heightToolBar = self.levelViewController.heightToolBar;
     for (int a=0; a<90; a++) {
         [self afterDelay:a*(1/90.0) :^{
             heightToolBar.constant= 70 - a;
@@ -160,11 +162,12 @@
     }
 }
 
-- (void)slideInToolbarWithConstraint:(NSLayoutConstraint*)heightToolBar
+- (void)slideInToolbar
 {
+    NSLayoutConstraint* heightToolBar = self.levelViewController.heightToolBar;
     for (int a=0; a<90; a++) {
         [self performBlock:^{
-            self.heightToolbar.constant= -20 + a;
+            heightToolBar.constant= -20 + a;
         } afterDelay:a* (1/90.0) ];
     }
 }

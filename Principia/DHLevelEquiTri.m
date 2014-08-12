@@ -144,12 +144,11 @@
     DHCircle* cAB = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
     DHCircle* cBA = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
 
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
+    for (id object in geometricObjects) {
         if ([object class] == [DHPoint class]) continue;
         if (object == _lineAB) continue;
         
-        if (EqualCircles(object,cAB)) cAB_OK = YES;
+        if (EqualCircles(object, cAB)) cAB_OK = YES;
         if (EqualCircles(object, cBA)) cBA_OK = YES;
 
         if (LineObjectCoversSegment(object,sAC)) sAC_OK = YES;
@@ -162,6 +161,10 @@
     
     self.progress = ((pC_OK || pD_OK) + (sAC_OK || sAD_OK || sBC_OK || sBD_OK) +
                      ((sAC_OK && sBC_OK) || (sAD_OK && sBD_OK)))/3.0 * 100;
+    
+    if (cBA_OK && cAB_OK) {
+        [self.levelViewController noMoreHints];
+    }
     
     if ((pC_OK && sAC_OK && sBC_OK) || (pD_OK && sAD_OK && sBD_OK)) {
         return YES;
@@ -336,24 +339,15 @@
 - (void)showHint
 {
     DHGeometryView* geometryView = self.levelViewController.geometryView;
-    NSLayoutConstraint* heightToolBar = self.levelViewController.heightToolBar;
   
     if (self.showingHint) {
         [self hideHint];
         return;
     }
     
-    if (cBA_OK && cAB_OK) {
-        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
-        [geometryView addSubview:message0];
-        [self fadeIn:message0 withDuration:1.0];
-        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
-        return;
-    }
-    
     self.showingHint = YES;
     
-    [self slideOutToolbarWithConstraint:heightToolBar];
+    [self slideOutToolbar];
     
     [self afterDelay:1.0 :^{
         if (!self.showingHint) return;
@@ -434,7 +428,7 @@
 - (void)hideHint
 {
     [self.levelViewController hintFinished];
-    [self slideInToolbarWithConstraint:self.heightToolbar];
+    [self slideInToolbar];
     self.showingHint = NO;
     [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
 }

@@ -10,6 +10,7 @@
 
 #import <CoreGraphics/CGBase.h>
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelBisect () {
     DHRay* _lineAB;
@@ -19,6 +20,7 @@
     BOOL pointOnLineOK;
     Message* _message1, *_message2, *_message3, *_message4;
     BOOL _step1finished;
+    NSUInteger _hintStep;
 }
 @end
 
@@ -84,6 +86,7 @@
     _lineAB = l1;
     _lineAC = l2;
     
+    _hintStep = 0;
 }
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
@@ -347,7 +350,6 @@
     } afterDelay:1.0];
 }
 
-
 - (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
     
     if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
@@ -429,6 +431,132 @@
              }
          } afterDelay:a];
     }
+}
+
+- (void)showHint
+{
+    // Todo: Show in steps: midpoint, point on line, circle to other line
+    
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
+    
+    if (self.showingHint) {
+        [self hideHint];
+        return;
+    }
+    
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        hintView.backgroundColor = [UIColor whiteColor];
+        
+        DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+        oldObjects.hideBorder = NO;
+        [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+        [hintView addSubview:oldObjects];
+        
+        [geometryView addSubview:hintView];
+        
+        DHPointOnLine* p1 = [[DHPointOnLine alloc] initWithLine:_lineAB andTValue:1.0];
+        p1.temporary = YES;
+        DHPointOnLine* p2 = [[DHPointOnLine alloc] initWithLine:_lineAC andTValue:1.0];
+        DHCircle* c = [[DHCircle alloc] initWithCenter:_pointA andPointOnRadius:p1];
+        
+        CGVector vXAxis = CGVectorMake(1, 0);
+        CGVector vAP1 = CGVectorBetweenPoints(_pointA.position, p1.position);
+        CGVector vAP2 = CGVectorBetweenPoints(_pointA.position, p2.position);
+        CGFloat initialAngle = CGVectorAngleBetween(vXAxis, vAP1);
+        if (vAP1.dy < 0 && vAP1.dx > 0) {
+            initialAngle = -initialAngle;
+        }
+        CGFloat targetAngle = CGVectorAngleBetween(vXAxis, vAP2);
+        if (vAP2.dy < 0 && vAP2.dx > 0) {
+            targetAngle = -targetAngle;
+        }
+        
+        DHPointOnCircle* pC = [[DHPointOnCircle alloc] initWithCircle:c andAngle:initialAngle];
+        pC.temporary = YES;
+        DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:p1 andPoint2:p2];
+        mp.temporary = YES;
+        DHLine* lBisect = [[DHLine alloc] initWithStart:_pointA andEnd:mp];
+        lBisect.temporary = YES;
+        
+        DHGeometryView* p1View = [[DHGeometryView alloc] initWithObjects:@[p1]
+                                                                 supView:geometryView addTo:hintView];
+        DHGeometryView* mpView = [[DHGeometryView alloc] initWithObjects:@[mp]
+                                                                     supView:geometryView addTo:hintView];
+        DHGeometryView* bisectView = [[DHGeometryView alloc] initWithObjects:@[lBisect]
+                                                                     supView:geometryView addTo:hintView];
+        DHGeometryView* pCView = [[DHGeometryView alloc] initWithObjects:@[pC]
+                                                                     supView:geometryView addTo:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,100) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,120) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,140) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,160) addTo:hintView];
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(150,500)];
+            [message2 position: CGPointMake(150,520)];
+            [message3 position: CGPointMake(150,540)];
+            [message4 position: CGPointMake(150,560)];
+        }
+        
+        if (_hintStep == 0) {
+            [self afterDelay:0.0:^{
+                [message1 text:@"If we had a point at equal distance from the two given lines,"];
+                [self fadeInViews:@[message1,mpView] withDuration:2.0];
+            }];
+            
+            [self afterDelay:4.0 :^{
+                [message2 text:@"the bisector is simply a line through A and the point."];
+                [self fadeInViews:@[message2,bisectView] withDuration:2.0];
+                _hintStep = 1;
+            }];
+        }
+        if (_hintStep == 1) {
+            [self afterDelay:0.0:^{
+                [message1 text:@"With the point tool you can construct points fixed to objects such as lines."];
+                [self fadeInViews:@[message1,p1View] withDuration:2.0];
+            }];
+            
+            [self afterDelay:4.0 :^{
+                [message2 text:@"These points can still be moved, but only along the line."];
+                [self fadeInViews:@[message2] withDuration:2.0];
+                [self movePointOnLine:p1 toTValue:0.5 withDuration:2.0 inView:p1View];
+            }];
+
+            [self afterDelay:8.0 :^{
+                [message3 text:@"Can you think of a way to construct a third point,"];
+                [self fadeInViews:@[message3] withDuration:2.0];
+            }];
+            
+            [self afterDelay:10.0 :^{
+                [message4 text:@"that is ensured to always be at an equal distance from A?"];
+                [self fadeInViews:@[message4] withDuration:2.0];
+                [self fadeInViews:@[pCView] withDuration:0.0];
+                [self movePointOnCircle:pC toAngle:targetAngle withDuration:3.0 inView:pCView];
+                _hintStep = 0;
+            }];
+        }
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
+}
+
+- (void)hideHint
+{
+    [self.levelViewController hintFinished];
+    [self slideInToolbar];
+    self.showingHint = NO;
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
 }
 
 @end

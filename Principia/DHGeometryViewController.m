@@ -30,6 +30,10 @@
 #pragma mark Manage input
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    if ([self.currentLevel respondsToSelector:@selector(hideHint)] && self.currentLevel.showingHint) {
+        return;
+    }
+
     NSArray *allTouches = [[event allTouches] allObjects];
     if ([allTouches count] == 2) {
         twoFingers = YES;
@@ -45,14 +49,14 @@
             }
         }
     }
-    
-    if ([self.currentLevel respondsToSelector:@selector(hideHint)] && self.currentLevel.showingHint) {
-        [self.currentLevel hideHint];
-    }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    if ([self.currentLevel respondsToSelector:@selector(hideHint)] && self.currentLevel.showingHint) {
+        return;
+    }
+    
     if (twoFingers){
         NSArray *allTouches = [[event allTouches] allObjects];
         if ([allTouches count] == 2) {
@@ -103,6 +107,11 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    if ([self.currentLevel respondsToSelector:@selector(hideHint)] && self.currentLevel.showingHint) {
+        [self.currentLevel hideHint];
+        return;
+    }
+    
     if (twoFingers) {
         [_currentTool.delegate toolTipDidChange:_currentTool.initialToolTip];
         twoFingers = NO;

@@ -31,9 +31,8 @@
 - (CGPoint)testObjectsForProgressHints:(NSArray*)objects;
 - (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heighToolControl and:(BOOL)update;
 - (void)animation:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view;
-- (void)hint:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton;
-- (void)showHint;
 - (NSString*)levelDescriptionExtra;
+- (void)showHint;
 - (void)hideHint;
 
 @end
@@ -56,8 +55,8 @@
 - (void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView;
 -(void)movePointOnCircle:(DHPointOnCircle*)point toAngle:(CGFloat)endAngle withDuration:(CGFloat)time inViews:(NSArray*)array;
 -(void)movePointOnLine:(DHPointOnLine*)point toTValue:(CGFloat)tValue withDuration:(CGFloat)time inView:(DHGeometryView*)geometryView ;
-- (void)slideOutToolbarWithConstraint:(NSLayoutConstraint*)heightToolBar;
-- (void)slideInToolbarWithConstraint:(NSLayoutConstraint*)heightToolBar;
+- (void)slideOutToolbar;
+- (void)slideInToolbar;
 - (void)showEndHintMessageInView:(UIView*)view;
 @end
 

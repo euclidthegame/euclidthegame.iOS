@@ -9,6 +9,7 @@
 #import "DHLevelPerpendicular.h"
 #import <CoreGraphics/CGBase.h>
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelPerpendicular () {
     DHPoint* _pointA;
@@ -281,5 +282,88 @@
          } afterDelay:a];
     }
 }
+
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
+    
+    if (self.showingHint) {
+        [self hideHint];
+        return;
+    }
+    
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        hintView.backgroundColor = [UIColor whiteColor];
+        
+        DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+        oldObjects.hideBorder = NO;
+        [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+        [hintView addSubview:oldObjects];
+        
+        [geometryView addSubview:hintView];
+        
+        DHPointOnLine* p1 = [[DHPointOnLine alloc] initWithLine:_lineBC andTValue:0.75-0.3];
+        p1.temporary = YES;
+        DHPointOnLine* p2 = [[DHPointOnLine alloc] initWithLine:_lineBC andTValue:0.75+0.3];
+        p2.temporary = YES;
+        DHTrianglePoint* p3 = [[DHTrianglePoint alloc] initWithPoint1:p1 andPoint2:p2];
+        p3.temporary = YES;
+        
+        DHGeometryView* p12View = [[DHGeometryView alloc] initWithObjects:@[p1, p2]
+                                                                 supView:geometryView addTo:hintView];
+        DHGeometryView* p3View = [[DHGeometryView alloc] initWithObjects:@[p3]
+                                                                 supView:geometryView addTo:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,400) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,420) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,440) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,460) addTo:hintView];
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(150,500)];
+            [message2 position: CGPointMake(150,520)];
+            [message3 position: CGPointMake(150,540)];
+            [message4 position: CGPointMake(150,560)];
+        }
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"You have already constructed a midpoint, in level 2."];
+            [self fadeInViews:@[message1] withDuration:2.0];
+        }];
+        
+        [self afterDelay:3.0 :^{
+            [message2 text:@"Can you think of a way to construct a two points such that,"];
+            [message3 text:@"point A is always at their midpoint?"];
+            [self fadeInViews:@[message2, message3, p12View] withDuration:2.0];
+        }];
+
+        [self afterDelay:6.0 :^{
+            [message4 text:@"Then use them to create a point straight above A."];
+            [self fadeInViews:@[message4,p3View] withDuration:2.0];
+        }];
+
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
+}
+
+- (void)hideHint
+{
+    [self.levelViewController hintFinished];
+    [self slideInToolbar];
+    self.showingHint = NO;
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+}
+
 
 @end

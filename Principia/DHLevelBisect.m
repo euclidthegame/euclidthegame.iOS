@@ -435,8 +435,6 @@
 
 - (void)showHint
 {
-    // Todo: Show in steps: midpoint, point on line, circle to other line
-    
     DHGeometryView* geometryView = self.levelViewController.geometryView;
     
     if (self.showingHint) {

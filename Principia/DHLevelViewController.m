@@ -411,8 +411,9 @@
         self.levelCompleted = YES;
         
         // Disable further edits
-        _undoButton.enabled = false;
-        _redoButton.enabled = false;
+        _hintButton.enabled = NO;
+        _undoButton.enabled = NO;
+        _redoButton.enabled = NO;
         _toolControl.selectedSegmentIndex = 1;
         _toolControl.selectedSegmentIndex = -1;
         _toolInstruction.text = @"";

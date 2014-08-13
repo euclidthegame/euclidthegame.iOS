@@ -539,10 +539,13 @@
         mp.temporary = YES;
         s3MP.highlighted = YES;
         s12H.highlighted = YES;
+        DHAngleIndicator* a1 = [[DHAngleIndicator alloc] initWithLine1:s12H line2:s3MP andRadius:15];
+        a1.squareRightAngles = YES;
+        a1.anglePosition = 1;
         
         DHGeometryView* triView = [[DHGeometryView alloc] initWithObjects:@[s12, s13, s23]
                                                                   supView:geometryView addTo:hintView];
-        DHGeometryView* perpView = [[DHGeometryView alloc] initWithObjects:@[s3MP, s12H, mp]
+        DHGeometryView* perpView = [[DHGeometryView alloc] initWithObjects:@[a1, s3MP, s12H, mp]
                                                                   supView:geometryView addTo:hintView];
         
         Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,400) addTo:hintView];
@@ -562,13 +565,13 @@
             [self fadeInViews:@[message1, triView] withDuration:3.0];
         }];
         
-        [self afterDelay:4.0 :^{
+        [self afterDelay:3.0 :^{
             [message2 text:@"that a line from the tip to the midpoint of its base"];
             [self fadeInViews:@[message2, perpView] withDuration:3.0];
         }];
         
-        [self afterDelay:8.0 :^{
-            [message3 text:@"will always be perpendicular to the base, regardless of the angle."];
+        [self afterDelay:7.0 :^{
+            [message3 text:@"will always be perpendicular to the base."];
             [self fadeInViews:@[message3] withDuration:3.0];
             [self movePoint:p1 toPosition:CGPointMake(p1.position.x-100, p1.position.y)
                withDuration:4.0 inViews:@[triView, perpView]];

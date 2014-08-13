@@ -158,6 +158,7 @@ typedef CGPoint(^DHConstraintBlock)();
 @property (nonatomic) CGFloat radius;
 @property (nonatomic) NSUInteger anglePosition;
 @property (nonatomic) BOOL showAngleText;
+@property (nonatomic) BOOL squareRightAngles;
 - (instancetype)initWithLine1:(DHLineObject*)line1 line2:(DHLineObject*)line2 andRadius:(CGFloat)radius;
 @end
 

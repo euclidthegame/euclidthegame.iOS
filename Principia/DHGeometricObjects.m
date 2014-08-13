@@ -982,35 +982,51 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         startAngle = CGVectorAngle(CGVectorInvert(_line1.vector));
         endAngle = CGVectorAngle(CGVectorInvert(_line2.vector));
     }
+    while (endAngle < 0) {
+        endAngle += 2*M_PI;
+    }
+    while (startAngle < 0) {
+        startAngle += 2*M_PI;
+    }
+    startAngle = fmod(startAngle, 2*M_PI);
+    endAngle = fmod(endAngle, 2*M_PI);
+    CGFloat angle = fabs((endAngle-startAngle) / M_PI * 180.0);
     
-    UIBezierPath* bezierPath = [UIBezierPath bezierPath];
-    
-    // Create our arc, with the correct angles
-    [bezierPath addArcWithCenter:position
-                          radius:radius
-                      startAngle:startAngle
-                        endAngle:endAngle
-                       clockwise:YES];
-    
-    //[[UIColor lightGrayColor] setStroke];
-    [[UIColor colorWithWhite:0.4 alpha:1] setStroke];
-    CGContextAddPath(context, bezierPath.CGPath);
-    CGContextSetLineWidth(context, 1.0);
-    CGContextStrokePath(context);
+    if (self.squareRightAngles && fabs(angle-90.0)<0.5) {
+        CGContextSetRGBStrokeColor(context, 0.4, 0.4, 0.4, 1.0);
+        CGContextSetLineWidth(context, 1.0);
+        
+        CGVector vCS = CGVectorRotateByAngle(CGVectorMake(radius, 0), startAngle);
+        CGVector vCCorner = CGVectorMultiplyByScalar(CGVectorRotateByAngle(vCS, M_PI/4),sqrt(2));
+        CGVector vCE = CGVectorRotateByAngle(CGVectorMake(radius, 0), endAngle);
+        CGPoint pStart = CGPointFromPointByAddingVector(position, vCS);
+        CGPoint pCorner = CGPointFromPointByAddingVector(position, vCCorner);
+        CGPoint pEnd = CGPointFromPointByAddingVector(position, vCE);
+        
+        CGContextMoveToPoint(context, pStart.x, pStart.y);
+        CGContextAddLineToPoint(context, pCorner.x, pCorner.y);
+        CGContextAddLineToPoint(context, pEnd.x, pEnd.y);
+        CGContextStrokePath(context);
+    } else {
+        UIBezierPath* bezierPath = [UIBezierPath bezierPath];
+        
+        // Create our arc, with the correct angles
+        [bezierPath addArcWithCenter:position
+                              radius:radius
+                          startAngle:startAngle
+                            endAngle:endAngle
+                           clockwise:YES];
+        
+        //[[UIColor lightGrayColor] setStroke];
+        [[UIColor colorWithWhite:0.4 alpha:1] setStroke];
+        CGContextAddPath(context, bezierPath.CGPath);
+        CGContextSetLineWidth(context, 1.0);
+        CGContextStrokePath(context);
+    }
     
     CGContextRestoreGState(context);
     
     if (self.showAngleText) {
-        while (endAngle < 0) {
-            endAngle += 2*M_PI;
-        }
-        while (startAngle < 0) {
-            startAngle += 2*M_PI;
-        }
-        startAngle = fmod(startAngle, 2*M_PI);
-        endAngle = fmod(endAngle, 2*M_PI);
-        CGFloat angle = fabs((endAngle-startAngle) / M_PI * 180.0);
-        
         NSString* angleString = [NSString stringWithFormat:@"%.0f°", angle];
         NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;

@@ -196,8 +196,10 @@
         CGContextSetRGBFillColor(context, 0.1, 0.1, 0.1, 1.0);
         CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 1.0);
         
-        CGContextMoveToPoint(context, 0, self.bounds.size.height-1.0/self.contentScaleFactor);
-        CGContextAddLineToPoint(context, self.bounds.size.width, self.bounds.size.height-1.0/self.contentScaleFactor);
+        if (!self.hideBottomBorder) {
+            CGContextMoveToPoint(context, 0, self.bounds.size.height-1.0/self.contentScaleFactor);
+            CGContextAddLineToPoint(context, self.bounds.size.width, self.bounds.size.height-1.0/self.contentScaleFactor);
+        }
         
         CGContextMoveToPoint(context, 0, 0);
         CGContextAddLineToPoint(context, self.bounds.size.width, 0);

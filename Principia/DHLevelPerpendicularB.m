@@ -512,9 +512,10 @@
     
     [self slideOutToolbar];
     
-    UIView* hintView = [[UIView alloc] initWithFrame:geometryView.frame];
+    DHGeometryView* hintView = [[DHGeometryView alloc] initWithFrame:geometryView.frame];
     hintView.backgroundColor = [UIColor whiteColor];
     hintView.layer.opacity = 0;
+    hintView.hideBottomBorder = YES;
     [geometryView addSubview:hintView];
     [self fadeInViews:@[hintView] withDuration:1.0];
     

@@ -152,6 +152,15 @@ typedef CGPoint(^DHConstraintBlock)();
 - (instancetype)initWithLine:(DHLineObject*)line andPoint:(DHPoint*)point;
 @end
 
+@interface DHAngleIndicator : DHGeometricObject <DHGeometricObject>
+@property (nonatomic, strong) DHLineObject* line1;
+@property (nonatomic, strong) DHLineObject* line2;
+@property (nonatomic) CGFloat radius;
+@property (nonatomic) NSUInteger anglePosition;
+@property (nonatomic) BOOL showAngleText;
+- (instancetype)initWithLine1:(DHLineObject*)line1 line2:(DHLineObject*)line2 andRadius:(CGFloat)radius;
+@end
+
 
 
 

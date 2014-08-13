@@ -9,6 +9,7 @@
 #import "DHLevelParallellLines.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelParallellLines () {
     DHPoint* _pointA;
@@ -386,4 +387,94 @@
          } afterDelay:a];
     }
 }
+
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
+    
+    if (self.showingHint) {
+        [self hideHint];
+        return;
+    }
+    
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
+    DHGeometryView* hintView = [[DHGeometryView alloc] initWithFrame:geometryView.frame];
+    hintView.backgroundColor = [UIColor whiteColor];
+    hintView.layer.opacity = 0;
+    hintView.hideBottomBorder = YES;
+    [geometryView addSubview:hintView];
+    [self fadeInViews:@[hintView] withDuration:1.0];
+    
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        
+        CGFloat centerX = geometryView.center.x;
+        DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX andY:100];
+        DHPoint* p2 = [[DHPoint alloc] initWithPositionX:centerX andY:200];
+        DHCircle* c = [[DHCircle alloc] initWithCenter:p1 andRadius:100];
+        DHPointOnCircle* p3 = [[DHPointOnCircle alloc] initWithCircle:c andAngle:M_PI*0.8];
+        DHLine* l1 = [[DHLine alloc] initWithStart:p3 andEnd:p1];
+        DHParallelLine* l2 = [[DHParallelLine alloc] initWithLine:l1 andPoint:p2];
+
+        
+        DHPoint* p4 = [[DHPoint alloc] initWithPositionX:centerX+100 andY:100];
+        DHPoint* p5 = [[DHPoint alloc] initWithPositionX:centerX+110 andY:200];
+        DHLine* l3 = [[DHLine alloc] initWithStart:p4 andEnd:p5];
+        DHAngleIndicator* a1 = [[DHAngleIndicator alloc] initWithLine1:l1 line2:l3 andRadius:15];
+        DHAngleIndicator* a2 = [[DHAngleIndicator alloc] initWithLine1:l2 line2:l3 andRadius:15];
+        a1.anglePosition = 1;
+        a2.anglePosition = 1;
+        a1.showAngleText = YES;
+        a2.showAngleText = YES;
+        DHGeometryView* paraView = [[DHGeometryView alloc] initWithObjects:@[l1, l2]
+                                                                  supView:geometryView addTo:hintView];
+        DHGeometryView* lineView = [[DHGeometryView alloc] initWithObjects:@[l3, a1, a2]
+                                                                   supView:geometryView addTo:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(80,460)];
+            [message2 position: CGPointMake(80,480)];
+            [message3 position: CGPointMake(80,500)];
+            [message4 position: CGPointMake(80,520)];
+        }
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"For two parallel lines it always holds true that they"];
+            [self fadeInViews:@[message1, paraView] withDuration:2.5];
+        }];
+        
+        [self afterDelay:4.0 :^{
+            [message2 text:@"intersect a third line at equal angles."];
+            [self fadeInViews:@[message2, lineView] withDuration:2.5];
+        }];
+        
+        [self afterDelay:8.0 :^{
+            [self movePointOnCircle:p3 toAngle:M_PI*1.135 withDuration:4.0 inViews:@[paraView, lineView]];
+
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
+}
+
+- (void)hideHint
+{
+    [self.levelViewController hintFinished];
+    [self slideInToolbar];
+    self.showingHint = NO;
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+}
+
+
 @end

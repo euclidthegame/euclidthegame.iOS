@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSMutableArray* geometricObjects;
 @property (nonatomic, strong) NSMutableArray* temporaryGeometricObjects;
 @property (nonatomic) BOOL hideBorder;
+@property (nonatomic) BOOL hideBottomBorder;
 @property (nonatomic, strong) DHGeometricTransform* geoViewTransform;
 @property (nonatomic) BOOL keepContentCenteredAndZoomedIn;
 - (instancetype)initWithObjects:(NSArray*)objects andSuperView:(DHGeometryView*)geometryView;

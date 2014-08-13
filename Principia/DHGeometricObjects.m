@@ -942,3 +942,126 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     return DistanceBetweenPoints(_center.position, _pointOnRadius.position);
 }
 @end
+
+#pragma mark - Visual indicators
+
+@implementation DHAngleIndicator
+- (instancetype)initWithLine1:(DHLineObject *)line1 line2:(DHLineObject *)line2 andRadius:(CGFloat)radius
+{
+    self = [super init];
+    if (self) {
+        _line1 = line1;
+        _line2 = line2;
+        _radius = radius;
+    }
+    return self;
+}
+- (void)drawInContext:(CGContextRef)context withTransform:(DHGeometricTransform*)transform
+{
+    CGContextSaveGState(context);
+    
+    CGFloat geoRadius = self.radius;
+    CGPoint geoCenterPosition = [self center];
+    
+    // Do nothing if any part of the circle is undefined
+    if (isnan(geoRadius) || isnan(geoCenterPosition.x) || isnan(geoCenterPosition.y)) {
+        return;
+    }
+    
+    CGFloat radius = geoRadius * [transform scale];
+    CGPoint position = [transform geoToView:geoCenterPosition];
+    
+    CGFloat startAngle = 0;
+    CGFloat endAngle = 0;
+    
+    if (_anglePosition == 0) {
+        startAngle = CGVectorAngle(_line1.vector);
+        endAngle = CGVectorAngle(_line2.vector);
+    }
+    if (_anglePosition == 1) {
+        startAngle = CGVectorAngle(CGVectorInvert(_line1.vector));
+        endAngle = CGVectorAngle(CGVectorInvert(_line2.vector));
+    }
+    
+    UIBezierPath* bezierPath = [UIBezierPath bezierPath];
+    
+    // Create our arc, with the correct angles
+    [bezierPath addArcWithCenter:position
+                          radius:radius
+                      startAngle:startAngle
+                        endAngle:endAngle
+                       clockwise:YES];
+    
+    //[[UIColor lightGrayColor] setStroke];
+    [[UIColor colorWithWhite:0.4 alpha:1] setStroke];
+    CGContextAddPath(context, bezierPath.CGPath);
+    CGContextSetLineWidth(context, 1.0);
+    CGContextStrokePath(context);
+    
+    CGContextRestoreGState(context);
+    
+    if (self.showAngleText) {
+        while (endAngle < 0) {
+            endAngle += 2*M_PI;
+        }
+        while (startAngle < 0) {
+            startAngle += 2*M_PI;
+        }
+        startAngle = fmod(startAngle, 2*M_PI);
+        endAngle = fmod(endAngle, 2*M_PI);
+        CGFloat angle = fabs((endAngle-startAngle) / M_PI * 180.0);
+        
+        NSString* angleString = [NSString stringWithFormat:@"%.0f°", angle];
+        NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        paragraphStyle.alignment = NSTextAlignmentCenter;
+        
+        CGVector v = CGVectorMake(radius+20, 0);
+        v = CGVectorRotateByAngle(v, (startAngle+endAngle)*0.5);
+        CGPoint labelCenter = CGPointFromPointByAddingVector(position, v);
+        
+        NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:10],
+                                     NSParagraphStyleAttributeName: paragraphStyle};
+        CGSize textSize = [angleString sizeWithAttributes:attributes];
+        CGRect labelRect = CGRectMake(labelCenter.x - textSize.width*0.5,
+                                      labelCenter.y - textSize.height*0.5,
+                                      textSize.width, textSize.height);
+        [angleString drawInRect:labelRect withAttributes:attributes];
+    }
+}
+- (CGPoint)center
+{
+    // First, check if the assigned lines share a point, if so, use it
+    if (self.line1.start == self.line2.start || self.line1.start == self.line2.end) return self.line1.start.position;
+    if (self.line1.end == self.line2.start || self.line1.end == self.line2.end) return self.line1.end.position;
+    
+    DHIntersectionResult r = IntersectionTestLineLine(self.line1, self.line2);
+    if (r.intersect) {
+        return r.intersectionPoint;
+    }
+    
+    return CGPointMake(NAN, NAN);
+}
+- (CGFloat)angle
+{
+    CGVector v1 = CGVectorNormalize(self.line1.vector);
+    CGVector v2 = CGVectorNormalize(self.line2.vector);
+    
+    // If defined by two line segments sharing an end point, ensure to provide inner bisector
+    if ([_line1 isKindOfClass:[DHLineSegment class]] && [_line2 isKindOfClass:[DHLineSegment class]]) {
+        if (_line1.start == _line2.end) {
+            v2 = CGVectorInvert(v2);
+        }
+        if (_line2.start == _line1.end) {
+            v1 = CGVectorInvert(v1);
+        }
+        if (_line1.end == _line2.end) {
+            v1 = CGVectorInvert(v1);
+            v2 = CGVectorInvert(v2);
+        }
+    }
+    
+    return CGVectorAngleBetween(v1, v2);
+}
+
+@end

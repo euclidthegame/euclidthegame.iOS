@@ -886,7 +886,7 @@
         <!--Navigation Controller-->
         <scene sceneID="2Uu-v5-VnD">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Wl7-qG-pok" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Wl7-qG-pok" customClass="DHNavigationController" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="5xt-bQ-0Es"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="OPu-el-66R">

@@ -46,6 +46,7 @@
 		684708BE19693C0700C1FA83 /* DHLevelNonEquiTri.m in Sources */ = {isa = PBXBuildFile; fileRef = 684708BD19693C0700C1FA83 /* DHLevelNonEquiTri.m */; };
 		6847112619783EE6003B681B /* DHSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6847112519783EE6003B681B /* DHSettingsViewController.m */; };
 		68471129197843D6003B681B /* DHSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 68471128197843D6003B681B /* DHSettings.m */; };
+		685534E8199AAC9500006C66 /* DHNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 685534E7199AAC9500006C66 /* DHNavigationController.m */; };
 		686014DB1969D3CE0004DD1E /* DHLevelCopyAngle.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014DA1969D3CE0004DD1E /* DHLevelCopyAngle.m */; };
 		686014DE1969DFE70004DD1E /* DHLevelCircleCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014DD1969DFE70004DD1E /* DHLevelCircleCenter.m */; };
 		686014E11969E6920004DD1E /* DHLevelMakeTangent.m in Sources */ = {isa = PBXBuildFile; fileRef = 686014E01969E6920004DD1E /* DHLevelMakeTangent.m */; };
@@ -157,6 +158,8 @@
 		6847112519783EE6003B681B /* DHSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHSettingsViewController.m; sourceTree = "<group>"; };
 		68471127197843D6003B681B /* DHSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHSettings.h; sourceTree = "<group>"; };
 		68471128197843D6003B681B /* DHSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHSettings.m; sourceTree = "<group>"; };
+		685534E6199AAC9500006C66 /* DHNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHNavigationController.h; sourceTree = "<group>"; };
+		685534E7199AAC9500006C66 /* DHNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHNavigationController.m; sourceTree = "<group>"; };
 		686014D91969D3CE0004DD1E /* DHLevelCopyAngle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelCopyAngle.h; sourceTree = "<group>"; };
 		686014DA1969D3CE0004DD1E /* DHLevelCopyAngle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelCopyAngle.m; sourceTree = "<group>"; };
 		686014DC1969DFE70004DD1E /* DHLevelCircleCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelCircleCenter.h; sourceTree = "<group>"; };
@@ -498,6 +501,8 @@
 				681C8885198D0BF1005307F5 /* DHSettingsTableViewController.m */,
 				681C8894199004C4005307F5 /* YLProgressBar.h */,
 				681C8895199004C4005307F5 /* YLProgressBar.m */,
+				685534E6199AAC9500006C66 /* DHNavigationController.h */,
+				685534E7199AAC9500006C66 /* DHNavigationController.m */,
 			);
 			name = "Views & View Controllers";
 			sourceTree = "<group>";
@@ -636,6 +641,7 @@
 				68F0AA3C1961DE5100A97B86 /* DHLevelTutorial.m in Sources */,
 				684708BE19693C0700C1FA83 /* DHLevelNonEquiTri.m in Sources */,
 				681C88A61991F5E4005307F5 /* DHIntersectTool.m in Sources */,
+				685534E8199AAC9500006C66 /* DHNavigationController.m in Sources */,
 				684708B81968A68500C1FA83 /* DHLevelMakeCompass.m in Sources */,
 				6872A7DE197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m in Sources */,
 				681C889C1991E0D6005307F5 /* DHGeometryTool.m in Sources */,

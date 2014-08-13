@@ -541,6 +541,15 @@
     [UIView animateWithDuration:0.3 animations:^{self.geometryView.alpha=1;}];
 }
 
+- (BOOL)shouldAutorotate
+{
+    if (_currentLevel.showingHint) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
 #pragma mark Toolbar functions
 - (void)setupTools
 {

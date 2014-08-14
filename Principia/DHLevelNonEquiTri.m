@@ -287,7 +287,6 @@
     return CGPointMake(NAN, NAN);
 }
 
-
 - (void)showHint
 {
     DHGeometryView* geometryView = self.levelViewController.geometryView;

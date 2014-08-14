@@ -9,6 +9,7 @@
 #import "DHLevelCopyAngle.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelCopyAngle () {
     DHRay* _rayA1;
@@ -215,25 +216,19 @@
     }
     return CGPointMake(NAN, NAN);
 }
--(void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint *)heightToolBar and:(UIButton *)hintButton {
+
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+    if (self.showingHint) {
         [self hideHint];
         return;
     }
+    self.showingHint = YES;
     
-    if (hint1_OK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        hint1_OK = NO;
-        return;
-    }
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            heightToolBar.constant= 70 - a;
-        } afterDelay:a* (1/90.0) ];
-    }
+    [self slideOutToolbar];
+
     
     Message* message1 = [[Message alloc] initWithMessage:@"Let's first make the following triangle." andPoint:CGPointMake(430,40)];
     Message* message2 = [[Message alloc] initWithMessage:@"Place point C on one of the rays." andPoint:CGPointMake(430,60)];
@@ -318,46 +313,37 @@
     [hintView addSubview:message5];
     
     
+    [self afterDelay:0.0 performBlock:^{
+        [self fadeIn:message1 withDuration:1.0];
+    }];
+    [self afterDelay:4.0 performBlock:^{
+        [self fadeIn:message2 withDuration:1.0];
+        [self fadeIn:cView withDuration:1.0];
+    }];
+    [self afterDelay:8.0 performBlock:^{
+        [self fadeIn:message3 withDuration:1.0];
+        [self fadeIn:dView withDuration:1.0];
+    }];
+    [self afterDelay:12.0 performBlock:^{
+        [self fadeIn:message4 withDuration:1.0];
+        [self fadeIn:segmentView withDuration:1.0];
+    }];
+    [self afterDelay:16.0 performBlock:^{
+        [self fadeIn:message5 withDuration:1.0];
+        
+        [self fadeIn:tempView withDuration:0.0];
+        [self movePointFrom:tempA to:_rayB.start withDuration:3.0 inView:tempView];
+        [self movePointFrom:tempC to:ip3 withDuration:3.0 inView:tempView];
+        [self movePointFrom:tempD to:ip2 withDuration:3.0 inView:tempView];
+        
+    }];
     
-    if (!hint1_OK) {
-        [self afterDelay:0.0 performBlock:^{
-            [self fadeIn:message1 withDuration:1.0];
-        }];
-        [self afterDelay:4.0 performBlock:^{
-            [self fadeIn:message2 withDuration:1.0];
-            [self fadeIn:cView withDuration:1.0];
-        }];
-        [self afterDelay:8.0 performBlock:^{
-            [self fadeIn:message3 withDuration:1.0];
-            [self fadeIn:dView withDuration:1.0];
-        }];
-        [self afterDelay:12.0 performBlock:^{
-            [self fadeIn:message4 withDuration:1.0];
-            [self fadeIn:segmentView withDuration:1.0];
-        }];
-        [self afterDelay:16.0 performBlock:^{
-            [self fadeIn:message5 withDuration:1.0];
-            
-            [self fadeIn:tempView withDuration:0.0];
-            [self movePointFrom:tempA to:_rayB.start withDuration:3.0 inView:tempView];
-            [self movePointFrom:tempC to:ip3 withDuration:3.0 inView:tempView];
-            [self movePointFrom:tempD to:ip2 withDuration:3.0 inView:tempView];
-            
-            hint1_OK = YES;
-        }];
-    }
+    [self afterDelay:1.0 :^{
+        hintView.frame = geometryView.frame;
+    }];
     
-    
-}
--(void)hideHint {
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            self.heightToolbar.constant= -20 + a;
-        } afterDelay:a* (1/90.0) ];
-    }
-    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
-    else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
-    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-    return;
+    [self afterDelay:2.0 :^{
+        [self showEndHintMessageInView:hintView];
+    }];
 }
 @end

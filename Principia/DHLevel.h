@@ -33,7 +33,6 @@
 - (void)animation:(NSMutableArray*)geometricObjects and:(UISegmentedControl*)toolControl and:(UILabel*)toolInstructions and:(DHGeometryView*)geometryView and:(UIView*)view;
 - (NSString*)levelDescriptionExtra;
 - (void)showHint;
-- (void)hideHint;
 
 @end
 
@@ -59,6 +58,8 @@
 - (void)slideOutToolbar;
 - (void)slideInToolbar;
 - (void)showEndHintMessageInView:(UIView*)view;
+- (void)hideHint;
+
 @end
 
 @interface NSObject (Blocks)

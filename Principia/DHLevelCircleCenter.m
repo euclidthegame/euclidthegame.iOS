@@ -9,10 +9,12 @@
 #import "DHLevelCircleCenter.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelCircleCenter () {
     DHPoint* _pointC;
     DHPoint* _pointR;
+    DHCircle* _givenCircle;
     BOOL hint1_OK;
     BOOL hint2_OK;
 }
@@ -67,6 +69,7 @@
     
     [geometricObjects addObject:circle];
     
+    _givenCircle = circle;
     _pointC = pA;
     _pointR = pB;
 }
@@ -129,28 +132,22 @@
     return CGPointMake(NAN, NAN);
 }
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+    if (self.showingHint) {
         [self hideHint];
         return;
     }
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
     
     if (hint2_OK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
         hint1_OK = NO;
         hint2_OK = NO;
-        return;
     }
-    
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            heightToolBar.constant= 70 - a;
-        } afterDelay:a* (1/90.0) ];
-    }
-    
     Message* message1 = [[Message alloc] initWithMessage:@"For a moment, suppose that we do know the center of the circle." andPoint:CGPointMake(200,320)];
     Message* message2 = [[Message alloc] initWithMessage:@"And let's draw a line segment connecting two points on the circle." andPoint:CGPointMake(200,340)];
     Message* message3 = [[Message alloc] initWithMessage:@"We can drop a perpendicular from the center to the line segment." andPoint:CGPointMake(200,360)];
@@ -165,7 +162,6 @@
         [message4 position: CGPointMake(150,560)];
     }
     
-    
     _pointC.label = @"A";
     DHGeometryView* centerView = [[DHGeometryView alloc]initWithObjects:@[_pointC] andSuperView:geometryView];
     DHCircle* circle = [[DHCircle alloc] initWithCenter:_pointC andPointOnRadius:_pointR];
@@ -179,6 +175,8 @@
     DHMidPoint* intersection = [[DHMidPoint alloc]initWithPoint1:p1 andPoint2:p2];
     intersection.label = @"D";
     
+    DHGeometryView* circleView = [[DHGeometryView alloc]initWithObjects:@[_givenCircle] andSuperView:geometryView];
+    circleView.layer.opacity = 1;
     DHGeometryView* segmentView = [[DHGeometryView alloc]initWithObjects:@[segment,p1,p2] andSuperView:geometryView];
     
     DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[perp,intersection] andSuperView:geometryView];
@@ -187,11 +185,13 @@
     DHLineSegment* segment3 = [[DHLineSegment alloc]initWithStart:p2 andEnd:_pointC];
     DHGeometryView* segmentsView  = [[DHGeometryView alloc] initWithObjects:@[segment2,segment3] andSuperView:geometryView];
     
-    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+    DHGeometryView * hintView = [[DHGeometryView alloc]initWithFrame:geometryView.frame];
     [geometryView addSubview:hintView];
+    hintView.opaque = YES;
+    hintView.backgroundColor = [UIColor whiteColor];
+    hintView.hideBottomBorder = YES;
     
-    
-    
+    [hintView addSubview:circleView];
     [hintView addSubview:segmentsView];
     [hintView addSubview:segmentView];
     [hintView addSubview:perpView];
@@ -204,6 +204,8 @@
     [hintView addSubview:message5];
     
     if (!hint1_OK) {
+        perp.temporary = YES;
+        segment.temporary = segment2.temporary = segment3.temporary = YES;
         [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
             message1.alpha = 1; } completion:^(BOOL finished){ }];
         [self fadeIn:centerView withDuration:2];
@@ -236,18 +238,18 @@
             
         }];
         [self afterDelay:18.0 performBlock:^{
-            [message2 text:@"This follows from the Pythagoras Theorem."];
+            [message2 text:@"This follows from the Pythagorean Theorem."];
             [self fadeIn:segmentsView withDuration:2];
             [self fadeIn:message2 withDuration:1];
         }];
         
         [self afterDelay:22.0 performBlock:^{
-            [message3 text:@"AD² + CD² = AC² and AD²+ BD² = AB²"];
+            [message3 text:@"AD² + CD² = AC²      AD² + BD² = AB²"];
             [self fadeIn:message3 withDuration:1];
         }];
         
         [self afterDelay:26.0 performBlock:^{
-            [message4 text:@"          CD² = AC² and          BD² = AB²"];
+            [message4 text:@"CD² = AC² - AD²      BD² = AB² - AD²"];
             [self fadeIn:message4 withDuration:1];
         }];
         [self afterDelay:30.0 performBlock:^{
@@ -289,11 +291,15 @@
             [self movePointOnCircle:p2 toAngle:3.0-2*M_PI withDuration:4 inView:segmentView];
             hint2_OK = YES;
         }];
-        
-        
-        
     }
     
+    [self afterDelay:1.0 :^{
+        hintView.frame = geometryView.frame;
+    }];
+    
+    [self afterDelay:2.0 :^{
+        [self showEndHintMessageInView:hintView];
+    }];
 }
 
 -(void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view {
@@ -368,21 +374,6 @@
         [self afterDelay:5.0 performBlock:^{
             [animationView removeFromSuperview];
         }];
-  
-        
     }];
-    
-
-}
--(void)hideHint {
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            self.heightToolbar.constant= -20 + a;
-        } afterDelay:a* (1/90.0) ];
-    }
-    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
-    else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
-    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-    return;
 }
 @end

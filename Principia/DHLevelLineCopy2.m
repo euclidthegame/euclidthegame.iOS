@@ -9,6 +9,7 @@
 #import "DHLevelLineCopy2.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelLineCopy2 () {
     DHLineSegment* _lineAB;
@@ -181,73 +182,111 @@
     }
     return CGPointMake(NAN, NAN);
 }
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+    if (self.showingHint) {
+        [self hideHint];
         return;
     }
     
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    self.showingHint = YES;
     
-    _message1 = [[Message alloc] initWithMessage:@"You have just unlocked the translate a line tool." andPoint:CGPointMake(150,720)];
-    _message2 = [[Message alloc] initWithMessage:@"Tap on it to select it." andPoint:CGPointMake(150,740)];
-    _message3 = [[Message alloc] initWithMessage:@"Note that this tool can't be used directly in this level." andPoint:CGPointMake(150,760)];
-    _message4 = [[Message alloc] initWithMessage:@"Can it be used indirectly ?" andPoint:CGPointMake(150,780)];
-
+    [self slideOutToolbar];
     
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [_message1 position: CGPointMake(150,480)];
-        [_message2 position: CGPointMake(150,500)];
-        [_message3 position: CGPointMake(150,520)];
-        [_message4 position: CGPointMake(150,540)];
-    }
-    
-    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
+    DHGeometryView* hintView = [[DHGeometryView alloc] initWithFrame:geometryView.frame];
+    hintView.backgroundColor = [UIColor whiteColor];
+    hintView.layer.opacity = 0;
+    hintView.hideBottomBorder = YES;
     [geometryView addSubview:hintView];
-    [hintView addSubview:_message1];
-    [hintView addSubview:_message2];
-    [hintView addSubview:_message3];
-    [hintView addSubview:_message4];
+    [self fadeInViews:@[hintView] withDuration:1.0];
     
-    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-        _message1.alpha = 1; } completion:nil];
-    
-    [self performBlock:^{
-        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message2.alpha = 1; } completion:nil];
-    } afterDelay:3.0];
-    
-    [self performBlock:^{
-        _step1finished =YES;
-    } afterDelay:4.0];
-    
-    int segmentindex = 10; //translate line tool
-    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-segmentindex];
-    UIView* tool = [toolSegment.subviews objectAtIndex:0];
-    
-    for (int a=0; a < 100; a++) {
-        [self performBlock:
-         ^{
-             if (toolControl.selectedSegmentIndex == segmentindex && _step1finished){
-                 _step1finished = NO;
-                 [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                     _message1.alpha = 0;
-                     _message2.alpha = 0;
-                     _message3.alpha = 1;
-                     _message4.alpha = 1;
-                 } completion:nil];
-             }
-             else if (toolControl.selectedSegmentIndex != segmentindex && _step1finished){
-                 [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                  ^{tool.alpha = 0; } completion:^(BOOL finished){
-                      [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                       ^{tool.alpha = 1; } completion:nil];}];
-             }
-         } afterDelay:a];
-    }
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        hintView.frame = geometryView.frame;
+        
+        CGFloat centerX = geometryView.center.x;
+        DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX-100 andY:100];
+        DHPoint* p2 = [[DHPoint alloc] initWithPositionX:centerX-120 andY:200];
+        DHPoint* p3 = [[DHPoint alloc] initWithPositionX:centerX+100 andY:120];
+        DHPoint* p4 = [[DHPoint alloc] initWithPositionX:centerX+80 andY:220];
+        DHLineSegment* s1 = [[DHLineSegment alloc] initWithStart:p1 andEnd:p2];
+        
+        DHLine* l2 = [[DHLine alloc] initWithStart:p1 andEnd:p3];
+        DHLine* l3 = [[DHLine alloc] initWithStart:p2 andEnd:p4];
+        DHLine* l4 = [[DHLine alloc] initWithStart:p3 andEnd:p4];
+        l2.temporary = l3.temporary = l4.temporary = YES;
+
+        DHLineSegment* s2 = [[DHLineSegment alloc] initWithStart:p3 andEnd:p4];
+        
+        DHGeometryView* rhombView1 = [[DHGeometryView alloc] initWithObjects:@[l2, l3]
+                                                                 supView:geometryView addTo:hintView];
+        DHGeometryView* rhombView2 = [[DHGeometryView alloc] initWithObjects:@[l4]
+                                                                    supView:geometryView addTo:hintView];
+        DHGeometryView* s1View = [[DHGeometryView alloc] initWithObjects:@[s1, p1, p2, p4]
+                                                                   supView:geometryView addTo:hintView];
+        DHGeometryView* s2View = [[DHGeometryView alloc] initWithObjects:@[s2, p3]
+                                                                 supView:geometryView addTo:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(80,460)];
+            [message2 position: CGPointMake(80,480)];
+            [message3 position: CGPointMake(80,500)];
+            [message4 position: CGPointMake(80,520)];
+        }
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"Constructing a rhomboid makes it possible to copy a line segment."];
+            [self fadeInViews:@[message1, s1View] withDuration:1.5];
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [self fadeInViews:@[rhombView1, rhombView2] withDuration:1.5];
+        }];
+        
+        [self afterDelay:3.5 :^{
+            [self fadeInViews:@[s2View] withDuration:1.5];
+        }];
+        
+        [self afterDelay:6.0 :^{
+            [message2 text:@"However, that construction breaks down when the point is in line with the segment."];
+            [self fadeInViews:@[message2] withDuration:1.5];
+            [self movePoint:p3 toPosition:CGPointMake(centerX-130, 250) withDuration:3.0
+                    inViews:@[rhombView1, rhombView2, s1View, s2View]];
+            [self movePoint:p4 toPosition:CGPointMake(centerX-150, 350) withDuration:3.0
+                    inViews:@[rhombView1, rhombView2, s1View, s2View]];
+            [self fadeOut:s2View withDuration:3.5];
+            [self fadeOut:rhombView1 withDuration:3.5];
+        }];
+        
+        [self afterDelay:10.0 :^{
+            [message3 text:@"Can you think of another, indirect way, to copy the line segment in that case?"];
+            [self fadeInViews:@[message3] withDuration:1.5];
+        }];
+        [self afterDelay:12.0 :^{
+            [message4 text:@"The new copy line segment tool is still useful!"];
+            [self fadeInViews:@[message4] withDuration:1.5];
+        }];
+
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
+}
+- (void)hideHint
+{
+    [self.levelViewController hintFinished];
+    [self slideInToolbar];
+    self.showingHint = NO;
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
 }
 
 @end

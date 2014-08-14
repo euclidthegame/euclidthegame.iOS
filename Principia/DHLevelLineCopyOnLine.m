@@ -9,6 +9,7 @@
 #import "DHLevelLineCopyOnLine.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelLineCopyOnLine () {
     DHLineSegment* _lineAB;
@@ -179,78 +180,94 @@
     return CGPointMake(NAN, NAN);
 }
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+    if (self.showingHint) {
+        [self hideHint];
         return;
     }
     
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    self.showingHint = YES;
     
-    if (circleWithABRadiusAtCOK) {
-        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
-        [geometryView addSubview:message0];
-        [self fadeIn:message0 withDuration:1.0];
-        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
-        return;
-    }
+    [self slideOutToolbar];
     
-    _message1 = [[Message alloc] initWithMessage:@"You have just unlocked the compass tool." andPoint:CGPointMake(150,720)];
-    _message2 = [[Message alloc] initWithMessage:@"Tap on it to select it." andPoint:CGPointMake(150,740)];
-    _message3 = [[Message alloc] initWithMessage:@"This tool requires a line and two points or a line and a point." andPoint:CGPointMake(150,760)];
-    
-    
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [_message1 position: CGPointMake(150,480)];
-        [_message2 position: CGPointMake(150,500)];
-        [_message3 position: CGPointMake(150,520)];
-    }
-    
-    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
-    [geometryView addSubview:hintView];
-    [hintView addSubview:_message1];
-    [hintView addSubview:_message2];
-    [hintView addSubview:_message3];
-    
-    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-        _message1.alpha = 1; } completion:nil];
-    
-    [self performBlock:^{
-        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message2.alpha = 1; } completion:nil];
-    } afterDelay:3.0];
-    
-    [self performBlock:^{
-        _step1finished =YES;
-    } afterDelay:4.0];
-    
-    int segmentindex = 11; //compass tool
-    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-segmentindex];
-    UIView* tool = [toolSegment.subviews objectAtIndex:0];
-    
-    for (int a=0; a < 100; a++) {
-        [self performBlock:
-         ^{
-             if (toolControl.selectedSegmentIndex == segmentindex && _step1finished){
-                 _step1finished = NO;
-                 [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                     _message1.alpha = 0;
-                     _message2.alpha = 0;
-                     _message3.alpha = 1;
-                 } completion:nil];
-             }
-             else if (toolControl.selectedSegmentIndex != segmentindex && _step1finished){
-                 [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                  ^{tool.alpha = 0; } completion:^(BOOL finished){
-                      [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                       ^{tool.alpha = 1; } completion:nil];}];
-             }
-         } afterDelay:a];
-    }
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        hintView.backgroundColor = [UIColor whiteColor];
+        
+        DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+        oldObjects.hideBorder = NO;
+        [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+        
+        [geometryView addSubview:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,60) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,80) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,100) addTo:hintView];
+        
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(150,460)];
+            [message2 position: CGPointMake(150,480)];
+            [message3 position: CGPointMake(150,500)];
+        }
+        
+        DHPoint* p1 = [[DHPoint alloc] initWithPosition:_lineAB.start.position];
+        DHTranslatedPoint* p2 = [[DHTranslatedPoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end
+                                                                andOrigin:p1];
+        DHCircle* c1 = [[DHCircle alloc] initWithCenter:p1 andPointOnRadius:p2];
+        
+        CGFloat abAngle = CGVectorAngle(_lineAB.vector);
+        CGFloat cdAngle = CGVectorAngle(_lineCD.vector);
+        DHPointOnCircle* p3 = [[DHPointOnCircle alloc] initWithCircle:c1 andAngle:abAngle];
+        p3.label = @"";
+        
+        DHLineSegment* segmentP1P3 = [[DHLineSegment alloc] initWithStart:c1.center andEnd:p3];
+        segmentP1P3.temporary = YES;
+        
+        [hintView addSubview:oldObjects];
+        DHGeometryView* segmentView = [[DHGeometryView alloc] initWithObjects:@[segmentP1P3, p3] supView:geometryView
+                                                                        addTo:hintView];
+        
+        [hintView bringSubviewToFront:message1];
+        [hintView bringSubviewToFront:message2];
+        [hintView bringSubviewToFront:message3];
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"If you could simply move a copy of AB to C,"];
+            [self fadeInViews:@[message1, segmentView] withDuration:2.0];
+            [self movePoint:p1 toPosition:_lineCD.start.position withDuration:2.5 inViews:@[segmentView]];
+        }];
+        
+        [self afterDelay:3.0 :^{
+            [message2 text:@"and rotate it to be parallel to CD, this would be simple."];
+            [self fadeInViews:@[message2] withDuration:2.0];
+            [self movePointOnCircle:p3 toAngle:cdAngle withDuration:2.0 inViews:@[segmentView]];
+        }];
+        
+        [self afterDelay:6.0 :^{
+            [message3 text:@"Can you make an equivalent construction with the available tools?"];
+            [self fadeInViews:@[message3] withDuration:2.0];
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
 }
+
+- (void)hideHint
+{
+    [self.levelViewController hintFinished];
+    [self slideInToolbar];
+    self.showingHint = NO;
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+}
+
 
 @end

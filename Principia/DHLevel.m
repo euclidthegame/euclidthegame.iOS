@@ -188,10 +188,12 @@
 
 - (void)showEndHintMessageInView:(UIView*)view
 {
-    Message* message5 = [[Message alloc] initAtPoint:CGPointMake(view.frame.size.width/2-140,
+    Message* message5 = [[Message alloc] initAtPoint:CGPointMake(view.frame.size.width/2-100,
                                                                  view.frame.size.height-40)
                                                addTo:view];
-    [message5 text:@"< Tap anywhere to resume the game >"];
+    [message5 text:@"Tap anywhere to resume the game"];
+    message5.font = [UIFont systemFontOfSize:14.0];
+    
     [self fadeIn:message5 withDuration:2.0];
     [self afterDelay:2.1 :^{
         message5.flash = YES;

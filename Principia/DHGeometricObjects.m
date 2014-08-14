@@ -1044,12 +1044,13 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
         paragraphStyle.alignment = NSTextAlignmentCenter;
         
-        CGVector v = CGVectorMake(radius+20, 0);
+        CGVector v = CGVectorMake(radius+15, 0);
         v = CGVectorRotateByAngle(v, (startAngle+endAngle)*0.5);
         CGPoint labelCenter = CGPointFromPointByAddingVector(position, v);
         
-        NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:10],
-                                     NSParagraphStyleAttributeName: paragraphStyle};
+        NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:11],
+                                     NSParagraphStyleAttributeName: paragraphStyle,
+                                     NSForegroundColorAttributeName: [UIColor darkGrayColor]};
         CGSize textSize = [labelString sizeWithAttributes:attributes];
         CGRect labelRect = CGRectMake(labelCenter.x - textSize.width*0.5,
                                       labelCenter.y - textSize.height*0.5,

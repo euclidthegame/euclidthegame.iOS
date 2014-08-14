@@ -9,6 +9,7 @@
 #import "DHLevelMakeTangent.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelMakeTangent () {
     DHCircle* _circle;
@@ -155,75 +156,80 @@
     return CGPointMake(NAN, NAN);
 }
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+    if (self.showingHint) {
+        [self hideHint];
         return;
     }
     
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
+    self.showingHint = YES;
     
-    if (centerOK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:5.0];
-        return;
-    }
+    [self slideOutToolbar];
     
-    _message1 = [[Message alloc] initWithMessage:@"You have just enhanced the midpoint tool." andPoint:CGPointMake(150,720)];
-    _message2 = [[Message alloc] initWithMessage:@"Tap on it to select it." andPoint:CGPointMake(150,740)];
-    _message3 = [[Message alloc] initWithMessage:@"This tool requires a circle" andPoint:CGPointMake(150,760)];
-    
-    
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [_message1 position: CGPointMake(150,480)];
-        [_message2 position: CGPointMake(150,500)];
-        [_message3 position: CGPointMake(150,520)];
-    }
-    
-    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
+    DHGeometryView* hintView = [[DHGeometryView alloc] initWithFrame:geometryView.frame];
+    hintView.backgroundColor = [UIColor whiteColor];
+    hintView.layer.opacity = 0;
+    hintView.hideBottomBorder = YES;
     [geometryView addSubview:hintView];
-    [hintView addSubview:_message1];
-    [hintView addSubview:_message2];
-    [hintView addSubview:_message3];
+    [self fadeInViews:@[hintView] withDuration:1.0];
+    hintView.geometricObjects = [NSMutableArray arrayWithObject:_circle];
     
-    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-        _message1.alpha = 1; } completion:nil];
-    
-    [self performBlock:^{
-        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message2.alpha = 1; } completion:nil];
-    } afterDelay:3.0];
-    
-    [self performBlock:^{
-        _step1finished =YES;
-    } afterDelay:4.0];
-    
-    int segmentindex = 6; //midpoint tool
-    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-segmentindex];
-    UIView* tool = [toolSegment.subviews objectAtIndex:0];
-    
-    for (int a=0; a < 100; a++) {
-        [self performBlock:
-         ^{
-             if (toolControl.selectedSegmentIndex == segmentindex && _step1finished){
-                 _step1finished = NO;
-                 [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                     _message1.alpha = 0;
-                     _message2.alpha = 0;
-                     _message3.alpha = 1;
-                 } completion:nil];
-             }
-             else if (toolControl.selectedSegmentIndex != segmentindex && _step1finished){
-                 [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                  ^{tool.alpha = 0; } completion:^(BOOL finished){
-                      [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                       ^{tool.alpha = 1; } completion:nil];}];
-             }
-         } afterDelay:a];
-    }
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        hintView.frame = geometryView.frame;
+        [hintView setNeedsDisplay];
+        [self afterDelay:0.5 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+        DHLineSegment* s1 = [[DHLineSegment alloc] initWithStart:_circle.center andEnd:_circle.pointOnRadius];
+        s1.temporary = YES;
+        DHPerpendicularLine* l1 = [[DHPerpendicularLine alloc] initWithLine:s1 andPoint:_circle.pointOnRadius];
+        l1.temporary = YES;
+        DHPoint* p1 = [[DHPoint alloc] initWithPosition:_circle.pointOnRadius.position];
+        p1.temporary = YES;
+        DHAngleIndicator* angle = [[DHAngleIndicator alloc] initWithLine1:l1 line2:s1 andRadius:20];
+        angle.label = @"?";
+        angle.anglePosition = 2;
+        
+        DHGeometryView* tangentView = [[DHGeometryView alloc] initWithObjects:@[l1]
+                                                                   supView:geometryView addTo:hintView];
+        DHGeometryView* radiusView = [[DHGeometryView alloc] initWithObjects:@[angle, s1, _circle.center]
+                                                                      supView:geometryView addTo:hintView];
+        DHGeometryView* p1View = [[DHGeometryView alloc] initWithObjects:@[p1]
+                                                                      supView:geometryView addTo:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"Assume that we already have a tangent to the circle."];
+            [self fadeInViews:@[message1, tangentView] withDuration:2.0];
+        }];
+        [self afterDelay:2.5:^{
+            [message2 text:@"By definition, it will only touch the circle at one point."];
+            [self fadeInViews:@[message2, p1View] withDuration:2.0];
+        }];
+        [self afterDelay:5.0:^{
+            [message3 text:@"Can you work out what the angle between the tangent and"];
+            [self fadeInViews:@[message3] withDuration:2.0];
+        }];
+
+        [self afterDelay:6.0:^{
+            [self fadeInViews:@[radiusView] withDuration:4.0];
+        }];
+        
+        [self afterDelay:7.5:^{
+            [message4 text:@"a segment from that point to the circle center must be?"];
+            [self fadeInViews:@[message4] withDuration:2.0];
+        }];
+        
+    }];
 }
 
 

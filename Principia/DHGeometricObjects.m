@@ -982,6 +982,10 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         startAngle = CGVectorAngle(CGVectorInvert(_line1.vector));
         endAngle = CGVectorAngle(CGVectorInvert(_line2.vector));
     }
+    if (_anglePosition == 2) {
+        startAngle = CGVectorAngle(_line1.vector);
+        endAngle = CGVectorAngle(CGVectorInvert(_line2.vector));
+    }
     while (endAngle < 0) {
         endAngle += 2*M_PI;
     }
@@ -1026,8 +1030,16 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     
     CGContextRestoreGState(context);
     
-    if (self.showAngleText) {
-        NSString* angleString = [NSString stringWithFormat:@"%.0f°", angle];
+    if (self.label || self.showAngleText) {
+        NSString* labelString;
+        if (self.label && !self.showAngleText) {
+            labelString = self.label;
+        } else if (!self.label && self.showAngleText) {
+            labelString = [NSString stringWithFormat:@"%.0f°", angle];
+        } else {
+            labelString = [NSString stringWithFormat:@"%@: %.0f°", self.label, angle];
+        }
+        
         NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
         paragraphStyle.alignment = NSTextAlignmentCenter;
@@ -1038,11 +1050,11 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         
         NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:10],
                                      NSParagraphStyleAttributeName: paragraphStyle};
-        CGSize textSize = [angleString sizeWithAttributes:attributes];
+        CGSize textSize = [labelString sizeWithAttributes:attributes];
         CGRect labelRect = CGRectMake(labelCenter.x - textSize.width*0.5,
                                       labelCenter.y - textSize.height*0.5,
                                       textSize.width, textSize.height);
-        [angleString drawInRect:labelRect withAttributes:attributes];
+        [labelString drawInRect:labelRect withAttributes:attributes];
     }
 }
 - (CGPoint)center

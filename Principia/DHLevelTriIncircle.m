@@ -9,6 +9,7 @@
 #import "DHLevelTriIncircle.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelTriIncircle () {
     DHLineSegment* _lAB;
@@ -184,27 +185,22 @@
 }
 
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+    if (self.showingHint) {
         [self hideHint];
         return;
     }
     
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
     if (hint2_OK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
         hint1_OK = NO;
         hint2_OK = NO;
-        return;
-    }
-    
-    
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            heightToolBar.constant= 70 - a;
-        } afterDelay:a* (1/90.0) ];
     }
     
     Message* message1 = [[Message alloc] initWithMessage:@"The incircle is tangent to all three sides." andPoint:CGPointMake(100,200)];
@@ -241,68 +237,69 @@
     DHLineSegment* b2 = [[DHLineSegment alloc]initWithStart:_lAB.end andEnd:ip1];
     DHLineSegment* b3 = [[DHLineSegment alloc]initWithStart:_lAC.end andEnd:ip1];
     
-    
     DHCircle* c = [[DHCircle alloc] initWithCenter:ip1 andPointOnRadius:ip2];
+    
+    c.temporary = perp1.temporary = perp2.temporary = perp3.temporary = YES;
+    b1.highlighted = b2.highlighted = b3.highlighted = YES;
     
     DHGeometryView* incircle = [[DHGeometryView alloc]initWithObjects:@[c,ip1] andSuperView:geometryView];
     DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[perp1,perp2,perp3] andSuperView:geometryView];
-    DHGeometryView* bView = [[DHGeometryView alloc]initWithObjects:@[b1,b2,b3] andSuperView:geometryView];
+    DHGeometryView* bView = [[DHGeometryView alloc]initWithObjects:@[b1,b2,b3, _lAB.start, _lAB.end, _lAC.end]
+                                                      andSuperView:geometryView];
     DHGeometryView* bisectView = [[DHGeometryView alloc] initWithObjects:@[bl1] andSuperView:geometryView];
     
-    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
-    [geometryView addSubview:hintView];
-    [hintView addSubview:bisectView];
-    [hintView addSubview:bView];
-    [hintView addSubview:perpView];
-    [hintView addSubview:incircle];
-    [hintView addSubview:message1];
-    [hintView addSubview:message2];
-    [hintView addSubview:message3];
-    [hintView addSubview:message4];
-    
-    if (!hint1_OK) {
-        [self afterDelay:0.0 performBlock:^{
-            [self fadeIn:message1 withDuration:1.0];
-            [self fadeIn:incircle withDuration:2.0];
-        }];
-        [self afterDelay:4.0 performBlock:^{
-            [self fadeIn:message2 withDuration:1.0];
-            [self fadeIn:perpView withDuration:2.0];
-        }];
-        [self afterDelay:9.0 performBlock:^{
-            [self fadeIn:message3 withDuration:1.0];
-        }];
-        [self afterDelay:14.0 performBlock:^{
-            [self fadeIn:message4 withDuration:1.0];
-            [self fadeIn:bView withDuration:2.0];
-            hint1_OK = YES;
-        }];
-    }
-    else if (!hint2_OK){
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
         
-        [self afterDelay:0.0 performBlock:^{
-            [message1 text:@"Hence, if we draw a bisector of one the angles"];
-            
-            [self fadeIn:message1 withDuration:1.0];
-            [self fadeIn:bisectView withDuration:2.0];
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        [geometryView addSubview:hintView];
+        [hintView addSubview:bisectView];
+        [hintView addSubview:bView];
+        [hintView addSubview:perpView];
+        [hintView addSubview:incircle];
+        [hintView addSubview:message1];
+        [hintView addSubview:message2];
+        [hintView addSubview:message3];
+        [hintView addSubview:message4];
+        
+        [self afterDelay:0.5 :^{
+            [self showEndHintMessageInView:hintView];
         }];
-        [self afterDelay:4.0 performBlock:^{
-            [message2 text:@"We know that the line must pass through the center of the incircle. "];
-            [self fadeIn:message2 withDuration:1.0];
-            hint2_OK = YES;
-        }];
-    }
     
-}
--(void)hideHint {
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            self.heightToolbar.constant= -20 + a;
-        } afterDelay:a* (1/90.0) ];
-    }
-    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
-    else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
-    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-    return;
+        if (!hint1_OK) {
+            [self afterDelay:0.0 performBlock:^{
+                [self fadeIn:message1 withDuration:1.0];
+                [self fadeIn:incircle withDuration:2.0];
+            }];
+            [self afterDelay:4.0 performBlock:^{
+                [self fadeIn:message2 withDuration:1.0];
+                [self fadeIn:perpView withDuration:2.0];
+            }];
+            [self afterDelay:9.0 performBlock:^{
+                [self fadeIn:message3 withDuration:1.0];
+            }];
+            [self afterDelay:14.0 performBlock:^{
+                [self fadeIn:message4 withDuration:1.0];
+                [self fadeIn:bView withDuration:2.0];
+                hint1_OK = YES;
+            }];
+        }
+        else if (!hint2_OK){
+            
+            [self afterDelay:0.0 performBlock:^{
+                [message1 text:@"Hence, if we draw a bisector of one the angles"];
+                
+                [self fadeIn:message1 withDuration:1.0];
+                [self fadeIn:bisectView withDuration:2.0];
+            }];
+            [self afterDelay:4.0 performBlock:^{
+                [message2 text:@"We know that the line must pass through the center of the incircle. "];
+                [self fadeIn:message2 withDuration:1.0];
+                hint2_OK = YES;
+            }];
+        }
+    }];
+
+    
 }
 @end

@@ -9,6 +9,7 @@
 #import "DHLevelTriCircumcircle.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelTriCircumcircle () {
     DHLineSegment* _lAB;
@@ -173,30 +174,26 @@
     return CGPointMake(NAN, NAN);
 }
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+    if (self.showingHint) {
         [self hideHint];
         return;
     }
     
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
     if (hint2_OK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
         hint1_OK = NO;
         hint2_OK = NO;
-        return;
     }
     
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            heightToolBar.constant= 70 - a;
-        } afterDelay:a* (1/90.0) ];
-    }
-    
-    Message* message1 = [[Message alloc] initWithMessage:@"The circumcircle passes through all three sides of the triangle." andPoint:CGPointMake(50,200)];
-    Message* message2 = [[Message alloc] initWithMessage:@"So the center of the circumcircle is equidistant from the point A, B and C." andPoint:CGPointMake(50,220)];
+    Message* message1 = [[Message alloc] initWithMessage:@"The circumcircle passes through all three vertices of the triangle." andPoint:CGPointMake(50,200)];
+    Message* message2 = [[Message alloc] initWithMessage:@"So the center of the circumcircle is equidistant from the points A, B and C." andPoint:CGPointMake(50,220)];
     Message* message3 = [[Message alloc] initWithMessage:@"The midpoint of line segment BC is equidistant from the points B and C." andPoint:CGPointMake(50,240)];
     Message* message4 = [[Message alloc] initWithMessage:@"Can you construct a line that is equidistant from the points B and C?" andPoint:CGPointMake(50,260)];
     
@@ -211,14 +208,10 @@
     DHMidPoint* midBC = [[DHMidPoint alloc] initWithPoint1:_lBC.start andPoint2:_lBC.end];
     DHGeometryView* midView = [[DHGeometryView alloc] initWithObjects:@[midBC] andSuperView:geometryView];
     
-    
-    
     DHPerpendicularLine* perpBC = [[DHPerpendicularLine alloc]initWithLine:_lBC andPoint:midBC];
     perpBC.temporary = YES;
     
     DHPointOnLine* point = [[DHPointOnLine alloc] initWithLine:perpBC andTValue:100];
-    
-    
     
     DHCircle* circle = [[DHCircle alloc] initWithCenter:point andPointOnRadius:_lBC.end];
     circle.temporary = YES;
@@ -227,83 +220,80 @@
     
     DHGeometryView* circleView = [[DHGeometryView alloc] initWithObjects:@[point,circle] andSuperView:geometryView];
     
-    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
-    [geometryView addSubview:hintView];
-    [hintView addSubview:circleView];
-    [hintView addSubview:perpView];
-    [hintView addSubview:midView];
-    
-    [hintView addSubview:message1];
-    [hintView addSubview:message2];
-    [hintView addSubview:message3];
-    [hintView addSubview:message4];
-    
-    if (!hint1_OK) {
-        [self afterDelay:0.0 performBlock:^{
-            [self fadeIn:message1 withDuration:1.0];
-        }];
-        [self afterDelay:4.0 performBlock:^{
-            [self fadeIn:message2 withDuration:1.0];
-        }];
-        [self afterDelay:8.0 performBlock:^{
-            [self fadeIn:message3 withDuration:1.0];
-            [self fadeIn:midView withDuration:2.0];
-        }];
-        [self afterDelay:12.0 performBlock:^{
-            [self fadeIn:message4 withDuration:1.0];
-            [self fadeIn:perpView withDuration:2.0];
-            hint1_OK = YES;
-        }];
-    }
-    else if (!hint2_OK){
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
         
-        [self afterDelay:0.0 performBlock:^{
-            [message1 text:@"The line with this property is called the perpendicular bisector of line segment BC."];
-            [self fadeIn:message1 withDuration:1.0];
-
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        [geometryView addSubview:hintView];
+        [hintView addSubview:circleView];
+        [hintView addSubview:perpView];
+        [hintView addSubview:midView];
+        
+        [hintView addSubview:message1];
+        [hintView addSubview:message2];
+        [hintView addSubview:message3];
+        [hintView addSubview:message4];
+        
+        [self afterDelay:0.5 :^{
+            [self showEndHintMessageInView:hintView];
         }];
-        [self afterDelay:4.0 performBlock:^{
-            [message2 text:@"The line is perpendicular to BC and passes through the midpoint."];
-            [self fadeIn:perpView withDuration:2.0];
-            [self fadeIn:midView withDuration:2.0];
-            [self fadeIn:message2 withDuration:1.0];
-            
-
-        }];
-        [self afterDelay:8.0 performBlock:^{
-            [message3 text:@"The center of the circumcircle is equidistant from point B and C."];
-            
-
-            [self fadeIn:message3 withDuration:1.0];
-        }];
-        [self afterDelay:10.0 performBlock:^{
-                    [self fadeIn:circleView withDuration:2.0];
+        
+        
+        if (!hint1_OK) {
+            [self afterDelay:0.0 performBlock:^{
+                [self fadeIn:message1 withDuration:1.0];
+            }];
+            [self afterDelay:4.0 performBlock:^{
+                [self fadeIn:message2 withDuration:1.0];
+            }];
+            [self afterDelay:8.0 performBlock:^{
+                [self fadeIn:message3 withDuration:1.0];
+                [self fadeIn:midView withDuration:2.0];
+            }];
+            [self afterDelay:12.0 performBlock:^{
+                [self fadeIn:message4 withDuration:1.0];
+                [self fadeIn:perpView withDuration:2.0];
+                hint1_OK = YES;
+            }];
         }
-         ];
-        [self afterDelay:12.0 performBlock:^{
-            [message4 text:@"Hence, it must lay somewhere on this line !"];
-            [self fadeIn:message4 withDuration:1.0];
-            [self movePointOnLine:point toTValue:-280 withDuration:5.0 inView:circleView];
-            hint2_OK = YES;
-        }];
-        
-        [self afterDelay:17.0 performBlock:^{
-            [self fadeIn:message4 withDuration:1.0];
-            [self movePointOnLine:point toTValue:-100 withDuration:2.0 inView:circleView];
-            hint2_OK = YES;
-        }];
-    }
+        else if (!hint2_OK) {
+            [self afterDelay:0.0 performBlock:^{
+                [message1 text:@"The line with this property is called the perpendicular bisector of line segment BC."];
+                [self fadeIn:message1 withDuration:1.0];
+                
+            }];
+            [self afterDelay:4.0 performBlock:^{
+                [message2 text:@"The line is perpendicular to BC and passes through the midpoint."];
+                [self fadeIn:perpView withDuration:2.0];
+                [self fadeIn:midView withDuration:2.0];
+                [self fadeIn:message2 withDuration:1.0];
+                
+                
+            }];
+            [self afterDelay:8.0 performBlock:^{
+                [message3 text:@"The center of the circumcircle is equidistant from point B and C."];
+                
+                
+                [self fadeIn:message3 withDuration:1.0];
+            }];
+            [self afterDelay:10.0 performBlock:^{
+                [self fadeIn:circleView withDuration:2.0];
+            }
+             ];
+            [self afterDelay:12.0 performBlock:^{
+                [message4 text:@"Hence, it must lay somewhere on this line !"];
+                [self fadeIn:message4 withDuration:1.0];
+                [self movePointOnLine:point toTValue:-280 withDuration:5.0 inView:circleView];
+                hint2_OK = YES;
+            }];
+            
+            [self afterDelay:17.0 performBlock:^{
+                [self fadeIn:message4 withDuration:1.0];
+                [self movePointOnLine:point toTValue:-100 withDuration:2.0 inView:circleView];
+                hint2_OK = YES;
+            }];
+        }
+    }];
     
-}
--(void)hideHint {
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            self.heightToolbar.constant= -20 + a;
-        } afterDelay:a* (1/90.0) ];
-    }
-    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
-    else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
-    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-    return;
 }
 @end

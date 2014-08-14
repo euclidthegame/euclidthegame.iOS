@@ -241,6 +241,8 @@
         frame.origin = self.point;
         self.frame = frame;
         [self sizeToFit];
+        self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.layer.cornerRadius = 5.0;        
     }
     return self;
 }
@@ -256,6 +258,8 @@
         self.frame = frame;
         [self sizeToFit];
         [view addSubview:self];
+        self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.layer.cornerRadius = 5.0;
     }
     return self;
 }

@@ -395,6 +395,10 @@
         DHGeometryView* pointCView = [[DHGeometryView alloc] initWithObjects:@[pC] supView:geometryView addTo:hintView];
         [hintView addSubview:oldObjects];
         
+        [hintView bringSubviewToFront:message1];
+        [hintView bringSubviewToFront:message2];
+        [hintView bringSubviewToFront:message3];
+        [hintView bringSubviewToFront:message4];
         
         [self afterDelay:0.0:^{
             [message1 text:@"Circles have a very useful property."];

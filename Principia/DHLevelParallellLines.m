@@ -410,6 +410,7 @@
     
     [self afterDelay:1.0 :^{
         if (!self.showingHint) return;
+        hintView.frame = geometryView.frame;
         
         CGFloat centerX = geometryView.center.x;
         DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX andY:100];

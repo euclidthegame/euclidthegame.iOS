@@ -9,6 +9,7 @@
 #import "DHLevelLineCopy.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelLineCopy () {
     DHLineSegment* _lineAB;
@@ -16,7 +17,7 @@
     DHPoint* _pointB;
     DHPoint* _pointC;
     Message* _message1, *_message2, *_message3;
-    BOOL _step1finished;
+    BOOL _hintStep1Finished;
     BOOL parallelLineOK;
 }
 
@@ -136,9 +137,7 @@
     tp.translationEnd = _lineAB.end;
     
     // First, look for a point translated from C at distance AB and parallell to AB
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
-        
+    for (id object in geometricObjects) {
         if ([[object class]  isSubclassOfClass:[DHLineObject class]]) {
             DHLineObject* l = object;
             BOOL intersectsTP = PointOnLine(tp, l);
@@ -185,76 +184,6 @@
     return CGPointMake(NAN, NAN);
 }
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
-    
-    if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-        return;
-    }
-    if (parallelLineOK) {
-        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
-        [geometryView addSubview:message0];
-        [self fadeIn:message0 withDuration:1.0];
-        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
-        return;
-    }
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    
-    _message1 = [[Message alloc] initWithMessage:@"You have just unlocked the parallel line tool." andPoint:CGPointMake(150,720)];
-    _message2 = [[Message alloc] initWithMessage:@"Tap on it to select it." andPoint:CGPointMake(150,740)];
-    _message3 = [[Message alloc] initWithMessage:@"This tool requires a line and a point." andPoint:CGPointMake(150,760)];
-    
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [_message1 position: CGPointMake(150,480)];
-        [_message2 position: CGPointMake(150,500)];
-        [_message3 position: CGPointMake(150,520)];
-    }
-    
-    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
-    [geometryView addSubview:hintView];
-    [hintView addSubview:_message1];
-    [hintView addSubview:_message2];
-    [hintView addSubview:_message3];
-    
-    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-        _message1.alpha = 1; } completion:nil];
-    
-    [self performBlock:^{
-        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message2.alpha = 1; } completion:nil];
-    } afterDelay:3.0];
-    
-    [self performBlock:^{
-        _step1finished =YES;
-    } afterDelay:4.0];
-    
-    int segmentindex = 9; //parallel line tool
-    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-segmentindex];
-    UIView* tool = [toolSegment.subviews objectAtIndex:0];
-    
-    for (int a=0; a < 100; a++) {
-        [self performBlock:
-         ^{
-             if (toolControl.selectedSegmentIndex == segmentindex && _step1finished){
-                 _step1finished = NO;
-                 [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                     _message1.alpha = 0;
-                     _message2.alpha = 0;
-                     _message3.alpha = 1;
-                 } completion:nil];
-             }
-             else if (toolControl.selectedSegmentIndex != segmentindex && _step1finished){
-                 [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                  ^{tool.alpha = 0; } completion:^(BOOL finished){
-                      [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                       ^{tool.alpha = 1; } completion:nil];}];
-             }
-         } afterDelay:a];
-    }
-}
 - (void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view {
     
     
@@ -412,6 +341,166 @@
          }];
     } afterDelay:1.0];
 }
+- (void)showHint
+{
+    if (!parallelLineOK) {
+        [self showHintParallel];
+    } else {
+        [self showHintParallel2];
+    }
+}
+- (void)showHintParallel
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
+    
+    if (self.showingHint) {
+        [self hideHint];
+        return;
+    }
+    
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        hintView.backgroundColor = [UIColor whiteColor];
+        [geometryView addSubview:hintView];
+        
+        DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end
+                                                                andOrigin:_pointC];
+        DHLineSegment* sAC = [[DHLineSegment alloc] initWithStart:_pointA andEnd:_pointC];
+        DHLineSegment* sBD = [[DHLineSegment alloc] initWithStart:_pointB andEnd:tp];
+        DHPointOnLine* pStart = [[DHPointOnLine alloc] initWithLine:sAC andTValue:0];
+        DHPointOnLine* pEnd = [[DHPointOnLine alloc] initWithLine:sBD andTValue:0];
+        DHLineSegment* sTrans = [[DHLineSegment alloc] initWithStart:pStart andEnd:pEnd];
+        sTrans.highlighted = YES;
+        
+        DHLine* l1 = [[DHLine alloc] initWithStart:_lineAB.start andEnd:_lineAB.end];
+        DHLine* l2 = [[DHLine alloc] initWithStart:_pointC andEnd:tp];
+        l1.temporary = l2.temporary = YES;
+        
+        DHGeometryView* paraView = [[DHGeometryView alloc] initWithObjects:@[l1, l2]
+                                                                   supView:geometryView addTo:hintView];
+        DHGeometryView* segView = [[DHGeometryView alloc] initWithObjects:@[sTrans, pEnd]
+                                                                  supView:geometryView addTo:hintView];
+        DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+        oldObjects.hideBorder = NO;
+        [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(70,500) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(70,520) addTo:hintView];
+        
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(150,500)];
+            [message2 position: CGPointMake(150,520)];
+        }
+                
+        [self afterDelay:0.0:^{
+            [message1 text:@"Assume we could simply move a copy of the segment AB to start from C."];
+            [self fadeInViews:@[message1,segView] withDuration:2.0];
+        }];
+        [self afterDelay:1.0:^{
+            [self movePointOnLine:pStart toTValue:1 withDuration:3.0 inView:segView];
+            [self movePointOnLine:pEnd toTValue:1 withDuration:3.0 inView:segView];
+        }];
+        
+        [self afterDelay:5.0 :^{
+            [message2 text:@"By definitition the segment would then remain parallel to AB."];
+            [self fadeInViews:@[message2,paraView] withDuration:2.0];
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
+}
+- (void)showHintParallel2
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
+    
+    if (self.showingHint) {
+        [self hideHint];
+        return;
+    }
+    
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
+    DHGeometryView* hintView = [[DHGeometryView alloc] initWithFrame:geometryView.frame];
+    hintView.backgroundColor = [UIColor whiteColor];
+    hintView.layer.opacity = 0;
+    hintView.hideBottomBorder = YES;
+    [geometryView addSubview:hintView];
+    [self fadeInViews:@[hintView] withDuration:1.0];
+    
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        hintView.frame = geometryView.frame;
+        
+        CGFloat centerX = geometryView.center.x;
+        DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX-200 andY:100];
+        DHPoint* p2 = [[DHPoint alloc] initWithPositionX:centerX-200 andY:200];
+        DHPoint* p3 = [[DHPoint alloc] initWithPositionX:centerX+200 andY:120];
+        DHPoint* p4 = [[DHPoint alloc] initWithPositionX:centerX+200 andY:220];
+        DHLine* l1 = [[DHLine alloc] initWithStart:p1 andEnd:p3];
+        DHLine* l2 = [[DHLine alloc] initWithStart:p2 andEnd:p4];
+        DHPoint* p5 = [[DHPoint alloc] initWithPosition:p1.position];
+        DHPoint* p6 = [[DHPoint alloc] initWithPosition:p2.position];
+        DHLineSegment* s1 = [[DHLineSegment alloc] initWithStart:p5 andEnd:p6];
+        s1.temporary = YES;
+        
+        DHGeometryView* paraView = [[DHGeometryView alloc] initWithObjects:@[s1, l1, l2]
+                                                                   supView:geometryView addTo:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(80,460)];
+            [message2 position: CGPointMake(80,480)];
+            [message3 position: CGPointMake(80,500)];
+            [message4 position: CGPointMake(80,520)];
+        }
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"In Euclidian geometry the following is true by definition."];
+            [self fadeInViews:@[message1] withDuration:1.5];
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [message2 text:@"Two parallel lines remain at equal distance from each other,"];
+            [self fadeInViews:@[message2, paraView] withDuration:1.5];
+        }];
+        
+        [self afterDelay:4.0 :^{
+            [message3 text:@"along their entire extents."];
+            [self fadeInViews:@[message3] withDuration:1.5];
+            [self movePoint:p5 toPosition:p3.position withDuration:4.0 inViews:@[paraView]];
+            [self movePoint:p6 toPosition:p4.position withDuration:4.0 inViews:@[paraView]];
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
+}
+- (void)hideHint
+{
+    [self.levelViewController hintFinished];
+    [self slideInToolbar];
+    self.showingHint = NO;
+    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+}
+
 
 
 @end

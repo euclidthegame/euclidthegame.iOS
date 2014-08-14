@@ -458,6 +458,10 @@
                                                                      supView:geometryView addTo:hintView];
         DHGeometryView* mpView = [[DHGeometryView alloc] initWithObjects:@[mp]
                                                                       supView:geometryView addTo:hintView];
+        [hintView bringSubviewToFront:message1];
+        [hintView bringSubviewToFront:message2];
+        [hintView bringSubviewToFront:message3];
+        [hintView bringSubviewToFront:message4];
         
         [self afterDelay:0.0:^{
             [message1 text:@"To create a point that is always located at the midpoint,"];

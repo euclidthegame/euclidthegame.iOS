@@ -9,6 +9,7 @@
 #import "DHLevelTwoCirclesOuterTangent.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelTwoCirclesOuterTangent () {
     DHPointOnLine* _pA;
@@ -17,8 +18,6 @@
     DHCircle* _circleB;
     DHPoint* _pRadiusA;
     DHPoint* _pRadiusB;
-    BOOL hint1_OK;
-    BOOL hint2_OK;
 }
 
 @end
@@ -61,9 +60,6 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
-    hint1_OK = NO;
-    hint2_OK = NO;
-    
     // Hidden objects used to restricted allowed movement of initial objects to avoid overlapping configuration
     DHPoint* pAStart = [[DHPoint alloc] initWithPositionX:170 andY:400];
     DHPoint* pAEnd = [[DHPoint alloc] initWithPositionX:230 andY:400];
@@ -251,123 +247,125 @@
     return CGPointMake(NAN, NAN);
 }
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    
-    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+    if (self.showingHint) {
         [self hideHint];
         return;
     }
     
-    if (hint1_OK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        hint1_OK = NO;
-        hint2_OK = NO;
-        return;
-    }
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            heightToolBar.constant= 70 - a;
-        } afterDelay:a* (1/90.0) ];
-    }
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
     [self afterDelay:1.0 :^{
-    Message* message1 = [[Message alloc] initWithMessage:@"The line we are looking for must be tangent to both circles." andPoint:CGPointMake(50,500)];
-    Message* message2 = [[Message alloc] initWithMessage:@"As the line is tangent to the circle, it makes right angles at both tangent points." andPoint:CGPointMake(50,520)];
-    Message* message3 = [[Message alloc] initWithMessage:@"What if we translate the tangent to point A?" andPoint:CGPointMake(50,540)];
-    Message* message4 = [[Message alloc] initWithMessage:@"We then get a right trangle ABC. " andPoint:CGPointMake(50,560)];
-    Message* message5 = [[Message alloc] initWithMessage:@"Which means that the translated line segment is tangent to the following circle." andPoint:CGPointMake(50,580)];
-    Message* message6 = [[Message alloc] initWithMessage:@"Can you construct that circle ?" andPoint:CGPointMake(50,600)];
-    
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
-    }
-    
-    DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
-    DHPerpendicularLine* lpA = [[DHPerpendicularLine alloc] init];
-    lpA.line = r1;
-    lpA.point = _circleA.center;
-    DHPerpendicularLine* lpB = [[DHPerpendicularLine alloc] init];
-    lpB.line = r1;
-    lpB.point = _circleB.center;
-    
-    DHIntersectionPointLineCircle* pOnA = [[DHIntersectionPointLineCircle alloc] init];
-    pOnA.c = _circleA;
-    pOnA.l = lpA;
-    DHIntersectionPointLineCircle* pOnB = [[DHIntersectionPointLineCircle alloc] init];
-    pOnB.c = _circleB;
-    pOnB.l = lpB;
-    
-    DHRay* r2 = [[DHRay alloc] initWithStart:pOnB andEnd:pOnA];
-    
-    DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];
-    DHMidPoint* mp = [[DHMidPoint alloc] init];
-    mp.start = ip1;
-    mp.end = _circleA.center;
-    
-    DHCircle* c = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_circleA.center];
-    DHIntersectionPointCircleCircle* ip2 = [[DHIntersectionPointCircleCircle alloc] init];
-    ip2.c1 = c;
-    ip2.c2 = _circleA;
-    
-    DHRay* tangent = [[DHRay alloc] initWithStart:ip1 andEnd:ip2];
-    DHIntersectionPointLineCircle* pointC = [[DHIntersectionPointLineCircle alloc]initWithLine:tangent andCircle:_circleA andPreferEnd:YES];
-    DHIntersectionPointLineCircle* pointD = [[DHIntersectionPointLineCircle alloc]initWithLine:tangent andCircle:_circleB andPreferEnd:YES];
-    DHLineSegment* AC = [[DHLineSegment alloc] initWithStart:pointC andEnd:_circleA.center];
-    DHLineSegment* BD = [[DHLineSegment alloc] initWithStart:pointD andEnd:_circleB.center];
-    DHLineSegment* AB = [[DHLineSegment alloc] initWithStart:_pA andEnd:_pB];
-    
-    
+        if (!self.showingHint) return;
 
-    DHLineSegment* tangentSegment = [[DHLineSegment alloc]initWithStart:pointC andEnd:pointD];
-    DHTranslatedPoint* tP = [[DHTranslatedPoint alloc] initStart:pointC end:pointD newStart:_circleA.center];
-    tP.label = @"C";
-    
-    DHCircle* circle = [[DHCircle alloc]initWithCenter:_pB andPointOnRadius:tP];
-    
-    
-    DHLineSegment* tSegment = [[DHLineSegment alloc]initWithStart:_circleA.center andEnd:tP];
-    
-    
-    DHGeometryView* tangentView = [[DHGeometryView alloc]initWithObjects:@[tangentSegment,pointC,pointD] andSuperView:geometryView];
-    
-    
-    DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[AC,BD] andSuperView:geometryView];
-    DHGeometryView* translatedView = [[DHGeometryView alloc]initWithObjects:@[tSegment,tP] andSuperView:geometryView];
-    DHGeometryView* triangleView = [[DHGeometryView alloc]initWithObjects:@[AB] andSuperView:geometryView];
-    DHGeometryView* circleView = [[DHGeometryView alloc]initWithObjects:@[circle] andSuperView:geometryView];
-    
-    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
-    hintView.backgroundColor = [UIColor whiteColor];
-    
-    DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
-    oldObjects.hideBorder = NO;
-    [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
-    
-    [geometryView addSubview:hintView];
-    [hintView addSubview:perpView];
-    [hintView addSubview:circleView];
-    
-    [hintView addSubview:translatedView];
-    
-    [hintView addSubview:triangleView];
-    [hintView addSubview:oldObjects];
-    [hintView addSubview:tangentView];
-    
-    [hintView addSubview:message1];
-    [hintView addSubview:message2];
-    [hintView addSubview:message3];
-    [hintView addSubview:message4];
-    [hintView addSubview:message5];
-    [hintView addSubview:message6];
-    
-    if (!hint1_OK) {
+        Message* message1 = [[Message alloc]
+                             initWithMessage:@"The line we are looking for must be tangent to both circles."
+                             andPoint:CGPointMake(50,500)];
+        Message* message2 = [[Message alloc]
+                             initWithMessage:@"We know that the tangent is perpendicular to radial lines from the tangent points."
+                             andPoint:CGPointMake(50,520)];
+        Message* message3 = [[Message alloc] initWithMessage:@"What if we translate the tangent to point A?" andPoint:CGPointMake(50,540)];
+        Message* message4 = [[Message alloc] initWithMessage:@"We then get a right trangle ABC. " andPoint:CGPointMake(50,560)];
+        Message* message5 = [[Message alloc] initWithMessage:@"Which means that the translated line segment is tangent to the following circle." andPoint:CGPointMake(50,580)];
+        Message* message6 = [[Message alloc] initWithMessage:@"Can you construct that circle and reverse the process?" andPoint:CGPointMake(50,600)];
+        
+        
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(150,500)];
+            [message2 position: CGPointMake(150,520)];
+            [message3 position: CGPointMake(150,540)];
+            [message4 position: CGPointMake(150,560)];
+        }
+        
+        DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
+        DHPerpendicularLine* lpA = [[DHPerpendicularLine alloc] init];
+        lpA.line = r1;
+        lpA.point = _circleA.center;
+        DHPerpendicularLine* lpB = [[DHPerpendicularLine alloc] init];
+        lpB.line = r1;
+        lpB.point = _circleB.center;
+        
+        DHIntersectionPointLineCircle* pOnA = [[DHIntersectionPointLineCircle alloc] init];
+        pOnA.c = _circleA;
+        pOnA.l = lpA;
+        DHIntersectionPointLineCircle* pOnB = [[DHIntersectionPointLineCircle alloc] init];
+        pOnB.c = _circleB;
+        pOnB.l = lpB;
+        
+        DHRay* r2 = [[DHRay alloc] initWithStart:pOnB andEnd:pOnA];
+        
+        DHIntersectionPointLineLine* ip1 = [[DHIntersectionPointLineLine alloc] initWithLine:r1 andLine:r2];
+        DHMidPoint* mp = [[DHMidPoint alloc] init];
+        mp.start = ip1;
+        mp.end = _circleA.center;
+        
+        DHCircle* c = [[DHCircle alloc] initWithCenter:mp andPointOnRadius:_circleA.center];
+        DHIntersectionPointCircleCircle* ip2 = [[DHIntersectionPointCircleCircle alloc] init];
+        ip2.c1 = c;
+        ip2.c2 = _circleA;
+        
+        DHRay* tangent = [[DHRay alloc] initWithStart:ip1 andEnd:ip2];
+        DHIntersectionPointLineCircle* pointC = [[DHIntersectionPointLineCircle alloc]initWithLine:tangent andCircle:_circleA andPreferEnd:YES];
+        DHIntersectionPointLineCircle* pointD = [[DHIntersectionPointLineCircle alloc]initWithLine:tangent andCircle:_circleB andPreferEnd:YES];
+        DHLineSegment* AC = [[DHLineSegment alloc] initWithStart:pointC andEnd:_circleA.center];
+        DHLineSegment* BD = [[DHLineSegment alloc] initWithStart:pointD andEnd:_circleB.center];
+        DHLineSegment* AB = [[DHLineSegment alloc] initWithStart:_pA andEnd:_pB];
+        
+        
+        
+        DHLineSegment* tangentSegment = [[DHLineSegment alloc]initWithStart:pointC andEnd:pointD];
+        DHTranslatedPoint* tP = [[DHTranslatedPoint alloc] initStart:pointC end:pointD newStart:_circleA.center];
+        tP.label = @"C";
+        
+        DHCircle* circle = [[DHCircle alloc]initWithCenter:_pB andPointOnRadius:tP];
+        
+        
+        DHLineSegment* tSegment = [[DHLineSegment alloc]initWithStart:_circleA.center andEnd:tP];
+        
+        circle.highlighted = YES;
+        
+        DHGeometryView* tangentView = [[DHGeometryView alloc]initWithObjects:@[tangentSegment,pointC,pointD] andSuperView:geometryView];
+        
+        
+        DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[AC,BD] andSuperView:geometryView];
+        DHGeometryView* translatedView = [[DHGeometryView alloc]initWithObjects:@[tSegment,tP] andSuperView:geometryView];
+        DHGeometryView* triangleView = [[DHGeometryView alloc]initWithObjects:@[AB] andSuperView:geometryView];
+        DHGeometryView* circleView = [[DHGeometryView alloc]initWithObjects:@[circle] andSuperView:geometryView];
+        
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        hintView.backgroundColor = [UIColor whiteColor];
+
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+        DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+        oldObjects.hideBorder = NO;
+        [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
+        
+        [geometryView addSubview:hintView];
+        [hintView addSubview:perpView];
+        [hintView addSubview:circleView];
+        
+        [hintView addSubview:translatedView];
+        
+        [hintView addSubview:triangleView];
+        [hintView addSubview:oldObjects];
+        [hintView addSubview:tangentView];
+        
+        [hintView addSubview:message1];
+        [hintView addSubview:message2];
+        [hintView addSubview:message3];
+        [hintView addSubview:message4];
+        [hintView addSubview:message5];
+        [hintView addSubview:message6];
+        
         [self afterDelay:0.0 performBlock:^{
             [self fadeIn:message1 withDuration:1.0];
             [self fadeIn:tangentView withDuration:2.0];
@@ -383,7 +381,7 @@
         [self afterDelay:15.0 performBlock:^{
             [self fadeIn:message4 withDuration:1.0];
             [self fadeIn:triangleView withDuration:2.0];
-
+            
         }];
         [self afterDelay:20.0 performBlock:^{
             [self fadeIn:message5 withDuration:1.0];
@@ -391,23 +389,11 @@
         }];
         [self afterDelay:25.0 performBlock:^{
             [self fadeIn:message6 withDuration:1.0];
-            hint1_OK = YES;
         }];
-    }
     }];
 
 }
--(void)hideHint {
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            self.heightToolbar.constant= -20 + a;
-        } afterDelay:a* (1/90.0) ];
-    }
-    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
-    else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
-    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-    return;
-}
+
 @end
 
 

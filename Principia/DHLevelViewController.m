@@ -839,8 +839,9 @@
 - (void)showOrHideHintButton
 {
     NSMutableArray *buttons = [self.navigationItem.rightBarButtonItems mutableCopy];
+    BOOL levelHintAnimations = [_currentLevel respondsToSelector:@selector(showHint)];
     
-    if ([DHSettings showHints]) {
+    if ([DHSettings showHints] && levelHintAnimations) {
         if (![buttons containsObject:_hintButton]) {
             [buttons addObject:_hintButton];
             [self.navigationItem setRightBarButtonItems:buttons animated:YES];
@@ -1102,7 +1103,7 @@
     
     turnHintOnLabel.textAlignment = NSTextAlignmentLeft;
     turnHintOnLabel.textColor = [UIColor darkGrayColor];
-    turnHintOnLabel.font = [UIFont boldSystemFontOfSize:16.0];
+    turnHintOnLabel.font = [UIFont systemFontOfSize:16.0];
     if ([DHSettings showHints]){
         [hintSwitch setOn:YES];
         turnHintOnLabel.text = @"Show hints: ";

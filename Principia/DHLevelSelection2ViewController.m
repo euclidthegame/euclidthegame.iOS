@@ -14,6 +14,29 @@
 #import "DHSettings.h"
 #import "DHTransitionToLevel.h"
 
+@interface DHLevelSelection2HeaderView : UICollectionReusableView
+@property (nonatomic, strong) UILabel* title;
+@end
+@implementation DHLevelSelection2HeaderView
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    {
+        _title = [[UILabel alloc] initWithFrame:CGRectMake(10, 6, 200, 25)];
+        _title.font = [UIFont boldSystemFontOfSize:16];
+        _title.textColor = [UIColor darkGrayColor];
+        _title.text = @"Beginner";
+        [self addSubview:_title];
+        //self.backgroundColor = [UIColor redColor];
+    }
+    return self;
+}
+- (void)prepareForReuse
+{
+}
+@end
+
+
 @interface DHLevelSelection2ViewController () <UINavigationControllerDelegate>
 
 @end
@@ -43,13 +66,17 @@
     FillLevelArray(_levels);
     
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    [flowLayout setSectionInset:UIEdgeInsetsMake(20, 20, 20, 20)];
+    [flowLayout setSectionInset:UIEdgeInsetsMake(10, 20, 10, 20)];
     flowLayout.minimumInteritemSpacing = 10;
     flowLayout.minimumLineSpacing = 30;
+    flowLayout.headerReferenceSize = CGSizeMake(0, 32);
     [self.collectionView setCollectionViewLayout:flowLayout];
     
     [self.collectionView registerClass:[DHLevelSelection2LevelCell class]
             forCellWithReuseIdentifier:@"cellIdentifier"];
+    [self.collectionView registerClass:[DHLevelSelection2HeaderView class]
+            forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                   withReuseIdentifier:@"HeaderView"];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -85,27 +112,39 @@
 #pragma mark - Collection view delegate & data source methods
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return 1;
+    return 3;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section
 {
-    return _levels.count;
+    if (section == 0 || section == 1) {
+        return 10;
+    } else {
+        return 5;
+    }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSInteger levelIndex;
+    if (indexPath.section == 0) {
+        levelIndex = indexPath.item;
+    } else if (indexPath.section == 1) {
+        levelIndex = 10 + indexPath.item;
+    } else {
+        levelIndex = 20 + indexPath.item;
+    }
     DHLevelSelection2LevelCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellIdentifier"
                                                                            forIndexPath:indexPath];
     
-    DHLevel<DHLevel>* level = [_levels objectAtIndex:indexPath.row];
-    NSString* title = [NSString stringWithFormat:@"Level %ld", (long)(indexPath.row+1)];
+    DHLevel<DHLevel>* level = [_levels objectAtIndex:levelIndex];
+    NSString* title = [NSString stringWithFormat:@"Level %ld", (long)(levelIndex+1)];
     
     cell.title = title;
     cell.level = level;
-    cell.tag = indexPath.item;
+    cell.tag = levelIndex;
     [cell setTouchActionWithTarget:self andAction:@selector(loadLevel:)];
     cell.levelCompleted = NO;
     
@@ -119,7 +158,7 @@
     }
     
     if (indexPath.item > 0 && [DHSettings allLevelsUnlocked] == NO) {
-        id<DHLevel> previousLevel = [_levels objectAtIndex:indexPath.row-1];
+        id<DHLevel> previousLevel = [_levels objectAtIndex:levelIndex-1];
         
         cell.enabled = NO;
         
@@ -144,6 +183,27 @@
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     return CGSizeMake(120, 150);
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionReusableView *reusableview = nil;
+    
+    if (kind == UICollectionElementKindSectionHeader) {
+        DHLevelSelection2HeaderView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
+        
+        reusableview = headerView;
+        
+        if (indexPath.section == 0) {
+            headerView.title.text = @"Beginner";
+        } else if (indexPath.section == 1) {
+            headerView.title.text = @"Intermediate";
+        } else {
+            headerView.title.text = @"Expert";
+        }
+    }
+    
+    return reusableview;
 }
 
 #pragma mark Launch level

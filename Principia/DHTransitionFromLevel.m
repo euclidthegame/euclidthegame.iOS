@@ -31,12 +31,28 @@
     [containerView addSubview:toViewController.view];
     [containerView addSubview:fromViewController.view];
     
+    NSInteger indexPathItem;
+    NSInteger indexPathSection;
+    NSInteger levelIndex = fromViewController.levelIndex;
+    if (levelIndex < 10) {
+        indexPathItem = levelIndex;
+        indexPathSection = 0;
+    } else if (levelIndex < 20) {
+        indexPathItem = levelIndex-10;
+        indexPathSection = 1;
+    } else {
+        indexPathItem = levelIndex-20;
+        indexPathSection = 2;
+        
+    }
+    
     // Get a snapshot of the thing cell we're transitioning from
     DHLevelSelection2LevelCell *cell = (DHLevelSelection2LevelCell*)[toViewController
                                                                      collectionView:toViewController.collectionView
                                                                      cellForItemAtIndexPath:
                                                                      [NSIndexPath
-                                                                      indexPathForItem:fromViewController.levelIndex inSection:0]
+                                                                      indexPathForItem:indexPathItem
+                                                                      inSection:indexPathSection]
                                                                      ];
     
     CGRect fromFrame = [transitionContext initialFrameForViewController:fromViewController];

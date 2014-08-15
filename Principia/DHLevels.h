@@ -58,9 +58,9 @@ static void FillLevelArray(NSMutableArray* array) {
     [array addObject:[[DHLevelCircleSegmentCutoff alloc] init]];
     [array addObject:[[DHLevelCircleToTangent alloc] init]];
     [array addObject:[[DHLevelThreeCircles alloc] init]];
+    [array addObject:[[DHLevelHexagon alloc] init]];
     [array addObject:[[DHLevelSegmentInThree alloc] init]];
     [array addObject:[[DHLevelCircleTangentFromPoint alloc] init]];
-    [array addObject:[[DHLevelHexagon alloc] init]];
     [array addObject:[[DHLevelTwoCirclesOuterTangent alloc] init]];
     [array addObject:[[DHLevelTwoCirclesInnerTangent alloc] init]];
     [array addObject:[[DHLevelPentagon alloc] init]];

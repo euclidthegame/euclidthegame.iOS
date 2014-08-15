@@ -18,14 +18,30 @@
 }
 
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
+    
     DHLevelSelection2ViewController *fromViewController = (DHLevelSelection2ViewController*)[transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     DHLevelViewController *toViewController = (DHLevelViewController*)[transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     
     UIView *containerView = [transitionContext containerView];
     [containerView addSubview:toViewController.view];
     
+    NSInteger indexPathItem;
+    NSInteger indexPathSection;
+    NSInteger levelIndex = toViewController.levelIndex;
+    if (levelIndex < 10) {
+        indexPathItem = levelIndex;
+        indexPathSection = 0;
+    } else if (levelIndex < 20) {
+        indexPathItem = levelIndex-10;
+        indexPathSection = 1;
+    } else {
+        indexPathItem = levelIndex-20;
+        indexPathSection = 2;
+        
+    }
+    
     // Get a snapshot of the thing cell we're transitioning from
-    DHLevelSelection2LevelCell *cell = (DHLevelSelection2LevelCell*)[fromViewController.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:toViewController.levelIndex inSection:0]];
+    DHLevelSelection2LevelCell *cell = (DHLevelSelection2LevelCell*)[fromViewController.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:indexPathItem inSection:indexPathSection]];
     
     CGRect fromFrame = [containerView convertRect:cell.frame fromView:cell.superview];
     CGRect toFrame = [transitionContext finalFrameForViewController:toViewController];

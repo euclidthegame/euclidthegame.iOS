@@ -430,6 +430,8 @@
         a2.anglePosition = 1;
         a1.showAngleText = YES;
         a2.showAngleText = YES;
+        a1.alwaysInner = YES;
+        a2.alwaysInner = YES;
         DHGeometryView* paraView = [[DHGeometryView alloc] initWithObjects:@[l1, l2]
                                                                   supView:geometryView addTo:hintView];
         DHGeometryView* lineView = [[DHGeometryView alloc] initWithObjects:@[l3, a1, a2]

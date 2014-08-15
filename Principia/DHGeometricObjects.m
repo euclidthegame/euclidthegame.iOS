@@ -986,16 +986,13 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         startAngle = CGVectorAngle(_line1.vector);
         endAngle = CGVectorAngle(CGVectorInvert(_line2.vector));
     }
-    while (endAngle < 0) {
-        endAngle += 2*M_PI;
+    if (_anglePosition == 3) {
+        startAngle = CGVectorAngle(CGVectorInvert(_line1.vector));
+        endAngle = CGVectorAngle(_line2.vector);
     }
-    while (startAngle < 0) {
+    if (endAngle <= 0) {
         startAngle += 2*M_PI;
-    }
-    startAngle = fmod(startAngle, 2*M_PI);
-    endAngle = fmod(endAngle, 2*M_PI);
-    if (endAngle == -0) {
-        endAngle = 2*M_PI;
+        endAngle += 2*M_PI;
     }
     if (startAngle>endAngle) {
         CGFloat startTemp = startAngle;

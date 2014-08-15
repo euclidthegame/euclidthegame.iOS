@@ -9,11 +9,10 @@
 #import "DHLevelHexagon.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelHexagon () {
     DHLineSegment* _lineAB;
-    BOOL hint1_OK;
-    BOOL hint2_OK;
 }
 
 @end
@@ -49,9 +48,6 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
-    hint1_OK = NO;
-    hint2_OK = NO;
-    
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:300 andY:400];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:450 andY:400];
     
@@ -223,50 +219,101 @@
 }
 
 
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    
-    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+    if (self.showingHint) {
         [self hideHint];
         return;
     }
     
-    if (hint1_OK && hint2_OK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        hint1_OK = NO;
-        hint2_OK = NO;
-        return;
-    }
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
-    [geometryView addSubview:hintView];
-    if (!hint1_OK) {
-        Message* message1 = [[Message alloc] initWithMessage:@"You can find all the required points, using only one tool." andPoint:CGPointMake(150,150)];
-        [hintView addSubview:message1];
-        [self fadeIn:message1 withDuration:1.0];
-        hint1_OK = YES;
-        return;
-    }
-    else if (!hint2_OK) {
-        Message* message2 = [[Message alloc] initWithMessage:@"Try the circle tool." andPoint:CGPointMake(150,150)];
-        [hintView addSubview:message2];
-        [self fadeIn:message2 withDuration:1.0];
-        hint2_OK = YES;
-        return;
-    }
+    self.showingHint = YES;
     
-}
--(void)hideHint {
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            self.heightToolbar.constant= -20 + a;
-        } afterDelay:a* (1/90.0) ];
-    }
-    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
-    else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
-    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-    return;
+    [self slideOutToolbar];
+    
+    DHGeometryView* hintView = [[DHGeometryView alloc] initWithFrame:geometryView.frame];
+    hintView.backgroundColor = [UIColor whiteColor];
+    hintView.layer.opacity = 0;
+    hintView.hideBottomBorder = YES;
+    [geometryView addSubview:hintView];
+    [self fadeInViews:@[hintView] withDuration:1.0];
+    
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        hintView.frame = geometryView.frame;
+        
+        CGFloat centerX = geometryView.center.x;
+
+        DHPoint* pA = [[DHPoint alloc] initWithPositionX:centerX-80 andY:400];
+        DHPoint* pB = [[DHPoint alloc] initWithPositionX:centerX+80 andY:400];
+        
+        
+        DHTrianglePoint* center = [[DHTrianglePoint alloc] initWithPoint1:pA andPoint2:pB];
+        DHPoint* pC = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pB];
+        DHPoint* pD = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pC];
+        DHPoint* pE = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pD];
+        DHPoint* pF = [[DHTrianglePoint alloc] initWithPoint1:center andPoint2:pE];
+        
+        DHLineSegment* lAB = [[DHLineSegment alloc] initWithStart:pA andEnd:pB];
+        DHLineSegment* lBC = [[DHLineSegment alloc] initWithStart:pB andEnd:pC];
+        DHLineSegment* lCD = [[DHLineSegment alloc] initWithStart:pC andEnd:pD];
+        DHLineSegment* lDE = [[DHLineSegment alloc] initWithStart:pD andEnd:pE];
+        DHLineSegment* lEF = [[DHLineSegment alloc] initWithStart:pE andEnd:pF];
+        DHLineSegment* lFA = [[DHLineSegment alloc] initWithStart:pF andEnd:pA];
+        
+        DHAngleIndicator* angleA = [[DHAngleIndicator alloc] initWithLine1:lFA line2:lAB andRadius:20];
+        angleA.showAngleText = YES;
+        angleA.anglePosition = 3;
+        DHAngleIndicator* angleB = [[DHAngleIndicator alloc] initWithLine1:lAB line2:lBC andRadius:20];
+        angleB.showAngleText = YES;
+        angleB.anglePosition = 3;
+        DHAngleIndicator* angleC = [[DHAngleIndicator alloc] initWithLine1:lBC line2:lCD andRadius:20];
+        angleC.showAngleText = YES;
+        angleC.anglePosition = 3;
+        angleC.alwaysInner = YES;
+        DHAngleIndicator* angleD = [[DHAngleIndicator alloc] initWithLine1:lCD line2:lDE andRadius:20];
+        angleD.showAngleText = YES;
+        angleD.anglePosition = 3;
+        DHAngleIndicator* angleE = [[DHAngleIndicator alloc] initWithLine1:lDE line2:lEF andRadius:20];
+        angleE.showAngleText = YES;
+        angleE.anglePosition = 3;
+        DHAngleIndicator* angleF = [[DHAngleIndicator alloc] initWithLine1:lFA line2:lEF andRadius:20];
+        angleF.showAngleText = YES;
+        angleF.anglePosition = 2;
+        angleF.alwaysInner = YES;
+        
+        DHGeometryView* hexaView = [[DHGeometryView alloc] initWithObjects:@[lAB, lBC, lCD, lDE, lEF, lFA,
+                                                                             angleA, angleB, angleC, angleD,
+                                                                             angleE, angleF]
+                                                                   supView:geometryView addTo:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(80,460)];
+            [message2 position: CGPointMake(80,480)];
+            [message3 position: CGPointMake(80,500)];
+            [message4 position: CGPointMake(80,520)];
+        }
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"All the inner angles of a hexagon always equal 120°."];
+            [self fadeInViews:@[message1, hexaView] withDuration:2.5];
+        }];
+        [self afterDelay:3.0:^{
+            [message2 text:@"Do you have tool that can make an angle easily related to that?"];
+            [self fadeInViews:@[message2] withDuration:2.5];
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
 }
 
 @end

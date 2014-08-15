@@ -9,13 +9,12 @@
 #import "DHLevelCircleSegmentCutoff.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelCircleSegmentCutoff () {
     DHLineSegment* _lAB;
     DHLine* _givenLine;
     DHPoint* _pC;
-    BOOL hint1_OK;
-    BOOL hint2_OK;
 }
 
 @end
@@ -57,9 +56,6 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
-    hint1_OK = NO;
-    hint2_OK = NO;
-    
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:100 andY:150];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:250 andY:100];
     DHPoint* pC = [[DHPoint alloc] initWithPositionX:300 andY:400];
@@ -193,30 +189,23 @@
     return CGPointMake(NAN, NAN);
 }
 
--(void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint *)heightToolBar and:(UIButton *)hintButton {
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    if ([self.hintButton.titleLabel.text isEqualToString:@"Hide hint"] ) {
+    if (self.showingHint) {
         [self hideHint];
         return;
     }
-    if (hint1_OK) {
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:3.0];
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        hint1_OK = NO;
-        return;
-    }
     
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            heightToolBar.constant= 70 - a;
-        } afterDelay:a* (1/90.0) ];
-    }
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
     
     Message* message1 = [[Message alloc] initWithMessage:@"We are looking for a circle such that:" andPoint:CGPointMake(270,100)];
     Message* message2 = [[Message alloc] initWithMessage:@"  AB = DE" andPoint:CGPointMake(270,120)];
-    Message* message3 = [[Message alloc] initWithMessage:@"Remember the intersting fact that we've learned in Level 14." andPoint:CGPointMake(270,140)];
-    Message* message4 = [[Message alloc] initWithMessage:@"The perpendicular bisector of DE must pass through the center." andPoint:CGPointMake(270,160)];
+    Message* message3 = [[Message alloc] initWithMessage:@"Remember the intersting fact that we learned in Level 14." andPoint:CGPointMake(270,140)];
+    Message* message4 = [[Message alloc] initWithMessage:@"The perpendicular bisector of DE will pass through the center." andPoint:CGPointMake(270,160)];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {
@@ -256,19 +245,27 @@
     
     DHGeometryView* circleView = [[DHGeometryView alloc]initWithObjects:@[c,ip3,ip2] andSuperView:geometryView];
     DHGeometryView* segmentView = [[DHGeometryView alloc]initWithObjects:@[lAB,p1,p2] andSuperView:geometryView];
-    DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[lp,ip1] andSuperView:geometryView];
+    DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[lp, _pC, ip1] andSuperView:geometryView];
     
-    UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
-    [geometryView addSubview:hintView];
-    [hintView addSubview:perpView];
-    [hintView addSubview:circleView];
-    [hintView addSubview:segmentView];
-    [hintView addSubview:message1];
-    [hintView addSubview:message2];
-    [hintView addSubview:message3];
-    [hintView addSubview:message4];
+    lAB.temporary = lp.temporary = c.temporary = YES;
     
-    if (!hint1_OK) {
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        
+        UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+        [geometryView addSubview:hintView];
+        [hintView addSubview:circleView];
+        [hintView addSubview:segmentView];
+        [hintView addSubview:perpView];
+        [hintView addSubview:message1];
+        [hintView addSubview:message2];
+        [hintView addSubview:message3];
+        [hintView addSubview:message4];
+        
+        [self afterDelay:0.5 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
         [self afterDelay:0.0 performBlock:^{
             [self fadeIn:message1 withDuration:1.0];
             [self fadeIn:circleView withDuration:2.0];
@@ -289,20 +286,7 @@
         [self afterDelay:12.0 performBlock:^{
             [self fadeIn:perpView withDuration:2.0];
             [self fadeIn:message4 withDuration:1.0];
-            hint1_OK = YES;
         }];
-    }
-    
-}
--(void)hideHint {
-    for (int a=0; a<90; a++) {
-        [self performBlock:^{
-            self.heightToolbar.constant= -20 + a;
-        } afterDelay:a* (1/90.0) ];
-    }
-    if (!hint1_OK){        [self.hintButton setTitle:@"Show hint" forState:UIControlStateNormal];}
-    else {[self.hintButton setTitle:@"Show next hint" forState:UIControlStateNormal];}
-    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-    return;
+    }];
 }
 @end

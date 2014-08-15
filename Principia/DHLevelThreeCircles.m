@@ -9,6 +9,7 @@
 #import "DHLevelThreeCircles.h"
 
 #import "DHGeometricObjects.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelThreeCircles () {
     DHLineSegment* _lAB;
@@ -201,10 +202,95 @@
     return CGPointMake(NAN, NAN);
 }
 
--(void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint *)heightToolBar and:(UIButton *)hintButton{
+- (void)showHint
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
     
-    [self showTemporaryMessage:@"There are no hints available for the this level." atPoint:CGPointMake(self.geometryView.center.x,50) withColor:[UIColor darkGrayColor] andTime:4.0];
-    return;
+    if (self.showingHint) {
+        [self hideHint];
+        return;
+    }
+    
+    self.showingHint = YES;
+    
+    [self slideOutToolbar];
+    
+    DHGeometryView* hintView = [[DHGeometryView alloc] initWithFrame:geometryView.frame];
+    hintView.backgroundColor = [UIColor whiteColor];
+    hintView.layer.opacity = 0;
+    hintView.hideBottomBorder = YES;
+    [geometryView addSubview:hintView];
+    [self fadeInViews:@[hintView] withDuration:1.0];
+    
+    [self afterDelay:1.0 :^{
+        if (!self.showingHint) return;
+        hintView.frame = geometryView.frame;
+        
+        CGFloat centerX = geometryView.center.x;
+        DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX-100 andY:200];
+        DHPoint* p2 = [[DHPoint alloc] initWithPositionX:centerX andY:200];
+        DHPoint* p3 = [[DHPoint alloc] initWithPositionX:centerX+100 andY:200];
+        DHPoint* p4 = [[DHPoint alloc] initWithPositionX:centerX andY:400];
+        DHCircle* c1 = [[DHCircle alloc] initWithCenter:p1 andPointOnRadius:p2];
+        DHCircle* c2 = [[DHCircle alloc] initWithCenter:p3 andPointOnRadius:p2];
+        DHLineSegment* radius1 = [[DHLineSegment alloc] initWithStart:p1 andEnd:p2];
+        DHLineSegment* radius2 = [[DHLineSegment alloc] initWithStart:p3 andEnd:p2];
+        DHLineSegment* tangent = [[DHLineSegment alloc] initWithStart:p2 andEnd:p4];
+        p2.temporary = c2.temporary = radius1.temporary = radius2.temporary = tangent.temporary = YES;
+
+        DHAngleIndicator* angle = [[DHAngleIndicator alloc] initWithLine1:radius1 line2:radius2 andRadius:20];
+        angle.label = @"?";
+        angle.anglePosition = 1;
+        
+        DHGeometryView* circleView = [[DHGeometryView alloc] initWithObjects:@[c1, c2]
+                                                                   supView:geometryView addTo:hintView];
+        DHGeometryView* p2View = [[DHGeometryView alloc] initWithObjects:@[p2]
+                                                                      supView:geometryView addTo:hintView];
+        DHGeometryView* tangentView = [[DHGeometryView alloc] initWithObjects:@[tangent, p2]
+                                                                   supView:geometryView addTo:hintView];
+        DHGeometryView* radiusView = [[DHGeometryView alloc] initWithObjects:@[radius1, radius2, p1, p3, p2]
+                                                                      supView:geometryView addTo:hintView];
+        DHGeometryView* angleView = [[DHGeometryView alloc] initWithObjects:@[angle]
+                                                                     supView:geometryView addTo:hintView];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
+        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
+        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
+        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if(UIInterfaceOrientationIsLandscape(orientation)) {
+            [message1 position: CGPointMake(80,460)];
+            [message2 position: CGPointMake(80,480)];
+            [message3 position: CGPointMake(80,500)];
+            [message4 position: CGPointMake(80,520)];
+        }
+        
+        [self afterDelay:0.0:^{
+            [message1 text:@"If two circles are tangent they only touch on exactly one point."];
+            [self fadeInViews:@[message1, circleView, p2View] withDuration:2.5];
+        }];
+        
+        [self afterDelay:4.0 :^{
+            [message2 text:@"From this point a tangent line will also be tangent to both circles."];
+            [self fadeInViews:@[message2, tangentView] withDuration:2.5];
+        }];
+        
+        [self afterDelay:8.0 :^{
+            [message3 text:@"We already know the angle between the tangent line and a radial line."];
+            [self fadeInViews:@[message3, radiusView] withDuration:2.5];
+        }];
+
+        [self afterDelay:12.0 :^{
+            [message4 text:@"What must the angle between the two radial lines then be?"];
+            [self fadeInViews:@[message4, angleView] withDuration:2.5];
+        }];
+        
+        [self afterDelay:2.0 :^{
+            [self showEndHintMessageInView:hintView];
+        }];
+        
+    }];
 }
+
 @end
 

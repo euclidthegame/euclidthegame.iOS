@@ -994,6 +994,9 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
     }
     startAngle = fmod(startAngle, 2*M_PI);
     endAngle = fmod(endAngle, 2*M_PI);
+    if (endAngle == -0) {
+        endAngle = 2*M_PI;
+    }
     CGFloat angle = fabs((endAngle-startAngle) / M_PI * 180.0);
     
     if (self.squareRightAngles && fabs(angle-90.0)<0.5) {

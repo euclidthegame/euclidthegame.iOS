@@ -155,10 +155,11 @@
         if (_temporarySegment2.end != _tempEndPoint) {
             _temporarySegment1.temporary = NO;
             _temporarySegment2.temporary = NO;
+
+            if (_tempIntersectionStart) [objectsToAdd addObject:_tempIntersectionStart];
+            if (_tempIntersectionEnd) [objectsToAdd addObject:_tempIntersectionEnd];            
             [objectsToAdd addObjectsFromArray:@[_tempTrianglePoint, _temporarySegment1, _temporarySegment2]];
             
-            if (_tempIntersectionStart) [objectsToAdd addObject:_tempIntersectionStart];
-            if (_tempIntersectionEnd) [objectsToAdd addObject:_tempIntersectionEnd];
             [self.delegate addGeometricObjects:objectsToAdd];
             
             [self reset];

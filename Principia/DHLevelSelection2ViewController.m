@@ -13,6 +13,7 @@
 #import "DHLevelViewController.h"
 #import "DHSettings.h"
 #import "DHTransitionToLevel.h"
+#import "DHIAPManager.h"
 
 @interface DHLevelSelection2HeaderView : UICollectionReusableView
 @property (nonatomic, strong) UILabel* title;
@@ -24,15 +25,52 @@
     {
         _title = [[UILabel alloc] initWithFrame:CGRectMake(10, 6, 200, 25)];
         _title.font = [UIFont boldSystemFontOfSize:16];
-        _title.textColor = [UIColor darkGrayColor];
+        _title.textColor = [UIColor lightGrayColor];
         _title.text = @"Beginner";
         [self addSubview:_title];
         //self.backgroundColor = [UIColor redColor];
     }
     return self;
 }
-- (void)prepareForReuse
+@end
+@interface DHLevelSelection2FooterView : UICollectionReusableView
+@property (nonatomic, strong) UIButton* button;
+@end
+@implementation DHLevelSelection2FooterView
+- (id)initWithFrame:(CGRect)frame
 {
+    self = [super initWithFrame:frame];
+    {
+        _button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [_button setTitle:@"\U0001F513 Buy levels 11 through 25" forState:UIControlStateNormal];
+        _button.titleLabel.font = [UIFont systemFontOfSize:18.0];
+        [_button addTarget:self action:@selector(buyLevelPack1) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:_button];
+        _button.enabled = [[DHIAPManager sharedInstance] canMakePurchases];
+    }
+    return self;
+}
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableButton)
+                                                 name:DHIAPManagerBecameAvailableNotification object:nil];
+}
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+- (void)enableButton
+{
+    _button.enabled = YES;
+}
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    _button.frame = self.bounds;
+}
+- (void)buyLevelPack1
+{
+    [[DHIAPManager sharedInstance] buyProductWithIdentifier:@"DH_Euclid_LevelPack1"];
 }
 @end
 
@@ -77,11 +115,17 @@
     [self.collectionView registerClass:[DHLevelSelection2HeaderView class]
             forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                    withReuseIdentifier:@"HeaderView"];
+    [self.collectionView registerClass:[DHLevelSelection2FooterView class]
+            forSupplementaryViewOfKind:UICollectionElementKindSectionFooter
+                   withReuseIdentifier:@"FooterView"];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productPurchased:)
+                                                 name:DHIAPManagerProductPurchasedNotification object:nil];
     
     [self.collectionView reloadData];
 }
@@ -96,6 +140,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     // Stop being the navigation controller's delegate
     if (self.navigationController.delegate == self) {
@@ -161,7 +207,7 @@
         }
     }
     
-    if (indexPath.item > 0 && [DHSettings allLevelsUnlocked] == NO) {
+    if (!(indexPath.section == 0 && indexPath.item == 0) && [DHSettings allLevelsUnlocked] == NO) {
         id<DHLevel> previousLevel = [_levels objectAtIndex:levelIndex-1];
         
         cell.enabled = NO;
@@ -207,8 +253,24 @@
             headerView.title.text = @"Expert";
         }
     }
+    if (kind == UICollectionElementKindSectionFooter && indexPath.section == 0) {
+        DHLevelSelection2FooterView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
+        
+        reusableview = footerView;
+    }
     
     return reusableview;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
+{
+    if (section==0 && ![DHSettings levelPack1Purchased]) {
+        return  CGSizeMake(0, 80);
+    }
+    else
+    {
+        return CGSizeMake(0, 0);
+    }
 }
 
 #pragma mark Launch level
@@ -245,6 +307,12 @@
     else {
         return nil;
     }
+}
+
+#pragma mark - Respond to product purchase
+- (void)productPurchased:(NSNotification *)notification
+{
+    [self.collectionView reloadData];
 }
 
 @end

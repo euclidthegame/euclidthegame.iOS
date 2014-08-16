@@ -9,14 +9,19 @@
 #import <Foundation/Foundation.h>
 @import StoreKit;
 
+UIKIT_EXTERN NSString *const DHIAPManagerProductPurchasedNotification;
+UIKIT_EXTERN NSString *const DHIAPManagerBecameAvailableNotification;
+
 typedef void (^RequestProductsCompletionHandler)(BOOL success, NSArray * products);
 
 @interface DHIAPManager : NSObject
 
+@property (nonatomic, readonly) BOOL canMakePurchases;
+
 + (void)startup;
 + (DHIAPManager*) sharedInstance;
 
-- (id)initWithProductIdentifiers:(NSSet *)productIdentifiers;
-- (void)requestProductsWithCompletionHandler:(RequestProductsCompletionHandler)completionHandler;
+- (void)buyProductWithIdentifier:(NSString *)productIdentifier;
+- (void)restoreCompletedTransactions;
 
 @end

@@ -93,7 +93,7 @@ static const NSUInteger kResetProgressAlertView = 1;
 
 - (IBAction)restorePurchases:(id)sender
 {
-    
+    [[DHIAPManager sharedInstance] restoreCompletedTransactions];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

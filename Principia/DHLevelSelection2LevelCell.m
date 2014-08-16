@@ -30,7 +30,6 @@
         self.layer.shadowColor = [UIColor blackColor].CGColor;
         self.layer.shadowOffset = CGSizeMake(3, 3);
         self.layer.shadowOpacity = 0.5;
-        self.layer.shadowRadius = 6.0;
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
         [self addSubview:_titleLabel];
@@ -161,16 +160,16 @@
         self.layer.shadowColor = [UIColor blackColor].CGColor;
         self.layer.shadowOffset = CGSizeMake(3, 3);
         self.layer.shadowOpacity = 0.5;
-        
+        self.layer.shadowRadius = 5.0;
     } else {
         self.userInteractionEnabled = NO;
         _titleLabel.textColor = [UIColor colorWithRed:0.85 green:0.85 blue:0.85 alpha:1];
-        _geometryView.alpha = 0.3;
+        _geometryView.alpha = 0.2;
 
-        self.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.layer.shadowColor = [UIColor darkGrayColor].CGColor;
         self.layer.shadowOffset = CGSizeMake(1, 1);
         self.layer.shadowOpacity = 0.2;
-    
+        self.layer.shadowRadius = 2.0;
     }
 }
 

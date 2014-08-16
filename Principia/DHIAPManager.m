@@ -7,12 +7,17 @@
 //
 
 #import "DHIAPManager.h"
+#import "DHSettings.h"
 
-@interface DHIAPManager () <SKProductsRequestDelegate> {
+NSString *const DHIAPManagerProductPurchasedNotification = @"DHIAPManagerProductPurchasedNotification";
+NSString *const DHIAPManagerBecameAvailableNotification = @"DHIAPManagerBecameAvailableNotification";
+
+@interface DHIAPManager () <SKProductsRequestDelegate, SKPaymentTransactionObserver> {
     SKProductsRequest * _productsRequest;
     RequestProductsCompletionHandler _completionHandler;
     NSSet * _productIdentifiers;
     NSMutableSet * _purchasedProductIdentifiers;
+    NSMutableSet* _products;
 }
 @end
 
@@ -41,19 +46,13 @@
         
         // Store product identifiers
         _productIdentifiers = productIdentifiers;
+        _products = [[NSMutableSet alloc] init];
         
-        // Check for previously purchased products
-        _purchasedProductIdentifiers = [NSMutableSet set];
-        for (NSString * productIdentifier in _productIdentifiers) {
-            BOOL productPurchased = [[NSUserDefaults standardUserDefaults] boolForKey:productIdentifier];
-            if (productPurchased) {
-                [_purchasedProductIdentifiers addObject:productIdentifier];
-                //NSLog(@"Previously purchased: %@", productIdentifier);
-            } else {
-                //NSLog(@"Not purchased: %@", productIdentifier);
-            }
-        }
+        [self requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
+            
+        }];
         
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     }
     return self;
 }
@@ -75,12 +74,18 @@
     _productsRequest = nil;
     
     NSArray * skProducts = response.products;
-    /*for (SKProduct * skProduct in skProducts) {
-        NSLog(@"Found product: %@ %@ %0.2f",
+    for (SKProduct * skProduct in skProducts) {
+        [_products addObject:skProduct];
+        /*NSLog(@"Found product: %@ %@ %0.2f",
               skProduct.productIdentifier,
               skProduct.localizedTitle,
-              skProduct.price.floatValue);
-    }*/
+              skProduct.price.floatValue);*/
+    }
+    
+    if (_products.count > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPManagerBecameAvailableNotification
+                                                            object:nil userInfo:nil];
+    }
     
     if(_completionHandler) _completionHandler(YES, skProducts);
     _completionHandler = nil;
@@ -95,6 +100,95 @@
     if(_completionHandler) _completionHandler(NO, nil);
     _completionHandler = nil;
     
+}
+
+- (BOOL)productPurchased:(NSString *)productIdentifier {
+    return [_purchasedProductIdentifiers containsObject:productIdentifier];
+}
+
+- (void)buyProduct:(SKProduct *)product {
+    
+    //NSLog(@"Buying %@...", product.productIdentifier);
+    
+    SKPayment * payment = [SKPayment paymentWithProduct:product];
+    [[SKPaymentQueue defaultQueue] addPayment:payment];
+    
+}
+
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
+{
+    for (SKPaymentTransaction * transaction in transactions) {
+        switch (transaction.transactionState)
+        {
+            case SKPaymentTransactionStatePurchased:
+                [self completeTransaction:transaction];
+                break;
+            case SKPaymentTransactionStateFailed:
+                [self failedTransaction:transaction];
+                break;
+            case SKPaymentTransactionStateRestored:
+                [self restoreTransaction:transaction];
+            default:
+                break;
+        }
+    };
+}
+
+- (void)completeTransaction:(SKPaymentTransaction *)transaction {
+    //NSLog(@"completeTransaction...");
+    
+    [self provideContentForProductIdentifier:transaction.payment.productIdentifier];
+    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+}
+
+- (void)restoreTransaction:(SKPaymentTransaction *)transaction {
+    //NSLog(@"restoreTransaction...");
+    
+    [self provideContentForProductIdentifier:transaction.originalTransaction.payment.productIdentifier];
+    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+}
+
+- (void)failedTransaction:(SKPaymentTransaction *)transaction {
+    
+    //NSLog(@"failedTransaction...");
+    if (transaction.error.code != SKErrorPaymentCancelled)
+    {
+        NSLog(@"Transaction error: %@", transaction.error.localizedDescription);
+    }
+    
+    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+}
+
+- (void)provideContentForProductIdentifier:(NSString *)productIdentifier {
+    
+    [_purchasedProductIdentifiers addObject:productIdentifier];
+    
+    if ([productIdentifier isEqualToString:@"DH_Euclid_LevelPack1"]) {
+        [DHSettings setLevelPack1Purchased:YES];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPManagerProductPurchasedNotification
+                                                        object:productIdentifier userInfo:nil];
+}
+
+- (void)restoreCompletedTransactions {
+    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+}
+
+- (void)buyProductWithIdentifier:(NSString *)productIdentifier
+{
+    for (SKProduct* product in _products) {
+        if ([product.productIdentifier isEqualToString:productIdentifier]) {
+            [self buyProduct:product];
+            return;
+        }
+    }
+    //NSLog(@"Error, attept to buy unrecognized product: %@", productIdentifier);
+}
+
+- (BOOL)canMakePurchases
+{
+    return (_products.count > 0) && [SKPaymentQueue canMakePayments];
 }
 
 @end

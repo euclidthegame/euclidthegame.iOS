@@ -13,6 +13,7 @@ typedef void (^RequestProductsCompletionHandler)(BOOL success, NSArray * product
 
 @interface DHIAPManager : NSObject
 
++ (void)startup;
 + (DHIAPManager*) sharedInstance;
 
 - (id)initWithProductIdentifiers:(NSSet *)productIdentifiers;

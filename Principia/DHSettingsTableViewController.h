@@ -17,6 +17,7 @@
 @property BOOL showHiddenSettings;
 
 - (IBAction)resetAllProgress:(id)sender;
+- (IBAction)restorePurchases:(id)sender;
 
 
 @end

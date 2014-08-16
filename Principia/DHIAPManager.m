@@ -18,6 +18,11 @@
 
 @implementation DHIAPManager
 
++ (void)startup
+{
+    [self sharedInstance];
+}
+
 + (DHIAPManager *)sharedInstance {
     static dispatch_once_t once;
     static DHIAPManager* sharedInstance;

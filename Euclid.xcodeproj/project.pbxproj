@@ -64,6 +64,7 @@
 		6872A7E119702A1700823AF9 /* DHLevelPentagon.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7E019702A1700823AF9 /* DHLevelPentagon.m */; };
 		68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */; };
 		68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */; };
+		68E3CAB2199F138F0018851F /* NSUserDefaults+Encryption.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */; };
 		68F0A9C819587AEC00A97B86 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
 		68F0A9CA19587AEC00A97B86 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */; };
 		68F0A9CC19587AEC00A97B86 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
@@ -193,6 +194,8 @@
 		68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelThreeCircles.m; sourceTree = "<group>"; };
 		68D0F61C196DAF8C00C4D617 /* DHLevelSegmentInThree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSegmentInThree.h; sourceTree = "<group>"; };
 		68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSegmentInThree.m; sourceTree = "<group>"; };
+		68E3CAB0199F138F0018851F /* NSUserDefaults+Encryption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Encryption.h"; sourceTree = "<group>"; };
+		68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+Encryption.m"; sourceTree = "<group>"; };
 		68F0A9C419587AEC00A97B86 /* Euclid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Euclid.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68F0A9C719587AEC00A97B86 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -495,6 +498,8 @@
 				68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */,
 				68471127197843D6003B681B /* DHSettings.h */,
 				68471128197843D6003B681B /* DHSettings.m */,
+				68E3CAB0199F138F0018851F /* NSUserDefaults+Encryption.h */,
+				68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */,
 				6847112419783EE6003B681B /* DHSettingsViewController.h */,
 				6847112519783EE6003B681B /* DHSettingsViewController.m */,
 				681C8884198D0BF1005307F5 /* DHSettingsTableViewController.h */,
@@ -683,6 +688,7 @@
 				68F0AA18195A96D500A97B86 /* DHLevelEquiTri.m in Sources */,
 				684708AF1967496600C1FA83 /* DHLevelParallellLines.m in Sources */,
 				686622401972A7AB004DCFAC /* DHGameModeSelectionViewController.m in Sources */,
+				68E3CAB2199F138F0018851F /* NSUserDefaults+Encryption.m in Sources */,
 				68F0AA45196420C700A97B86 /* DHLevelPerpendicular.m in Sources */,
 				681C88A41991F5AB005307F5 /* DHLineTool.m in Sources */,
 				68471129197843D6003B681B /* DHSettings.m in Sources */,

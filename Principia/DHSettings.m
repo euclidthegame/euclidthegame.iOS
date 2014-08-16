@@ -7,9 +7,13 @@
 //
 
 #import "DHSettings.h"
+#import "NSUserDefaults+Encryption.h"
 
 @implementation DHSettings
-
++ (void)initialize
+{
+    [[NSUserDefaults standardUserDefaults] setEncryptionKey:@"euclidthegameencryptionkey_irtbvfbh"];
+}
 + (BOOL)getBoolSettingForKey:(NSString*)key withDefault:(BOOL)defaultValue
 {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
@@ -25,6 +29,24 @@
 {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setBool:newValue forKey:key];
+    [userDefaults synchronize];
+}
++ (BOOL)getEncryptedBoolSettingForKey:(NSString*)key withDefault:(BOOL)defaultValue
+{
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    NSNumber* valueObject = [userDefaults objectEncryptedForKey:key];
+    if (!valueObject) {
+        return defaultValue;
+    }
+    
+    BOOL settingValue = [valueObject boolValue];
+    return settingValue;
+}
++ (void)setEncryptedBoolSettingForKey:(NSString*)key toValue:(BOOL)newValue
+{
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    NSNumber* settingValue = [NSNumber numberWithBool:newValue];
+    [userDefaults setObjectEncrypted:settingValue forKey:key];
     [userDefaults synchronize];
 }
 
@@ -66,5 +88,13 @@
     [self setBoolSettingForKey:kSettingKey_ShowHints toValue:value];
 }
 
++ (BOOL)levelPack1Purchased
+{
+    return [self getBoolSettingForKey:kSettingKey_LevelPack1Purchased withDefault:NO];
+}
++ (void)setLevelPack1Purchased:(BOOL)value
+{
+    [self setBoolSettingForKey:kSettingKey_LevelPack1Purchased toValue:value];
+}
 
 @end

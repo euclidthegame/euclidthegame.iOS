@@ -24,7 +24,7 @@
     [DHIAPManager startup];
     
     #if TARGET_IPHONE_SIMULATOR
-    [DHSettings setLevelPack1Purchased:NO];
+    [DHSettings setLevelPack1Purchased:YES];
     #endif
     
     return YES;

@@ -9,8 +9,11 @@
 #import "DHIAPManager.h"
 #import "DHSettings.h"
 
+NSString *const DHIAPTransactionFailedNotification = @"DHIAPTransactionFailedNotification";
 NSString *const DHIAPManagerProductPurchasedNotification = @"DHIAPManagerProductPurchasedNotification";
 NSString *const DHIAPManagerBecameAvailableNotification = @"DHIAPManagerBecameAvailableNotification";
+NSString *const DHIAPManagerLevelPack1ProductID = @"DH_Euclid_LevelPack1";
+NSInteger const kDHIAPManagerTransactionFailed = 1;
 
 @interface DHIAPManager () <SKProductsRequestDelegate, SKPaymentTransactionObserver> {
     SKProductsRequest * _productsRequest;
@@ -33,7 +36,7 @@ NSString *const DHIAPManagerBecameAvailableNotification = @"DHIAPManagerBecameAv
     static DHIAPManager* sharedInstance;
     dispatch_once(&once, ^{
         NSSet * productIdentifiers = [NSSet setWithObjects:
-                                      @"DH_Euclid_LevelPack1",
+                                      DHIAPManagerLevelPack1ProductID,
                                       nil];
         sharedInstance = [[self alloc] initWithProductIdentifiers:productIdentifiers];
     });
@@ -112,7 +115,6 @@ NSString *const DHIAPManagerBecameAvailableNotification = @"DHIAPManagerBecameAv
     
     SKPayment * payment = [SKPayment paymentWithProduct:product];
     [[SKPaymentQueue defaultQueue] addPayment:payment];
-    
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
@@ -156,14 +158,17 @@ NSString *const DHIAPManagerBecameAvailableNotification = @"DHIAPManagerBecameAv
         NSLog(@"Transaction error: %@", transaction.error.localizedDescription);
     }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPTransactionFailedNotification
+                                                        object:transaction.error userInfo:nil];
+    
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
 }
 
-- (void)provideContentForProductIdentifier:(NSString *)productIdentifier {
-    
+- (void)provideContentForProductIdentifier:(NSString *)productIdentifier
+{
     [_purchasedProductIdentifiers addObject:productIdentifier];
     
-    if ([productIdentifier isEqualToString:@"DH_Euclid_LevelPack1"]) {
+    if ([productIdentifier isEqualToString:DHIAPManagerLevelPack1ProductID]) {
         [DHSettings setLevelPack1Purchased:YES];
     }
     
@@ -183,7 +188,10 @@ NSString *const DHIAPManagerBecameAvailableNotification = @"DHIAPManagerBecameAv
             return;
         }
     }
-    //NSLog(@"Error, attept to buy unrecognized product: %@", productIdentifier);
+    NSError* error = [[NSError alloc] initWithDomain:@"DHIAPManager" code:kDHIAPManagerTransactionFailed userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPTransactionFailedNotification
+                                                        object:error userInfo:nil];
+
 }
 
 - (BOOL)canMakePurchases

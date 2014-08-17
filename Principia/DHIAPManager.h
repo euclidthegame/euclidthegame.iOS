@@ -9,8 +9,11 @@
 #import <Foundation/Foundation.h>
 @import StoreKit;
 
+UIKIT_EXTERN NSString *const DHIAPTransactionFailedNotification;
 UIKIT_EXTERN NSString *const DHIAPManagerProductPurchasedNotification;
 UIKIT_EXTERN NSString *const DHIAPManagerBecameAvailableNotification;
+UIKIT_EXTERN NSString *const DHIAPManagerLevelPack1ProductID;
+UIKIT_EXTERN NSInteger const kDHIAPManagerTransactionFailed;
 
 typedef void (^RequestProductsCompletionHandler)(BOOL success, NSArray * products);
 

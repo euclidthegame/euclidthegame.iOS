@@ -35,6 +35,8 @@
 @end
 @interface DHLevelSelection2FooterView : UICollectionReusableView
 @property (nonatomic, strong) UIButton* button;
+@property (nonatomic, strong) UILabel* unavailableLabel;
+@property (nonatomic, strong) UIActivityIndicatorView* activityIndicator;
 @end
 @implementation DHLevelSelection2FooterView
 - (id)initWithFrame:(CGRect)frame
@@ -47,30 +49,92 @@
         [_button addTarget:self action:@selector(buyLevelPack1) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_button];
         _button.enabled = [[DHIAPManager sharedInstance] canMakePurchases];
+        
+        _unavailableLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+        _unavailableLabel.font = [UIFont systemFontOfSize:14.0];
+        _unavailableLabel.textColor = [UIColor lightGrayColor];
+        _unavailableLabel.textAlignment = NSTextAlignmentCenter;
+        _unavailableLabel.text = @"(App Store currently unavailable)";
+        _unavailableLabel.hidden = _button.enabled;
+        [self addSubview:_unavailableLabel];
     }
     return self;
 }
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableButton)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableButton:)
                                                  name:DHIAPManagerBecameAvailableNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transactionFailed:)
+                                                 name:DHIAPTransactionFailedNotification object:nil];
 }
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-- (void)enableButton
+- (void)enableButton:(NSNotification*)notification
 {
     _button.enabled = YES;
+    _unavailableLabel.hidden = YES;
+}
+- (void)transactionFailed:(NSNotification*)notification
+{
+    if (notification.object) {
+        NSError* error = notification.object;
+        if ([error.domain isEqualToString:@"DHIAPManager"]) {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Unable to connect to App Store"
+                                                            message:(@"Unfortunately the App Store seems to be "
+                                                                     @"unavailable at the moment.")
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        } else {
+            UIAlertView* alert = [[UIAlertView alloc] initWithTitle:error.localizedDescription
+                                                            message:error.localizedFailureReason
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
+        [self removeActivityIndicator];
+    }
 }
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    _button.frame = self.bounds;
+    _button.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
+    _unavailableLabel.frame = CGRectMake(0, self.bounds.size.height-20, self.bounds.size.width, 20);
 }
 - (void)buyLevelPack1
 {
-    [[DHIAPManager sharedInstance] buyProductWithIdentifier:@"DH_Euclid_LevelPack1"];
+    if ([[DHIAPManager sharedInstance] canMakePurchases]) {
+        [self showActivityIndicator];
+        [[DHIAPManager sharedInstance] buyProductWithIdentifier:DHIAPManagerLevelPack1ProductID];
+    } else {
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Unable to connect to App Store"
+                                                        message:(@"Unfortunately the App Store seems to be "
+                                                                 @"unavailable at the moment.")
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+}
+- (void)showActivityIndicator
+{
+    [_button removeFromSuperview];
+    [_unavailableLabel removeFromSuperview];
+    UIActivityIndicatorView* ai = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    ai.frame = self.bounds;
+    [self addSubview:ai];
+    [ai startAnimating];
+    _activityIndicator = ai;
+}
+- (void)removeActivityIndicator
+{
+    if (_activityIndicator) {
+        [_activityIndicator removeFromSuperview];
+        _activityIndicator = nil;
+    }
+    [self addSubview:_button];
+    [self addSubview:_unavailableLabel];
 }
 @end
 

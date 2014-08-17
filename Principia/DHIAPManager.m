@@ -152,14 +152,15 @@ NSInteger const kDHIAPManagerTransactionFailed = 1;
 
 - (void)failedTransaction:(SKPaymentTransaction *)transaction {
     
-    //NSLog(@"failedTransaction...");
-    if (transaction.error.code != SKErrorPaymentCancelled)
+    if (transaction.error.code == SKErrorPaymentCancelled)
     {
-        NSLog(@"Transaction error: %@", transaction.error.localizedDescription);
+        [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPTransactionFailedNotification
+                                                            object:nil userInfo:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPTransactionFailedNotification
+                                                            object:transaction.error userInfo:nil];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPTransactionFailedNotification
-                                                        object:transaction.error userInfo:nil];
     
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
 }
@@ -182,21 +183,40 @@ NSInteger const kDHIAPManagerTransactionFailed = 1;
 
 - (void)buyProductWithIdentifier:(NSString *)productIdentifier
 {
+    SKProduct* product = [self productWithIdentifier:productIdentifier];
+    if (product) {
+        [self buyProduct:product];
+    } else {
+        NSError* error = [[NSError alloc]
+                          initWithDomain:@"DHIAPManager" code:kDHIAPManagerTransactionFailed userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPTransactionFailedNotification
+                                                            object:error userInfo:nil];
+    }
+}
+
+- (SKProduct*)productWithIdentifier:(NSString*)productIdentifier
+{
     for (SKProduct* product in _products) {
         if ([product.productIdentifier isEqualToString:productIdentifier]) {
-            [self buyProduct:product];
-            return;
+            return product;
         }
     }
-    NSError* error = [[NSError alloc] initWithDomain:@"DHIAPManager" code:kDHIAPManagerTransactionFailed userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPTransactionFailedNotification
-                                                        object:error userInfo:nil];
-
+    return nil;
 }
 
 - (BOOL)canMakePurchases
 {
     return (_products.count > 0) && [SKPaymentQueue canMakePayments];
+}
+
+- (NSString *)localizedPriceStringForProduct:(SKProduct *)product
+{
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+    [numberFormatter setLocale:product.priceLocale];
+    NSString *formattedPrice = [numberFormatter stringFromNumber:product.price];
+    return formattedPrice;
 }
 
 @end

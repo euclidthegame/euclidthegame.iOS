@@ -44,7 +44,7 @@
     self = [super initWithFrame:frame];
     {
         _button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [_button setTitle:@"\U0001F513 Buy levels 11 through 25" forState:UIControlStateNormal];
+        [_button setTitle:@"..." forState:UIControlStateNormal];
         _button.titleLabel.font = [UIFont systemFontOfSize:18.0];
         [_button addTarget:self action:@selector(buyLevelPack1) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_button];
@@ -57,6 +57,8 @@
         _unavailableLabel.text = @"(App Store currently unavailable)";
         _unavailableLabel.hidden = _button.enabled;
         [self addSubview:_unavailableLabel];
+        
+        [self setBuyButtonText];
     }
     return self;
 }
@@ -71,10 +73,23 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+- (void)setBuyButtonText
+{
+    NSMutableString* title = [[NSMutableString alloc] initWithString:@"\U0001F513 Buy levels 11 through 25"];
+    
+    SKProduct* product = [[DHIAPManager sharedInstance] productWithIdentifier:DHIAPManagerLevelPack1ProductID];
+    if (product) {
+        NSString* price = [[DHIAPManager sharedInstance] localizedPriceStringForProduct:product];
+        [title appendFormat:@" (%@)", price];
+    }
+    
+    [_button setTitle:title forState:UIControlStateNormal];
+}
 - (void)enableButton:(NSNotification*)notification
 {
     _button.enabled = YES;
     _unavailableLabel.hidden = YES;
+    [self setBuyButtonText];
 }
 - (void)transactionFailed:(NSNotification*)notification
 {
@@ -94,8 +109,8 @@
                                                   cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
         }
-        [self removeActivityIndicator];
     }
+    [self removeActivityIndicator];
 }
 - (void)layoutSubviews
 {

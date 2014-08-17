@@ -24,7 +24,10 @@ typedef void (^RequestProductsCompletionHandler)(BOOL success, NSArray * product
 + (void)startup;
 + (DHIAPManager*) sharedInstance;
 
+- (SKProduct*)productWithIdentifier:(NSString*)productIdentifier;
 - (void)buyProductWithIdentifier:(NSString *)productIdentifier;
 - (void)restoreCompletedTransactions;
+
+- (NSString*)localizedPriceStringForProduct:(SKProduct*)product;
 
 @end

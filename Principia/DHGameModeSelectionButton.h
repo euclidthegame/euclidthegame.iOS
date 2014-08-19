@@ -17,6 +17,7 @@
 @property (nonatomic) CGFloat percentComplete;
 @property (nonatomic) BOOL showPercentComplete;
 @property (nonatomic, copy) NSString* title;
+@property (nonatomic, copy) NSString* difficultyDescription;
 @property (nonatomic, copy) NSString* gameModeDescription;
 
 - (void)setTouchActionWithTarget:(id)target andAction:(SEL)action;

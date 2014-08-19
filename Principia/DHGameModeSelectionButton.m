@@ -17,6 +17,7 @@
     DHGameModePercentCompleteView* _percentCompleteView;
     UILabel* _titleLabel;
     UILabel* _descriptionLabel;
+    UILabel* _difficultyDescriptionLabel;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -44,6 +45,12 @@
         [_descriptionLabel setLineBreakMode:NSLineBreakByWordWrapping];
         _descriptionLabel.numberOfLines = 2;
         [self addSubview:_descriptionLabel];
+        
+        _difficultyDescriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+        _difficultyDescriptionLabel.textColor = [UIColor lightGrayColor];
+        _difficultyDescriptionLabel.hidden = YES;
+        [self addSubview:_difficultyDescriptionLabel];
+        _difficultyDescriptionLabel.font = [UIFont systemFontOfSize:11];
         
         if (_iPhoneVersion) {
             _titleLabel.font = [UIFont boldSystemFontOfSize:14.0];
@@ -127,9 +134,11 @@
         _descriptionLabel.frame = CGRectMake(8, 24, 220, 40);
         [_titleLabel sizeToFit];
         [_descriptionLabel sizeToFit];
+        _difficultyDescriptionLabel.frame = CGRectMake(150, 5, 100, 15);
     } else {
         _titleLabel.frame = CGRectMake(20, 0, 200, bounds.size.height);
         _descriptionLabel.frame = CGRectMake(220, 0, 280, bounds.size.height);
+        _difficultyDescriptionLabel.frame = CGRectMake(40, bounds.size.height-30, 130, 20);
     }
 }
 - (BOOL)showPercentComplete
@@ -174,6 +183,15 @@
 - (NSString *)gameModeDescription
 {
     return _descriptionLabel.text;
+}
+- (void)setDifficultyDescription:(NSString *)difficultyDescription
+{
+    _difficultyDescriptionLabel.text = [@"Difficulty: " stringByAppendingString:difficultyDescription];
+    _difficultyDescriptionLabel.hidden = NO;
+}
+- (NSString *)difficultyDescription
+{
+    return _difficultyDescriptionLabel.text;
 }
 
 @end

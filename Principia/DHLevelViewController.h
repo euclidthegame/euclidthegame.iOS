@@ -19,6 +19,7 @@
 @property (nonatomic, weak) IBOutlet UISegmentedControl* toolControl;
 @property (nonatomic, weak) IBOutlet UIView* levelObjectiveView;
 @property (nonatomic, strong) IBOutlet UIView* levelCompletionMessage;
+@property (nonatomic, strong) IBOutlet UILabel* levelCompletionMessageTitle;
 @property (nonatomic, strong) IBOutlet UILabel* levelCompletionMessageAdditional;
 @property (nonatomic, strong) IBOutlet UIButton* nextChallengeButton;
 @property (nonatomic, strong) IBOutlet UIButton* detailedInstructions;
@@ -36,6 +37,8 @@
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* heightToolBar;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* levelInstructionLabelConstraint;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* levelInstructionButtonConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* levelCompletionMessageWidthConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* levelCompletionMessageHeightConstraint;
 
 @property (nonatomic, weak) DHGeometryViewController* geometryViewController;
 @property (nonatomic, strong) NSMutableArray* levelArray;

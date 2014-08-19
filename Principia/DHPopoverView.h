@@ -19,7 +19,7 @@
 
 @interface DHPopoverView : UIView
 
-@property (assign) UIViewController <DHPopoverViewDelegate> *delegate;
+@property (nonatomic, weak) UIViewController <DHPopoverViewDelegate> *delegate;
 
 - (id)initWithOriginFrame:(CGRect)originFrame delegate:(UIViewController<DHPopoverViewDelegate>*)delegate firstButtonTitle:(NSString*)firstButtonTitle;
 - (void)show;

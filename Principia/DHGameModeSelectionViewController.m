@@ -57,6 +57,11 @@
     self.gameMode5View.title = @"Hardcore";
     self.gameMode6View.title = @"Playground";
     
+    self.gameMode2View.difficultyDescription = @"Normal";
+    self.gameMode3View.difficultyDescription = @"Hard";
+    self.gameMode4View.difficultyDescription = @"Harder";
+    self.gameMode5View.difficultyDescription = @"Insane";
+    
     self.gameMode1View.gameModeDescription = @"Learn the basics";
     self.gameMode2View.gameModeDescription = @"Complete geometric challenges and unlock new tools";
     self.gameMode3View.gameModeDescription = @"Finish the levels using a minimum number of moves";

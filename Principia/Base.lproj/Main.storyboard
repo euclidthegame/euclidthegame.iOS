@@ -292,6 +292,9 @@
                         <outlet property="heightToolBar" destination="zAV-e7-iiH" id="Gcm-Hc-h0J"/>
                         <outlet property="levelCompletionMessage" destination="tbY-LX-K8w" id="JTx-tJ-JQ1"/>
                         <outlet property="levelCompletionMessageAdditional" destination="lZY-n7-yQ8" id="tND-O7-ZlJ"/>
+                        <outlet property="levelCompletionMessageHeightConstraint" destination="oSy-MX-gdt" id="Vg3-47-360"/>
+                        <outlet property="levelCompletionMessageTitle" destination="MPz-fj-ZH7" id="ilp-vt-jhJ"/>
+                        <outlet property="levelCompletionMessageWidthConstraint" destination="48J-kn-Iug" id="Szj-F4-k1L"/>
                         <outlet property="levelInstruction" destination="4Y1-gV-t0q" id="8Pd-2G-VSu"/>
                         <outlet property="levelInstructionButtonConstraint" destination="mi1-hI-2Gd" id="fR3-Wx-38r"/>
                         <outlet property="levelInstructionLabelConstraint" destination="7n6-GX-rHF" id="92S-Gn-wji"/>

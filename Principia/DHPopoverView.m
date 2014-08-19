@@ -9,7 +9,7 @@
 #import "DHPopoverView.h"
 
 
-const CGFloat kPopoverWidth = 250;
+const CGFloat kPopoverWidth = 180;
 const CGFloat kTriangleHeight = 17;
 const CGFloat kTriangleWidth = 20;
 
@@ -46,20 +46,47 @@ const CGFloat kTriangleWidth = 20;
 @end
 
 
-#pragma mark - Main class STPopoverView
-
-// Main class
-@interface DHPopoverView ()
+// Helper class for drawing the separators
+@interface DHPopoverViewSeparator : UIView
+@end
+@implementation DHPopoverViewSeparator
+- (id)initWithFrame:(CGRect)frame
 {
-    CGRect _originFrame;
-    NSMutableArray *_buttons;
-    UIView* _triangle;
-    UIColor *_appTintColor;
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0];
+        self.alpha = 1;
+    }
+    return self;
 }
-@property (nonatomic, strong) UIView* container;
+- (void)drawRect:(CGRect)rect
+{
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextBeginPath(ctx);
+    CGContextMoveToPoint   (ctx, 0, 0);
+    CGContextAddLineToPoint(ctx, self.frame.size.width, 0);
+    CGContextClosePath(ctx);
+    
+    CGContextSetLineWidth(ctx, 0.5);
+    
+    CGContextSetRGBStrokeColor(ctx, 0.6, 0.6, 0.6, 1);
+    CGContextStrokePath(ctx);
+}
 @end
 
-@implementation DHPopoverView
+
+#pragma mark - Main class PopoverView
+
+// Main class
+@implementation DHPopoverView {
+    CGRect _originFrame;
+    NSMutableArray *_buttons;
+    NSMutableArray *_separators;
+    UIView* _triangle;
+    UIColor *_appTintColor;
+    UIView* _container;
+    UIView* _menuBackground;
+}
 
 - (id)initWithOriginFrame:(CGRect)originFrame delegate:(UIViewController<DHPopoverViewDelegate>*)delegate firstButtonTitle:(NSString*)firstButtonTitle
 {
@@ -70,8 +97,18 @@ const CGFloat kTriangleWidth = 20;
     _appTintColor = [[delegate popOverTintColor] copy];
     self = [super initWithFrame:window.bounds];
     if (self) {
+        _menuBackground = [[UIView alloc] initWithFrame:window.bounds];
+        _menuBackground.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
+        _menuBackground.layer.cornerRadius = 5.0;
+        _menuBackground.layer.shadowColor = [UIColor darkGrayColor].CGColor;
+        _menuBackground.layer.shadowRadius = 5.0;
+        _menuBackground.layer.shadowOffset = CGSizeMake(3, 3);
+        _menuBackground.layer.shadowOpacity = 0.5;
+        
         _container = [[UIView alloc] initWithFrame:window.bounds];
         [self addSubview:_container];
+        [_container addSubview:_menuBackground];
+        
         _triangle = [[DHPopoverViewTriangle alloc] initWithFrame:CGRectMake(0, 0, kTriangleWidth, kTriangleHeight)];
         [_container addSubview:_triangle];
         _originFrame = originFrame;
@@ -113,16 +150,30 @@ const CGFloat kTriangleWidth = 20;
     CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(rotation);
     CGSize rotatedSize = CGRectApplyAffineTransform(window.bounds, rotationTransform).size;
     
-    self.container.transform = rotationTransform;
-    // Transform invalidates the frame, so use bounds/center
-    self.container.bounds = CGRectMake(0, 0, rotatedSize.width, rotatedSize.height);
-    self.container.center = CGPointMake(window.bounds.size.width / 2, window.bounds.size.height / 2);
+    const CGFloat buttonHeight = 44.0;
     
-    _triangle.frame = CGRectMake(CGRectGetMidX(_originFrame)-kTriangleWidth/2, CGRectGetMaxY(_originFrame)+10, kTriangleWidth, kTriangleHeight);
+    _container.transform = rotationTransform;
+    // Transform invalidates the frame, so use bounds/center
+    _container.bounds = CGRectMake(0, 0, rotatedSize.width, rotatedSize.height);
+    _container.center = CGPointMake(window.bounds.size.width / 2, window.bounds.size.height / 2);
+    
+    _triangle.frame = CGRectMake(CGRectGetMidX(_originFrame)-kTriangleWidth/2,
+                                 CGRectGetMaxY(_originFrame)+10, kTriangleWidth, kTriangleHeight);
     for (UIButton* button in _buttons) {
-        CGRect buttonFrame = CGRectMake(rotatedSize.width-kPopoverWidth-10, CGRectGetMaxY(_originFrame)+25+button.tag*54, kPopoverWidth, 44);
+        CGRect buttonFrame = CGRectMake(rotatedSize.width-kPopoverWidth-10,
+                                        CGRectGetMaxY(_originFrame)+25+button.tag*buttonHeight,
+                                        kPopoverWidth, buttonHeight);
         [button setFrame:buttonFrame];
     }
+    for (NSInteger i = 0; i < _separators.count; ++i) {
+        CGRect sepFrame = CGRectMake(rotatedSize.width-kPopoverWidth-10+15,
+                                        CGRectGetMaxY(_originFrame)+25+(i+1)*buttonHeight,
+                                        kPopoverWidth-30, 1);
+        [_separators[i] setFrame:sepFrame];
+    }
+    _menuBackground.frame = CGRectMake(rotatedSize.width-kPopoverWidth-10,
+                                       CGRectGetMaxY(_originFrame)+25,
+                                       kPopoverWidth, buttonHeight*(_buttons.count));
 }
 
 - (void)statusBarWillRotate:(NSNotification *)notification
@@ -150,25 +201,27 @@ const CGFloat kTriangleWidth = 20;
 {
     NSInteger buttonIndex;
     
-    if(!_buttons) {
-        _buttons = [NSMutableArray array];
-    }
+    if(!_buttons) _buttons = [NSMutableArray array];
+    if (!_separators) _separators = [NSMutableArray array];
     buttonIndex = _buttons.count;
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setTitle:title forState:UIControlStateNormal];
-    //[button setTintColor:_appTintColor];
     [button setTitleColor:_appTintColor forState:UIControlStateNormal];
     [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
-    button.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
-    button.layer.cornerRadius = 5;
     button.tag = buttonIndex;
     [button addTarget:self
                action:@selector(buttonPressed:)
      forControlEvents:UIControlEventTouchUpInside];
     [_buttons addObject:button];
-    [self.container addSubview:button];
+    [_container addSubview:button];
     button.enabled = enabled;
+    
+    if (_buttons.count > 1) {
+        DHPopoverViewSeparator* separator = [[DHPopoverViewSeparator alloc] init];
+        [_separators addObject:separator];
+        [_container addSubview:separator];
+    }
     
     return buttonIndex;
 }

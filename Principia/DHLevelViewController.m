@@ -952,6 +952,13 @@
 - (void)showLevelCompleteMessage
 {
     NSMutableString* completionMessageText = [[NSMutableString alloc] init];
+    
+    if (_iPhoneVersion) {
+        self.levelCompletionMessageWidthConstraint.constant = 300;
+        self.levelCompletionMessageHeightConstraint.constant = 300;
+        self.levelCompletionMessageTitle.font = [UIFont boldSystemFontOfSize:18.0];
+        self.levelCompletionMessageAdditional.font = [UIFont systemFontOfSize:14.0];
+    }
 
     // Only display messages about unlocking tools in non-primitive only game modes
     if (self.currentGameMode == kDHGameModeNormal || self.currentGameMode == kDHGameModeNormalMinimumMoves) {

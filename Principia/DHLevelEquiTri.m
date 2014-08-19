@@ -225,6 +225,10 @@
     CGFloat oldScale = geometryView.geoViewTransform.scale;
     CGFloat newScale = 1;
     CGPoint newOffset = CGPointMake(0,0);
+    if (self.iPhoneVersion) {
+        newScale = 0.5;
+        newOffset = CGPointMake(-30, 0);
+    }
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {
@@ -269,6 +273,10 @@
         geoView.hideBorder = YES;
         geoView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
         geoView.opaque = NO;
+        if (self.iPhoneVersion) {
+            [geoView.geoViewTransform setScale:0.5];
+            [geoView.geoViewTransform setOffset:CGPointMake(-30, 0)];
+        }
         
         NSMutableArray* geometricObjects2 = [[NSMutableArray alloc]init];
         [geometricObjects2 addObject:l1];

@@ -37,8 +37,9 @@
 @end
 
 @interface DHLevel : NSObject
-@property NSUInteger progress;
-@property BOOL showingHint;
+@property (nonatomic) NSUInteger progress;
+@property (nonatomic) BOOL showingHint;
+@property (nonatomic) BOOL iPhoneVersion;
 @property (nonatomic, weak) DHLevelViewController* levelViewController;
 @property (nonatomic, weak) DHGeometryView* geometryView;
 @property (nonatomic, weak) UIView* view;

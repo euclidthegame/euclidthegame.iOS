@@ -10,7 +10,16 @@
 #import "DHLevelViewController.h"
 
 @implementation DHLevel
-
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+            _iPhoneVersion = YES;
+        }
+    }
+    return self;
+}
 - (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color andTime:(CGFloat)time
 {
     UILabel* label = [[UILabel alloc] init];

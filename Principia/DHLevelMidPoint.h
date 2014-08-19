@@ -10,7 +10,6 @@
 #import "DHLevel.h"
 
 @interface DHLevelMidPoint : DHLevel <DHLevel>
-@property NSUInteger progress;
 
 - (NSString*)levelDescription;
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects;

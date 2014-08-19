@@ -224,7 +224,8 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         return;
     }
     
-    CGVector vC1ToC2 = CGVectorMultiplyByScalar(CGVectorBetweenPoints(c1CenterPos, c2CenterPos), 1/d);
+    CGVector vC1ToC2NonNormalized = CGVectorBetweenPoints(c1CenterPos, c2CenterPos);
+    CGVector vC1ToC2 = CGVectorMultiplyByScalar(vC1ToC2NonNormalized, 1/d);
     CGVector vy = CGVectorMakePerpendicular(vC1ToC2);
 
     CGFloat x = (d*d + r1*r1 - r2*r2)/(2*d);

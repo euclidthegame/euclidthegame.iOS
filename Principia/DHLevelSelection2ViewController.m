@@ -161,6 +161,8 @@
 @implementation DHLevelSelection2ViewController {
     NSDictionary* _levelResults;
     NSMutableArray* _levels;
+    
+    BOOL _iPhoneVersion;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -175,7 +177,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        _iPhoneVersion = YES;
+    }
+    
     _levelResults = [DHLevelResults levelResults];
     
     // Create levels array
@@ -183,9 +188,15 @@
     FillLevelArray(_levels);
     
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    [flowLayout setSectionInset:UIEdgeInsetsMake(10, 20, 10, 20)];
-    flowLayout.minimumInteritemSpacing = 10;
-    flowLayout.minimumLineSpacing = 30;
+    if (_iPhoneVersion) {
+        [flowLayout setSectionInset:UIEdgeInsetsMake(5, 10, 5, 10)];
+        flowLayout.minimumInteritemSpacing = 7;
+        flowLayout.minimumLineSpacing = 15;
+    } else {
+        [flowLayout setSectionInset:UIEdgeInsetsMake(10, 20, 10, 20)];
+        flowLayout.minimumInteritemSpacing = 10;
+        flowLayout.minimumLineSpacing = 30;
+    }
     flowLayout.headerReferenceSize = CGSizeMake(0, 32);
     [self.collectionView setCollectionViewLayout:flowLayout];
     
@@ -215,6 +226,12 @@
     
     // Set outself as the navigation controller's delegate so we're asked for a transitioning object
     self.navigationController.delegate = self;
+    
+    if (_iPhoneVersion) {
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Back"
+                                                                                 style:UIBarButtonItemStylePlain
+                                                                                target:nil action:nil];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -311,6 +328,10 @@
                   layout:(UICollectionViewLayout*)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (_iPhoneVersion) {
+        return CGSizeMake(90, 100);
+    }
+    
     return CGSizeMake(120, 150);
 }
 

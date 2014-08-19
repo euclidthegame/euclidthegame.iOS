@@ -16,248 +16,12 @@
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
 
-@implementation DHGameModeSelectionButton {
-    BOOL _selected;
-    id _target;
-    SEL _action;
-}
-
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    self = [super initWithCoder:coder];
-    if (self) {
-        _selected = NO;
-        self.userInteractionEnabled = YES;
-        self.backgroundColor = [UIColor whiteColor];
-        self.layer.cornerRadius = 8.0;
-        self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOffset = CGSizeMake(3, 3);
-        self.layer.shadowOpacity = 0.5;
-        self.layer.shadowRadius = 8.0;
-    }
-    return self;
-}
-- (void)setTouchActionWithTarget:(id)target andAction:(SEL)action
-{
-    _target = target;
-    _action = action;
-}
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [self select];
-}
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    UITouch* touch = [touches anyObject];
-    CGPoint touchPoint = [touch locationInView:self];
-    if(!CGRectContainsPoint(self.bounds, touchPoint)) {
-        [self deselect];
-    } else {
-        if (!_selected) [self select];
-    }
-}
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [self deselect];
-}
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    if (_selected && _target && _action) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [_target performSelector:_action];
-#pragma clang diagnostic pop
-    }
-    [self deselect];
-}
-- (void)select
-{
-    self.layer.shadowOffset = CGSizeMake(1, 1);
-    self.layer.shadowRadius = 3.0;
-    _selected = YES;
-}
-- (void)deselect
-{
-    if (!_selected) return;
-    
-    _selected = NO;
-    self.layer.shadowOffset = CGSizeMake(3, 3);
-    CABasicAnimation* fadeAnim = [CABasicAnimation animationWithKeyPath:@"shadowRadius"];
-    fadeAnim.fromValue = [NSNumber numberWithFloat:3.0];
-    fadeAnim.toValue = [NSNumber numberWithFloat:8.0];
-    fadeAnim.duration = 0.5;
-    [self.layer addAnimation:fadeAnim forKey:@"shadowRadius"];
-    
-    // Change the actual data value in the layer to the final value.
-    self.layer.shadowRadius = 8.0;
-    
-    //self.layer.shadowRadius = 8.0;
-}
-
-@end
-
-@implementation DHGameModePercentCompleteView
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    self = [super initWithCoder:coder];
-    if (self) {
-        self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
-    }
-    return self;
-}
-- (void)tintColorDidChange
-{
-    [self setNeedsDisplay];
-}
-- (void)drawRect:(CGRect)rect
-{
-    const CGPoint pieChartCenter = CGPointMake(self.bounds.size.width*0.5, self.bounds.size.height*0.5);
-    CGFloat pieChartRadius = 22.0;
-    CGContextRef context = UIGraphicsGetCurrentContext();
-
-    if (self.percentComplete == 1.0) {
-        // Draw checkmark
-        CGContextSetFillColorWithColor(context, self.tintColor.CGColor);
-        CGContextSetStrokeColorWithColor(context, self.tintColor.CGColor);
-        CGContextMoveToPoint(context, pieChartCenter.x, pieChartCenter.y);
-        CGContextAddLineToPoint(context, pieChartCenter.x+pieChartRadius, pieChartCenter.y);
-        CGContextAddArc(context, pieChartCenter.x, pieChartCenter.y, pieChartRadius, 0, 2*M_PI, 0);
-        CGContextDrawPath(context, kCGPathFillStroke);
-        
-        CGContextStrokeEllipseInRect(context, CGRectMake(pieChartCenter.x-pieChartRadius,
-                                                         pieChartCenter.y-pieChartRadius,
-                                                         pieChartRadius*2, pieChartRadius*2));
-    
-        CGContextSetLineWidth(context, 3.0);
-        CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
-        
-        CGContextMoveToPoint(context, pieChartCenter.x - pieChartRadius*0.5, pieChartCenter.y);
-        CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7, pieChartCenter.y + 7);
-        CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7 + 14, pieChartCenter.y + 7 - 14);
-        CGContextDrawPath(context, kCGPathStroke);
-    } else {
-        NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-        paragraphStyle.alignment = NSTextAlignmentCenter;
-        
-        NSString* percentLabelText = [NSString stringWithFormat:@"%d%%", (uint)(self.percentComplete*100)];
-        NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:13],
-                                     NSParagraphStyleAttributeName: paragraphStyle,
-                                     NSForegroundColorAttributeName: [UIColor darkGrayColor]};
-        CGSize textSize = [percentLabelText sizeWithAttributes:attributes];
-        CGRect labelRect = CGRectMake(pieChartCenter.x -textSize.width*0.5,
-                                      pieChartCenter.y -textSize.height*0.5, textSize.width, textSize.height);
-        [percentLabelText drawInRect:labelRect withAttributes:attributes];
-        
-        
-        
-        CGFloat startAngle = -((float)M_PI / 2); // 90 degrees
-        CGFloat endAngle = ((2 * (float)M_PI) + startAngle);
-        UIBezierPath* bezierPath = [UIBezierPath bezierPath];
-        
-        // Create our arc, with the correct angles
-        [bezierPath addArcWithCenter:pieChartCenter
-                              radius:pieChartRadius
-                          startAngle:startAngle
-                            endAngle:(endAngle - startAngle) + startAngle
-                           clockwise:YES];
-        
-        //[[UIColor lightGrayColor] setStroke];
-        [[UIColor colorWithWhite:0.9 alpha:1] setStroke];
-        CGContextAddPath(context, bezierPath.CGPath);
-        CGContextSetLineWidth(context, 3.0);
-        CGContextSetShadowWithColor(context, CGSizeMake(1.0, 1.0), 1.0, [UIColor lightGrayColor].CGColor);
-        CGContextStrokePath(context);
-        
-        
-        UIBezierPath* progress = [UIBezierPath bezierPath];
-        
-        // Create our arc, with the correct angles
-        [progress addArcWithCenter:pieChartCenter
-                            radius:pieChartRadius
-                        startAngle:startAngle
-                          endAngle:(endAngle - startAngle) * (self.percentComplete) + startAngle
-                         clockwise:YES];
-        
-        // Set the display for the path, and stroke it
-        progress.lineWidth = 4;
-        CGContextSetShadowWithColor(context, CGSizeMake(0.0, 0.0), 0.0, [UIColor lightGrayColor].CGColor);
-        [self.tintColor setStroke];
-        [progress stroke];
-    }
-    /*
-    const CGPoint pieChartCenter = CGPointMake(self.bounds.size.width*0.5, 40);
-    CGFloat pieChartRadius = 20.0;
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetLineWidth(context, 1.0/self.contentScaleFactor);
-    
-    if (self.percentComplete == 1.0) {
-        CGContextSetFillColorWithColor(context, self.tintColor.CGColor);
-        CGContextSetStrokeColorWithColor(context, self.tintColor.CGColor);
-    } else {
-        CGContextSetRGBFillColor(context, 0.5, 0.5, 0.5, 1.0);
-        CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 1.0);
-    }
-    
-    if (self.percentComplete > 0) {
-        CGContextMoveToPoint(context, pieChartCenter.x, pieChartCenter.y);
-        CGContextAddLineToPoint(context, pieChartCenter.x+pieChartRadius, pieChartCenter.y);
-        CGContextAddArc(context, pieChartCenter.x, pieChartCenter.y, pieChartRadius, 0, 2*M_PI*self.percentComplete, 0);
-        CGContextDrawPath(context, kCGPathFillStroke);
-    }
-    
-    CGContextStrokeEllipseInRect(context, CGRectMake(pieChartCenter.x-pieChartRadius, pieChartCenter.y-pieChartRadius,
-                                                     pieChartRadius*2, pieChartRadius*2));
-    
-    if (self.percentComplete == 1.0) {
-        // Draw checkmark
-        CGContextSetLineWidth(context, 3.0);
-        CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
-
-        CGContextMoveToPoint(context, pieChartCenter.x - pieChartRadius*0.5, pieChartCenter.y);
-        CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7, pieChartCenter.y + 7);
-        CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7 + 14, pieChartCenter.y + 7 - 14);
-        CGContextDrawPath(context, kCGPathStroke);
-    }
-    
-    
-    // Draw percent complete text
-    NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    paragraphStyle.alignment = NSTextAlignmentCenter;
-    
-    NSString* percentLabelText = [NSString stringWithFormat:@"%d%% complete", (uint)(self.percentComplete*100)];
-    NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:11],
-                                 NSParagraphStyleAttributeName: paragraphStyle,
-                                 NSForegroundColorAttributeName: [UIColor darkGrayColor]};
-    CGSize textSize = [percentLabelText sizeWithAttributes:attributes];
-    CGRect labelRect = CGRectMake(pieChartCenter.x - textSize.width*0.5f,
-                                  pieChartCenter.y + pieChartRadius + 4, textSize.width, textSize.height);
-    [percentLabelText drawInRect:labelRect withAttributes:attributes];
-    */
-
-}
-- (void)setPercentComplete:(CGFloat)percentComplete
-{
-    if (percentComplete > 1.0) {
-        _percentComplete = 1.0;
-    } else if (percentComplete < 0) {
-        _percentComplete = 0.0;
-    } else {
-        _percentComplete = percentComplete;
-    }
-    [self setNeedsDisplay];
-}
-
-@end
 
 
-@interface DHGameModeSelectionViewController ()
 
-@end
-
-@implementation DHGameModeSelectionViewController
+@implementation DHGameModeSelectionViewController {
+    BOOL _iPhoneVersion;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -271,13 +35,38 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        _iPhoneVersion = YES;
+    }
     [self.gameMode1View setTouchActionWithTarget:self andAction:@selector(loadTutorial)];
     [self.gameMode2View setTouchActionWithTarget:self andAction:@selector(selectGameMode1)];
     [self.gameMode3View setTouchActionWithTarget:self andAction:@selector(selectGameMode2)];
     [self.gameMode4View setTouchActionWithTarget:self andAction:@selector(selectGameMode3)];
     [self.gameMode5View setTouchActionWithTarget:self andAction:@selector(selectGameMode4)];
     [self.gameMode6View setTouchActionWithTarget:self andAction:@selector(loadPlayground)];
+    
+    self.gameMode2View.showPercentComplete = YES;
+    self.gameMode3View.showPercentComplete = YES;
+    self.gameMode4View.showPercentComplete = YES;
+    self.gameMode5View.showPercentComplete = YES;
+    
+    self.gameMode1View.title = @"Tutorial";
+    self.gameMode2View.title = @"The Elements";
+    self.gameMode3View.title = @"Perfectionist";
+    self.gameMode4View.title = @"Ancient Greece";
+    self.gameMode5View.title = @"Hardcore";
+    self.gameMode6View.title = @"Playground";
+    
+    self.gameMode1View.gameModeDescription = @"Learn the basics";
+    self.gameMode2View.gameModeDescription = @"Complete geometric challenges and unlock new tools";
+    self.gameMode3View.gameModeDescription = @"Finish the levels using a minimum number of moves";
+    self.gameMode4View.gameModeDescription = @"Take on the levels using only the primitive tools";
+    self.gameMode5View.gameModeDescription = @"Limited to primitive tools and must use minimum number of moves";
+    self.gameMode6View.gameModeDescription = @"Simply enjoy using all the available tools freely";
+    
+    if (_iPhoneVersion) {
+        self.title = @"Euclid: The Game";
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -341,7 +130,11 @@
 - (void)updateViewConstraintsToOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
     [super updateViewConstraints];
     
-    //NSDictionary *views = NSDictionaryOfVariableBindings(_green, _orange, _labelContainer, _imageView);
+    if (_iPhoneVersion) {
+        [self updateViewConstraintsToiPhone];
+        return;
+    }
+    
     if (!self.layoutConstraintsLandscape) {
         self.layoutConstraintsLandscape = [[NSMutableArray alloc] initWithCapacity:10];
         
@@ -396,6 +189,77 @@
     } else {
         [self.view addConstraints:self.layoutConstraintsLandscape];
         self.selectGameModelLabel.hidden = YES;
+    }
+}
+
+- (void)updateViewConstraintsToiPhone
+{
+    if (!self.layoutConstraintsiPhone) {
+        self.logoImageTopConstraint.constant = 5;
+        self.logoImageHeightConstraint.constant = 40;
+        self.logoImageLeadingConstraint.constant = 8;
+        self.logoImageWidthConstraint.constant = 40;
+        self.selectGameModelLabel.hidden = NO;
+        self.selectGameModeLabelDistanceConstraint.constant = 5;
+        self.selectGameModelLabel.font = [UIFont systemFontOfSize:12];
+        
+        self.gameMode1ViewWidthConstraint.constant = 310;
+        self.gameMode1ViewHeightConstraint.constant = 60;
+        
+        for (NSLayoutConstraint* constraint in self.gameModeViewDistanceConstraints) {
+            constraint.constant = 8;
+        }
+        
+        self.layoutConstraintsiPhone = [[NSMutableArray alloc] initWithCapacity:10];
+        self.logoImageView.hidden = YES;
+        self.logoLabel.hidden = YES;
+        self.gameCenterButton.hidden = YES;
+        self.logoSubtitleLabel.hidden = YES;
+        
+        // First game mode button
+        [self.layoutConstraintsiPhone addObject:
+         [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeTop
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop
+                                     multiplier:1 constant:70]];
+        
+        [self.layoutConstraintsiPhone addObject:
+         [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeLeft
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.view attribute:NSLayoutAttributeLeft
+                                     multiplier:1 constant:5]];
+        
+        // Logo
+        [self.layoutConstraintsiPhone addObject:
+         [NSLayoutConstraint constraintWithItem:self.logoLabel attribute:NSLayoutAttributeCenterY
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.logoImageView attribute:NSLayoutAttributeCenterY
+                                     multiplier:1 constant:0]];
+        [self.layoutConstraintsiPhone addObject:
+         [NSLayoutConstraint constraintWithItem:self.logoLabel attribute:NSLayoutAttributeLeft
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.logoImageView attribute:NSLayoutAttributeRight
+                                     multiplier:1 constant:10]];
+        [self.layoutConstraintsiPhone addObject:
+         [NSLayoutConstraint constraintWithItem:self.logoLabel attribute:NSLayoutAttributeWidth
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:nil attribute:NSLayoutAttributeNotAnAttribute
+                                     multiplier:1 constant:self.logoImageView.frame.size.width]];
+        
+        // Game center button
+        [self.layoutConstraintsiPhone addObject:
+         [NSLayoutConstraint constraintWithItem:self.gameCenterButton attribute:NSLayoutAttributeCenterX
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.logoLabel attribute:NSLayoutAttributeCenterX
+                                     multiplier:1 constant:0]];
+        [self.layoutConstraintsiPhone addObject:
+         [NSLayoutConstraint constraintWithItem:self.gameCenterButton attribute:NSLayoutAttributeTop
+                                      relatedBy:NSLayoutRelationEqual
+                                         toItem:self.logoLabel attribute:NSLayoutAttributeBottom
+                                     multiplier:1 constant:30]];
+        
+        [self.view removeConstraints:self.layoutConstraintsPortrait];
+        [self.view addConstraints:self.layoutConstraintsiPhone];
     }
 }
 
@@ -513,25 +377,25 @@
         }
     }
     
-    self.gameMode1PercentComplete.percentComplete = levelsCompleteGameModeNormal*1.0/levels.count;
-    self.gameMode2PercentComplete.percentComplete = levelsCompleteGameModeMinimumMoves*1.0/levels.count;
-    self.gameMode3PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnly*1.0/levels.count;
-    self.gameMode4PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnlyMinimumMoves*1.0/levels.count;
+    self.gameMode2View.percentComplete = levelsCompleteGameModeNormal*1.0/levels.count;
+    self.gameMode3View.percentComplete = levelsCompleteGameModeMinimumMoves*1.0/levels.count;
+    self.gameMode4View.percentComplete = levelsCompleteGameModePrimitiveOnly*1.0/levels.count;
+    self.gameMode5View.percentComplete = levelsCompleteGameModePrimitiveOnlyMinimumMoves*1.0/levels.count;
     
     // Update achievements here if they were not awarded earlier
-    if (self.gameMode1PercentComplete.percentComplete == 1.0) {
+    if (self.gameMode2View.percentComplete == 1.0) {
         [[DHGameCenterManager sharedInstance]
          reportAchievementIdentifier:kAchievementID_GameModeNormal_1_25 percentComplete:100];
     }
-    if (self.gameMode2PercentComplete.percentComplete == 1.0) {
+    if (self.gameMode3View.percentComplete == 1.0) {
         [[DHGameCenterManager sharedInstance]
          reportAchievementIdentifier:kAchievementID_GameModeNormalMinimumMoves_1_25 percentComplete:100];
     }
-    if (self.gameMode3PercentComplete.percentComplete == 1.0) {
+    if (self.gameMode4View.percentComplete == 1.0) {
         [[DHGameCenterManager sharedInstance]
          reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnly_1_25 percentComplete:100];
     }
-    if (self.gameMode4PercentComplete.percentComplete == 1.0) {
+    if (self.gameMode5View.percentComplete == 1.0) {
         [[DHGameCenterManager sharedInstance]
          reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 percentComplete:100];
     }
@@ -545,7 +409,9 @@
 - (IBAction)closeSettings:(UIStoryboardSegue *)unwindSegue
 {
     [self loadProgressData];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (!_iPhoneVersion) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 @end

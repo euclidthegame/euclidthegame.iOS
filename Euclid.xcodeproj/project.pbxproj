@@ -65,6 +65,9 @@
 		68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */; };
 		68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */; };
 		68E3CAB2199F138F0018851F /* NSUserDefaults+Encryption.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */; };
+		68E3CAB419A13D810018851F /* MainiPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 68E3CAB319A13D810018851F /* MainiPhone.storyboard */; };
+		68E3CAB719A20FD20018851F /* DHGameModeSelectionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E3CAB619A20FD20018851F /* DHGameModeSelectionButton.m */; };
+		68E3CABA19A339F10018851F /* DHPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E3CAB919A339F10018851F /* DHPopoverView.m */; };
 		68F0A9C819587AEC00A97B86 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
 		68F0A9CA19587AEC00A97B86 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */; };
 		68F0A9CC19587AEC00A97B86 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
@@ -196,6 +199,11 @@
 		68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSegmentInThree.m; sourceTree = "<group>"; };
 		68E3CAB0199F138F0018851F /* NSUserDefaults+Encryption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Encryption.h"; sourceTree = "<group>"; };
 		68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+Encryption.m"; sourceTree = "<group>"; };
+		68E3CAB319A13D810018851F /* MainiPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainiPhone.storyboard; sourceTree = "<group>"; };
+		68E3CAB519A20FD20018851F /* DHGameModeSelectionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGameModeSelectionButton.h; sourceTree = "<group>"; };
+		68E3CAB619A20FD20018851F /* DHGameModeSelectionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGameModeSelectionButton.m; sourceTree = "<group>"; };
+		68E3CAB819A339F10018851F /* DHPopoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHPopoverView.h; sourceTree = "<group>"; };
+		68E3CAB919A339F10018851F /* DHPopoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHPopoverView.m; sourceTree = "<group>"; };
 		68F0A9C419587AEC00A97B86 /* Euclid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Euclid.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68F0A9C719587AEC00A97B86 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -347,6 +355,7 @@
 				68F0A9D619587AEC00A97B86 /* DHAppDelegate.h */,
 				68F0A9D719587AEC00A97B86 /* DHAppDelegate.m */,
 				68F0A9D919587AEC00A97B86 /* Main.storyboard */,
+				68E3CAB319A13D810018851F /* MainiPhone.storyboard */,
 				68F0AA20195C377000A97B86 /* Views & View Controllers */,
 				681C888D198ECDF8005307F5 /* Custom view transitions */,
 				68F0AA1F195C375300A97B86 /* Math & Objects */,
@@ -484,6 +493,8 @@
 				6866224419730417004DCFAC /* DHGameModes.h */,
 				6866223E1972A7AB004DCFAC /* DHGameModeSelectionViewController.h */,
 				6866223F1972A7AB004DCFAC /* DHGameModeSelectionViewController.m */,
+				68E3CAB519A20FD20018851F /* DHGameModeSelectionButton.h */,
+				68E3CAB619A20FD20018851F /* DHGameModeSelectionButton.m */,
 				68F0AA13195A92A700A97B86 /* DHLevelSelectionViewController.h */,
 				68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */,
 				681C8887198D4D02005307F5 /* DHLevelSelection2ViewController.h */,
@@ -508,6 +519,8 @@
 				681C8895199004C4005307F5 /* YLProgressBar.m */,
 				685534E6199AAC9500006C66 /* DHNavigationController.h */,
 				685534E7199AAC9500006C66 /* DHNavigationController.m */,
+				68E3CAB819A339F10018851F /* DHPopoverView.h */,
+				68E3CAB919A339F10018851F /* DHPopoverView.m */,
 			);
 			name = "Views & View Controllers";
 			sourceTree = "<group>";
@@ -607,6 +620,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68E3CAB419A13D810018851F /* MainiPhone.storyboard in Resources */,
 				68F0A9E019587AEC00A97B86 /* Images.xcassets in Resources */,
 				68F0A9D219587AEC00A97B86 /* InfoPlist.strings in Resources */,
 				68F0A9DB19587AEC00A97B86 /* Main.storyboard in Resources */,
@@ -639,9 +653,11 @@
 				681C8890198ECE19005307F5 /* DHTransitionToLevel.m in Sources */,
 				68F0A9D819587AEC00A97B86 /* DHAppDelegate.m in Sources */,
 				686014DB1969D3CE0004DD1E /* DHLevelCopyAngle.m in Sources */,
+				68E3CAB719A20FD20018851F /* DHGameModeSelectionButton.m in Sources */,
 				68376948197E2E4200D53E21 /* DHLevel.m in Sources */,
 				681C88B419921CAE005307F5 /* DHTranslateSegmentTool.m in Sources */,
 				686014DE1969DFE70004DD1E /* DHLevelCircleCenter.m in Sources */,
+				68E3CABA19A339F10018851F /* DHPopoverView.m in Sources */,
 				68F0A9DE19587AEC00A97B86 /* DHGeometryViewController.m in Sources */,
 				68F0AA3C1961DE5100A97B86 /* DHLevelTutorial.m in Sources */,
 				684708BE19693C0700C1FA83 /* DHLevelNonEquiTri.m in Sources */,
@@ -860,7 +876,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Euclid;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -878,7 +894,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Euclid;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

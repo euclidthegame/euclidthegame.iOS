@@ -216,6 +216,11 @@ NSInteger const kDHIAPManagerTransactionFailed = 1;
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
     [numberFormatter setLocale:product.priceLocale];
     NSString *formattedPrice = [numberFormatter stringFromNumber:product.price];
+    
+    if ([product.priceLocale.localeIdentifier isEqualToString:@"en_SE@currency=SEK"]) {
+        formattedPrice = [formattedPrice stringByReplacingOccurrencesOfString:@":" withString:@","];
+    }
+    
     return formattedPrice;
 }
 

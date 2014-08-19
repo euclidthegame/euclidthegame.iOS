@@ -28,6 +28,10 @@
 @property (nonatomic, weak) IBOutlet UILabel* movesLeftLabel;
 @property (nonatomic, weak) IBOutlet UILabel* progressLabel;
 @property (nonatomic, weak) IBOutlet DHGeometryView* geometryView;
+
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* toolbarLeadingConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* toolbarTrailingConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* toolbarHeightConstraint;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* heightLevelObjectiveView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* heightToolBar;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* levelInstructionLabelConstraint;

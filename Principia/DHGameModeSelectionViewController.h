@@ -7,22 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface DHGameModeSelectionButton : UIView
-- (void)setTouchActionWithTarget:(id)target andAction:(SEL)action;
-@end
-
-@interface DHGameModePercentCompleteView : UIView
-@property (nonatomic) CGFloat percentComplete;
-@end
+#import "DHGameModeSelectionButton.h"
 
 @interface DHGameModeSelectionViewController : UIViewController
 
 @property (strong, nonatomic) IBOutletCollection(NSLayoutConstraint) NSArray *layoutConstraintsPortrait;
 @property (strong, nonatomic) NSMutableArray *layoutConstraintsLandscape;
+@property (strong, nonatomic) NSMutableArray *layoutConstraintsiPhone;
 
 @property (nonatomic, weak) IBOutlet UIImageView* logoImageView;
 @property (nonatomic, weak) IBOutlet UILabel* logoLabel;
+@property (nonatomic, weak) IBOutlet UILabel* logoSubtitleLabel;
 @property (nonatomic, weak) IBOutlet UILabel* selectGameModelLabel;
 @property (nonatomic, weak) IBOutlet UIButton* gameCenterButton;
 
@@ -33,10 +28,14 @@
 @property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode5View;
 @property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode6View;
 
-@property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode1PercentComplete;
-@property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode2PercentComplete;
-@property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode3PercentComplete;
-@property (nonatomic, weak) IBOutlet DHGameModePercentCompleteView* gameMode4PercentComplete;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* logoImageWidthConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* logoImageHeightConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* logoImageTopConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* logoImageLeadingConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* gameMode1ViewWidthConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* gameMode1ViewHeightConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint* selectGameModeLabelDistanceConstraint;
+@property (nonatomic, strong) IBOutletCollection(NSLayoutConstraint) NSArray *gameModeViewDistanceConstraints;
 
 
 - (IBAction)showLeaderboards:(id)sender;

@@ -17,12 +17,17 @@
     UILabel* _titleLabel;
     DHGeometryView* _geometryView;
     UIImageView* _checkmarkView;
+    BOOL _iPhoneVersion;
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
+        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+            _iPhoneVersion = YES;
+        }
+        
         _selected = NO;
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor whiteColor];
@@ -144,7 +149,11 @@
     [_level createInitialObjects:_geometryView.geometricObjects];
     [_level createSolutionPreviewObjects:_geometryView.geometricObjects];
     for (DHGeometricObject* object in _geometryView.geometricObjects) {
-        object.drawScale = 0.6;
+        if (_iPhoneVersion) {
+            object.drawScale = 0.4;
+        } else {
+            object.drawScale = 0.6;
+        }
     }
     [_geometryView setNeedsDisplay];
 }

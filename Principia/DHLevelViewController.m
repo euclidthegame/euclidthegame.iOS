@@ -19,8 +19,9 @@
 #import "DHTransitionFromLevel.h"
 #import "DHLevelSelection2ViewController.h"
 #import "YLProgressBar.h"
+#import "DHPopoverView.h"
 
-@interface DHLevelViewController () <UINavigationControllerDelegate>
+@interface DHLevelViewController () <UINavigationControllerDelegate, DHPopoverViewDelegate>
 
 @end
 
@@ -39,16 +40,25 @@
     UIBarButtonItem* _redoButton;
     UIBarButtonItem* _resetButton;
     UIBarButtonItem* _hintButton;
+    UIBarButtonItem* _popoverMenuButton;
     
     CGPoint _tempGeoCenter;
     
     YLProgressBar* _progressBar;
+    
+    BOOL _iPhoneVersion;
+    
+    DHPopoverView* _popoverMenu;
 }
 
 #pragma mark Life-cycle
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        _iPhoneVersion = YES;
+    }
     
     // NOTE: This is necessary due to a bug with custom transitions messing up the top layout guide
     self.edgesForExtendedLayout = UIRectEdgeNone;
@@ -78,28 +88,36 @@
     UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain
                                                                  target:self action:nil];
     UIBarButtonItem *resetButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Reset"
-                                                                           style:UIBarButtonItemStylePlain
-                                                                          target:self
-                                                                          action:@selector(askToResetLevel)];
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(askToResetLevel)];
     UIBarButtonItem *undoButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Undo"
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(undoMove)];
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(undoMove)];
     UIBarButtonItem *redoButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Redo"
-                                                                        style:UIBarButtonItemStylePlain
-                                                                       target:self
-                                                                       action:@selector(redoMove)];
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(redoMove)];
     UIBarButtonItem *hintButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hint"
                                                                        style:UIBarButtonItemStylePlain
                                                                       target:self
                                                                       action:@selector(showHint:)];
-    self.navigationItem.rightBarButtonItem = resetButtonItem;
-    self.navigationItem.rightBarButtonItems = @[resetButtonItem, separator, redoButtonItem, undoButtonItem,
-                                                separator];
+    
     _undoButton = undoButtonItem;
     _redoButton = redoButtonItem;
     _resetButton = resetButtonItem;
     _hintButton = hintButtonItem;
+    
+    if (_iPhoneVersion) {
+        UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu-icon"] style:UIBarButtonItemStylePlain target:self action:@selector(showPopoverMenu:)];
+        self.navigationItem.rightBarButtonItem = menuButton;
+        _popoverMenuButton = menuButton;
+    } else {
+        self.navigationItem.rightBarButtonItem = resetButtonItem;
+        self.navigationItem.rightBarButtonItems = @[resetButtonItem, separator, redoButtonItem, undoButtonItem,
+                                                    separator];
+    }
     
     _levelInstruction.layer.cornerRadius = 10.0f;
     
@@ -150,6 +168,16 @@
                                                           attribute:NSLayoutAttributeRight
                                                          multiplier:1.0
                                                            constant:-30.0]];
+    
+    if (_iPhoneVersion) {
+        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.toolInstruction
+                                                              attribute:NSLayoutAttributeWidth
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.view
+                                                              attribute:NSLayoutAttributeWidth
+                                                             multiplier:1.0
+                                                               constant:-10.0]];
+    }
 
     [self setupForLevel];
 }
@@ -241,9 +269,22 @@
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
     } else {
-        self.heightLevelObjectiveView.constant = 60;
-        self.heightToolBar.constant = 70;
-        self.levelObjectiveView.hidden = NO;
+        if (_iPhoneVersion) {
+            self.heightLevelObjectiveView.constant = 0;
+            self.heightToolBar.constant = 42;
+            self.levelObjectiveView.hidden = YES;
+            self.toolbarLeadingConstraint.constant = 3;
+            self.toolbarTrailingConstraint.constant = 3;
+            self.toolbarHeightConstraint.constant = 26;
+            self.toolInstruction.font = [UIFont systemFontOfSize:11.0];
+            self.toolInstruction.numberOfLines = 2;
+            [self.toolInstruction setLineBreakMode:NSLineBreakByWordWrapping];
+            self.toolInstruction.textAlignment = NSTextAlignmentCenter;
+        } else {
+            self.heightLevelObjectiveView.constant = 60;
+            self.heightToolBar.constant = 70;
+            self.levelObjectiveView.hidden = NO;
+        }
         self.movesLabel.hidden = NO;
     }
     
@@ -268,9 +309,15 @@
     [self.detailedInstructions addTarget:self action:@selector(showDetailedLevelInstruction:) forControlEvents:UIControlEventTouchUpInside];
     
     [self setupTools];
-    [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
-    [self.geometryView.geoViewTransform setScale:1];
-    [self.geometryView.geoViewTransform setRotation:0];
+    if (_iPhoneVersion) {
+        [self.geometryView.geoViewTransform setOffset:CGPointMake(-30, 0)];
+        [self.geometryView.geoViewTransform setScale:0.5];
+        [self.geometryView.geoViewTransform setRotation:0];
+    } else {
+        [self.geometryView.geoViewTransform setOffset:CGPointMake(0, 0)];
+        [self.geometryView.geoViewTransform setScale:1];
+        [self.geometryView.geoViewTransform setRotation:0];
+    }
     
     [_objectLabeler reset];
     [_geometricObjects removeAllObjects];
@@ -838,6 +885,10 @@
 }
 - (void)showOrHideHintButton
 {
+    if (_iPhoneVersion) {
+        return;
+    }
+    
     NSMutableArray *buttons = [self.navigationItem.rightBarButtonItems mutableCopy];
     BOOL levelHintAnimations = [_currentLevel respondsToSelector:@selector(showHint)];
     
@@ -858,9 +909,12 @@
     _detailedInstructions.enabled = YES;
     UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain
                                                                  target:self action:nil];
-    
-    self.navigationItem.rightBarButtonItems = @[_resetButton, separator, _redoButton, _undoButton,
-                                                separator, _hintButton];
+    if (_iPhoneVersion) {
+        self.navigationItem.rightBarButtonItem = _popoverMenuButton;
+    } else {
+        self.navigationItem.rightBarButtonItems = @[_resetButton, separator, _redoButton, _undoButton,
+                                                    separator, _hintButton];
+    }
 }
 - (void)noMoreHints
 {
@@ -983,6 +1037,9 @@
     label.alpha = 0;
     label.text = message;
     label.textColor = color;
+    if (_iPhoneVersion) {
+        label.font = [UIFont systemFontOfSize:11];
+    }
     
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
@@ -1040,7 +1097,10 @@
         return;
     }
     
-    const CGFloat levelInfoViewSize = 660.0;
+    const CGFloat levelInfoViewWidth = _iPhoneVersion ? 300.0 : 660.0;
+    const CGFloat levelInfoViewHeight = _iPhoneVersion ? self.view.bounds.size.height*0.85 : levelInfoViewWidth;
+    const CGFloat fontSizeTitle = _iPhoneVersion ? 14.0 : 17.0;
+    const CGFloat fontSizeText = _iPhoneVersion ? 13.0 : 16.0;
 
     UIView* background = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2000, 2000)];
     background.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];
@@ -1095,15 +1155,15 @@
     titleLabel.text = [self.title stringByAppendingString:@" - Objective"];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.textColor = [UIColor darkGrayColor];
-    titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
+    titleLabel.font = [UIFont boldSystemFontOfSize:fontSizeTitle];
 
     solutionPreviewLabel.text = @"Solution preview:";
     solutionPreviewLabel.textColor = [UIColor darkGrayColor];
-    solutionPreviewLabel.font = [UIFont boldSystemFontOfSize:16.0];
+    solutionPreviewLabel.font = [UIFont boldSystemFontOfSize:fontSizeText];
     
     turnHintOnLabel.textAlignment = NSTextAlignmentLeft;
     turnHintOnLabel.textColor = [UIColor darkGrayColor];
-    turnHintOnLabel.font = [UIFont systemFontOfSize:16.0];
+    turnHintOnLabel.font = [UIFont systemFontOfSize:fontSizeText];
     if ([DHSettings showHints]){
         [hintSwitch setOn:YES];
         turnHintOnLabel.text = @"Show hints: ";
@@ -1115,7 +1175,7 @@
 
     objectiveLabel.text = [_currentLevel levelDescription];
     objectiveLabel.textColor = [UIColor darkGrayColor];
-    objectiveLabel.font = [UIFont systemFontOfSize:16.0];
+    objectiveLabel.font = [UIFont systemFontOfSize:fontSizeText];
     objectiveLabel.numberOfLines = 0;
     [objectiveLabel setLineBreakMode:NSLineBreakByWordWrapping];
     
@@ -1139,7 +1199,7 @@
                                                           toItem:nil
                                                        attribute:NSLayoutAttributeNotAnAttribute
                                                       multiplier:1.0
-                                                        constant:levelInfoViewSize]];
+                                                        constant:levelInfoViewWidth]];
     
     // Height constraint
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:detailedInstructionView
@@ -1148,7 +1208,7 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:levelInfoViewSize]];
+                                                           constant:levelInfoViewHeight]];
     
     // Center horizontally
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:detailedInstructionView
@@ -1175,7 +1235,7 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:levelInfoViewSize]];
+                                                           constant:levelInfoViewWidth]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
                                                           attribute:NSLayoutAttributeCenterX
                                                           relatedBy:NSLayoutRelationEqual
@@ -1376,11 +1436,13 @@
     _resetButton.enabled = NO;
     _undoButton.enabled = NO;
     _redoButton.enabled = NO;
+    _popoverMenuButton.enabled = NO;
 }
 
 - (void)hideDetailedLevelInstruction
 {
     _resetButton.enabled = YES;
+    _popoverMenuButton.enabled = YES;
     
     if (!self.levelCompleted) {
         if (_geometricObjectsForUndo.count > 0) _undoButton.enabled = YES;
@@ -1407,6 +1469,71 @@
     else {
         return nil;
     }
+}
+
+#pragma mark - Popover menu methods
+- (void)showPopoverMenu:(id)sender
+{
+    if(!_popoverMenu) {
+        UIView* targetView = [UIApplication sharedApplication].keyWindow.rootViewController.view;
+        CGRect originFrame = [[sender view] convertRect:[sender view].bounds toView:targetView];
+        
+        DHPopoverView *popOverView = [[DHPopoverView alloc] initWithOriginFrame:originFrame
+                                                                       delegate:self
+                                                               firstButtonTitle:@"Reset level"];
+        [popOverView addButtonWithTitle:@"Undo move" enabled:_undoButton.enabled];
+        [popOverView addButtonWithTitle:@"Redo move" enabled:_redoButton.enabled];
+        [popOverView addButtonWithTitle:@"Show hint" enabled:[DHSettings showHints]];
+        [popOverView addButtonWithTitle:@"Show level instruction"];
+        [popOverView show];
+        
+        _popoverMenu = popOverView;
+    } else {
+        [self hidePopoverMenu];
+    }
+}
+
+-(void)hidePopoverMenu
+{
+    [_popoverMenu dismissWithAnimation:YES];
+    _popoverMenu = nil;
+}
+
+- (void)closePopoverView:(DHPopoverView *)popoverView
+{
+    [self hidePopoverMenu];
+}
+- (void)popoverViewDidClose:(DHPopoverView *)popoverView
+{
+    
+}
+- (void)popoverView:(DHPopoverView *)popoverView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+            [self askToResetLevel];
+            break;
+        case 1:
+            [self undoMove];
+            break;
+        case 2:
+            [self redoMove];
+            break;
+        case 3:
+            [self showHint:nil];
+            break;
+        case 4:
+            [self showDetailedLevelInstruction:nil];
+            break;
+            
+        default:
+            break;
+    }
+    [self hidePopoverMenu];
+}
+- (UIColor*)popOverTintColor
+{
+    return self.view.tintColor;
 }
 
 @end

@@ -461,62 +461,17 @@
     NSMutableArray* levels = [[NSMutableArray alloc] initWithCapacity:30];
     FillLevelArray(levels);
     
-    NSDictionary* levelResults = [DHLevelResults levelResults];
-    
-    NSUInteger levelsCompleteGameModeNormal = 0;
-    NSUInteger levelsCompleteGameModeMinimumMoves = 0;
-    NSUInteger levelsCompleteGameModePrimitiveOnly = 0;
-    NSUInteger levelsCompleteGameModePrimitiveOnlyMinimumMoves = 0;
-    
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class])
-                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormal];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModeNormal;
-            }
-        }
-    }
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class])
-                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormalMinimumMoves];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModeMinimumMoves;
-            }
-        }
-    }
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class])
-                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnly];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModePrimitiveOnly;
-            }
-        }
-    }
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class])
-                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnlyMinimumMoves];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModePrimitiveOnlyMinimumMoves;
-            }
-        }
-    }
-    
-    self.gameMode1PercentComplete.percentComplete = levelsCompleteGameModeNormal*1.0/levels.count;
-    self.gameMode2PercentComplete.percentComplete = levelsCompleteGameModeMinimumMoves*1.0/levels.count;
-    self.gameMode3PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnly*1.0/levels.count;
-    self.gameMode4PercentComplete.percentComplete = levelsCompleteGameModePrimitiveOnlyMinimumMoves*1.0/levels.count;
+    NSUInteger levelsCompleteNormal = [DHLevelResults numberOfLevesCompletedForGameMode:kDHGameModeNormal];
+    NSUInteger levelsCompleteMinimumMoves = [DHLevelResults
+                                             numberOfLevesCompletedForGameMode:kDHGameModeNormalMinimumMoves];
+    NSUInteger levelsCompletePrimitiveOnly = [DHLevelResults numberOfLevesCompletedForGameMode:kDHGameModePrimitiveOnly];
+    NSUInteger levelsCompletePrimitiveOnlyMinimumMoves = [DHLevelResults
+                                                          numberOfLevesCompletedForGameMode:kDHGameModePrimitiveOnlyMinimumMoves];
+  
+    self.gameMode1PercentComplete.percentComplete = levelsCompleteNormal*1.0/levels.count;
+    self.gameMode2PercentComplete.percentComplete = levelsCompleteMinimumMoves*1.0/levels.count;
+    self.gameMode3PercentComplete.percentComplete = levelsCompletePrimitiveOnly*1.0/levels.count;
+    self.gameMode4PercentComplete.percentComplete = levelsCompletePrimitiveOnlyMinimumMoves*1.0/levels.count;
     
     // Update achievements here if they were not awarded earlier
     if (self.gameMode1PercentComplete.percentComplete == 1.0) {

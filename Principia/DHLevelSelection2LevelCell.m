@@ -17,6 +17,7 @@
     UILabel* _titleLabel;
     DHGeometryView* _geometryView;
     UIImageView* _checkmarkView;
+    BOOL _addedConstraints;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -57,6 +58,15 @@
 - (void)updateConstraints
 {
     [super updateConstraints];
+    [self setConstraints];
+}
+
+- (void)setConstraints
+{
+    if (_addedConstraints) {
+        return;
+    }
+    _addedConstraints = YES;
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_titleLabel
                                                      attribute:NSLayoutAttributeCenterX
@@ -65,6 +75,7 @@
                                                      attribute:NSLayoutAttributeCenterX
                                                     multiplier:1.0
                                                       constant:0]];
+    
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_titleLabel
                                                      attribute:NSLayoutAttributeTop
                                                      relatedBy:NSLayoutRelationEqual
@@ -72,7 +83,6 @@
                                                      attribute:NSLayoutAttributeTop
                                                     multiplier:1.0
                                                       constant:5]];
-    
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_geometryView
                                                      attribute:NSLayoutAttributeLeft
@@ -102,7 +112,7 @@
                                                      attribute:NSLayoutAttributeBottom
                                                     multiplier:1.0
                                                       constant:-10]];
-
+    
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_checkmarkView
                                                      attribute:NSLayoutAttributeLeft
                                                      relatedBy:NSLayoutRelationEqual

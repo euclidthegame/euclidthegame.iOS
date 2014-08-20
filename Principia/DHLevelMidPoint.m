@@ -157,10 +157,6 @@
     
     //self.progress = (pointOnMidLineOK + secondPontOnMidLineOK + midPointOK)/3.0 * 100;
     
-    if (pointOnMidLineOK && secondPontOnMidLineOK) {
-        [self.levelViewController noMoreHints];
-    }
-    
     if (midPointOK) {
         self.progress = 100;
         return YES;
@@ -478,10 +474,12 @@
             [self fadeInViews:@[message3, mpView] withDuration:2.0];
         }];
         
-        [self afterDelay:9.0 :^{
-            [message4 text:@"Look for a tool that provides points over/under segment AB's midpoint!"];
-            [self fadeIn:message4 withDuration:2.0];
-        }];
+        if (!secondPontOnMidLineOK) {
+            [self afterDelay:9.0 :^{
+                [message4 text:@"Look for a tool that provides points over/under segment AB's midpoint!"];
+                [self fadeIn:message4 withDuration:2.0];
+            }];
+        }
         
         [self afterDelay:2.0 :^{
             [self showEndHintMessageInView:hintView];

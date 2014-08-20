@@ -862,10 +862,6 @@
     self.navigationItem.rightBarButtonItems = @[_resetButton, separator, _redoButton, _undoButton,
                                                 separator, _hintButton];
 }
-- (void)noMoreHints
-{
-    _hintButton.enabled = NO;
-}
 
 #pragma mark Other
 - (void) askToResetLevel

@@ -135,10 +135,7 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    BOOL circleOK = NO;
-    BOOL intersectionPointOK = NO;
     BOOL midPointOK = NO;
-    BOOL bisectOK = NO;
     pointOnLineOK = NO;
     DHBisectLine* b = [[DHBisectLine alloc] init];
     b.line1 = _lineAB;
@@ -148,34 +145,23 @@
         id object = [geometricObjects objectAtIndex:index];
         if (object == _lineAB || object == _lineAC) continue;
         
-        if ([object class] == [DHCircle class])
-        {
-            DHCircle* c = object;
-            if (EqualPoints(c.center,_lineAB.start)) circleOK = YES;
-        }
-        if ([object class] == [DHIntersectionPointLineCircle class])
-        {
-            DHPoint* p = object;
-            if (PointOnLine(p,_lineAB) || PointOnLine(object,_lineAC)) intersectionPointOK = YES;
-        }
-        if ([object class] == [DHPointOnLine class]){
+        if ([object class] == [DHPointOnLine class]) {
             pointOnLineOK = YES;
-        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message4.alpha = 0;  } completion:nil];
+            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                _message4.alpha = 0;  } completion:nil];
         }
     
         if (!EqualPoints(object,_pointA) && PointOnLine(object,b)) midPointOK = YES;
-        if (EqualDirection(b,object))
-        {
+        if (EqualDirection(b,object)) {
             DHLineObject * l = object;
             if (PointOnLine(_lineAB.start, l)) {
-                bisectOK = YES;
                 self.progress = 100;
                 return YES;
             }
         }
     }
-    self.progress = ( midPointOK + bisectOK)/2.0 * 100;
+    
+    self.progress = (midPointOK)/2.0 * 100;
     
     return NO;
 }

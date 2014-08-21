@@ -42,7 +42,7 @@
 
 - (NSString *)additionalCompletionMessage
 {
-    return @"Well done ! You unlocked a new tool: Constructing a midpoint!";
+    return @"Well done! You unlocked a new tool: Constructing a midpoint!";
 }
 
 - (DHToolsAvailable)availableTools

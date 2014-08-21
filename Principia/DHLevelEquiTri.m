@@ -44,7 +44,7 @@
 
 - (NSString *)additionalCompletionMessage
 {
-    return @"Well done ! You unlocked a new tool: Constructing equilateral triangles!";
+    return @"Well done! You unlocked a new tool: Constructing equilateral triangles!";
 }
 
 - (NSUInteger)minimumNumberOfMoves

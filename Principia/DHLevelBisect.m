@@ -44,7 +44,7 @@
 
 - (NSString *)additionalCompletionMessage
 {
-    return @"Well done ! You unlocked a new tool: Constructing a bisector!";
+    return @"Well done! You unlocked a new tool: Constructing a bisector!";
 }
 
 - (DHToolsAvailable)availableTools
@@ -357,7 +357,7 @@
     _message1 = [[Message alloc] initWithMessage:@"There is only one point given." andPoint:CGPointMake(20,720)];
     _message2 = [[Message alloc] initWithMessage:@"But most tools in the toolbar require at least 2 points! " andPoint:CGPointMake(20,740)];
     _message3 = [[Message alloc] initWithMessage:@"A second point can be constructed using the point tool. Tap on it to select it." andPoint:CGPointMake(20,760)];
-    _message4 = [[Message alloc] initWithMessage:@"Good ! Let's start with constructing a point. For example, on one of the given lines." andPoint:CGPointMake(20,780)];
+    _message4 = [[Message alloc] initWithMessage:@"Good! Let's start with constructing a point. For example, on one of the given lines." andPoint:CGPointMake(20,780)];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {

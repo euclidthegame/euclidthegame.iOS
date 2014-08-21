@@ -227,7 +227,9 @@
     }
     else if (_currentStep == 3 && segmentAB) {
         _currentStep = 4;
-        message6 = [[Message alloc] initWithMessage:@"Well done!" andPoint:Position(sAB)];
+        CGPoint messagePos = Position(sAB);
+        messagePos.y += 5;
+        message6 = [[Message alloc] initWithMessage:@"Well done!" andPoint:messagePos];
         [geometryView addSubview:message6];
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
@@ -266,7 +268,9 @@
         _currentStep = 6;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             [message6 text: @"Well done!" position:Position(cAB)];
+             CGPoint messagePos = Position(cAB);
+             messagePos.y += 5;
+             [message6 text: @"Well done!" position:messagePos];
              message6.alpha = 1;
          }
          completion:^(BOOL finished){
@@ -286,7 +290,9 @@
          options: UIViewAnimationOptionAllowAnimatedContent
          animations:^{
              message1.alpha = 0;
-             [message6 text:@"Well done!" position:Position(cBA)];
+             CGPoint messagePos = Position(cBA);
+             messagePos.y += 5;
+             [message6 text:@"Well done!" position:messagePos];
              message6.alpha = 1;
          }
          completion:^(BOOL finished){
@@ -326,7 +332,9 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
-             [message6 text:@"Well done!" position:Position(lAB)];
+             CGPoint messagePos = Position(lAB);
+             messagePos.y += 5;
+             [message6 text:@"Well done!" position:messagePos];
              message6.alpha = 1;
          }
          completion:^(BOOL finished){
@@ -363,7 +371,10 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
-             [message6 text:@"Well done!" position:Position(_point)];
+             CGPoint messagePos = Position(_point);
+             messagePos.y += 5;
+             
+             [message6 text:@"Well done!" position:messagePos];
              message6.alpha = 1;
          }
          completion:^(BOOL finished){

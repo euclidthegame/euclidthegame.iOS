@@ -151,8 +151,8 @@
     Message* message1 = [[Message alloc] initWithMessage:@"For a moment, suppose that we do know the center of the circle." andPoint:CGPointMake(200,320)];
     Message* message2 = [[Message alloc] initWithMessage:@"And let's draw a line segment connecting two points on the circle." andPoint:CGPointMake(200,340)];
     Message* message3 = [[Message alloc] initWithMessage:@"We can drop a perpendicular from the center to the line segment." andPoint:CGPointMake(200,360)];
-    Message* message4 = [[Message alloc] initWithMessage:@"How can we construct such a point ?" andPoint:CGPointMake(200,380)];
-    Message* message5 = [[Message alloc] initWithMessage:@"How can we construct such a point ?" andPoint:CGPointMake(200,400)];
+    Message* message4 = [[Message alloc] initWithMessage:@"How can we construct such a point?" andPoint:CGPointMake(200,380)];
+    Message* message5 = [[Message alloc] initWithMessage:@"How can we construct such a point?" andPoint:CGPointMake(200,400)];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {

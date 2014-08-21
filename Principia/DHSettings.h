@@ -13,6 +13,7 @@ static NSString* const kSettingKey_ShowWellDoneMessages = @"ShowWellDoneMessages
 static NSString* const kSettingKey_ShowProgressPercentage = @"ShowProgressPercentage";
 static NSString* const kSettingKey_ShowHints = @"ShowHints";
 static NSString* const kSettingKey_LevelPack1Purchased = @"LevelPack1Purchased";
+static NSString* const kSettingKey_ObjectsInPlayground = @"ObjectsMadeInPlayground";
 
 @interface DHSettings : NSObject
 
@@ -30,5 +31,9 @@ static NSString* const kSettingKey_LevelPack1Purchased = @"LevelPack1Purchased";
 
 + (BOOL)levelPack1Purchased;
 + (void)setLevelPack1Purchased:(BOOL)value;
+
++ (NSUInteger)numberOfObjectsMadeInPlayground;
++ (void)setNumberOfObjectsMadeInPlayground:(NSUInteger)value;
+
 
 @end

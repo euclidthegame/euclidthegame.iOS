@@ -14,6 +14,7 @@
 {
     [[NSUserDefaults standardUserDefaults] setEncryptionKey:@"euclidthegameencryptionkey_irtbvfbh"];
 }
+#pragma mark Helper methods
 + (BOOL)getBoolSettingForKey:(NSString*)key withDefault:(BOOL)defaultValue
 {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
@@ -49,6 +50,27 @@
     [userDefaults setObjectEncrypted:settingValue forKey:key];
     [userDefaults synchronize];
 }
++ (NSUInteger)getEncryptedUIntSettingForKey:(NSString*)key withDefault:(NSUInteger)defaultValue
+{
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    NSNumber* valueObject = [userDefaults objectEncryptedForKey:key];
+    if (!valueObject) {
+        return defaultValue;
+    }
+    
+    NSUInteger settingValue = [valueObject unsignedIntegerValue];
+    return settingValue;
+}
++ (void)setEncryptedUIntSettingForKey:(NSString*)key toValue:(NSUInteger)newValue
+{
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    NSNumber* settingValue = [NSNumber numberWithUnsignedInteger:newValue];
+    [userDefaults setObjectEncrypted:settingValue forKey:key];
+    [userDefaults synchronize];
+}
+
+
+#pragma mark Settings methods
 
 + (BOOL)allLevelsUnlocked
 {
@@ -95,6 +117,15 @@
 + (void)setLevelPack1Purchased:(BOOL)value
 {
     [self setBoolSettingForKey:kSettingKey_LevelPack1Purchased toValue:value];
+}
+
++ (NSUInteger)numberOfObjectsMadeInPlayground
+{
+    return [self getEncryptedUIntSettingForKey:kSettingKey_ObjectsInPlayground withDefault:0];
+}
++ (void)setNumberOfObjectsMadeInPlayground:(NSUInteger)value
+{
+    [self setEncryptedUIntSettingForKey:kSettingKey_ObjectsInPlayground toValue:value];
 }
 
 @end

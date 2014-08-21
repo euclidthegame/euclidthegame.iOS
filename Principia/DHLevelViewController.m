@@ -349,6 +349,14 @@
             [[object class] isSubclassOfClass:[DHPoint class]] == NO) {
             countMove = YES;
         }
+        
+        if (self.currentGameMode == kDHGameModePlayground) {
+            NSUInteger numberOfObjectsMade = [DHSettings numberOfObjectsMadeInPlayground] + 1;
+            [DHSettings setNumberOfObjectsMadeInPlayground:numberOfObjectsMade];
+            if (numberOfObjectsMade >= 100) {
+                // TODO: Submit achievement
+            }
+        }
     }
     if (countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0) {
         [self.geometryView setNeedsDisplay];
@@ -974,7 +982,6 @@
         self.levelArray =  levels;
         [self viewDidLoad];
     }
-    
 }
 
 - (IBAction)hideCompletionMessage:(id)sender

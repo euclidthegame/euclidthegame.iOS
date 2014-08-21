@@ -8,7 +8,6 @@
 
 #import "DHGameModeSelectionViewController.h"
 #import "DHLevelViewController.h"
-#import "DHLevelSelectionViewController.h"
 #import "DHLevelSelection2ViewController.h"
 #import "DHLevelPlayground.h"
 #import "DHLevelResults.h"
@@ -315,10 +314,6 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"ShowLevelSelection"]) {
-        DHLevelSelectionViewController* vc = [segue destinationViewController];
-        vc.currentGameMode = [sender unsignedIntegerValue];
-    }
     if ([segue.identifier isEqualToString:@"ShowLevelSelection2"]) {
         DHLevelSelection2ViewController* vc = [segue destinationViewController];
         vc.currentGameMode = [sender unsignedIntegerValue];

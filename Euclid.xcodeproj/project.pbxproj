@@ -76,7 +76,6 @@
 		68F0A9E019587AEC00A97B86 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 68F0A9DF19587AEC00A97B86 /* Images.xcassets */; };
 		68F0A9FE1958BDD500A97B86 /* DHGeometryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */; };
 		68F0AA011958C5AB00A97B86 /* DHGeometricObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA001958C5AB00A97B86 /* DHGeometricObjects.m */; };
-		68F0AA15195A92A700A97B86 /* DHLevelSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */; };
 		68F0AA18195A96D500A97B86 /* DHLevelEquiTri.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA17195A96D500A97B86 /* DHLevelEquiTri.m */; };
 		68F0AA1C195B256B00A97B86 /* DHLevelSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA1B195B256B00A97B86 /* DHLevelSquare.m */; };
 		68F0AA25195CBCA200A97B86 /* DHLevelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F0AA24195CBCA200A97B86 /* DHLevelViewController.m */; };
@@ -219,8 +218,6 @@
 		68F0AA051959936C00A97B86 /* DHMath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHMath.h; sourceTree = "<group>"; };
 		68F0AA061959FBB000A97B86 /* DHMathCGVector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHMathCGVector.h; sourceTree = "<group>"; };
 		68F0AA0B195A188500A97B86 /* DHLevel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHLevel.h; sourceTree = "<group>"; };
-		68F0AA13195A92A700A97B86 /* DHLevelSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSelectionViewController.h; sourceTree = "<group>"; };
-		68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelSelectionViewController.m; sourceTree = "<group>"; };
 		68F0AA16195A96D500A97B86 /* DHLevelEquiTri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelEquiTri.h; sourceTree = "<group>"; };
 		68F0AA17195A96D500A97B86 /* DHLevelEquiTri.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelEquiTri.m; sourceTree = "<group>"; };
 		68F0AA19195A983D00A97B86 /* DHLevels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHLevels.h; sourceTree = "<group>"; };
@@ -346,6 +343,10 @@
 			children = (
 				68F0A9D619587AEC00A97B86 /* DHAppDelegate.h */,
 				68F0A9D719587AEC00A97B86 /* DHAppDelegate.m */,
+				68471127197843D6003B681B /* DHSettings.h */,
+				68471128197843D6003B681B /* DHSettings.m */,
+				68E3CAB0199F138F0018851F /* NSUserDefaults+Encryption.h */,
+				68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */,
 				68F0A9D919587AEC00A97B86 /* Main.storyboard */,
 				68F0AA20195C377000A97B86 /* Views & View Controllers */,
 				681C888D198ECDF8005307F5 /* Custom view transitions */,
@@ -484,8 +485,6 @@
 				6866224419730417004DCFAC /* DHGameModes.h */,
 				6866223E1972A7AB004DCFAC /* DHGameModeSelectionViewController.h */,
 				6866223F1972A7AB004DCFAC /* DHGameModeSelectionViewController.m */,
-				68F0AA13195A92A700A97B86 /* DHLevelSelectionViewController.h */,
-				68F0AA14195A92A700A97B86 /* DHLevelSelectionViewController.m */,
 				681C8887198D4D02005307F5 /* DHLevelSelection2ViewController.h */,
 				681C8888198D4D02005307F5 /* DHLevelSelection2ViewController.m */,
 				681C888A198D4FA2005307F5 /* DHLevelSelection2LevelCell.h */,
@@ -496,10 +495,6 @@
 				68F0A9DD19587AEC00A97B86 /* DHGeometryViewController.m */,
 				68F0A9FC1958BDD500A97B86 /* DHGeometryView.h */,
 				68F0A9FD1958BDD500A97B86 /* DHGeometryView.m */,
-				68471127197843D6003B681B /* DHSettings.h */,
-				68471128197843D6003B681B /* DHSettings.m */,
-				68E3CAB0199F138F0018851F /* NSUserDefaults+Encryption.h */,
-				68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */,
 				6847112419783EE6003B681B /* DHSettingsViewController.h */,
 				6847112519783EE6003B681B /* DHSettingsViewController.m */,
 				681C8884198D0BF1005307F5 /* DHSettingsTableViewController.h */,
@@ -633,7 +628,6 @@
 				681C88B219921C86005307F5 /* DHParallelTool.m in Sources */,
 				681C88991991E04F005307F5 /* DHLineSegmentTool.m in Sources */,
 				681C88AA19921A0B005307F5 /* DHCompassTool.m in Sources */,
-				68F0AA15195A92A700A97B86 /* DHLevelSelectionViewController.m in Sources */,
 				683D9682196BEC680057B62D /* DHLevelTriIncircle.m in Sources */,
 				68F0AA011958C5AB00A97B86 /* DHGeometricObjects.m in Sources */,
 				681C8890198ECE19005307F5 /* DHTransitionToLevel.m in Sources */,

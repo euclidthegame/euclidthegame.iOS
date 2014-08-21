@@ -306,6 +306,7 @@
     [self.geometryView setNeedsDisplay];
     self.levelCompletionMessage.hidden = YES;
     
+    _currentLevel.progress = 0;
     [self setLevelProgress:0];
 
     [_geometricObjectsForRedo removeAllObjects];

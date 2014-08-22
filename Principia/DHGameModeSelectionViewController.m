@@ -200,14 +200,24 @@
         self.logoImageLeadingConstraint.constant = 8;
         self.logoImageWidthConstraint.constant = 40;
         self.selectGameModelLabel.hidden = NO;
-        self.selectGameModeLabelDistanceConstraint.constant = 5;
         self.selectGameModelLabel.font = [UIFont systemFontOfSize:12];
         
         self.gameMode1ViewWidthConstraint.constant = 310;
         self.gameMode1ViewHeightConstraint.constant = 60;
         
+        CGFloat buttonSpacing = 8;
+        CGFloat labelSpacing = 5;
+        CGFloat topSpacing = 70;
+
+        if ([[UIScreen mainScreen] bounds].size.height > 500) {
+            buttonSpacing = 15;
+            labelSpacing = 10;
+            topSpacing = 90;
+        }
+        
+        self.selectGameModeLabelDistanceConstraint.constant = labelSpacing;
         for (NSLayoutConstraint* constraint in self.gameModeViewDistanceConstraints) {
-            constraint.constant = 8;
+            constraint.constant = buttonSpacing;
         }
         
         self.layoutConstraintsiPhone = [[NSMutableArray alloc] initWithCapacity:10];
@@ -221,7 +231,7 @@
          [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeTop
                                       relatedBy:NSLayoutRelationEqual
                                          toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop
-                                     multiplier:1 constant:70]];
+                                     multiplier:1 constant:topSpacing]];
         
         [self.layoutConstraintsiPhone addObject:
          [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeLeft

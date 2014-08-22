@@ -178,9 +178,13 @@
 - (void)slideOutToolbar
 {
     NSLayoutConstraint* heightToolBar = self.levelViewController.heightToolBar;
-    for (int a=0; a<90; a++) {
-        [self afterDelay:a*(1/90.0) :^{
-            heightToolBar.constant= 70 - a;
+    
+    CGFloat targetHeight = _iPhoneVersion ? 42 : 70;
+    NSUInteger steps = targetHeight + 20;
+    
+    for (int a=0; a<steps; a++) {
+        [self afterDelay:a*(1.0/steps) :^{
+            heightToolBar.constant= targetHeight - a;
         }];
     }
 }
@@ -188,24 +192,34 @@
 - (void)slideInToolbar
 {
     NSLayoutConstraint* heightToolBar = self.levelViewController.heightToolBar;
-    for (int a=0; a<90; a++) {
+    
+    CGFloat targetHeight = _iPhoneVersion ? 42 : 70;
+    NSUInteger steps = targetHeight + 20;
+    
+    for (int a=0; a<steps; a++) {
         [self performBlock:^{
             heightToolBar.constant= -20 + a;
-        } afterDelay:a* (1/90.0) ];
+        } afterDelay:a* (1.0/steps) ];
     }
 }
 
 - (void)showEndHintMessageInView:(UIView*)view
 {
-    Message* message5 = [[Message alloc] initAtPoint:CGPointMake(view.frame.size.width/2-100,
+    Message* message = [[Message alloc] initAtPoint:CGPointMake(view.frame.size.width/2-100,
                                                                  view.frame.size.height-40)
                                                addTo:view];
-    [message5 text:@"Tap anywhere to resume the game"];
-    message5.font = [UIFont systemFontOfSize:14.0];
+    [message text:@"Tap anywhere to resume the game"];
+    message.font = [UIFont systemFontOfSize:14.0];
     
-    [self fadeIn:message5 withDuration:2.0];
+    if (_iPhoneVersion) {
+        [message positionFixed:CGPointMake(view.frame.size.width/2-85,
+                                           view.frame.size.height-40)];
+        message.font = [UIFont systemFontOfSize:11.0];
+    }
+    
+    [self fadeIn:message withDuration:2.0];
     [self afterDelay:2.1 :^{
-        message5.flash = YES;
+        message.flash = YES;
     }];
 }
 - (void)hideHint
@@ -246,62 +260,67 @@
 @implementation Message {
     NSTimer* _flashTimer;
     NSDate* _timerStart;
+    BOOL _iPhoneVersion;
+    BOOL _fixedPosition;
 }
 - (instancetype)initWithMessage:(NSString*)message andPoint:(CGPoint)point
 {
     self = [super init];
     if (self) {
+        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+            _iPhoneVersion = YES;
+        }
+        if (_iPhoneVersion) {
+            self.font = [UIFont systemFontOfSize:12];
+            self.numberOfLines = 3;
+            [self setLineBreakMode:NSLineBreakByWordWrapping];
+        }
+        
         self.alpha = 0;
         self.text = message;
         self.textColor = [UIColor darkGrayColor];
-        self.point = point;
-        CGRect frame = self.frame;
-        frame.origin = self.point;
-        self.frame = frame;
-        [self sizeToFit];
-        self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
-        self.layer.cornerRadius = 5.0;        
-    }
-    return self;
-}
-- (instancetype)initAtPoint:(CGPoint)point addTo:(UIView*)view
-{
-    self = [super init];
-    if (self) {
-        self.alpha = 0;
-        self.textColor = [UIColor darkGrayColor];
-        self.point = point;
-        CGRect frame = self.frame;
-        frame.origin = self.point;
-        self.frame = frame;
-        [self sizeToFit];
-        [view addSubview:self];
+        [self position:point];
         self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
         self.layer.cornerRadius = 5.0;
     }
     return self;
 }
-- (void)text:(NSString*)string{
+- (instancetype)initAtPoint:(CGPoint)point addTo:(UIView*)view
+{
+    self = [self initWithMessage:@"" andPoint:point];
+    if (self) {
+        [view addSubview:self];
+    }
+    return self;
+}
+- (void)text:(NSString*)string
+{
     self.text = [NSString stringWithString:string];
-    CGRect frame = self.frame;
-    frame.origin = self.point;
-    self.frame = frame;
     [self sizeToFit];
 }
-- (void)text:(NSString*)string position:(CGPoint)point{
+- (void)text:(NSString*)string position:(CGPoint)point
+{
     self.text = string;
+    
+    [self position:point];
+}
+- (void)position:(CGPoint)point {
+    if (_iPhoneVersion && !_fixedPosition) {
+        point.x = 5;
+        point.y = point.y * 0.5;
+    }
+    
     self.point = point;
     CGRect frame = self.frame;
     frame.origin = self.point;
+    frame.size.width = self.superview.frame.size.width-10;
     self.frame = frame;
     [self sizeToFit];
 }
-- (void)position:(CGPoint)point{
-    self.point = point;
-    CGRect frame = self.frame;
-    frame.origin = self.point;
-    self.frame = frame;
-    [self sizeToFit];
+- (void)positionFixed:(CGPoint)point
+{
+    _fixedPosition = YES;
+    [self position:point];
 }
 - (void)setFlash:(BOOL)flash
 {
@@ -338,4 +357,44 @@
         [_flashTimer invalidate];
     }
 }
+- (void)positionAbove:(Message *)message
+{
+    CGPoint point = message.point;
+    if (_iPhoneVersion) {
+        point.y -= 14;
+    } else {
+        point.y -= 20;
+    }
+    self.point = point;
+    CGRect frame = self.frame;
+    frame.origin = self.point;
+    self.frame = frame;
+    [self sizeToFit];
+}
+- (void)positionBelow:(Message *)message
+{
+    CGPoint point = message.point;
+    if (_iPhoneVersion) {
+        point.y += 14;
+    } else {
+        point.y += 20;
+    }
+    self.point = point;
+    CGRect frame = self.frame;
+    frame.origin = self.point;
+    self.frame = frame;
+    [self sizeToFit];
+}
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    [super willMoveToSuperview:newSuperview];
+    
+    if (_iPhoneVersion) {
+        CGRect frame = self.frame;
+        frame.size.width = newSuperview.frame.size.width - 10;
+        self.frame = frame;
+        [self sizeToFit];
+    }
+}
+
 @end

@@ -108,14 +108,16 @@
     _resetButton = resetButtonItem;
     _hintButton = hintButtonItem;
     
-    if (_iPhoneVersion) {
-        UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu-icon"] style:UIBarButtonItemStylePlain target:self action:@selector(showPopoverMenu:)];
-        self.navigationItem.rightBarButtonItem = menuButton;
-        _popoverMenuButton = menuButton;
-    } else {
-        self.navigationItem.rightBarButtonItem = resetButtonItem;
-        self.navigationItem.rightBarButtonItems = @[resetButtonItem, separator, redoButtonItem, undoButtonItem,
-                                                    separator];
+    if (_currentGameMode != kDHGameModeTutorial) {
+        if (_iPhoneVersion) {
+            UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu-icon"] style:UIBarButtonItemStylePlain target:self action:@selector(showPopoverMenu:)];
+            self.navigationItem.rightBarButtonItem = menuButton;
+            _popoverMenuButton = menuButton;
+        } else {
+            self.navigationItem.rightBarButtonItem = resetButtonItem;
+            self.navigationItem.rightBarButtonItems = @[resetButtonItem, separator, redoButtonItem, undoButtonItem,
+                                                        separator];
+        }
     }
     
     _levelInstruction.layer.cornerRadius = 10.0f;
@@ -260,31 +262,28 @@
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
         self.heightToolBar.constant = -20;
-        _redoButton.title = nil;
-        _undoButton.title = nil;
-        _resetButton.title = nil;
         [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:NO];
     } else if (self.currentGameMode == kDHGameModePlayground) {
         self.levelObjectiveView.hidden = YES;
         self.heightLevelObjectiveView.constant = 0;
     } else {
-        if (_iPhoneVersion) {
-            self.heightLevelObjectiveView.constant = 0;
-            self.heightToolBar.constant = 42;
-            self.levelObjectiveView.hidden = YES;
-            self.toolbarLeadingConstraint.constant = 3;
-            self.toolbarTrailingConstraint.constant = 3;
-            self.toolbarHeightConstraint.constant = 26;
-            self.toolInstruction.font = [UIFont systemFontOfSize:11.0];
-            self.toolInstruction.numberOfLines = 2;
-            [self.toolInstruction setLineBreakMode:NSLineBreakByWordWrapping];
-            self.toolInstruction.textAlignment = NSTextAlignmentCenter;
-        } else {
-            self.heightLevelObjectiveView.constant = 60;
-            self.heightToolBar.constant = 70;
-            self.levelObjectiveView.hidden = NO;
-        }
+        self.heightLevelObjectiveView.constant = 60;
+        self.heightToolBar.constant = 70;
+        self.levelObjectiveView.hidden = NO;
         self.movesLabel.hidden = NO;
+    }
+
+    if (_iPhoneVersion) {
+        self.heightLevelObjectiveView.constant = 0;
+        if(_currentGameMode != kDHGameModeTutorial) self.heightToolBar.constant = 42;
+        self.levelObjectiveView.hidden = YES;
+        self.toolbarLeadingConstraint.constant = 3;
+        self.toolbarTrailingConstraint.constant = 3;
+        self.toolbarHeightConstraint.constant = 26;
+        self.toolInstruction.font = [UIFont systemFontOfSize:11.0];
+        self.toolInstruction.numberOfLines = 2;
+        [self.toolInstruction setLineBreakMode:NSLineBreakByWordWrapping];
+        self.toolInstruction.textAlignment = NSTextAlignmentCenter;
     }
     
     if ([DHSettings showProgressPercentage] == NO) {
@@ -1501,11 +1500,20 @@
         
         DHPopoverView *popOverView = [[DHPopoverView alloc] initWithOriginFrame:originFrame
                                                                        delegate:self
-                                                               firstButtonTitle:@"Reset level"];
+                                                               firstButtonTitle:nil];
+        if (_currentGameMode != kDHGameModePlayground) {
+            if (!_levelCompleted) {
+                [popOverView addButtonWithTitle:@"Show level instruction"];
+            } else {
+                [popOverView addButtonWithTitle:@"Go to next level"];
+            }
+            if ([DHSettings showHints]) {
+                [popOverView addButtonWithTitle:@"Show hint" enabled:YES];
+            }
+        }
         [popOverView addButtonWithTitle:@"Undo move" enabled:_undoButton.enabled];
         [popOverView addButtonWithTitle:@"Redo move" enabled:_redoButton.enabled];
-        [popOverView addButtonWithTitle:@"Show hint" enabled:[DHSettings showHints]];
-        [popOverView addButtonWithTitle:@"Show level instruction"];
+        [popOverView addButtonWithTitle:@"Reset level"];
         [popOverView show];
         
         _popoverMenu = popOverView;
@@ -1530,25 +1538,24 @@
 }
 - (void)popoverView:(DHPopoverView *)popoverView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    switch (buttonIndex) {
-        case 0:
-            [self askToResetLevel];
-            break;
-        case 1:
-            [self undoMove];
-            break;
-        case 2:
-            [self redoMove];
-            break;
-        case 3:
-            [self showHint:nil];
-            break;
-        case 4:
-            [self showDetailedLevelInstruction:nil];
-            break;
-            
-        default:
-            break;
+    NSString* title = [popoverView titleForButton:buttonIndex];
+    if ([title isEqualToString:@"Show level instruction"]) {
+        [self showDetailedLevelInstruction:nil];
+    }
+    if ([title isEqualToString:@"Reset level"]) {
+        [self askToResetLevel];
+    }
+    if ([title isEqualToString:@"Undo move"]) {
+        [self undoMove];
+    }
+    if ([title isEqualToString:@"Redo move"]) {
+        [self redoMove];
+    }
+    if ([title isEqualToString:@"Show hint"]) {
+        [self showHint:nil];
+    }
+    if ([title isEqualToString:@"Go to next level"]) {
+        [self loadNextLevel:nil];
     }
     [self hidePopoverMenu];
 }

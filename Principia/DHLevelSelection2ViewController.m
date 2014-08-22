@@ -329,7 +329,7 @@
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (_iPhoneVersion) {
-        return CGSizeMake(90, 100);
+        return CGSizeMake(90, 90);
     }
     
     return CGSizeMake(120, 150);

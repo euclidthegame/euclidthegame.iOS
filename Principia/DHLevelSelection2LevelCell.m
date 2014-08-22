@@ -39,7 +39,11 @@
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
         [self addSubview:_titleLabel];
-        _titleLabel.font = [UIFont boldSystemFontOfSize:15];
+        if (_iPhoneVersion) {
+            _titleLabel.font = [UIFont boldSystemFontOfSize:13];
+        } else {
+            _titleLabel.font = [UIFont boldSystemFontOfSize:15];
+        }
         _titleLabel.textColor = [[UIApplication sharedApplication] delegate].window.tintColor;
         _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -73,6 +77,8 @@
     }
     _addedConstraints = YES;
     
+    CGFloat geoViewSpacing = _iPhoneVersion ? 5.0 : 10.0;
+    
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_titleLabel
                                                      attribute:NSLayoutAttributeCenterX
                                                      relatedBy:NSLayoutRelationEqual
@@ -95,7 +101,7 @@
                                                         toItem:self
                                                      attribute:NSLayoutAttributeLeft
                                                     multiplier:1.0
-                                                      constant:10]];
+                                                      constant:geoViewSpacing]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_geometryView
                                                      attribute:NSLayoutAttributeTop
                                                      relatedBy:NSLayoutRelationEqual
@@ -109,14 +115,14 @@
                                                         toItem:self
                                                      attribute:NSLayoutAttributeRight
                                                     multiplier:1.0
-                                                      constant:-10]];
+                                                      constant:-geoViewSpacing]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_geometryView
                                                      attribute:NSLayoutAttributeBottom
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:self
                                                      attribute:NSLayoutAttributeBottom
                                                     multiplier:1.0
-                                                      constant:-10]];
+                                                      constant:-geoViewSpacing]];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_checkmarkView
                                                      attribute:NSLayoutAttributeLeft

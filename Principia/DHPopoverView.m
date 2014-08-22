@@ -114,7 +114,11 @@ const CGFloat kTriangleWidth = 20;
         _originFrame = originFrame;
         _delegate = delegate;
         [self setupView];
-        [self addButtonWithTitle:firstButtonTitle];
+        
+        if (firstButtonTitle) {
+            [self addButtonWithTitle:firstButtonTitle];
+        }
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(statusBarWillRotate:)
                                                      name:UIApplicationWillChangeStatusBarOrientationNotification
@@ -236,6 +240,11 @@ const CGFloat kTriangleWidth = 20;
 
 - (void)closePopoverView {
     [_delegate closePopoverView:self];
+}
+- (NSString*)titleForButton:(NSInteger)buttonIndex
+{
+    UIButton* button = [_buttons objectAtIndex:buttonIndex];
+    return [button titleForState:UIControlStateNormal];
 }
 
 - (void)show

@@ -77,6 +77,9 @@
 - (void)text:(NSString*)string;
 - (void)text:(NSString*)string position:(CGPoint)point;
 - (void)position:(CGPoint)point;
+- (void)positionFixed:(CGPoint)point;
+- (void)positionAbove:(Message*)message;
+- (void)positionBelow:(Message*)message;
 @end
 
 

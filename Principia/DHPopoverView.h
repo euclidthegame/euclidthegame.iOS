@@ -26,5 +26,6 @@
 - (void)dismissWithAnimation:(BOOL)animated;
 - (NSInteger)addButtonWithTitle:(NSString*)title;
 - (NSInteger)addButtonWithTitle:(NSString*)title enabled:(BOOL)enabled;
+- (NSString*)titleForButton:(NSInteger)buttonIndex;
 
 @end

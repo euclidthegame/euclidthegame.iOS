@@ -70,48 +70,25 @@
     [geometricObjects addObject:_pointA];
     [geometricObjects addObject:_pointB];
     
-    
-    
-    
-    message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,300)];
-    message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(200,320)];
-    message3 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,850)];
-    message4 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,870)];
-    message5 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(20,890)];
+    message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
+    message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
+    message3 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
+    message4 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
+    message5 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
 }
 
 - (void)positionMessagesForOrientation:(UIInterfaceOrientation)orientation
 {
-    CGRect frame1 = message1.frame;
-    CGRect frame2 = message2.frame;
-    CGRect frame3 = message3.frame;
-    CGRect frame4 = message4.frame;
-    CGRect frame5 = message5.frame;
-    
     if (UIInterfaceOrientationIsPortrait(orientation)) {
-        frame1.origin = CGPointMake(200,260);
-        frame2.origin = CGPointMake(200,280);
-        frame3.origin = CGPointMake(20,810);
-        frame4.origin = CGPointMake(20,830);
-        frame5.origin = CGPointMake(20,850);
+        [message1 position:CGPointMake(200,260)];
+        [message5 position:CGPointMake(20,850)];
     } else {
-        frame1.origin = CGPointMake(300,50);
-        frame2.origin = CGPointMake(300,72);
-        frame3.origin = CGPointMake(20,550);
-        frame4.origin = CGPointMake(20,572);
-        frame5.origin = CGPointMake(20,594);
+        [message1 position:CGPointMake(300,50)];
+        [message5 position:CGPointMake(20,594)];
     }
-    
-    message1.point = frame1.origin;
-    message2.point = frame2.origin;
-    message3.point = frame3.origin;
-    message4.point = frame4.origin;
-    message5.point = frame5.origin;
-    message1.frame = frame1;
-    message2.frame = frame2;
-    message3.frame = frame3;
-    message4.frame = frame4;
-    message5.frame = frame5;
+    [message2 positionBelow:message1];
+    [message4 positionAbove:message5];
+    [message3 positionAbove:message4];
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
@@ -195,11 +172,7 @@
 
                    }
                    completion:^(BOOL finished){
-                       for (int a=0; a<180; a++) {
-                           [self performBlock:^{
-                               self.heightToolbar.constant= -20 + a*0.5;
-                           } afterDelay:a* (1/90.0) ];
-                       }
+                       [self slideInToolbar];
                         [UIView
                         animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
                             [message4 text:@"Let's start by constructing a line segment. Tap on the tool to select it."];

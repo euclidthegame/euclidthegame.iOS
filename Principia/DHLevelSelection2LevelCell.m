@@ -18,6 +18,7 @@
     DHGeometryView* _geometryView;
     UIImageView* _checkmarkView;
     BOOL _iPhoneVersion;
+    BOOL _addedConstraints;
 }
 
 - (id)initWithFrame:(CGRect)frame

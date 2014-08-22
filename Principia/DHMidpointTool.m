@@ -197,10 +197,10 @@
         [self.delegate removeTemporaryGeometricObjects:@[_tempMidPoint]];
         
         if (_tempMidPoint.end != _tempEndPoint) {
-            [objectsToAdd addObject:_tempMidPoint];
-            
             if (_tempIntersectionStart) [objectsToAdd addObject:_tempIntersectionStart];
             if (_tempIntersectionEnd) [objectsToAdd addObject:_tempIntersectionEnd];
+            [objectsToAdd addObject:_tempMidPoint];
+            
             [self.delegate addGeometricObjects:objectsToAdd];
             
             [self reset];

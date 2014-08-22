@@ -124,10 +124,10 @@
         
         if (_temporaryCircle.pointOnRadius != _tempPointOnRadius) {
             _temporaryCircle.temporary = NO;
-            [objectsToAdd addObject:_temporaryCircle];
-            
             if (_tempIntersectionCenter) [objectsToAdd addObject:_tempIntersectionCenter];
             if (_tempIntersectionRadius) [objectsToAdd addObject:_tempIntersectionRadius];
+            [objectsToAdd addObject:_temporaryCircle];
+            
             [self.delegate addGeometricObjects:objectsToAdd];
             
             [self reset];

@@ -128,10 +128,10 @@
         
         if (_tempLine.end != _tempEndPoint) {
             _tempLine.temporary = NO;
-            [objectsToAdd addObject:_tempLine];
-            
             if (_tempIntersectionStart) [objectsToAdd addObject:_tempIntersectionStart];
             if (_tempIntersectionEnd) [objectsToAdd addObject:_tempIntersectionEnd];
+            [objectsToAdd addObject:_tempLine];
+            
             [self.delegate addGeometricObjects:objectsToAdd];
             
             [self reset];

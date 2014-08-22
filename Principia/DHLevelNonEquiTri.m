@@ -306,7 +306,7 @@
     Message* message1 = [[Message alloc] initWithMessage:@"We are looking for a point G such that:" andPoint:CGPointMake(450,100)];
     Message* message2 = [[Message alloc] initWithMessage:@"  1. AG = CD" andPoint:CGPointMake(450,120)];
     Message* message3 = [[Message alloc] initWithMessage:@"  2. BG = EF" andPoint:CGPointMake(450,140)];
-    Message* message4 = [[Message alloc] initWithMessage:@"How can we construct such a point ?" andPoint:CGPointMake(450,160)];
+    Message* message4 = [[Message alloc] initWithMessage:@"How can we construct such a point?" andPoint:CGPointMake(450,160)];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {

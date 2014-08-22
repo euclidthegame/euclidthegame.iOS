@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DHGameModes.h"
 
 extern NSString* const kLevelResultKeyCompleted;
 extern NSString* const kLevelResultKeyMinimumMoves;
@@ -16,5 +17,6 @@ extern NSString* const kLevelResultKeyMinimumMoves;
 + (NSDictionary*)levelResults;
 + (void)clearLevelResults;
 + (void)newResult:(NSMutableDictionary*)result forLevel:(NSString*)level;
++ (NSUInteger)numberOfLevesCompletedForGameMode:(NSUInteger)gameMode;
 
 @end

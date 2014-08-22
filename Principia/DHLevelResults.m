@@ -7,6 +7,7 @@
 //
 
 #import "DHLevelResults.h"
+#import "DHLevels.h"
 
 NSString * const kLevelResultKeyCompleted = @"Completed";
 NSString * const kLevelResultKeyMinimumMoves = @"MinimumMoves";
@@ -91,6 +92,29 @@ static NSMutableDictionary* s_LevelResults;
         [results setObject:result forKey:level];
     }
     [self saveLevelResults];
+}
+
++ (NSUInteger)numberOfLevesCompletedForGameMode:(NSUInteger)gameMode
+{
+    NSUInteger levelsCompleted = 0;
+    
+    NSMutableArray* levels = [[NSMutableArray alloc] init];
+    FillLevelArray(levels);
+    NSDictionary* results = [self levelResults];
+    
+    for (id level in levels) {
+        NSString* resultKey = [NSStringFromClass([level class]) stringByAppendingFormat:@"/%lu",
+                               (unsigned long)gameMode];
+        NSDictionary* levelResult = [results objectForKey:resultKey];
+        if (levelResult) {
+            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
+            if (completed.boolValue) {
+                levelsCompleted++;
+            }
+        }
+    }
+    
+    return levelsCompleted;
 }
 
 @end

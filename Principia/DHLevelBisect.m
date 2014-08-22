@@ -44,7 +44,7 @@
 
 - (NSString *)additionalCompletionMessage
 {
-    return @"Well done ! You unlocked a new tool: Constructing a bisector!";
+    return @"Well done! You unlocked a new tool: Constructing a bisector!";
 }
 
 - (DHToolsAvailable)availableTools
@@ -135,10 +135,7 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    BOOL circleOK = NO;
-    BOOL intersectionPointOK = NO;
     BOOL midPointOK = NO;
-    BOOL bisectOK = NO;
     pointOnLineOK = NO;
     DHBisectLine* b = [[DHBisectLine alloc] init];
     b.line1 = _lineAB;
@@ -148,34 +145,23 @@
         id object = [geometricObjects objectAtIndex:index];
         if (object == _lineAB || object == _lineAC) continue;
         
-        if ([object class] == [DHCircle class])
-        {
-            DHCircle* c = object;
-            if (EqualPoints(c.center,_lineAB.start)) circleOK = YES;
-        }
-        if ([object class] == [DHIntersectionPointLineCircle class])
-        {
-            DHPoint* p = object;
-            if (PointOnLine(p,_lineAB) || PointOnLine(object,_lineAC)) intersectionPointOK = YES;
-        }
-        if ([object class] == [DHPointOnLine class]){
+        if ([object class] == [DHPointOnLine class]) {
             pointOnLineOK = YES;
-        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message4.alpha = 0;  } completion:nil];
+            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                _message4.alpha = 0;  } completion:nil];
         }
     
         if (!EqualPoints(object,_pointA) && PointOnLine(object,b)) midPointOK = YES;
-        if (EqualDirection(b,object))
-        {
+        if (EqualDirection(b,object)) {
             DHLineObject * l = object;
             if (PointOnLine(_lineAB.start, l)) {
-                bisectOK = YES;
                 self.progress = 100;
                 return YES;
             }
         }
     }
-    self.progress = ( midPointOK + bisectOK)/2.0 * 100;
+    
+    self.progress = (midPointOK)/2.0 * 100;
     
     return NO;
 }
@@ -371,7 +357,7 @@
     _message1 = [[Message alloc] initWithMessage:@"There is only one point given." andPoint:CGPointMake(20,720)];
     _message2 = [[Message alloc] initWithMessage:@"But most tools in the toolbar require at least 2 points! " andPoint:CGPointMake(20,740)];
     _message3 = [[Message alloc] initWithMessage:@"A second point can be constructed using the point tool. Tap on it to select it." andPoint:CGPointMake(20,760)];
-    _message4 = [[Message alloc] initWithMessage:@"Good ! Let's start with constructing a point. For example, on one of the given lines." andPoint:CGPointMake(20,780)];
+    _message4 = [[Message alloc] initWithMessage:@"Good! Let's start with constructing a point. For example, on one of the given lines." andPoint:CGPointMake(20,780)];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {

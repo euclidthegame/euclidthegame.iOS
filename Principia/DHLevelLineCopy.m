@@ -129,7 +129,7 @@
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
     parallelLineOK = NO;
-    BOOL intersectingLineOK = NO;
+    //BOOL intersectingLineOK = NO;
     
     DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] init];
     tp.startOfTranslation = _pointC;
@@ -144,7 +144,7 @@
             if (PointOnLine(_pointC, l) && intersectsTP) {
                 parallelLineOK = YES;
             } else if (intersectsTP) {
-                intersectingLineOK = YES;
+                //intersectingLineOK = YES;
             }
         }
         

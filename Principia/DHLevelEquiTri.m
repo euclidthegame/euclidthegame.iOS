@@ -44,7 +44,7 @@
 
 - (NSString *)additionalCompletionMessage
 {
-    return @"Well done ! You unlocked a new tool: Constructing equilateral triangles!";
+    return @"Well done! You unlocked a new tool: Constructing equilateral triangles!";
 }
 
 - (NSUInteger)minimumNumberOfMoves
@@ -161,10 +161,6 @@
     
     self.progress = ((pC_OK || pD_OK) + (sAC_OK || sAD_OK || sBC_OK || sBD_OK) +
                      ((sAC_OK && sBC_OK) || (sAD_OK && sBD_OK)))/3.0 * 100;
-    
-    if (cBA_OK && cAB_OK) {
-        [self.levelViewController noMoreHints];
-    }
     
     if ((pC_OK && sAC_OK && sBC_OK) || (pD_OK && sAD_OK && sBD_OK)) {
         return YES;
@@ -391,17 +387,23 @@
         DHLineSegment* segmentAC = [[DHLineSegment alloc] initWithStart:c1.center andEnd:pC];
         segmentAC.temporary = YES;
         
-        //if left circle already constructed, construct the other one
-        if (cAB_OK) {
+        // If only left circle already constructed, construct the other one
+        if (cAB_OK && !cBA_OK) {
             c1 = [c1 initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
             pC = [pC initWithCircle:c1 andAngle:M_PI * 0.10 + M_PI];
             segmentAC = [segmentAC initWithStart:c1.center andEnd:pC];
         }
+        // If both circles already constructed, simply show points and skip the circles
+        BOOL hideCircle = NO;
+        if (cAB_OK && cBA_OK) {
+            hideCircle = YES;
+        }
         
+        [hintView addSubview:oldObjects];
         DHGeometryView* circleView = [[DHGeometryView alloc] initWithObjects:@[c1] supView:geometryView addTo:hintView];
         DHGeometryView* lineACView = [[DHGeometryView alloc] initWithObjects:@[segmentAC] supView:geometryView addTo:hintView];
         DHGeometryView* pointCView = [[DHGeometryView alloc] initWithObjects:@[pC] supView:geometryView addTo:hintView];
-        [hintView addSubview:oldObjects];
+        
         
         [hintView bringSubviewToFront:message1];
         [hintView bringSubviewToFront:message2];
@@ -410,7 +412,11 @@
         
         [self afterDelay:0.0:^{
             [message1 text:@"Circles have a very useful property."];
-            [self fadeInViews:@[message1,circleView] withDuration:2.0];
+            if (hideCircle) {
+                [self fadeInViews:@[message1] withDuration:2.0];
+            } else {
+                [self fadeInViews:@[message1,circleView] withDuration:2.0];
+            }
         }];
         
         [self afterDelay:4.0 :^{
@@ -426,8 +432,11 @@
         [self afterDelay:12.0 :^{
             [message4 text:@"For any point C on the circle."];
             [self fadeIn:message4 withDuration:2.0];
-            if (cAB_OK) [self movePointOnCircle:pC toAngle:3.333*M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
-            else        [self movePointOnCircle:pC toAngle:2.3333*-M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
+            if (cAB_OK && !cBA_OK) {
+                [self movePointOnCircle:pC toAngle:3.333*M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
+            } else {
+                [self movePointOnCircle:pC toAngle:2.3333*-M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
+            }
         }];
 
         [self afterDelay:2.0 :^{

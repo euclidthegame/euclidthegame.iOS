@@ -25,7 +25,6 @@
 
 @end
 
-
 @implementation DHLevelViewController {
     NSMutableArray* _geometricObjects;
     NSMutableArray* _temporaryGeometricObjects;
@@ -355,6 +354,7 @@
     [self.geometryView setNeedsDisplay];
     self.levelCompletionMessage.hidden = YES;
     
+    _currentLevel.progress = 0;
     [self setLevelProgress:0];
 
     [_geometricObjectsForRedo removeAllObjects];
@@ -397,6 +397,14 @@
         if ([[object class] isSubclassOfClass:[DHMidPoint class]] ||
             [[object class] isSubclassOfClass:[DHPoint class]] == NO) {
             countMove = YES;
+        }
+        
+        if (self.currentGameMode == kDHGameModePlayground) {
+            NSUInteger numberOfObjectsMade = [DHSettings numberOfObjectsMadeInPlayground] + 1;
+            [DHSettings setNumberOfObjectsMadeInPlayground:numberOfObjectsMade];
+            if (numberOfObjectsMade >= 100) {
+                // TODO: Submit achievement
+            }
         }
     }
     if (countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0) {
@@ -455,68 +463,7 @@
     // Test if level matches completion objective
     if (self.levelCompleted == NO && [_currentLevel isLevelComplete:_geometricObjects])
     {
-        self.levelCompleted = YES;
-        
-        // Disable further edits
-        _hintButton.enabled = NO;
-        _undoButton.enabled = NO;
-        _redoButton.enabled = NO;
-        _toolControl.selectedSegmentIndex = 1;
-        _toolControl.selectedSegmentIndex = -1;
-        _toolInstruction.text = @"";
-        self.geometryViewController.currentTool = nil;
-        
-        NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
-        [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyCompleted];
-        
-        NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%lu", (unsigned long)self.currentGameMode];
-        [DHLevelResults newResult:result forLevel:resultKey];
-        
-        if ((self.currentGameMode == kDHGameModeNormal || self.currentGameMode == kDHGameModeNormalMinimumMoves)
-            && [_currentLevel respondsToSelector:@selector(animation:and:and:and:and:)])
-        {
-            [_currentLevel animation:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view];
-            
-            [self performBlock:^{
-                [self showLevelCompleteMessage];
-            } afterDelay:4];
-        }
-        else {
-            [self showLevelCompleteMessage];
-        }
-        
-        if (self.currentGameMode == kDHGameModeNormal) {
-            [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedNormal];
-        }
-        if (self.currentGameMode == kDHGameModeNormalMinimumMoves) {
-            [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedNormalMinimumMoves];
-        }
-        if (self.currentGameMode == kDHGameModePrimitiveOnly) {
-            [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedPrimitiveOnly];
-        }
-        if (self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves) {
-            [[DHGameCenterManager sharedInstance] reportScore:(self.levelIndex+1) forLeaderboard:kLeaderboardID_LevelsCompletedPrimitiveOnlyMinimumMoves];
-        }
-        
-        // If this is the last level, give achievements
-        if (self.levelIndex == self.levelArray.count - 1) {
-            if (self.currentGameMode == kDHGameModeNormal) {
-                [[DHGameCenterManager sharedInstance]
-                 reportAchievementIdentifier:kAchievementID_GameModeNormal_1_25 percentComplete:1.0];
-            }
-            if (self.currentGameMode == kDHGameModeNormalMinimumMoves) {
-                [[DHGameCenterManager sharedInstance]
-                 reportAchievementIdentifier:kAchievementID_GameModeNormalMinimumMoves_1_25 percentComplete:1.0];
-            }
-            if (self.currentGameMode == kDHGameModePrimitiveOnly) {
-                [[DHGameCenterManager sharedInstance]
-                 reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnly_1_25 percentComplete:1.0];
-            }
-            if (self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves) {
-                [[DHGameCenterManager sharedInstance]
-                 reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 percentComplete:1.0];
-            }
-        }
+        [self levelWasCompleted];
     }
     
     // If level supports progress hints, check new objects towards them
@@ -786,7 +733,79 @@
     
 }
 
-#pragma mark - Undo/Redo
+- (void)levelWasCompleted
+{
+    self.levelCompleted = YES;
+    
+    // Disable further edits
+    _hintButton.enabled = NO;
+    _undoButton.enabled = NO;
+    _redoButton.enabled = NO;
+    _toolControl.selectedSegmentIndex = 1;
+    _toolControl.selectedSegmentIndex = -1;
+    _toolInstruction.text = @"";
+    self.geometryViewController.currentTool = nil;
+    
+    NSMutableDictionary* result = [[NSMutableDictionary alloc] init];
+    [result setObject:[NSNumber numberWithBool:YES] forKey:kLevelResultKeyCompleted];
+    
+    NSString* resultKey = [NSStringFromClass([_currentLevel class]) stringByAppendingFormat:@"/%lu",
+                           (unsigned long)self.currentGameMode];
+    [DHLevelResults newResult:result forLevel:resultKey];
+    
+    if ((self.currentGameMode == kDHGameModeNormal || self.currentGameMode == kDHGameModeNormalMinimumMoves)
+        && [_currentLevel respondsToSelector:@selector(animation:and:and:and:and:)])
+    {
+        [_currentLevel animation:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view];
+        
+        [self performBlock:^{
+            [self showLevelCompleteMessage];
+        } afterDelay:4];
+    }
+    else {
+        [self showLevelCompleteMessage];
+    }
+    
+    NSUInteger levelsCompleted = [DHLevelResults numberOfLevesCompletedForGameMode:self.currentGameMode];
+    if (self.currentGameMode == kDHGameModeNormal) {
+        [[DHGameCenterManager sharedInstance] reportScore:levelsCompleted
+                                           forLeaderboard:kLeaderboardID_LevelsCompletedNormal];
+    }
+    if (self.currentGameMode == kDHGameModeNormalMinimumMoves) {
+        [[DHGameCenterManager sharedInstance] reportScore:levelsCompleted
+                                           forLeaderboard:kLeaderboardID_LevelsCompletedNormalMinimumMoves];
+    }
+    if (self.currentGameMode == kDHGameModePrimitiveOnly) {
+        [[DHGameCenterManager sharedInstance] reportScore:levelsCompleted
+                                           forLeaderboard:kLeaderboardID_LevelsCompletedPrimitiveOnly];
+    }
+    if (self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves) {
+        [[DHGameCenterManager sharedInstance] reportScore:levelsCompleted
+                                           forLeaderboard:kLeaderboardID_LevelsCompletedPrimitiveOnlyMinimumMoves];
+    }
+    
+    // If this is the last level, give achievements
+    if (self.levelIndex == self.levelArray.count - 1) {
+        if (self.currentGameMode == kDHGameModeNormal) {
+            [[DHGameCenterManager sharedInstance]
+             reportAchievementIdentifier:kAchievementID_GameModeNormal_1_25 percentComplete:1.0];
+        }
+        if (self.currentGameMode == kDHGameModeNormalMinimumMoves) {
+            [[DHGameCenterManager sharedInstance]
+             reportAchievementIdentifier:kAchievementID_GameModeNormalMinimumMoves_1_25 percentComplete:1.0];
+        }
+        if (self.currentGameMode == kDHGameModePrimitiveOnly) {
+            [[DHGameCenterManager sharedInstance]
+             reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnly_1_25 percentComplete:1.0];
+        }
+        if (self.currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves) {
+            [[DHGameCenterManager sharedInstance]
+             reportAchievementIdentifier:kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 percentComplete:1.0];
+        }
+    }
+}
+
+#pragma mark Undo/Redo
 - (void)undoMove
 {
     if ([_currentTool active]) {
@@ -794,7 +813,7 @@
         [self.geometryView setNeedsDisplay];
         if (_geometricObjectsForUndo.count == 0) {
             _undoButton.enabled = NO;
-        }        
+        }
         return;
     }
     
@@ -916,10 +935,6 @@
                                                     separator, _hintButton];
     }
 }
-- (void)noMoreHints
-{
-    _hintButton.enabled = NO;
-}
 
 #pragma mark Other
 - (void) askToResetLevel
@@ -1030,7 +1045,6 @@
         self.levelArray =  levels;
         [self viewDidLoad];
     }
-    
 }
 
 - (IBAction)hideCompletionMessage:(id)sender

@@ -57,7 +57,6 @@
 - (IBAction)hideCompletionMessage:(id)sender;
 - (void)showDetailedLevelInstruction:(id)sender;
 - (void)hintFinished;
-- (void)noMoreHints;
 
 // Geometry tool delegate methods
 - (NSArray*)geometryObjects;

@@ -391,12 +391,8 @@
         [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
 
         Message* message1 = [[Message alloc] initAtPoint:CGPointMake(70,500) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(70,520) addTo:hintView];
-        
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
+        if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
             [message1 position: CGPointMake(150,500)];
-            [message2 position: CGPointMake(150,520)];
         }
                 
         [self afterDelay:0.0:^{
@@ -409,8 +405,9 @@
         }];
         
         [self afterDelay:5.0 :^{
-            [message2 text:@"By definitition the segment would then remain parallel to AB."];
-            [self fadeInViews:@[message2,paraView] withDuration:2.0];
+            [message1 appendLine:@"By definitition the segment would then remain parallel to AB."
+                    withDuration:2.0];
+            [self fadeInViews:@[paraView] withDuration:2.0];
         }];
         
         [self afterDelay:2.0 :^{
@@ -443,7 +440,7 @@
         if (!self.showingHint) return;
         hintView.frame = geometryView.frame;
         
-        CGFloat centerX = geometryView.center.x;
+        CGFloat centerX = [geometryView.geoViewTransform viewToGeo:geometryView.center].x;
         DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX-200 andY:100];
         DHPoint* p2 = [[DHPoint alloc] initWithPositionX:centerX-200 andY:200];
         DHPoint* p3 = [[DHPoint alloc] initWithPositionX:centerX+200 andY:120];
@@ -459,15 +456,8 @@
                                                                    supView:geometryView addTo:hintView];
         
         Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
+        if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
             [message1 position: CGPointMake(80,460)];
-            [message2 position: CGPointMake(80,480)];
-            [message3 position: CGPointMake(80,500)];
-            [message4 position: CGPointMake(80,520)];
         }
         
         [self afterDelay:0.0:^{
@@ -476,13 +466,13 @@
         }];
         
         [self afterDelay:2.0 :^{
-            [message2 text:@"Two parallel lines remain at equal distance from each other,"];
-            [self fadeInViews:@[message2, paraView] withDuration:1.5];
+            [message1 appendLine:(@"Two parallel lines remain at equal distance from each other, "
+                                  @"along their entire extents.")
+                    withDuration:1.5];
+            [self fadeInViews:@[paraView] withDuration:1.5];
         }];
         
         [self afterDelay:4.0 :^{
-            [message3 text:@"along their entire extents."];
-            [self fadeInViews:@[message3] withDuration:1.5];
             [self movePoint:p5 toPosition:p3.position withDuration:4.0 inViews:@[paraView]];
             [self movePoint:p6 toPosition:p4.position withDuration:4.0 inViews:@[paraView]];
         }];
@@ -493,14 +483,5 @@
         
     }];
 }
-- (void)hideHint
-{
-    [self.levelViewController hintFinished];
-    [self slideInToolbar];
-    self.showingHint = NO;
-    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-}
-
-
 
 @end

@@ -281,12 +281,5 @@
         
     }];
 }
-- (void)hideHint
-{
-    [self.levelViewController hintFinished];
-    [self slideInToolbar];
-    self.showingHint = NO;
-    [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-}
 
 @end

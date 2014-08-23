@@ -342,7 +342,7 @@
         UIView* segment2 = [toolControl.subviews objectAtIndex:5];
         CGPoint pos1 = [segment1.superview convertPoint:segment1.frame.origin toView:animationView];
         CGPoint pos2 = [segment2.superview convertPoint:segment2.frame.origin toView:animationView];
-        pos1 = CGPointMake(pos1.x -newOffset.x, pos1.y - newOffset.y);
+        pos1 = CGPointMake(pos1.x - newOffset.x, pos1.y - newOffset.y);
         pos2 = CGPointMake(pos2.x - newOffset.x, pos2.y - newOffset.y);
         CGFloat xpos = (pos1.x + pos2.x )/2 ;
         CGFloat ypos =  pos2.y;

@@ -11,6 +11,7 @@
 #import "DHGeometricTools.h"
 #import "DHMath.h"
 #import "DHGeometryView.h"
+#import "Message.h"
 
 @class DHLevelViewController;
 
@@ -61,6 +62,8 @@
 - (void)showEndHintMessageInView:(UIView*)view;
 - (void)hideHint;
 
+- (Message*)createUpperMessageWithSuperView:(UIView*)view;
+
 @end
 
 @interface NSObject (Blocks)
@@ -69,18 +72,7 @@
 - (void)afterDelay:(NSTimeInterval)delay :(void (^)())block;
 @end
 
-@interface Message : UILabel
-@property (nonatomic) CGPoint point;
-@property (nonatomic) BOOL flash;
-- (instancetype)initWithMessage:(NSString*)message andPoint:(CGPoint)point;
-- (instancetype)initAtPoint:(CGPoint)point addTo:(UIView*)view;
-- (void)text:(NSString*)string;
-- (void)text:(NSString*)string position:(CGPoint)point;
-- (void)position:(CGPoint)point;
-- (void)positionFixed:(CGPoint)point;
-- (void)positionAbove:(Message*)message;
-- (void)positionBelow:(Message*)message;
-@end
+
 
 
 

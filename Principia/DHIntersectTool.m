@@ -16,7 +16,7 @@
 }
 - (NSString*)initialToolTip
 {
-    return @"Tap on any intersection between two lines/circles to add a new point";
+    return @"Tap an intersection between two lines/circles to add a new point";
 }
 - (void)touchBegan:(UITouch*)touch
 {

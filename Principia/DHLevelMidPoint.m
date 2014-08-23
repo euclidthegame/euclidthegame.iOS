@@ -330,80 +330,6 @@
     
 }
 
-#if 0
-- (void)hint:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
-    
-    if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-        return;
-    }
-    
-    if (pointOnMidLineOK && secondPontOnMidLineOK) {
-        Message* message0 = [[Message alloc] initWithMessage:@"No more hints available." andPoint:CGPointMake(150,150)];
-        [geometryView addSubview:message0];
-        [self fadeIn:message0 withDuration:1.0];
-        [self afterDelay:4.0 :^{[self fadeOut:message0 withDuration:1.0];}];
-        return;
-    }
-    
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
-    [geometryView addSubview:hintView];
-    _message1 = [[Message alloc] initAtPoint:CGPointMake(150,720) addTo:hintView];
-    _message2 = [[Message alloc] initAtPoint:CGPointMake(150,740) addTo:hintView];
-    _message3 = [[Message alloc] initAtPoint:CGPointMake(150,760) addTo:hintView];
-    _message4 = [[Message alloc] initAtPoint:CGPointMake(150,780) addTo:hintView];
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [_message1 position: CGPointMake(150,480)];
-        [_message2 position: CGPointMake(150,500)];
-        [_message3 position: CGPointMake(150,520)];
-        [_message4 position: CGPointMake(150,540)];
-    }
-    
-    [_message1 text:@"You have just unlocked the equilateral triangle tool."];
-    [self fadeIn:_message1 withDuration:2.0];
-    
-    [self afterDelay:3.0 :^{
-        _step1finished =YES;
-        if (toolControl.selectedSegmentIndex !=5) {
-            [_message2 text:@"Tap on it to select it." ];
-        }
-        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message2.alpha = 1; } completion:nil];
-    }];
-    
-    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-5];
-    UIView* tool = [toolSegment.subviews objectAtIndex:0];
-    
-    for (int a=0; a < 100; a++) {
-        [self performBlock:
-         ^{
-             if (toolControl.selectedSegmentIndex == 5 && _step1finished){
-                 _step1finished = NO;
-                 [_message3 text:@"If the triangle tool is selected, you can use it by tapping on two points."];
-                 [_message4 text:@"Note that it matters which point you tap first!"];
-                 [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                     _message1.alpha = 0;
-                     _message2.alpha = 0;
-
-                     _message3.alpha = 1;
-                     _message4.alpha = 1;
-                 } completion:nil];
-             }
-             else if (toolControl.selectedSegmentIndex !=5 && _step1finished){
-                 [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                  ^{tool.alpha = 0; } completion:^(BOOL finished){
-                      [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                       ^{tool.alpha = 1; } completion:nil];}];
-             }
-         } afterDelay:a];
-    }
-}
-#endif
-
 - (void)showHint {
     DHGeometryView* geometryView = self.levelViewController.geometryView;
     
@@ -429,18 +355,7 @@
         
         [geometryView addSubview:hintView];
         
-        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,100) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,120) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,140) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,160) addTo:hintView];
-        
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
-            [message1 position: CGPointMake(150,500)];
-            [message2 position: CGPointMake(150,520)];
-            [message3 position: CGPointMake(150,540)];
-            [message4 position: CGPointMake(150,560)];
-        }
+        Message* message1 = [self createUpperMessageWithSuperView:hintView];
         
         DHTrianglePoint* tp1 = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end];
         DHTrianglePoint* tp2 = [[DHTrianglePoint alloc] initWithPoint1:_lineAB.end andPoint2:_lineAB.start];
@@ -455,9 +370,7 @@
         DHGeometryView* mpView = [[DHGeometryView alloc] initWithObjects:@[mp]
                                                                       supView:geometryView addTo:hintView];
         [hintView bringSubviewToFront:message1];
-        [hintView bringSubviewToFront:message2];
-        [hintView bringSubviewToFront:message3];
-        [hintView bringSubviewToFront:message4];
+
         
         [self afterDelay:0.0:^{
             [message1 text:@"To create a point that is always located at the midpoint,"];
@@ -465,19 +378,21 @@
         }];
         
         [self afterDelay:3.0 :^{
-            [message2 text:@"we need to construct a line that passes through the midpoint."];
-            [self fadeInViews:@[message2,segmentView] withDuration:2.0];
+            [message1 appendLine:@"we need to construct a line that passes through the midpoint."
+                    withDuration:2.0];
+            [self fadeInViews:@[segmentView] withDuration:2.0];
         }];
         
         [self afterDelay:6.0 :^{
-            [message3 text:@"Then construct an intersection point with the segment AB."];
-            [self fadeInViews:@[message3, mpView] withDuration:2.0];
+            [message1 appendLine:@"Then construct an intersection point with the segment AB."
+                    withDuration:2.0];
+            [self fadeInViews:@[mpView] withDuration:2.0];
         }];
         
         if (!secondPontOnMidLineOK) {
             [self afterDelay:9.0 :^{
-                [message4 text:@"Look for a tool that provides points over/under segment AB's midpoint!"];
-                [self fadeIn:message4 withDuration:2.0];
+                [message1 appendLine:@"Look for a tool that provides points over/under segment AB's midpoint!"
+                        withDuration:2.0];
             }];
         }
         

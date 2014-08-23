@@ -205,15 +205,14 @@
 
 - (void)showEndHintMessageInView:(UIView*)view
 {
-    Message* message = [[Message alloc] initAtPoint:CGPointMake(view.frame.size.width/2-100,
-                                                                 view.frame.size.height-40)
-                                               addTo:view];
+    Message* message = [[Message alloc] initAtPoint:CGPointMake(0,0) addTo:view];
     [message text:@"Tap anywhere to resume the game"];
     message.font = [UIFont systemFontOfSize:14.0];
+    message.textAlignment = NSTextAlignmentCenter;
+    [message positionFixed:CGPointMake(view.frame.size.width*0.5 - message.frame.size.width*0.5,
+                                       view.frame.size.height-40)];
     
     if (_iPhoneVersion) {
-        [message positionFixed:CGPointMake(view.frame.size.width/2-85,
-                                           view.frame.size.height-40)];
         message.font = [UIFont systemFontOfSize:11.0];
     }
     
@@ -228,6 +227,18 @@
     [self slideInToolbar];
     self.showingHint = NO;
     [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
+}
+- (Message*)createUpperMessageWithSuperView:(UIView*)view
+{
+    CGFloat message1Top = self.iPhoneVersion ? 45 : 90;
+    Message* message = [[Message alloc] initAtPoint:CGPointMake(100,message1Top) addTo:view];
+    
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if(UIInterfaceOrientationIsLandscape(orientation)) {
+        [message position: CGPointMake(150,500)];
+    }
+    
+    return message;
 }
 
 @end
@@ -257,144 +268,3 @@
 
 @end
 
-@implementation Message {
-    NSTimer* _flashTimer;
-    NSDate* _timerStart;
-    BOOL _iPhoneVersion;
-    BOOL _fixedPosition;
-}
-- (instancetype)initWithMessage:(NSString*)message andPoint:(CGPoint)point
-{
-    self = [super init];
-    if (self) {
-        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-            _iPhoneVersion = YES;
-        }
-        if (_iPhoneVersion) {
-            self.font = [UIFont systemFontOfSize:12];
-            self.numberOfLines = 3;
-            [self setLineBreakMode:NSLineBreakByWordWrapping];
-        }
-        
-        self.alpha = 0;
-        self.text = message;
-        self.textColor = [UIColor darkGrayColor];
-        [self position:point];
-        self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
-        self.layer.cornerRadius = 5.0;
-    }
-    return self;
-}
-- (instancetype)initAtPoint:(CGPoint)point addTo:(UIView*)view
-{
-    self = [self initWithMessage:@"" andPoint:point];
-    if (self) {
-        [view addSubview:self];
-    }
-    return self;
-}
-- (void)text:(NSString*)string
-{
-    self.text = [NSString stringWithString:string];
-    [self sizeToFit];
-}
-- (void)text:(NSString*)string position:(CGPoint)point
-{
-    self.text = string;
-    
-    [self position:point];
-}
-- (void)position:(CGPoint)point {
-    if (_iPhoneVersion && !_fixedPosition) {
-        point.x = 5;
-        point.y = point.y * 0.5;
-    }
-    
-    self.point = point;
-    CGRect frame = self.frame;
-    frame.origin = self.point;
-    frame.size.width = self.superview.frame.size.width-10;
-    self.frame = frame;
-    [self sizeToFit];
-}
-- (void)positionFixed:(CGPoint)point
-{
-    _fixedPosition = YES;
-    [self position:point];
-}
-- (void)setFlash:(BOOL)flash
-{
-    _flash = flash;
-    if (_flash) {
-        if (_flashTimer == nil)
-        {
-            _flashTimer = [NSTimer timerWithTimeInterval:1/30.0
-                                                   target:self
-                                                selector:@selector(updateFlashState:)
-                                                 userInfo:nil
-                                                  repeats:YES];
-            [[NSRunLoop currentRunLoop] addTimer:_flashTimer forMode:NSRunLoopCommonModes];
-            _timerStart = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
-        }
-    } else {
-        if (_flashTimer && [_flashTimer isValid])
-        {
-            [_flashTimer invalidate];
-        }
-        
-        _flashTimer = nil;
-    }
-}
-- (void)updateFlashState:(NSTimer *)timer
-{
-    NSTimeInterval elapsedTime = -[_timerStart timeIntervalSinceNow];
-    self.alpha = 0.4*cos(elapsedTime*0.5*M_PI)+0.6;
-}
-- (void)dealloc
-{
-    if (_flashTimer && [_flashTimer isValid])
-    {
-        [_flashTimer invalidate];
-    }
-}
-- (void)positionAbove:(Message *)message
-{
-    CGPoint point = message.point;
-    if (_iPhoneVersion) {
-        point.y -= 14;
-    } else {
-        point.y -= 20;
-    }
-    self.point = point;
-    CGRect frame = self.frame;
-    frame.origin = self.point;
-    self.frame = frame;
-    [self sizeToFit];
-}
-- (void)positionBelow:(Message *)message
-{
-    CGPoint point = message.point;
-    if (_iPhoneVersion) {
-        point.y += 14;
-    } else {
-        point.y += 20;
-    }
-    self.point = point;
-    CGRect frame = self.frame;
-    frame.origin = self.point;
-    self.frame = frame;
-    [self sizeToFit];
-}
-- (void)willMoveToSuperview:(UIView *)newSuperview
-{
-    [super willMoveToSuperview:newSuperview];
-    
-    if (_iPhoneVersion) {
-        CGRect frame = self.frame;
-        frame.size.width = newSuperview.frame.size.width - 10;
-        self.frame = frame;
-        [self sizeToFit];
-    }
-}
-
-@end

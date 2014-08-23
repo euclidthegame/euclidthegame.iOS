@@ -7,6 +7,7 @@
 //
 
 #import "DHLevelTutorial.h"
+#import "DHLevelViewController.h"
 
 @interface DHLevelTutorial () {
     DHPoint* _pointA;
@@ -17,7 +18,6 @@
     Message* message3;
     Message* message4;
     Message* message5;
-    Message* message6;
     BOOL _noRepeat, _levelComplete;
     NSUInteger _currentStep;
 }
@@ -140,7 +140,6 @@
         }
     }
     if (_currentStep == 1) {
-        // remove toolbar
         toolInstruction.alpha = 0;
         _currentStep = 2;
         
@@ -200,20 +199,18 @@
     }
     else if (_currentStep == 3 && segmentAB) {
         _currentStep = 4;
-        CGPoint messagePos = Position(sAB);
-        messagePos.y += 5;
-        message6 = [[Message alloc] initWithMessage:@"Well done!" andPoint:messagePos];
-        [geometryView addSubview:message6];
+        CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(sAB)];
+        [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
+                                             withColor:[UIColor blackColor]];
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              [toolControl setEnabled:NO forSegmentAtIndex:2];
-             message6.alpha = 1; message1.alpha = 0;
+             message1.alpha = 0;
          }
          completion:^(BOOL finished){
              toolInstruction.alpha = 0;
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  message6.alpha = 0;
                   [message3 text: @"Points can also be used to construct a circle."];
                   message3.alpha = 1;
               }
@@ -241,15 +238,13 @@
         _currentStep = 6;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             CGPoint messagePos = Position(cAB);
-             messagePos.y += 5;
-             [message6 text: @"Well done!" position:messagePos];
-             message6.alpha = 1;
+             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(cAB)];
+             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
+                                                  withColor:[UIColor blackColor]];
          }
          completion:^(BOOL finished){
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  message6.alpha = 0 ;
                   [message1 text: @"Now, let's make a circle with center B (!) and radius AB."];
                   message1.alpha = 1;
               }
@@ -263,10 +258,9 @@
          options: UIViewAnimationOptionAllowAnimatedContent
          animations:^{
              message1.alpha = 0;
-             CGPoint messagePos = Position(cBA);
-             messagePos.y += 5;
-             [message6 text:@"Well done!" position:messagePos];
-             message6.alpha = 1;
+             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(cBA)];
+             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
+                                                  withColor:[UIColor blackColor]];
          }
          completion:^(BOOL finished){
              toolInstruction.alpha = 0;
@@ -275,7 +269,6 @@
               delay:1.0
               options: UIViewAnimationOptionAllowAnimatedContent
               animations:^{
-                  message6.alpha = 0;
                   [message3 text:@"Sometimes it is useful to extend a segment using the line tool."];
                   message3.alpha = 1;
                   [toolControl setEnabled:NO forSegmentAtIndex:4];
@@ -305,16 +298,14 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
-             CGPoint messagePos = Position(lAB);
-             messagePos.y += 5;
-             [message6 text:@"Well done!" position:messagePos];
-             message6.alpha = 1;
+             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(lAB)];
+             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
+                                                  withColor:[UIColor blackColor]];
          }
          completion:^(BOOL finished){
              toolInstruction.alpha = 0;
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  message6.alpha = 0;
                   [message3 text:@"If lines or circles intersect we can create a point at the intersection."];
                   message3.alpha = 1;
                   [toolControl setEnabled:NO forSegmentAtIndex:3];
@@ -344,16 +335,13 @@
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
-             CGPoint messagePos = Position(_point);
-             messagePos.y += 5;
-             
-             [message6 text:@"Well done!" position:messagePos];
-             message6.alpha = 1;
+             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(_point)];
+             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
+                                                  withColor:[UIColor blackColor]];
          }
          completion:^(BOOL finished){
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  message6.alpha = 0;
                   [message3 text:@"Note that the intersection point is black. Black points are unmovable and precise."];
                   message3.alpha = 1;
                   toolInstruction.alpha = 0;
@@ -389,20 +377,19 @@
          }
          completion:^(BOOL finished){}];
     }
-    
     else if (_currentStep == 12 && moved) {
         _currentStep = 13;
         _noRepeat = YES;
         [UIView
          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
              message1.alpha = 0;
-             [message6 text:@"Well done!" position:Position(_point)];
-             message6.alpha = 1;
+             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(_point)];
+             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
+                                                  withColor:[UIColor blackColor]];
          }
          completion:^(BOOL finished){
              [UIView
               animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  message6.alpha = 0;
                   [message3 text: @"These are the 5 primitive tools you will start with in Level 1."];
                   message3.alpha = 1;
                   [toolControl setEnabled:YES forSegmentAtIndex:0];

@@ -62,6 +62,8 @@
 		6872A7DB197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7DA197013C400823AF9 /* DHLevelTwoCirclesOuterTangent.m */; };
 		6872A7DE197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7DD197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m */; };
 		6872A7E119702A1700823AF9 /* DHLevelPentagon.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7E019702A1700823AF9 /* DHLevelPentagon.m */; };
+		688768C519A84FE7000CAB03 /* DHWeakReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768C419A84FE7000CAB03 /* DHWeakReference.m */; };
+		688768C819A8504B000CAB03 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768C719A8504B000CAB03 /* Message.m */; };
 		68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */; };
 		68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */; };
 		68E3CAB2199F138F0018851F /* NSUserDefaults+Encryption.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */; };
@@ -191,6 +193,10 @@
 		6872A7DD197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelTwoCirclesInnerTangent.m; sourceTree = "<group>"; };
 		6872A7DF19702A1700823AF9 /* DHLevelPentagon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelPentagon.h; sourceTree = "<group>"; };
 		6872A7E019702A1700823AF9 /* DHLevelPentagon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelPentagon.m; sourceTree = "<group>"; };
+		688768C319A84FE7000CAB03 /* DHWeakReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHWeakReference.h; sourceTree = "<group>"; };
+		688768C419A84FE7000CAB03 /* DHWeakReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHWeakReference.m; sourceTree = "<group>"; };
+		688768C619A8504B000CAB03 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		688768C719A8504B000CAB03 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		68D0F619196D576700C4D617 /* DHLevelThreeCircles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelThreeCircles.h; sourceTree = "<group>"; };
 		68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelThreeCircles.m; sourceTree = "<group>"; };
 		68D0F61C196DAF8C00C4D617 /* DHLevelSegmentInThree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSegmentInThree.h; sourceTree = "<group>"; };
@@ -312,6 +318,17 @@
 			name = "Game Center & StoreKit";
 			sourceTree = "<group>";
 		};
+		688768C219A84FCF000CAB03 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				688768C319A84FE7000CAB03 /* DHWeakReference.h */,
+				688768C419A84FE7000CAB03 /* DHWeakReference.m */,
+				688768C619A8504B000CAB03 /* Message.h */,
+				688768C719A8504B000CAB03 /* Message.m */,
+			);
+			name = Other;
+			sourceTree = "<group>";
+		};
 		68F0A9BB19587AEC00A97B86 = {
 			isa = PBXGroup;
 			children = (
@@ -360,6 +377,7 @@
 				68F0AA1E195C373800A97B86 /* Geometric Tools */,
 				68F0AA0A195A184C00A97B86 /* Levels */,
 				6866224919779248004DCFAC /* Game Center & StoreKit */,
+				688768C219A84FCF000CAB03 /* Other */,
 				68F0A9DF19587AEC00A97B86 /* Images.xcassets */,
 				68F0A9CE19587AEC00A97B86 /* Supporting Files */,
 			);
@@ -684,6 +702,8 @@
 				68F0AA2A195E00D800A97B86 /* DHLevelMidPoint.m in Sources */,
 				68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */,
 				6872A7E119702A1700823AF9 /* DHLevelPentagon.m in Sources */,
+				688768C519A84FE7000CAB03 /* DHWeakReference.m in Sources */,
+				688768C819A8504B000CAB03 /* Message.m in Sources */,
 				6847112619783EE6003B681B /* DHSettingsViewController.m in Sources */,
 				683D968B196D465E0057B62D /* DHLevelCircleToTangent.m in Sources */,
 				681C88A81991F63F005307F5 /* DHBisectTool.m in Sources */,

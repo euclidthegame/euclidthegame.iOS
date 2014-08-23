@@ -359,24 +359,14 @@
         UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
         hintView.backgroundColor = [UIColor whiteColor];
         
-        DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects supView:geometryView addTo:hintView];
+        DHGeometryView* oldObjects = [[DHGeometryView alloc] initWithObjects:geometryView.geometricObjects
+                                                                     supView:geometryView addTo:hintView];
         oldObjects.hideBorder = NO;
         [oldObjects.layer setValue:[NSNumber numberWithFloat:1.0] forKeyPath:@"opacity"];
         
         [geometryView addSubview:hintView];
         
-        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,100) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,120) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,140) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,160) addTo:hintView];
-        
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
-            [message1 position: CGPointMake(150,500)];
-            [message2 position: CGPointMake(150,520)];
-            [message3 position: CGPointMake(150,540)];
-            [message4 position: CGPointMake(150,560)];
-        }
+        Message* message1 = [self createUpperMessageWithSuperView:hintView];
         
         DHCircle* c1 = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
         c1.temporary = YES;
@@ -400,15 +390,14 @@
         }
         
         [hintView addSubview:oldObjects];
-        DHGeometryView* circleView = [[DHGeometryView alloc] initWithObjects:@[c1] supView:geometryView addTo:hintView];
-        DHGeometryView* lineACView = [[DHGeometryView alloc] initWithObjects:@[segmentAC] supView:geometryView addTo:hintView];
-        DHGeometryView* pointCView = [[DHGeometryView alloc] initWithObjects:@[pC] supView:geometryView addTo:hintView];
-        
+        DHGeometryView* circleView = [[DHGeometryView alloc] initWithObjects:@[c1]
+                                                                     supView:geometryView addTo:hintView];
+        DHGeometryView* lineACView = [[DHGeometryView alloc] initWithObjects:@[segmentAC]
+                                                                     supView:geometryView addTo:hintView];
+        DHGeometryView* pointCView = [[DHGeometryView alloc] initWithObjects:@[pC]
+                                                                     supView:geometryView addTo:hintView];
         
         [hintView bringSubviewToFront:message1];
-        [hintView bringSubviewToFront:message2];
-        [hintView bringSubviewToFront:message3];
-        [hintView bringSubviewToFront:message4];
         
         [self afterDelay:0.0:^{
             [message1 text:@"Circles have a very useful property."];
@@ -420,18 +409,20 @@
         }];
         
         [self afterDelay:4.0 :^{
-            [message2 text:@"Every point on the circle has the same distance to the center."];
-            [self fadeInViews:@[message2,pointCView] withDuration:2.0];
+            [message1 appendLine:@"Every point on the circle has the same distance to its center."
+                    withDuration:2.0];
+            [self fadeInViews:@[pointCView] withDuration:2.0];
         }];
         
         [self afterDelay:8.0 :^{
-            [message3 text:@"Hence, segment AC has the same length as segment AB."];
-            [self fadeInViews:@[message3,lineACView] withDuration:2.0];
+            [message1 appendLine:@"Hence, segment AC has the same length as AB."
+                    withDuration:2.0];
+            [self fadeInViews:@[lineACView] withDuration:2.0];
         }];
         
         [self afterDelay:12.0 :^{
-            [message4 text:@"For any point C on the circle."];
-            [self fadeIn:message4 withDuration:2.0];
+            [message1 appendLine:@"For any point C on the circle."
+                    withDuration:2.0];
             if (cAB_OK && !cBA_OK) {
                 [self movePointOnCircle:pC toAngle:3.333*M_PI withDuration:6.0 inViews:@[pointCView,lineACView]];
             } else {

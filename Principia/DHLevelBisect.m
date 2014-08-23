@@ -380,10 +380,10 @@
         }
         
         DHPointOnCircle* pC = [[DHPointOnCircle alloc] initWithCircle:c andAngle:initialAngle];
-        pC.temporary = YES;
         DHMidPoint* mp = [[DHMidPoint alloc] initWithPoint1:p1 andPoint2:p2];
-        mp.temporary = YES;
         DHLine* lBisect = [[DHLine alloc] initWithStart:_pointA andEnd:mp];
+        pC.temporary = YES;
+        mp.temporary = YES;
         lBisect.temporary = YES;
         
         DHGeometryView* p1View = [[DHGeometryView alloc] initWithObjects:@[p1]
@@ -395,7 +395,7 @@
         DHGeometryView* pCView = [[DHGeometryView alloc] initWithObjects:@[pC]
                                                                      supView:geometryView addTo:hintView];
         
-        Message* message1 = [self createUpperMessageWithSuperView:hintView];
+        Message* message1 = [self createMiddleMessageWithSuperView:hintView];
         
         if (_hintStep == 0) {
             [self afterDelay:0.0:^{

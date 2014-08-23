@@ -63,6 +63,7 @@
 - (void)hideHint;
 
 - (Message*)createUpperMessageWithSuperView:(UIView*)view;
+- (Message*)createMiddleMessageWithSuperView:(UIView*)view;
 
 @end
 

@@ -240,6 +240,12 @@
     
     return message;
 }
+- (Message*)createMiddleMessageWithSuperView:(UIView*)view
+{
+    CGFloat message1Top = 350;
+    Message* message = [[Message alloc] initAtPoint:CGPointMake(100,message1Top) addTo:view];
+    return message;
+}
 
 @end
 

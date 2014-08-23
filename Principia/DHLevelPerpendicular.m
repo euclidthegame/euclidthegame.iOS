@@ -238,17 +238,7 @@
         DHGeometryView* p3View = [[DHGeometryView alloc] initWithObjects:@[p3]
                                                                  supView:geometryView addTo:hintView];
         
-        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,400) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,420) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,440) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,460) addTo:hintView];
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
-            [message1 position: CGPointMake(150,500)];
-            [message2 position: CGPointMake(150,520)];
-            [message3 position: CGPointMake(150,540)];
-            [message4 position: CGPointMake(150,560)];
-        }
+        Message* message1 = [self createMiddleMessageWithSuperView:hintView];
         
         [self afterDelay:0.0:^{
             [message1 text:@"You have already constructed a midpoint, in level 2."];
@@ -256,16 +246,17 @@
         }];
         
         [self afterDelay:3.0 :^{
-            [message2 text:@"Can you think of a way to construct a two points such that,"];
-            [message3 text:@"point A is always at their midpoint?"];
-            [self fadeInViews:@[message2, message3, p12View] withDuration:2.0];
+            [message1 appendLine:(@"Can you think of a way to construct a two points such that, point A is always "
+                                  @"at their midpoint?")
+                    withDuration:2.0];
+            [self fadeInViews:@[p12View] withDuration:2.0];
         }];
 
         [self afterDelay:6.0 :^{
-            [message4 text:@"Then use them to create a point straight above A."];
-            [self fadeInViews:@[message4,p3View] withDuration:2.0];
+            [message1 appendLine:(@"If so, use them similarly to create a point straight above A.")
+                    withDuration:2.0];
+            [self fadeInViews:@[p3View] withDuration:2.0];
         }];
-
         
         [self afterDelay:2.0 :^{
             [self showEndHintMessageInView:hintView];

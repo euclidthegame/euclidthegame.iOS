@@ -419,86 +419,6 @@
     }
 }
 
-- (void)hints:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolBar and:(UIButton*)hintButton{
-    
-    if ([hintButton.titleLabel.text  isEqual: @"Hide hint"]) {
-        [hintButton setTitle:@"Show hint" forState:UIControlStateNormal];
-        [geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
-        return;
-    }
-    
-    if (pointOnLineOK){
-        [self showTemporaryMessage:@"No more hints available." atPoint:CGPointMake(self.geometryView.center.x,100) withColor:[UIColor darkGrayColor] andTime:5.0];
-        return;
-    }
-    
-    [hintButton setTitle:@"Hide hint" forState:UIControlStateNormal];
-    
-    Message* message1 = [[Message alloc] initWithMessage:@"There is only one point given." andPoint:CGPointMake(20,720)];
-    Message* message2 = [[Message alloc] initWithMessage:@"But most tools in the toolbar require at least 2 points! " andPoint:CGPointMake(20,740)];
-    Message*  message3 = [[Message alloc] initWithMessage:@"A second point can be constructed using the point tool. Tap on it to select it." andPoint:CGPointMake(20,760)];
-    _message4 = [[Message alloc] initWithMessage:@"Good! Let's start with constructing a point. For example, on the given line." andPoint:CGPointMake(20,780)];
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(20,480)];
-        [message2 position: CGPointMake(20,500)];
-        [message3 position: CGPointMake(20,520)];
-        [_message4 position: CGPointMake(20,540)];
-    }
-
-    
-    UIView* hintView = [[UIView alloc]initWithFrame:CGRectMake(0,0,0,0)];
-    [geometryView addSubview:hintView];
-    [hintView addSubview:_message1];
-    [hintView addSubview:_message2];
-    [hintView addSubview:_message3];
-    [hintView addSubview:_message4];
-    
-    [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-        _message1.alpha = 1; } completion:nil];
-    
-    [self performBlock:^{
-        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message2.alpha = 1; } completion:nil];
-    } afterDelay:3.0];
-    
-    [self performBlock:^{
-        _step1finished =YES;
-        [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-            _message3.alpha = 1; } completion:nil];
-    } afterDelay:6.0];
-    
-    [self performBlock:^{
-        _step1finished =YES;
-    } afterDelay:10.0];
-    
-    int segmentindex = 0; //pointtool
-    UIView* toolSegment = [toolControl.subviews objectAtIndex:11-segmentindex];
-    UIView* tool = [toolSegment.subviews objectAtIndex:0];
-    
-    for (int a=0; a < 100; a++) {
-        [self performBlock:
-         ^{
-             if (toolControl.selectedSegmentIndex == segmentindex && _step1finished){
-                 _step1finished = NO;
-                 [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                     _message1.alpha = 0;
-                     _message2.alpha = 0;
-                     _message3.alpha = 0;
-                     _message4.alpha = 1;
-                 } completion:nil];
-             }
-             else if (toolControl.selectedSegmentIndex != segmentindex && _step1finished){
-                 [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                  ^{tool.alpha = 0; } completion:^(BOOL finished){
-                      [UIView animateWithDuration:0.5 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:
-                       ^{tool.alpha = 1; } completion:nil];}];
-             }
-         } afterDelay:a];
-    }
-}
-
 - (void)showHint
 {
     DHGeometryView* geometryView = self.levelViewController.geometryView;
@@ -523,7 +443,7 @@
         if (!self.showingHint) return;
         hintView.frame = geometryView.frame;
         
-        CGFloat centerX = geometryView.center.x;
+        CGFloat centerX = [geometryView.geoViewTransform viewToGeo:geometryView.center].x;
         
         DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX-50 andY:300];
         DHPoint* p2 = [[DHPoint alloc] initWithPositionX:centerX+50 andY:300];
@@ -549,17 +469,7 @@
         DHGeometryView* perpView = [[DHGeometryView alloc] initWithObjects:@[a1, s3MP, s12H, mp]
                                                                   supView:geometryView addTo:hintView];
         
-        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,400) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,420) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,440) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,460) addTo:hintView];
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
-            [message1 position: CGPointMake(150,500)];
-            [message2 position: CGPointMake(150,520)];
-            [message3 position: CGPointMake(150,540)];
-            [message4 position: CGPointMake(150,560)];
-        }
+        Message* message1 = [self createMiddleMessageWithSuperView:hintView];
         
         [self afterDelay:0.0:^{
             [message1 text:@"For an isosceles triangle (with two equal sides) it can be proved"];
@@ -567,13 +477,15 @@
         }];
         
         [self afterDelay:3.0 :^{
-            [message2 text:@"that a line from the tip to the midpoint of its base"];
-            [self fadeInViews:@[message2, perpView] withDuration:3.0];
+            [message1 appendLine:(@"that a line from the tip to the midpoint of its base")
+                    withDuration:2.0];
+            [self fadeInViews:@[perpView] withDuration:3.0];
         }];
         
         [self afterDelay:7.0 :^{
-            [message3 text:@"will always be perpendicular to the base."];
-            [self fadeInViews:@[message3] withDuration:3.0];
+            [message1 appendLine:(@"will always be perpendicular to the base.")
+                    withDuration:2.0];
+
             [self movePoint:p1 toPosition:CGPointMake(p1.position.x-100, p1.position.y)
                withDuration:4.0 inViews:@[triView, perpView]];
             [self movePoint:p2 toPosition:CGPointMake(p2.position.x+100, p2.position.y)

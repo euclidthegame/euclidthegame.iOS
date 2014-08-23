@@ -969,7 +969,7 @@ static const CGFloat kDashPattern[kDashPatternItems] = {6 ,5};
         return;
     }
     
-    CGFloat radius = geoRadius * [transform scale];
+    CGFloat radius = geoRadius; // * [transform scale];
     CGPoint position = [transform geoToView:geoCenterPosition];
     
     CGFloat startAngle = 0;

@@ -14,6 +14,7 @@ static NSString* const kSettingKey_ShowProgressPercentage = @"ShowProgressPercen
 static NSString* const kSettingKey_ShowHints = @"ShowHints";
 static NSString* const kSettingKey_LevelPack1Purchased = @"LevelPack1Purchased";
 static NSString* const kSettingKey_ObjectsInPlayground = @"ObjectsMadeInPlayground";
+static NSString* const kSettingKey_EnableMagnifier = @"EnableMagnifier";
 
 @interface DHSettings : NSObject
 
@@ -28,6 +29,9 @@ static NSString* const kSettingKey_ObjectsInPlayground = @"ObjectsMadeInPlaygrou
 
 + (BOOL)showHints;
 + (void)setShowHints:(BOOL)value;
+
++ (BOOL)magnifierEnabled;
++ (void)setMagnifierEnabled:(BOOL)value;
 
 + (BOOL)levelPack1Purchased;
 + (void)setLevelPack1Purchased:(BOOL)value;

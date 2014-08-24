@@ -45,7 +45,11 @@ static const NSUInteger kResetProgressAlertView = 1;
     self.unlockAllLevelsSwitch.on = [DHSettings allLevelsUnlocked];
     [self.unlockAllLevelsSwitch addTarget:self action:@selector(unlockLevels:)
                          forControlEvents:UIControlEventValueChanged];
-    
+
+    self.enableMagnifierSwitch.on = [DHSettings magnifierEnabled];
+    [self.enableMagnifierSwitch addTarget:self action:@selector(enableMagnifier:)
+                         forControlEvents:UIControlEventValueChanged];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -71,6 +75,10 @@ static const NSUInteger kResetProgressAlertView = 1;
 - (void)setShowProgressPercentage:(UISwitch*)sender
 {
     [DHSettings setShowProgressPercentage:sender.isOn];
+}
+- (void)enableMagnifier:(UISwitch*)sender
+{
+    [DHSettings setMagnifierEnabled:sender.isOn];
 }
 - (void)unlockLevels:(UISwitch*)sender
 {

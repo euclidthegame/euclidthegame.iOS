@@ -110,6 +110,15 @@
     [self setBoolSettingForKey:kSettingKey_ShowHints toValue:value];
 }
 
++ (BOOL)magnifierEnabled
+{
+    return [self getBoolSettingForKey:kSettingKey_EnableMagnifier withDefault:NO];
+}
++ (void)setMagnifierEnabled:(BOOL)value
+{
+    [self setBoolSettingForKey:kSettingKey_EnableMagnifier toValue:value];
+}
+
 + (BOOL)levelPack1Purchased
 {
     return [self getBoolSettingForKey:kSettingKey_LevelPack1Purchased withDefault:NO];

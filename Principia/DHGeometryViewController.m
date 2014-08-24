@@ -9,6 +9,19 @@
 #import "DHGeometryViewController.h"
 #import "DHGeometryView.h"
 #import "DHMath.h"
+#import "DHMagnifyingView.h"
+#import "DHSettings.h"
+
+static CGFloat const kACMagnifyingViewDefaultShowDelay = 0.5;
+
+@interface DHGeometryViewController ()
+@property (nonatomic, strong) DHMagnifyingView *magnifyingGlass;
+@property (nonatomic, strong) NSTimer *touchTimer;
+- (void)addMagnifyingGlassAtPoint:(CGPoint)point;
+- (void)removeMagnifyingGlass;
+- (void)updateMagnifyingGlassAtPoint:(CGPoint)point;
+@end
+
 
 @implementation DHGeometryViewController {
     CGFloat _lastScale;
@@ -42,6 +55,17 @@
     }
     else {
         twoFingers = NO;
+        
+        if ([DHSettings magnifierEnabled]) {
+            UITouch *touch = [touches anyObject];
+            NSValue* userInfo = [NSValue valueWithCGPoint:[touch locationInView:self.geometryView]];
+            self.touchTimer = [NSTimer scheduledTimerWithTimeInterval:kACMagnifyingViewDefaultShowDelay
+                                                               target:self
+                                                             selector:@selector(addMagnifyingGlassTimer:)
+                                                             userInfo:userInfo
+                                                              repeats:NO];
+        }
+        
         for (UITouch* touch in touches) {
             if ([_currentTool associatedTouch] == 0) {
                 [_currentTool setAssociatedTouch:(intptr_t)touch];
@@ -93,6 +117,9 @@
         
         return;
     }
+    
+    UITouch *touch = [touches anyObject];
+    [self updateMagnifyingGlassAtPoint:[touch locationInView:self.geometryView]];
     for (UITouch* touch in touches) {
         if ([_currentTool associatedTouch] == (intptr_t)touch) {
             [_currentTool touchMoved:touch];
@@ -107,6 +134,10 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    [self.touchTimer invalidate];
+	self.touchTimer = nil;
+	[self removeMagnifyingGlass];
+    
     if ([self.currentLevel respondsToSelector:@selector(hideHint)] && self.currentLevel.showingHint) {
         [self.currentLevel hideHint];
         return;
@@ -131,6 +162,39 @@
     return YES;
 }
 
+#pragma mark - private functions
 
+- (void)addMagnifyingGlassTimer:(NSTimer*)timer {
+	NSValue *v = timer.userInfo;
+	CGPoint point = [v CGPointValue];
+	[self addMagnifyingGlassAtPoint:point];
+}
+
+#pragma mark - magnifier functions
+
+- (void)addMagnifyingGlassAtPoint:(CGPoint)point {
+	
+	if (!_magnifyingGlass) {
+		_magnifyingGlass = [[DHMagnifyingView alloc] initWithLoupe];
+	}
+	
+	if (!_magnifyingGlass.viewToMagnify) {
+		_magnifyingGlass.viewToMagnify = self.geometryView;
+		
+	}
+	
+	_magnifyingGlass.touchPoint = point;
+	[[[UIApplication sharedApplication] keyWindow] addSubview:_magnifyingGlass];
+	[_magnifyingGlass setNeedsDisplay];
+}
+
+- (void)removeMagnifyingGlass {
+	[_magnifyingGlass removeFromSuperview];
+}
+
+- (void)updateMagnifyingGlassAtPoint:(CGPoint)point {
+	_magnifyingGlass.touchPoint = point;
+	[_magnifyingGlass setNeedsDisplay];
+}
 
 @end

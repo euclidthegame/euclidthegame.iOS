@@ -334,7 +334,8 @@
 
     [self afterDelay:1.0 performBlock:^{
         DHCircle* circle = [[DHCircle alloc]initWithCenter:_pointC andPointOnRadius:_pointR];
-        DHGeometryView* animationView = [[DHGeometryView alloc]initWithObjects:@[_pointC,circle] andSuperView:view andGeometryView:geometryView];
+        DHGeometryView* animationView = [[DHGeometryView alloc] initWithObjects:@[_pointC,circle]
+                                                                   andSuperView:view andGeometryView:geometryView];
         
         [view addSubview:animationView];
         
@@ -355,22 +356,20 @@
         
         DHPoint* endpointC = [[DHPoint alloc]initWithPositionX:xpos andY:ypos-30];
         DHPoint* endpointR = [[DHPoint alloc]initWithPositionX:radius andY:ypos-30];
-
-         [self movePointFrom:_pointC to:endpointC withDuration:4.0 inView:animationView];
-         [self movePointFrom:_pointR to:endpointR withDuration:4.0 inView:animationView];
-         UIView* toolSegment = [toolControl.subviews objectAtIndex:11-6];
-         UIImageView* tool = [toolSegment.subviews objectAtIndex:0];
-         
-         [self afterDelay:3.0 performBlock:^{
-         [self fadeOut:tool withDuration:1.0];
-             [self fadeOut:animationView withDuration:1.5];
-         }];
-         [self afterDelay:4.0 performBlock:^{
-             
-             tool.image = [UIImage imageNamed:@"toolMidpointImproved"];
-         [self fadeIn:tool withDuration:1.0];
-
-         }];
+        
+        [self movePointFrom:_pointC to:endpointC withDuration:4.0 inView:animationView];
+        [self movePointFrom:_pointR to:endpointR withDuration:4.0 inView:animationView];
+        UIView* toolSegment = [toolControl.subviews objectAtIndex:11-6];
+        UIImageView* tool = [toolSegment.subviews objectAtIndex:0];
+        
+        [self afterDelay:3.0 performBlock:^{
+            [self fadeOut:tool withDuration:1.0];
+            [self fadeOut:animationView withDuration:1.5];
+        }];
+        [self afterDelay:4.0 performBlock:^{
+            tool.image = [UIImage imageNamed:@"toolMidpointImproved"];
+            [self fadeIn:tool withDuration:1.0];
+        }];
         [self afterDelay:5.0 performBlock:^{
             [animationView removeFromSuperview];
         }];

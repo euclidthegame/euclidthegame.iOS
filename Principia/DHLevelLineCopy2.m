@@ -206,7 +206,7 @@
         if (!self.showingHint) return;
         hintView.frame = geometryView.frame;
         
-        CGFloat centerX = geometryView.center.x;
+        CGFloat centerX = [geometryView.geoViewTransform viewToGeo:geometryView.center].x;
         DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX-100 andY:100];
         DHPoint* p2 = [[DHPoint alloc] initWithPositionX:centerX-120 andY:200];
         DHPoint* p3 = [[DHPoint alloc] initWithPositionX:centerX+100 andY:120];
@@ -230,16 +230,6 @@
                                                                  supView:geometryView addTo:hintView];
         
         Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
-            [message1 position: CGPointMake(80,460)];
-            [message2 position: CGPointMake(80,480)];
-            [message3 position: CGPointMake(80,500)];
-            [message4 position: CGPointMake(80,520)];
-        }
         
         [self afterDelay:0.0:^{
             [message1 text:@"Constructing a rhomboid makes it possible to copy a line segment."];
@@ -255,8 +245,8 @@
         }];
         
         [self afterDelay:6.0 :^{
-            [message2 text:@"However, that construction breaks down when the point is in line with the segment."];
-            [self fadeInViews:@[message2] withDuration:1.5];
+            [message1 appendLine:@"However, that construction breaks down when the point is in line with the segment."
+                    withDuration:2.0];
             [self movePoint:p3 toPosition:CGPointMake(centerX-130, 250) withDuration:3.0
                     inViews:@[rhombView1, rhombView2, s1View, s2View]];
             [self movePoint:p4 toPosition:CGPointMake(centerX-150, 350) withDuration:3.0
@@ -266,14 +256,13 @@
         }];
         
         [self afterDelay:10.0 :^{
-            [message3 text:@"Can you think of another, indirect way, to copy the line segment in that case?"];
-            [self fadeInViews:@[message3] withDuration:1.5];
+            [message1 appendLine:@"Can you think of another, indirect way, to copy the line segment in that case?"
+                    withDuration:2.0];
         }];
         [self afterDelay:12.0 :^{
-            [message4 text:@"The new copy line segment tool is still useful!"];
-            [self fadeInViews:@[message4] withDuration:1.5];
+            [message1 appendLine:@"The new copy line segment tool is still useful!"
+                    withDuration:2.0];
         }];
-
         
         [self afterDelay:2.0 :^{
             [self showEndHintMessageInView:hintView];

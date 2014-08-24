@@ -205,16 +205,7 @@
         
         [geometryView addSubview:hintView];
         
-        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,60) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,80) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,100) addTo:hintView];
-        
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
-            [message1 position: CGPointMake(150,460)];
-            [message2 position: CGPointMake(150,480)];
-            [message3 position: CGPointMake(150,500)];
-        }
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
         
         DHPoint* p1 = [[DHPoint alloc] initWithPosition:_lineAB.start.position];
         DHTranslatedPoint* p2 = [[DHTranslatedPoint alloc] initWithPoint1:_lineAB.start andPoint2:_lineAB.end
@@ -234,8 +225,6 @@
                                                                         addTo:hintView];
         
         [hintView bringSubviewToFront:message1];
-        [hintView bringSubviewToFront:message2];
-        [hintView bringSubviewToFront:message3];
         
         [self afterDelay:0.0:^{
             [message1 text:@"If you could simply move a copy of AB to C,"];
@@ -244,14 +233,14 @@
         }];
         
         [self afterDelay:3.0 :^{
-            [message2 text:@"and rotate it to be parallel to CD, this would be simple."];
-            [self fadeInViews:@[message2] withDuration:2.0];
+            [message1 appendLine:@"and rotate it to be parallel to CD, this would be simple."
+                    withDuration:2.0];
             [self movePointOnCircle:p3 toAngle:cdAngle withDuration:2.0 inViews:@[segmentView]];
         }];
         
         [self afterDelay:6.0 :^{
-            [message3 text:@"Can you make an equivalent construction with the available tools?"];
-            [self fadeInViews:@[message3] withDuration:2.0];
+            [message1 appendLine:@"Can you make an equivalent construction with the available tools?"
+                    withDuration:2.0];
         }];
         
         [self afterDelay:2.0 :^{

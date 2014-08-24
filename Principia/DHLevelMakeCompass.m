@@ -361,18 +361,7 @@
         
         [geometryView addSubview:hintView];
         
-        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(150,500) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(150,520) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(150,540) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(150,560) addTo:hintView];
-        
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
-            [message1 position: CGPointMake(150,500)];
-            [message2 position: CGPointMake(150,520)];
-            [message3 position: CGPointMake(150,540)];
-            [message4 position: CGPointMake(150,560)];
-        }
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(100,460) addTo:hintView];
         
         DHTranslatedPoint* tp = [[DHTranslatedPoint alloc] initStart:_lineAB.start end:_lineAB.end newStart:_pointC];
         DHCircle* c1 = [[DHCircle alloc] initWithCenter:_pointC andPointOnRadius:tp];
@@ -384,9 +373,6 @@
                                                                        addTo:hintView];
         
         [hintView bringSubviewToFront:message1];
-        [hintView bringSubviewToFront:message2];
-        [hintView bringSubviewToFront:message3];
-        [hintView bringSubviewToFront:message4];
         
         [self afterDelay:0.0:^{
             [message1 text:@"A circle is defined by its center and a point on the radius."];
@@ -394,8 +380,8 @@
         }];
         
         [self afterDelay:4.0 :^{
-            [message2 text:@"Can you construct a point at distance AB from C?"];
-            [self fadeInViews:@[message2,tpView] withDuration:2.0];
+            [message1 appendLine:@"Can you construct a point at distance AB from C?" withDuration:2.0];
+            [self fadeInViews:@[tpView] withDuration:2.0];
         }];
         
         [self afterDelay:2.0 :^{

@@ -1080,7 +1080,9 @@
 
 - (IBAction)hideCompletionMessage:(id)sender
 {
-    [self.levelCompletionMessage.superview removeFromSuperview];
+    if (self.levelCompletionMessage.superview && self.levelCompletionMessage.superview != self.view) {
+        [self.levelCompletionMessage.superview removeFromSuperview];
+    }
     self.levelCompletionMessage.hidden = YES;
 }
 

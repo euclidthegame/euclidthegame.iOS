@@ -14,7 +14,6 @@
 @interface DHLevelParallellLines () {
     DHPoint* _pointA;
     DHLine* _givenLine;
-    Message* _message1, *_message2, *_message3;
     BOOL _step1finished;
     BOOL perpendicularLineOK ;
 }
@@ -65,13 +64,9 @@
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:300];
     DHPoint* p3 = [[DHPoint alloc] initWithPositionX:400 andY:200];
     
-    DHLine* l1 = [[DHLine alloc] init];
-    l1.start = p1;
-    l1.end = p2;
+    DHLine* l1 = [[DHLine alloc] initWithStart:p1 andEnd:p2];
     
     [geometricObjects addObject:l1];
-    //[geometricObjects addObject:p1];
-    //[geometricObjects addObject:p2];
     [geometricObjects addObject:p3];
     
     _pointA = p3;
@@ -80,9 +75,7 @@
 
 - (void)createSolutionPreviewObjects:(NSMutableArray*)objects
 {
-    DHParallelLine* l = [[DHParallelLine alloc] init];
-    l.line = _givenLine;
-    l.point = _pointA;
+    DHParallelLine* l = [[DHParallelLine alloc] initWithLine:_givenLine andPoint:_pointA];
     
     [objects insertObject:l atIndex:0];
 }
@@ -96,9 +89,11 @@
     }
     
     // Move A and B and ensure solution holds
-    CGPoint pointA = _givenLine.start.position;
-    CGPoint pointB = _givenLine.end.position;
+    CGPoint pointA = _pointA.position;
+    CGPoint pointB = _givenLine.start.position;
+    CGPoint pointC = _givenLine.end.position;
     
+    _pointA.position = CGPointMake(290, 250);
     _givenLine.start.position = CGPointMake(280, 310);
     _givenLine.end.position = CGPointMake(480, 320);
     for (id object in geometricObjects) {
@@ -109,8 +104,9 @@
     
     complete = [self isLevelCompleteHelper:geometricObjects];
     
-    _givenLine.start.position = pointA;
-    _givenLine.end.position = pointB;
+    _pointA.position = pointA;
+    _givenLine.start.position = pointB;
+    _givenLine.end.position = pointC;
     for (id object in geometricObjects) {
         if ([object respondsToSelector:@selector(updatePosition)]) {
             [object updatePosition];
@@ -124,25 +120,19 @@
 {
     perpendicularLineOK = NO;
     
-    for (int index = 0; index < geometricObjects.count; ++index) {
-        id object = [geometricObjects objectAtIndex:index];
+    for (id object in geometricObjects) {
         if ([[object class]  isSubclassOfClass:[DHLineObject class]] == NO) continue;
         
         DHLineObject* l = object;
         
         if (l.tMin < 0 && l.tMax > 1 && LinesPerpendicular(l, _givenLine)) {
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                _message3.alpha = 0;  } completion:nil];
             perpendicularLineOK = YES;
         }
         
         CGVector bc = CGVectorNormalize(_givenLine.vector);
-        
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
-        if (!(fabs(lDotBC) > 1 - 0.001)) continue;
-        
-        CGFloat dist = DistanceFromPointToLine(_pointA, l);
-        if (dist < 0.01) {
+
+        if (EqualScalarValues(fabsf(lDotBC), 1) && PointOnLine(_pointA, l)) {
             self.progress = 100;
             return YES;
         }

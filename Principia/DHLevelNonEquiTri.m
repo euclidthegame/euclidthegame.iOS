@@ -11,7 +11,7 @@
 #import "DHGeometricObjects.h"
 #import "DHLevelViewController.h"
 
-@interface DHLevelNonEquiTri () {
+@implementation DHLevelNonEquiTri {
     DHLineSegment* _lineAB;
     DHLineSegment* _lineCD;
     DHLineSegment* _lineEF;
@@ -19,10 +19,6 @@
     BOOL hint1_OK;
     BOOL hint2_OK;
 }
-
-@end
-
-@implementation DHLevelNonEquiTri
 
 - (NSString*)subTitle
 {
@@ -38,8 +34,6 @@
 {
     return (@"Construct a triangle whose sides have the same length as the given segments using segment AB as base.");
 }
-
-
 
 - (DHToolsAvailable)availableTools
 {
@@ -101,7 +95,6 @@
         
         return newPBPos;
     }];
-    
     
     [geometricObjects addObjectsFromArray:@[lAB, lCD, lEF, pA, pB, pC, pD, pE, pF]];
     
@@ -173,7 +166,6 @@
 
 - (BOOL)isLevelCompleteHelper:(NSMutableArray*)geometricObjects
 {
-    
     // Solution criteria
     BOOL translatedPointFromAOK = NO;
     BOOL translatedPointFromBOK = NO;
@@ -226,41 +218,6 @@
     }
     
     return NO;
-    
-    /*for (int index2 = 0; index2 < geometricObjects.count-1; ++index2) {
-        id object2 = [geometricObjects objectAtIndex:index2];
-        if ([[object2 class] isSubclassOfClass:[DHLineSegment class]] == NO) continue;
-        if (object2 == _lineAB || object2 == _lineCD || object2 == _lineEF) continue;
-        
-        for (int index3 = index2+1; index3 < geometricObjects.count; ++index3) {
-            id object3 = [geometricObjects objectAtIndex:index3];
-            if ([[object3 class] isSubclassOfClass:[DHLineSegment class]] == NO) continue;
-            if (object3 == _lineAB || object3 == _lineCD || object3 == _lineEF) continue;
-            
-            DHLineSegment* l1 = _lineAB;
-            DHLineSegment* l2 = object2;
-            DHLineSegment* l3 = object3;
-            
-            CGFloat length2 = l2.length;
-            CGFloat length3 = l3.length;
-            
-            CGFloat lengthCD = _lineCD.length;
-            CGFloat lengthEF = _lineEF.length;
-
-            BOOL correctLengthCD = CGFloatsEqualWithinEpsilon(length2, lengthCD) || CGFloatsEqualWithinEpsilon(length3, lengthCD);
-            BOOL correctLengthEF = CGFloatsEqualWithinEpsilon(length2, lengthEF) || CGFloatsEqualWithinEpsilon(length3, lengthEF);
-            
-            // Ensure all lines are connected and of same length
-            BOOL connected = AreLinesConnected(l1,l2) && AreLinesConnected(l2,l3) && AreLinesConnected(l3,l1);
-            
-            if (connected && correctLengthCD && correctLengthEF) {
-                self.progress = 100;
-                return YES;
-            }
-        }
-    }
-    
-    return NO;*/
 }
 
 - (CGPoint)testObjectsForProgressHints:(NSArray *)objects
@@ -303,18 +260,11 @@
     
     [self slideOutToolbar];
     
-    Message* message1 = [[Message alloc] initWithMessage:@"We are looking for a point G such that:" andPoint:CGPointMake(450,100)];
+    
+    /*Message* message1 = [[Message alloc] initWithMessage:@"We are looking for a point G such that:" andPoint:CGPointMake(450,100)];
     Message* message2 = [[Message alloc] initWithMessage:@"  1. AG = CD" andPoint:CGPointMake(450,120)];
     Message* message3 = [[Message alloc] initWithMessage:@"  2. BG = EF" andPoint:CGPointMake(450,140)];
-    Message* message4 = [[Message alloc] initWithMessage:@"How can we construct such a point?" andPoint:CGPointMake(450,160)];
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
-    }
+    Message* message4 = [[Message alloc] initWithMessage:@"How can we construct such a point?" andPoint:CGPointMake(450,160)];*/
     
     DHTranslatedPoint* tp1 = [[DHTranslatedPoint alloc] initStart:_lineCD.start end:_lineCD.end newStart:_lineAB.start];
     DHTranslatedPoint* tp2 = [[DHTranslatedPoint alloc] initStart:_lineEF.start end:_lineEF.end newStart:_lineAB.end];
@@ -341,26 +291,31 @@
     DHGeometryView* moveEF = [[DHGeometryView alloc]initWithObjects:@[pointE,pointF,tempSegmentEF] andSuperView:geometryView];
     
     UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
+
+    Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
+    if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        [message1 position: CGPointMake(150,500)];
+    }
+    
     [geometryView addSubview:hintView];
-    [hintView addSubview:message1];
-    [hintView addSubview:message2];
-    [hintView addSubview:message3];
-    [hintView addSubview:message4];
     [hintView addSubview:moveCD];
     [hintView addSubview:moveEF];
     [hintView addSubview:pointGView];
+    [hintView bringSubviewToFront:message1];
     
     //hint 1
     if (!hint1_OK){
-    
+        [message1 text:@"We are looking for a point G such that:"];
         [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
             message1.alpha = 1; } completion:^(BOOL finished){ }];
         [self fadeIn:pointGView withDuration:2];
         
         [self performBlock:^{
-            
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                message2.alpha = 1; } completion:^(BOOL finished){     }];
+            if (self.iPhoneVersion) {
+                [message1 appendLine:@"\n  1. AG = CD" withDuration:2.0];
+            } else {
+                [message1 appendLine:@"  1. AG = CD" withDuration:2.0];
+            }
             
             [self fadeIn:moveCD withDuration:0.5];
             [self movePointFrom:pointC to:_lineAB.start withDuration:1.5 inView:moveCD];
@@ -369,8 +324,12 @@
         } afterDelay:4.0];
         
         [self performBlock:^{
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                message3.alpha = 1; } completion:^(BOOL finished){     }];
+            if (self.iPhoneVersion) {
+                [message1 appendLine:@"\n  2. BG = EF" withDuration:2.0];
+            } else {
+                [message1 appendLine:@"  2. BG = EF" withDuration:2.0];
+            }
+            
             [self fadeIn:moveEF withDuration:0.5];
             [self movePointFrom:pointE to:pG withDuration:1.5 inView:moveEF];
             [self movePointFrom:pointF to:_lineAB.end withDuration:1.5 inView:moveEF];
@@ -378,16 +337,19 @@
         } afterDelay:8.0];
         
         [self performBlock:^{
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                message4.alpha = 1; } completion:^(BOOL finished){hint1_OK = YES;    }];
+            if (self.iPhoneVersion) {
+                [message1 appendLine:@"\nHow can we construct such a point?" withDuration:2.0];
+            } else {
+                [message1 appendLine:@"How can we construct such a point?" withDuration:2.0];
+            }
+            
+            hint1_OK = YES;
         } afterDelay:12.0];
     }
     
     //hint 2
     else if(!hint2_OK){
-        [message1 text:@"Circles have a very useful property." position:CGPointMake(250, 20)];
-        [message2 text:@"Every point on the circle, has the same distance to the center." position:CGPointMake(250,40) ];
-        [message3 text:@"Note that a circle can be \"moved\" using the compass tool." position:CGPointMake(250,60) ];
+        [message1 text:@"Circles have a very useful property."];
         DHCircle* cCD = [[DHCircle alloc] initWithCenter:pointC andPointOnRadius:pointD];
         cCD.temporary = YES;
         DHCircle* cEF = [[DHCircle alloc] initWithCenter:pointF andPointOnRadius:pointE];
@@ -411,15 +373,17 @@
         [self performBlock:^{
             [self fadeIn:pView withDuration:2];
             [self movePointOnCircle:p1 toAngle:M_PI + 0.33 withDuration:4 inView:pView];
-            [self movePointOnCircle:p2 toAngle:M_PI +0.25 withDuration:4 inView:pView];
+            [self movePointOnCircle:p2 toAngle:M_PI + 0.25 withDuration:4 inView:pView];
             
-            [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                message2.alpha = 1; } completion:^(BOOL finished){hint2_OK = YES; }];
+            [message1 appendLine:@"Every point on the circle, has the same distance to the center."
+                    withDuration:2.0];
+            hint2_OK = YES;
 
         } afterDelay:4.0];
         [self afterDelay:8.0 performBlock:^{
-            [UIView animateWithDuration:2 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                message3.alpha = 1; } completion:^(BOOL finished){hint2_OK = YES; }];
+            [message1 appendLine:@"Note that a circle can be \"moved\" using the compass tool."
+                    withDuration:2.0];
+            hint2_OK = YES;
         }];
         
         [self afterDelay:11.0 performBlock:^{

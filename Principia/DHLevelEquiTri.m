@@ -60,13 +60,12 @@
 {
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:400];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:400];
-    DHLineSegment* l1 = [[DHLineSegment alloc] init];
-    l1.start = p1;
-    l1.end = p2;
+    DHLineSegment* l1 = [[DHLineSegment alloc] initWithStart:p1 andEnd:p2];
     
     [geometricObjects addObject:l1];
     [geometricObjects addObject:p1];
     [geometricObjects addObject:p2];
+    
     _pointA = p1;
     _pointB = p2;
     _lineAB = l1;
@@ -199,20 +198,19 @@
     
     DHPoint* p1 = [[DHPoint alloc] initWithPositionX:280 andY:400 ];
     DHPoint* p2 = [[DHPoint alloc] initWithPositionX:480 andY:400 ];
-    DHLineSegment* l1 = [[DHLineSegment alloc] init];
-    l1.start = p1;
-    l1.end = p2;
+    DHLineSegment* l1 = [[DHLineSegment alloc] initWithStart:p1 andEnd:p2];
     _lineAB = l1;
+    
     DHCircle* c1 = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:_lineAB.end];
     DHCircle* c2 = [[DHCircle alloc] initWithCenter:_lineAB.end andPointOnRadius:_lineAB.start];
     DHIntersectionPointCircleCircle* ip = [[DHIntersectionPointCircleCircle alloc] init];
     ip.c1 = c1;
     ip.c2 = c2;
     ip.onPositiveY = YES;
-    DHLineSegment* sAC = [[DHLineSegment alloc]initWithStart:_lineAB.start andEnd:ip];
-    DHLineSegment* sBC = [[DHLineSegment alloc]initWithStart:_lineAB.end andEnd:ip];
     
-  
+    DHLineSegment* sAC = [[DHLineSegment alloc] initWithStart:_lineAB.start andEnd:ip];
+    DHLineSegment* sBC = [[DHLineSegment alloc] initWithStart:_lineAB.end andEnd:ip];
+    
     CGFloat steps = 100;
     CGPoint dA = PointFromToWithSteps(_pointA.position, p1.position, steps);
     CGPoint dB = PointFromToWithSteps(_pointB.position, p2.position, steps);
@@ -249,8 +247,8 @@
         [self performBlock:^{
             [geometryView.geoViewTransform offsetWithVector:CGPointMake(offset.x, offset.y)];
             [geometryView.geoViewTransform setScale:geometryView.geoViewTransform.scale *scale];
-            _pointA.position = CGPointMake(_pointA.position.x + dA.x,_pointA.position.y + dA.y);
-            _pointB.position = CGPointMake(_pointB.position.x + dB.x,_pointB.position.y + dB.y);
+            _pointA.position = CGPointMake(_pointA.position.x + dA.x, _pointA.position.y + dA.y);
+            _pointB.position = CGPointMake(_pointB.position.x + dB.x, _pointB.position.y + dB.y);
 
             for (id object in geometryView.geometricObjects) {
                 if ([object respondsToSelector:@selector(updatePosition)]) {

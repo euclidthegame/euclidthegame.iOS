@@ -226,7 +226,7 @@
         if (!self.showingHint) return;
         hintView.frame = geometryView.frame;
         
-        CGFloat centerX = geometryView.center.x;
+        CGFloat centerX = [geometryView.geoViewTransform viewToGeo:geometryView.center].x;
         DHPoint* p1 = [[DHPoint alloc] initWithPositionX:centerX-100 andY:200];
         DHPoint* p2 = [[DHPoint alloc] initWithPositionX:centerX andY:200];
         DHPoint* p3 = [[DHPoint alloc] initWithPositionX:centerX+100 andY:200];

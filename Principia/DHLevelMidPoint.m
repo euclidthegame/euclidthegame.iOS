@@ -209,6 +209,10 @@
     CGFloat oldScale = geometryView.geoViewTransform.scale;
     CGFloat newScale = 1;
     CGPoint newOffset = CGPointMake(0,0);
+    if (self.iPhoneVersion) {
+        newScale = 0.5;
+        newOffset = CGPointMake(-30, 0);
+    }
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {
@@ -228,7 +232,6 @@
     CGPoint offset = PointFromToWithSteps(oldOffset, newOffset, 100);
     CGFloat scale =  pow((newScale/oldScale),0.01) ;
     
-    
     for (int a=0; a<steps; a++) {
         [self performBlock:^{
             [geometryView.geoViewTransform offsetWithVector:CGPointMake(offset.x, offset.y)];
@@ -245,17 +248,12 @@
         } afterDelay:a* (1/steps)];
     }
     
-    
-    
     [self performBlock:^{
         DHGeometryView* geoView = [[DHGeometryView alloc] initWithFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, view.frame.size.height)];
         [view addSubview:geoView];
         geoView.hideBorder = YES;
         geoView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.0];
         geoView.opaque = NO;
-        
-
-
         
         NSMutableArray* geometricObjects2 = [[NSMutableArray alloc]init];
         
@@ -267,16 +265,14 @@
         
         geoView.geometricObjects = geometricObjects2;
         
-        
-        //adjust points to new coordinates
-        
+        // Adjust points to new coordinates
         CGPoint relPos = [geoView.superview convertPoint:geoView.frame.origin toView:geometryView];
         p1.position = CGPointMake(p1.position.x + newOffset.x, p1.position.y - relPos.y + newOffset.y );
         p2.position = CGPointMake(p2.position.x +newOffset.x  , p2.position.y - relPos.y +newOffset.y );
 
         [geoView setNeedsDisplay];
         
-        //getcoordinates of Equilateral triangle tool
+        // Get coordinates of Equilateral triangle tool
         UIView* segment5 = [toolControl.subviews objectAtIndex:4];
         UIView* segment6 = [toolControl.subviews objectAtIndex:5];
         CGPoint pos5 = [segment5.superview convertPoint:segment5.frame.origin toView:geoView];
@@ -284,7 +280,6 @@
    
         CGFloat xpos = (pos5.x + pos6.x )/2  ;
         CGFloat ypos =  view.frame.size.height - 9;
-        
         
         UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
         if(UIInterfaceOrientationIsLandscape(orientation)) {

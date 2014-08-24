@@ -304,12 +304,15 @@
 
 -(void)animation:(NSMutableArray *)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstructions and:(DHGeometryView *)geometryView and:(UIView *)view {
     
-    
     CGFloat steps = 100;
     CGPoint oldOffset = geometryView.geoViewTransform.offset;
     CGFloat oldScale = geometryView.geoViewTransform.scale;
     CGFloat newScale = 1;
     CGPoint newOffset = CGPointMake(0,0);
+    if (self.iPhoneVersion) {
+        newScale = 0.5;
+        newOffset = CGPointMake(-30, 0);
+    }
     
     if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
         [geometryView.geoViewTransform setScale:newScale];
@@ -323,7 +326,6 @@
     CGPoint offset = PointFromToWithSteps(oldOffset, newOffset, 100);
     CGFloat scale =  pow((newScale/oldScale),0.01) ;
     
-    
     for (int a=0; a<steps; a++) {
         [self performBlock:^{
             [geometryView.geoViewTransform offsetWithVector:CGPointMake(offset.x, offset.y)];
@@ -333,10 +335,9 @@
     }
 
     [self afterDelay:1.0 performBlock:^{
-        DHCircle* circle = [[DHCircle alloc]initWithCenter:_pointC andPointOnRadius:_pointR];
+        DHCircle* circle = [[DHCircle alloc] initWithCenter:_pointC andPointOnRadius:_pointR];
         DHGeometryView* animationView = [[DHGeometryView alloc] initWithObjects:@[_pointC,circle]
                                                                    andSuperView:view andGeometryView:geometryView];
-        
         [view addSubview:animationView];
         
         UIView* segment1= [toolControl.subviews objectAtIndex:4];
@@ -354,8 +355,8 @@
             radius = radius - 10;
         }
         
-        DHPoint* endpointC = [[DHPoint alloc]initWithPositionX:xpos andY:ypos-30];
-        DHPoint* endpointR = [[DHPoint alloc]initWithPositionX:radius andY:ypos-30];
+        DHPoint* endpointC = [[DHPoint alloc] initWithPositionX:xpos andY:ypos-30];
+        DHPoint* endpointR = [[DHPoint alloc] initWithPositionX:radius andY:ypos-30];
         
         [self movePointFrom:_pointC to:endpointC withDuration:4.0 inView:animationView];
         [self movePointFrom:_pointR to:endpointR withDuration:4.0 inView:animationView];

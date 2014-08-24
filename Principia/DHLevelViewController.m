@@ -277,9 +277,9 @@
         self.heightLevelObjectiveView.constant = 0;
         if(_currentGameMode != kDHGameModeTutorial) self.heightToolBar.constant = 42;
         self.levelObjectiveView.hidden = YES;
-        self.toolbarLeadingConstraint.constant = 3;
-        self.toolbarTrailingConstraint.constant = 3;
-        self.toolbarHeightConstraint.constant = 26;
+        self.toolbarLeadingConstraint.constant = 1;
+        self.toolbarTrailingConstraint.constant = 1;
+        self.toolbarHeightConstraint.constant = 24;
         self.toolInstruction.font = [UIFont systemFontOfSize:11.0];
         self.toolInstruction.numberOfLines = 2;
         [self.toolInstruction setLineBreakMode:NSLineBreakByWordWrapping];
@@ -351,7 +351,7 @@
     }
     
     [self.geometryView setNeedsDisplay];
-    self.levelCompletionMessage.hidden = YES;
+    [self hideCompletionMessage:nil];
     
     _currentLevel.progress = 0;
     [self setLevelProgress:0];
@@ -408,9 +408,10 @@
     }
     if (countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0) {
         [self.geometryView setNeedsDisplay];
-        [self showTemporaryMessage:@"You are out of moves, undo or reset the level."
+        [self showTemporaryMessage:(@"You are out of moves and can only create points\n"
+                                    @"(or undo previous moves/reset the level)")
                            atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)
-                         withColor:[UIColor redColor]];
+                         withColor:[UIColor redColor] forDuration:5.0];
         return;
     }
     
@@ -490,9 +491,10 @@
     if (!self.levelCompleted && countMove && self.maxNumberOfMoves > 0 && self.maxNumberOfMoves - self.levelMoves == 0)
     {
         [self.geometryView setNeedsDisplay];
-        [self showTemporaryMessage:@"You are out of moves and can only create points, undo or reset the level"
+        [self showTemporaryMessage:(@"You are out of moves and can only create points\n"
+                                    @"(or undo previous moves/reset the level)")
                            atPoint:CGPointMake(self.view.frame.size.width*0.5, self.view.frame.size.height*0.5)
-                         withColor:[UIColor redColor]];
+                         withColor:[UIColor redColor] forDuration:4.0];
     }
 }
 
@@ -647,12 +649,32 @@
         }
     }
     
+    _toolControl.contentMode = UIViewContentModeCenter;
+    if (_iPhoneVersion &&
+        (_currentGameMode == kDHGameModePrimitiveOnly || _currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves))
+    {
+        for (int ii = 0 ; ii < _toolControl.numberOfSegments ; ++ii)
+        {
+            UIImage *img = [_toolControl imageForSegmentAtIndex: ii];
+            img = [self imageWithImage:img scaledToSize:CGSizeMake(24, 24)];
+            [_toolControl setImage: img forSegmentAtIndex: ii];
+            [_toolControl setEnabled:[_toolControl isEnabledForSegmentAtIndex:ii] forSegmentAtIndex:ii];
+        }
+    }
+    
     _toolControl.selectedSegmentIndex = UISegmentedControlNoSegment;
     _currentTool = nil;
     self.geometryViewController.currentTool = _currentTool;
     self.geometryViewController.currentLevel = _currentLevel;
     _toolInstruction.text = nil;
     
+}
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    UIGraphicsBeginImageContextWithOptions(newSize,NO,2.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 - (void)toolChanged:(id)sender
@@ -753,7 +775,8 @@
     [DHLevelResults newResult:result forLevel:resultKey];
     
     if ((self.currentGameMode == kDHGameModeNormal || self.currentGameMode == kDHGameModeNormalMinimumMoves)
-        && [_currentLevel respondsToSelector:@selector(animation:and:and:and:and:)])
+        && [_currentLevel respondsToSelector:@selector(animation:and:and:and:and:)]
+        && !_iPhoneVersion)
     {
         [_currentLevel animation:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view];
         
@@ -965,11 +988,18 @@
 
 - (void)showLevelCompleteMessage
 {
+    UIView* background = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2000, 2000)];
+    background.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];
+    [self.view addSubview:background];
+    [self.view bringSubviewToFront:self.levelCompletionMessage];
+    [background addSubview:self.levelCompletionMessage];
+    background.alpha = 0;
+    
     NSMutableString* completionMessageText = [[NSMutableString alloc] init];
     
     if (_iPhoneVersion) {
         self.levelCompletionMessageWidthConstraint.constant = 300;
-        self.levelCompletionMessageHeightConstraint.constant = 300;
+        self.levelCompletionMessageHeightConstraint.constant = 200;
         self.levelCompletionMessageTitle.font = [UIFont boldSystemFontOfSize:18.0];
         self.levelCompletionMessageAdditional.font = [UIFont systemFontOfSize:14.0];
     }
@@ -1012,6 +1042,7 @@
                           delay:0.0
                         options: UIViewAnimationOptionCurveEaseIn
                      animations:^{
+                         background.alpha = 1;
                          self.levelCompletionMessage.alpha = 1;
                      }
                      completion:^(BOOL finished){
@@ -1024,6 +1055,7 @@
 
 - (IBAction)loadNextLevel:(id)sender
 {
+    [self hideCompletionMessage:nil];
     [DHSettings setShowHints:NO];
 
     if (self.levelArray) {
@@ -1048,10 +1080,17 @@
 
 - (IBAction)hideCompletionMessage:(id)sender
 {
+    [self.levelCompletionMessage.superview removeFromSuperview];
     self.levelCompletionMessage.hidden = YES;
 }
 
 - (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color
+{
+    [self showTemporaryMessage:message atPoint:point withColor:color forDuration:2.5];
+}
+
+- (void)showTemporaryMessage:(NSString*)message atPoint:(CGPoint)point withColor:(UIColor*)color
+                 forDuration:(CGFloat)duration
 {
     UILabel* label = [[UILabel alloc] init];
     label.alpha = 0;
@@ -1060,6 +1099,10 @@
     if (_iPhoneVersion) {
         label.font = [UIFont systemFontOfSize:11];
     }
+    label.numberOfLines = 0;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.layer.cornerRadius = 8.0;
+    label.backgroundColor = [UIColor colorWithWhite:1 alpha:0.6];
     
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
@@ -1093,7 +1136,7 @@
                      }
                      completion:^(BOOL finished){
                          [UIView animateWithDuration:0.5
-                                               delay:2.5
+                                               delay:duration
                                              options: UIViewAnimationOptionCurveEaseIn
                                           animations:^{
                                               label.alpha = 0;

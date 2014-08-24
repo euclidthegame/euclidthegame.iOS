@@ -229,7 +229,6 @@
     
     [self slideOutToolbar];
 
-    
     Message* message1 = [[Message alloc] initWithMessage:@"Let's first make the following triangle." andPoint:CGPointMake(430,40)];
     Message* message2 = [[Message alloc] initWithMessage:@"Place point C on one of the rays." andPoint:CGPointMake(430,60)];
     Message* message3 = [[Message alloc] initWithMessage:@"Place point D on the other ray." andPoint:CGPointMake(430,80)];
@@ -247,12 +246,11 @@
     DHPoint* tempC = [[DHPoint alloc]initWithPosition:pointC.position];
     DHPoint* tempD = [[DHPoint alloc]initWithPosition:pointD.position];
     DHLineSegment* tempS1 = [[DHLineSegment alloc]initWithStart:tempA andEnd:tempC];
-    tempS1.temporary = YES;
     DHLineSegment* tempS2 = [[DHLineSegment alloc]initWithStart:tempA andEnd:tempD];
-    tempS2.temporary = YES;
     DHLineSegment* tempS3 = [[DHLineSegment alloc]initWithStart:tempC andEnd:tempD];
+    tempS1.temporary = YES;
+    tempS2.temporary = YES;
     tempS3.temporary = YES;
-    
     
     DHCircle* c1 = [[DHCircle alloc] initWithCenter:_rayA2.start andPointOnRadius:_rayA2.end];
     DHIntersectionPointLineCircle* ip1 = [[DHIntersectionPointLineCircle alloc] init];
@@ -300,11 +298,9 @@
         [message5 position: CGPointMake(50,180)];
     }
     
-
-    
     [hintView addSubview:segmentView];
-    [hintView  addSubview:cView];
-    [hintView  addSubview:dView];
+    [hintView addSubview:cView];
+    [hintView addSubview:dView];
     
     [hintView addSubview:message1];
     [hintView addSubview:message2];
@@ -335,7 +331,6 @@
         [self movePointFrom:tempA to:_rayB.start withDuration:3.0 inView:tempView];
         [self movePointFrom:tempC to:ip3 withDuration:3.0 inView:tempView];
         [self movePointFrom:tempD to:ip2 withDuration:3.0 inView:tempView];
-        
     }];
     
     [self afterDelay:1.0 :^{

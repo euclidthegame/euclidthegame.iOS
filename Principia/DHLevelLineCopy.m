@@ -219,6 +219,10 @@
     CGFloat oldScale = geometryView.geoViewTransform.scale;
     CGFloat newScale = 1;
     CGPoint newOffset = CGPointMake(0,0);
+    if (self.iPhoneVersion) {
+        newScale = 0.5;
+        newOffset = CGPointMake(-30, 0);
+    }
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {

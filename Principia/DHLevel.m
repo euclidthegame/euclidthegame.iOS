@@ -179,7 +179,7 @@
 {
     NSLayoutConstraint* heightToolBar = self.levelViewController.heightToolBar;
     
-    CGFloat targetHeight = _iPhoneVersion ? 42 : 70;
+    CGFloat targetHeight = 70; //_iPhoneVersion ? 42 : 70;
     NSUInteger steps = targetHeight + 20;
     
     for (int a=0; a<steps; a++) {
@@ -193,7 +193,7 @@
 {
     NSLayoutConstraint* heightToolBar = self.levelViewController.heightToolBar;
     
-    CGFloat targetHeight = _iPhoneVersion ? 42 : 70;
+    CGFloat targetHeight = 70; //_iPhoneVersion ? 42 : 70;
     NSUInteger steps = targetHeight + 20;
     
     for (int a=0; a<steps; a++) {

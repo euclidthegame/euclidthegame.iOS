@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, DHPopoverViewVerticalDirection) {
+    DHPopoverViewVerticalDirectionDown,
+    DHPopoverViewVerticalDirectionUp
+};
+
 @class DHPopoverView;
 
 @protocol DHPopoverViewDelegate
@@ -19,6 +24,10 @@
 
 @interface DHPopoverView : UIView
 
+@property (nonatomic) DHPopoverViewVerticalDirection verticalDirection;
+@property (nonatomic) CGFloat width;
+@property (nonatomic) CGFloat buttonHeight;
+@property (nonatomic) CGFloat separatorInset;
 @property (nonatomic, weak) UIViewController <DHPopoverViewDelegate> *delegate;
 
 - (id)initWithOriginFrame:(CGRect)originFrame delegate:(UIViewController<DHPopoverViewDelegate>*)delegate firstButtonTitle:(NSString*)firstButtonTitle;
@@ -27,5 +36,8 @@
 - (NSInteger)addButtonWithTitle:(NSString*)title;
 - (NSInteger)addButtonWithTitle:(NSString*)title enabled:(BOOL)enabled;
 - (NSString*)titleForButton:(NSInteger)buttonIndex;
+
+- (NSInteger)addButtonWithImage:(UIImage*)image enabled:(BOOL)enabled;
+- (UIImage*)imageForButton:(NSInteger)buttonIndex;
 
 @end

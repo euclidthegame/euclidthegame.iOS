@@ -65,6 +65,7 @@
 		688768C519A84FE7000CAB03 /* DHWeakReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768C419A84FE7000CAB03 /* DHWeakReference.m */; };
 		688768C819A8504B000CAB03 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768C719A8504B000CAB03 /* Message.m */; };
 		688768CB19AA4E92000CAB03 /* DHMagnifyingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768CA19AA4E92000CAB03 /* DHMagnifyingView.m */; };
+		688768CE19AB5197000CAB03 /* DHTriangleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768CD19AB5197000CAB03 /* DHTriangleView.m */; };
 		68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */; };
 		68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */; };
 		68E3CAB2199F138F0018851F /* NSUserDefaults+Encryption.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */; };
@@ -200,6 +201,8 @@
 		688768C719A8504B000CAB03 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		688768C919AA4E92000CAB03 /* DHMagnifyingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHMagnifyingView.h; sourceTree = "<group>"; };
 		688768CA19AA4E92000CAB03 /* DHMagnifyingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHMagnifyingView.m; sourceTree = "<group>"; };
+		688768CC19AB5197000CAB03 /* DHTriangleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHTriangleView.h; sourceTree = "<group>"; };
+		688768CD19AB5197000CAB03 /* DHTriangleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHTriangleView.m; sourceTree = "<group>"; };
 		68D0F619196D576700C4D617 /* DHLevelThreeCircles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelThreeCircles.h; sourceTree = "<group>"; };
 		68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelThreeCircles.m; sourceTree = "<group>"; };
 		68D0F61C196DAF8C00C4D617 /* DHLevelSegmentInThree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSegmentInThree.h; sourceTree = "<group>"; };
@@ -536,6 +539,8 @@
 				68E3CAB919A339F10018851F /* DHPopoverView.m */,
 				688768C919AA4E92000CAB03 /* DHMagnifyingView.h */,
 				688768CA19AA4E92000CAB03 /* DHMagnifyingView.m */,
+				688768CC19AB5197000CAB03 /* DHTriangleView.h */,
+				688768CD19AB5197000CAB03 /* DHTriangleView.m */,
 			);
 			name = "Views & View Controllers";
 			sourceTree = "<group>";
@@ -668,6 +673,7 @@
 				686014DB1969D3CE0004DD1E /* DHLevelCopyAngle.m in Sources */,
 				68E3CAB719A20FD20018851F /* DHGameModeSelectionButton.m in Sources */,
 				68376948197E2E4200D53E21 /* DHLevel.m in Sources */,
+				688768CE19AB5197000CAB03 /* DHTriangleView.m in Sources */,
 				681C88B419921CAE005307F5 /* DHTranslateSegmentTool.m in Sources */,
 				686014DE1969DFE70004DD1E /* DHLevelCircleCenter.m in Sources */,
 				68E3CABA19A339F10018851F /* DHPopoverView.m in Sources */,

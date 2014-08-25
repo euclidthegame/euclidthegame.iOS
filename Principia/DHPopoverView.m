@@ -97,6 +97,11 @@ const CGFloat kTriangleWidth = 20;
     _appTintColor = [[delegate popOverTintColor] copy];
     self = [super initWithFrame:window.bounds];
     if (self) {
+        self.verticalDirection = DHPopoverViewVerticalDirectionDown;
+        self.width = kPopoverWidth;
+        self.buttonHeight = 44.0;
+        self.separatorInset = 15.0;
+        
         _menuBackground = [[UIView alloc] initWithFrame:window.bounds];
         _menuBackground.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:1];
         _menuBackground.layer.cornerRadius = 5.0;
@@ -154,30 +159,35 @@ const CGFloat kTriangleWidth = 20;
     CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(rotation);
     CGSize rotatedSize = CGRectApplyAffineTransform(window.bounds, rotationTransform).size;
     
-    const CGFloat buttonHeight = 44.0;
+    const CGFloat buttonHeight = self.buttonHeight;
     
     _container.transform = rotationTransform;
     // Transform invalidates the frame, so use bounds/center
     _container.bounds = CGRectMake(0, 0, rotatedSize.width, rotatedSize.height);
     _container.center = CGPointMake(window.bounds.size.width / 2, window.bounds.size.height / 2);
     
-    _triangle.frame = CGRectMake(CGRectGetMidX(_originFrame)-kTriangleWidth/2,
-                                 CGRectGetMaxY(_originFrame)+10, kTriangleWidth, kTriangleHeight);
     for (UIButton* button in _buttons) {
-        CGRect buttonFrame = CGRectMake(rotatedSize.width-kPopoverWidth-10,
-                                        CGRectGetMaxY(_originFrame)+25+button.tag*buttonHeight,
-                                        kPopoverWidth, buttonHeight);
+        CGRect buttonFrame = CGRectMake(0,button.tag*buttonHeight,_width, buttonHeight);
         [button setFrame:buttonFrame];
     }
     for (NSInteger i = 0; i < _separators.count; ++i) {
-        CGRect sepFrame = CGRectMake(rotatedSize.width-kPopoverWidth-10+15,
-                                        CGRectGetMaxY(_originFrame)+25+(i+1)*buttonHeight,
-                                        kPopoverWidth-30, 1);
+        CGRect sepFrame = CGRectMake(self.separatorInset,(i+1)*buttonHeight, _width-self.separatorInset*2, 1);
         [_separators[i] setFrame:sepFrame];
     }
-    _menuBackground.frame = CGRectMake(rotatedSize.width-kPopoverWidth-10,
-                                       CGRectGetMaxY(_originFrame)+25,
-                                       kPopoverWidth, buttonHeight*(_buttons.count));
+    
+    CGFloat menuFrameY = CGRectGetMaxY(_originFrame)+25;
+    CGFloat menuFrameHeight = buttonHeight*(_buttons.count);
+    _triangle.frame = CGRectMake(CGRectGetMidX(_originFrame)-kTriangleWidth/2,
+                                 CGRectGetMaxY(_originFrame)+10, kTriangleWidth, kTriangleHeight);
+    
+    if (self.verticalDirection == DHPopoverViewVerticalDirectionUp) {
+        menuFrameY = CGRectGetMinY(_originFrame) - 10 - (menuFrameHeight + kTriangleHeight) + 2;
+        _triangle.frame = CGRectMake(CGRectGetMidX(_originFrame)-kTriangleWidth/2,
+                                     CGRectGetMinY(_originFrame)-10-kTriangleHeight, kTriangleWidth, kTriangleHeight);
+        _triangle.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    _menuBackground.frame = CGRectMake(rotatedSize.width-_width-10, menuFrameY,
+                                       _width, menuFrameHeight);
 }
 
 - (void)statusBarWillRotate:(NSNotification *)notification
@@ -201,6 +211,33 @@ const CGFloat kTriangleWidth = 20;
     [self addGestureRecognizer: singleTap];
 }
 
+- (NSInteger)addButtonWithImage:(UIImage *)image enabled:(BOOL)enabled
+{
+    NSInteger buttonIndex;
+    
+    if(!_buttons) _buttons = [NSMutableArray array];
+    if (!_separators) _separators = [NSMutableArray array];
+    buttonIndex = _buttons.count;
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setImage:image forState:UIControlStateNormal];
+    button.tag = buttonIndex;
+    [button addTarget:self
+               action:@selector(buttonPressed:)
+     forControlEvents:UIControlEventTouchUpInside];
+    [_buttons addObject:button];
+    [_menuBackground addSubview:button];
+    button.enabled = enabled;
+    
+    if (_buttons.count > 1) {
+        DHPopoverViewSeparator* separator = [[DHPopoverViewSeparator alloc] init];
+        [_separators addObject:separator];
+        [_menuBackground addSubview:separator];
+    }
+    
+    return buttonIndex;
+}
+
 - (NSInteger)addButtonWithTitle:(NSString*)title enabled:(BOOL)enabled
 {
     NSInteger buttonIndex;
@@ -218,13 +255,13 @@ const CGFloat kTriangleWidth = 20;
                action:@selector(buttonPressed:)
      forControlEvents:UIControlEventTouchUpInside];
     [_buttons addObject:button];
-    [_container addSubview:button];
+    [_menuBackground addSubview:button];
     button.enabled = enabled;
     
     if (_buttons.count > 1) {
         DHPopoverViewSeparator* separator = [[DHPopoverViewSeparator alloc] init];
         [_separators addObject:separator];
-        [_container addSubview:separator];
+        [_menuBackground addSubview:separator];
     }
     
     return buttonIndex;
@@ -241,10 +278,17 @@ const CGFloat kTriangleWidth = 20;
 - (void)closePopoverView {
     [_delegate closePopoverView:self];
 }
+
 - (NSString*)titleForButton:(NSInteger)buttonIndex
 {
     UIButton* button = [_buttons objectAtIndex:buttonIndex];
     return [button titleForState:UIControlStateNormal];
+}
+
+- (UIImage *)imageForButton:(NSInteger)buttonIndex
+{
+    UIButton* button = [_buttons objectAtIndex:buttonIndex];
+    return [button imageForState:UIControlStateNormal];
 }
 
 - (void)show

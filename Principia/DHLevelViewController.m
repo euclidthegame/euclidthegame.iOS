@@ -20,6 +20,7 @@
 #import "DHLevelSelection2ViewController.h"
 #import "YLProgressBar.h"
 #import "DHPopoverView.h"
+#import "DHTriangleView.h"
 
 @interface DHLevelViewController () <UINavigationControllerDelegate, DHPopoverViewDelegate>
 
@@ -48,6 +49,9 @@
     BOOL _iPhoneVersion;
     
     DHPopoverView* _popoverMenu;
+    DHPopoverView* _popoverToolMenu;
+    
+    DHTriangleView* _toolTriangleIndicator;
 }
 
 #pragma mark Life-cycle
@@ -275,11 +279,11 @@
 
     if (_iPhoneVersion) {
         self.heightLevelObjectiveView.constant = 0;
-        if(_currentGameMode != kDHGameModeTutorial) self.heightToolBar.constant = 42;
+        if(_currentGameMode != kDHGameModeTutorial) self.heightToolBar.constant = 70;
         self.levelObjectiveView.hidden = YES;
-        self.toolbarLeadingConstraint.constant = 1;
-        self.toolbarTrailingConstraint.constant = 1;
-        self.toolbarHeightConstraint.constant = 24;
+        self.toolbarLeadingConstraint.constant = 4;
+        self.toolbarTrailingConstraint.constant = 4;
+        //self.toolbarHeightConstraint.constant = 24;
         self.toolInstruction.font = [UIFont systemFontOfSize:11.0];
         self.toolInstruction.numberOfLines = 2;
         [self.toolInstruction setLineBreakMode:NSLineBreakByWordWrapping];
@@ -598,7 +602,7 @@
     }
 
     if (self.currentGameMode != kDHGameModePrimitiveOnly &&
-        self.currentGameMode != kDHGameModePrimitiveOnlyMinimumMoves) {
+        self.currentGameMode != kDHGameModePrimitiveOnlyMinimumMoves && !_iPhoneVersion) {
         [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTriangle"] atIndex:index++ animated:NO];
         [_tools addObject:[DHTriangleTool class]];
         if ((availableTools & DHTriangleToolAvailable) == NO) {
@@ -649,19 +653,31 @@
         }
     }
     
-    _toolControl.contentMode = UIViewContentModeCenter;
-    if (_iPhoneVersion &&
-        (_currentGameMode == kDHGameModePrimitiveOnly || _currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves))
+    if (_iPhoneVersion && _currentGameMode != kDHGameModeTutorial &&
+        !(_currentGameMode == kDHGameModePrimitiveOnly || _currentGameMode == kDHGameModePrimitiveOnlyMinimumMoves))
     {
-        for (int ii = 0 ; ii < _toolControl.numberOfSegments ; ++ii)
-        {
-            UIImage *img = [_toolControl imageForSegmentAtIndex: ii];
-            img = [self imageWithImage:img scaledToSize:CGSizeMake(24, 24)];
-            [_toolControl setImage: img forSegmentAtIndex: ii];
-            [_toolControl setEnabled:[_toolControl isEnabledForSegmentAtIndex:ii] forSegmentAtIndex:ii];
+        [_toolControl insertSegmentWithImage:[UIImage imageNamed:@"toolTriangle"] atIndex:index++ animated:NO];
+        [_tools addObject:[DHTriangleTool class]];
+        if ((availableTools & DHTriangleToolAvailable) == NO) {
+            [_toolControl setEnabled:NO forSegmentAtIndex:(index-1)];
         }
+        
+        if (!_toolTriangleIndicator) {
+            CGRect triRect = CGRectMake(270, -4, 30, 4);
+            _toolTriangleIndicator = [[DHTriangleView alloc] initWithFrame:triRect];
+            _toolTriangleIndicator.color = [[UIApplication sharedApplication] delegate].window.tintColor;
+            [_toolControl addSubview:_toolTriangleIndicator];
+        }
+        
+        
+        UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toolMenu:)];
+        tap.numberOfTapsRequired = 1;
+        tap.numberOfTouchesRequired = 1;
+        tap.cancelsTouchesInView = NO;
+        [_toolControl addGestureRecognizer:tap];
     }
     
+    _toolControl.contentMode = UIViewContentModeCenter;
     _toolControl.selectedSegmentIndex = UISegmentedControlNoSegment;
     _currentTool = nil;
     self.geometryViewController.currentTool = _currentTool;
@@ -677,6 +693,25 @@
     return newImage;
 }
 
+- (void)toolMenu:(UITapGestureRecognizer*)tap
+{
+    if (_levelCompleted) {
+        return;
+    }
+    
+    CGPoint touchPoint = [tap locationInView:_toolControl];
+    
+    CGSize toolSegmentSize = CGSizeMake(_toolControl.frame.size.width/_toolControl.numberOfSegments,
+                                        _toolControl.frame.size.height);
+    CGRect toolRect;
+    toolRect.origin = CGPointMake(CGRectGetMaxX(_toolControl.bounds)-toolSegmentSize.width,0);
+    toolRect.size = toolSegmentSize;
+    
+    if(CGRectContainsPoint(toolRect, touchPoint)) {
+        [self showPopoverToolMenu];
+    }
+}
+
 - (void)toolChanged:(id)sender
 {
     if (self.levelCompleted) {
@@ -685,6 +720,8 @@
         _toolInstruction.text = @"";
         return;
     }
+    
+    if (_toolTriangleIndicator) [_toolControl bringSubviewToFront:_toolTriangleIndicator];
     
     _currentTool = nil;
     _currentTool = [[[_tools objectAtIndex:_toolControl.selectedSegmentIndex] alloc] init];
@@ -715,8 +752,6 @@
     if (self.currentGameMode == kDHGameModeTutorial) {
         [_currentLevel tutorial:_geometricObjects and:_toolControl and:_toolInstruction and:self.geometryView and:self.view and:self.heightToolBar and:YES];
     }
-
-    
 }
 
 #pragma mark Geometry tool delegate methods
@@ -1567,10 +1602,63 @@
     }
 }
 
+- (void)showPopoverToolMenu
+{
+    if(!_popoverMenu) {
+        DHToolsAvailable availableTools = DHAllToolsAvailable;
+        
+        if ([_currentLevel respondsToSelector:@selector(availableTools)]) {
+            availableTools = [_currentLevel availableTools];
+        }
+        
+        UIView* targetView = [UIApplication sharedApplication].keyWindow.rootViewController.view;
+        CGSize toolSegmentSize = CGSizeMake(_toolControl.frame.size.width/_toolControl.numberOfSegments,
+                                            _toolControl.frame.size.height);
+        CGRect toolRect;
+        toolRect.origin = CGPointMake(CGRectGetMaxX(_toolControl.frame)-toolSegmentSize.width,
+                                      _toolControl.frame.origin.y);
+        toolRect.size = toolSegmentSize;
+        CGRect originFrame = [self.view convertRect:toolRect toView:targetView];
+        
+        DHPopoverView *toolMenu = [[DHPopoverView alloc] initWithOriginFrame:originFrame
+                                                                       delegate:self
+                                                               firstButtonTitle:nil];
+        toolMenu.verticalDirection = DHPopoverViewVerticalDirectionUp;
+        toolMenu.width = 65;
+        toolMenu.buttonHeight = 50;
+        toolMenu.separatorInset = 5;
+
+        NSString* midPointImg = (availableTools & DHMidpointToolAvailable) ? @"toolMidpointImproved" : @"toolMidpoint";
+        
+        [toolMenu addButtonWithImage:[UIImage imageNamed:@"toolTriangle"]
+                             enabled:(availableTools & DHTriangleToolAvailable) != 0];
+        [toolMenu addButtonWithImage:[UIImage imageNamed:midPointImg]
+                             enabled:(availableTools & (DHMidpointToolAvailable | DHMidpointToolAvailable_Weak)) != 0];
+        [toolMenu addButtonWithImage:[UIImage imageNamed:@"toolBisect"]
+                             enabled:(availableTools & DHBisectToolAvailable) != 0];
+        [toolMenu addButtonWithImage:[UIImage imageNamed:@"toolPerpendicular"]
+                             enabled:(availableTools & DHPerpendicularToolAvailable) != 0];
+        [toolMenu addButtonWithImage:[UIImage imageNamed:@"toolParallel"]
+                             enabled:(availableTools & DHParallelToolAvailable) != 0];
+        [toolMenu addButtonWithImage:[UIImage imageNamed:@"toolTranslateSegment"]
+                             enabled:(availableTools & (DHTranslateToolAvailable | DHTranslateToolAvailable_Weak)) != 0];
+        [toolMenu addButtonWithImage:[UIImage imageNamed:@"toolCompass"]
+                             enabled:(availableTools & DHCompassToolAvailable) != 0];
+        
+        [toolMenu show];
+        
+        _popoverToolMenu = toolMenu;
+    } else {
+        [self hidePopoverMenu];
+    }
+}
+
 -(void)hidePopoverMenu
 {
     [_popoverMenu dismissWithAnimation:YES];
     _popoverMenu = nil;
+    [_popoverToolMenu dismissWithAnimation:YES];
+    _popoverToolMenu = nil;
 }
 
 - (void)closePopoverView:(DHPopoverView *)popoverView
@@ -1583,25 +1671,64 @@
 }
 - (void)popoverView:(DHPopoverView *)popoverView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSString* title = [popoverView titleForButton:buttonIndex];
-    if ([title isEqualToString:@"Show level instruction"]) {
-        [self showDetailedLevelInstruction:nil];
+    if (popoverView == _popoverMenu) {
+        NSString* title = [popoverView titleForButton:buttonIndex];
+        if ([title isEqualToString:@"Show level instruction"]) {
+            [self showDetailedLevelInstruction:nil];
+        }
+        if ([title isEqualToString:@"Reset level"]) {
+            [self askToResetLevel];
+        }
+        if ([title isEqualToString:@"Undo move"]) {
+            [self undoMove];
+        }
+        if ([title isEqualToString:@"Redo move"]) {
+            [self redoMove];
+        }
+        if ([title isEqualToString:@"Show hint"]) {
+            [self showHint:nil];
+        }
+        if ([title isEqualToString:@"Go to next level"]) {
+            [self loadNextLevel:nil];
+        }
     }
-    if ([title isEqualToString:@"Reset level"]) {
-        [self askToResetLevel];
+    
+    if (popoverView == _popoverToolMenu) {
+        NSUInteger lastIndex = _toolControl.numberOfSegments-1;
+        [_toolControl setImage:[popoverView imageForButton:buttonIndex] forSegmentAtIndex:lastIndex];
+        _toolControl.selectedSegmentIndex = lastIndex;
+        [self.view setNeedsLayout];
+        
+        switch (buttonIndex) {
+            case 0:
+                [_tools setObject:[DHTriangleTool class] atIndexedSubscript:lastIndex];
+                break;
+            case 1:
+                [_tools setObject:[DHMidPointTool class] atIndexedSubscript:lastIndex];
+                break;
+            case 2:
+                [_tools setObject:[DHBisectTool class] atIndexedSubscript:lastIndex];
+                break;
+            case 3:
+                [_tools setObject:[DHPerpendicularTool class] atIndexedSubscript:lastIndex];
+                break;
+            case 4:
+                [_tools setObject:[DHParallelTool class] atIndexedSubscript:lastIndex];
+                break;
+            case 5:
+                [_tools setObject:[DHTranslateSegmentTool class] atIndexedSubscript:lastIndex];
+                break;
+            case 6:
+                [_tools setObject:[DHCompassTool class] atIndexedSubscript:lastIndex];
+                break;
+                
+            default:
+                break;
+        }
+        
+        [self toolChanged:nil];
     }
-    if ([title isEqualToString:@"Undo move"]) {
-        [self undoMove];
-    }
-    if ([title isEqualToString:@"Redo move"]) {
-        [self redoMove];
-    }
-    if ([title isEqualToString:@"Show hint"]) {
-        [self showHint:nil];
-    }
-    if ([title isEqualToString:@"Go to next level"]) {
-        [self loadNextLevel:nil];
-    }
+
     [self hidePopoverMenu];
 }
 - (UIColor*)popOverTintColor

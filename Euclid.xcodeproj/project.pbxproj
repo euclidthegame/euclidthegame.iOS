@@ -66,6 +66,7 @@
 		688768C819A8504B000CAB03 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768C719A8504B000CAB03 /* Message.m */; };
 		688768CB19AA4E92000CAB03 /* DHMagnifyingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768CA19AA4E92000CAB03 /* DHMagnifyingView.m */; };
 		688768CE19AB5197000CAB03 /* DHTriangleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768CD19AB5197000CAB03 /* DHTriangleView.m */; };
+		688768D119ABA3FE000CAB03 /* DHAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 688768D019ABA3FE000CAB03 /* DHAboutViewController.m */; };
 		68D0F61B196D576700C4D617 /* DHLevelThreeCircles.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */; };
 		68D0F61E196DAF8C00C4D617 /* DHLevelSegmentInThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D0F61D196DAF8C00C4D617 /* DHLevelSegmentInThree.m */; };
 		68E3CAB2199F138F0018851F /* NSUserDefaults+Encryption.m in Sources */ = {isa = PBXBuildFile; fileRef = 68E3CAB1199F138F0018851F /* NSUserDefaults+Encryption.m */; };
@@ -203,6 +204,8 @@
 		688768CA19AA4E92000CAB03 /* DHMagnifyingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHMagnifyingView.m; sourceTree = "<group>"; };
 		688768CC19AB5197000CAB03 /* DHTriangleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHTriangleView.h; sourceTree = "<group>"; };
 		688768CD19AB5197000CAB03 /* DHTriangleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHTriangleView.m; sourceTree = "<group>"; };
+		688768CF19ABA3FE000CAB03 /* DHAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHAboutViewController.h; sourceTree = "<group>"; };
+		688768D019ABA3FE000CAB03 /* DHAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHAboutViewController.m; sourceTree = "<group>"; };
 		68D0F619196D576700C4D617 /* DHLevelThreeCircles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelThreeCircles.h; sourceTree = "<group>"; };
 		68D0F61A196D576700C4D617 /* DHLevelThreeCircles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelThreeCircles.m; sourceTree = "<group>"; };
 		68D0F61C196DAF8C00C4D617 /* DHLevelSegmentInThree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHLevelSegmentInThree.h; sourceTree = "<group>"; };
@@ -541,6 +544,8 @@
 				688768CA19AA4E92000CAB03 /* DHMagnifyingView.m */,
 				688768CC19AB5197000CAB03 /* DHTriangleView.h */,
 				688768CD19AB5197000CAB03 /* DHTriangleView.m */,
+				688768CF19ABA3FE000CAB03 /* DHAboutViewController.h */,
+				688768D019ABA3FE000CAB03 /* DHAboutViewController.m */,
 			);
 			name = "Views & View Controllers";
 			sourceTree = "<group>";
@@ -685,6 +690,7 @@
 				684708B81968A68500C1FA83 /* DHLevelMakeCompass.m in Sources */,
 				6872A7DE197023E000823AF9 /* DHLevelTwoCirclesInnerTangent.m in Sources */,
 				681C889C1991E0D6005307F5 /* DHGeometryTool.m in Sources */,
+				688768D119ABA3FE000CAB03 /* DHAboutViewController.m in Sources */,
 				68F0A9FE1958BDD500A97B86 /* DHGeometryView.m in Sources */,
 				683D9688196D3B0D0057B62D /* DHLevelCircleSegmentCutoff.m in Sources */,
 				68F0AA25195CBCA200A97B86 /* DHLevelViewController.m in Sources */,

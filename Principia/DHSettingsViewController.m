@@ -11,7 +11,9 @@
 #import "DHLevelResults.h"
 #import "DHGameCenterManager.h"
 
-@implementation DHSettingsViewController
+@implementation DHSettingsViewController {
+    BOOL _iPhoneVersion;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -29,9 +31,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    self.view.layer.cornerRadius = 10;
-    self.view.layer.masksToBounds = YES;
-    self.view.superview.backgroundColor = [UIColor clearColor];
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        _iPhoneVersion = YES;
+    }
+
+    if (!_iPhoneVersion) {
+        self.view.layer.cornerRadius = 10;
+        self.view.layer.masksToBounds = YES;
+        self.view.superview.backgroundColor = [UIColor clearColor];
+    }
 }
 
 - (void)didReceiveMemoryWarning

@@ -18,6 +18,11 @@
     UILabel* _titleLabel;
     UILabel* _descriptionLabel;
     UILabel* _difficultyDescriptionLabel;
+    
+    CGFloat _shadowRadius;
+    CGFloat _shadowRadiusSelected;
+    CGSize _shadowOffset;
+    CGSize _shadowOffsetSelected;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -29,13 +34,26 @@
             _iPhoneVersion = YES;
         }
         
+        _shadowRadius = 6.0;
+        _shadowRadiusSelected = 3.0;
+        _shadowOffset = CGSizeMake(3, 3);
+        _shadowOffsetSelected = CGSizeMake(1, 1);
+        
+        if (_iPhoneVersion) {
+            _shadowRadius = 4.0;
+            _shadowRadiusSelected = 1.5;
+            _shadowOffset = CGSizeMake(1.5, 1.5);
+        }
+        
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor whiteColor];
         self.layer.cornerRadius = 8.0;
         self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOffset = CGSizeMake(3, 3);
+        self.layer.shadowOffset = _shadowOffset;
         self.layer.shadowOpacity = 0.5;
-        self.layer.shadowRadius = 8.0;
+        self.layer.shadowRadius = _shadowRadius;
+        self.layer.borderWidth = 0.5;
+        self.layer.borderColor = [UIColor colorWithWhite:0.8 alpha:1.0].CGColor;
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
         _titleLabel.textColor = [[UIApplication sharedApplication] delegate].window.tintColor;
@@ -59,8 +77,8 @@
             _titleLabel.font = [UIFont boldSystemFontOfSize:22.0];
             _descriptionLabel.font = [UIFont systemFontOfSize:18.0];
         }
-
     }
+    
     return self;
 }
 - (void)setTouchActionWithTarget:(id)target andAction:(SEL)action
@@ -98,8 +116,8 @@
 }
 - (void)select
 {
-    self.layer.shadowOffset = CGSizeMake(1, 1);
-    self.layer.shadowRadius = 3.0;
+    self.layer.shadowOffset = _shadowOffsetSelected;
+    self.layer.shadowRadius = _shadowRadiusSelected;
     _selected = YES;
 }
 - (void)deselect
@@ -107,15 +125,15 @@
     if (!_selected) return;
     
     _selected = NO;
-    self.layer.shadowOffset = CGSizeMake(3, 3);
+    self.layer.shadowOffset = _shadowOffset;
     CABasicAnimation* fadeAnim = [CABasicAnimation animationWithKeyPath:@"shadowRadius"];
-    fadeAnim.fromValue = [NSNumber numberWithFloat:3.0];
-    fadeAnim.toValue = [NSNumber numberWithFloat:8.0];
+    fadeAnim.fromValue = [NSNumber numberWithFloat:_shadowRadiusSelected];
+    fadeAnim.toValue = [NSNumber numberWithFloat:_shadowRadius];
     fadeAnim.duration = 0.5;
     [self.layer addAnimation:fadeAnim forKey:@"shadowRadius"];
     
     // Change the actual data value in the layer to the final value.
-    self.layer.shadowRadius = 8.0;
+    self.layer.shadowRadius = _shadowRadius;
     
     //self.layer.shadowRadius = 8.0;
 }
@@ -194,6 +212,12 @@
     return _difficultyDescriptionLabel.text;
 }
 
+- (void)tintColorDidChange
+{
+    _titleLabel.textColor = self.tintColor;
+    [self setNeedsDisplay];
+}
+
 @end
 
 @implementation DHGameModePercentCompleteView
@@ -236,6 +260,7 @@
         CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7 + 14, pieChartCenter.y + 7 - 14);
         CGContextDrawPath(context, kCGPathStroke);
     } else {
+        // Write %-complete text
         NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
         paragraphStyle.alignment = NSTextAlignmentCenter;
@@ -249,8 +274,7 @@
                                       pieChartCenter.y -textSize.height*0.5, textSize.width, textSize.height);
         [percentLabelText drawInRect:labelRect withAttributes:attributes];
         
-        
-        
+        // Draw pie-chart
         CGFloat startAngle = -((float)M_PI / 2); // 90 degrees
         CGFloat endAngle = ((2 * (float)M_PI) + startAngle);
         UIBezierPath* bezierPath = [UIBezierPath bezierPath];
@@ -262,13 +286,11 @@
                             endAngle:(endAngle - startAngle) + startAngle
                            clockwise:YES];
         
-        //[[UIColor lightGrayColor] setStroke];
         [[UIColor colorWithWhite:0.9 alpha:1] setStroke];
         CGContextAddPath(context, bezierPath.CGPath);
         CGContextSetLineWidth(context, 3.0);
         CGContextSetShadowWithColor(context, CGSizeMake(1.0, 1.0), 1.0, [UIColor lightGrayColor].CGColor);
         CGContextStrokePath(context);
-        
         
         UIBezierPath* progress = [UIBezierPath bezierPath];
         
@@ -285,58 +307,6 @@
         [self.tintColor setStroke];
         [progress stroke];
     }
-    /*
-     const CGPoint pieChartCenter = CGPointMake(self.bounds.size.width*0.5, 40);
-     CGFloat pieChartRadius = 20.0;
-     
-     CGContextRef context = UIGraphicsGetCurrentContext();
-     CGContextSetLineWidth(context, 1.0/self.contentScaleFactor);
-     
-     if (self.percentComplete == 1.0) {
-     CGContextSetFillColorWithColor(context, self.tintColor.CGColor);
-     CGContextSetStrokeColorWithColor(context, self.tintColor.CGColor);
-     } else {
-     CGContextSetRGBFillColor(context, 0.5, 0.5, 0.5, 1.0);
-     CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 1.0);
-     }
-     
-     if (self.percentComplete > 0) {
-     CGContextMoveToPoint(context, pieChartCenter.x, pieChartCenter.y);
-     CGContextAddLineToPoint(context, pieChartCenter.x+pieChartRadius, pieChartCenter.y);
-     CGContextAddArc(context, pieChartCenter.x, pieChartCenter.y, pieChartRadius, 0, 2*M_PI*self.percentComplete, 0);
-     CGContextDrawPath(context, kCGPathFillStroke);
-     }
-     
-     CGContextStrokeEllipseInRect(context, CGRectMake(pieChartCenter.x-pieChartRadius, pieChartCenter.y-pieChartRadius,
-     pieChartRadius*2, pieChartRadius*2));
-     
-     if (self.percentComplete == 1.0) {
-     // Draw checkmark
-     CGContextSetLineWidth(context, 3.0);
-     CGContextSetRGBStrokeColor(context, 1.0, 1.0, 1.0, 1.0);
-     
-     CGContextMoveToPoint(context, pieChartCenter.x - pieChartRadius*0.5, pieChartCenter.y);
-     CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7, pieChartCenter.y + 7);
-     CGContextAddLineToPoint(context, pieChartCenter.x - pieChartRadius*0.5 + 7 + 14, pieChartCenter.y + 7 - 14);
-     CGContextDrawPath(context, kCGPathStroke);
-     }
-     
-     
-     // Draw percent complete text
-     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-     paragraphStyle.alignment = NSTextAlignmentCenter;
-     
-     NSString* percentLabelText = [NSString stringWithFormat:@"%d%% complete", (uint)(self.percentComplete*100)];
-     NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:11],
-     NSParagraphStyleAttributeName: paragraphStyle,
-     NSForegroundColorAttributeName: [UIColor darkGrayColor]};
-     CGSize textSize = [percentLabelText sizeWithAttributes:attributes];
-     CGRect labelRect = CGRectMake(pieChartCenter.x - textSize.width*0.5f,
-     pieChartCenter.y + pieChartRadius + 4, textSize.width, textSize.height);
-     [percentLabelText drawInRect:labelRect withAttributes:attributes];
-     */
-    
 }
 - (void)setPercentComplete:(CGFloat)percentComplete
 {

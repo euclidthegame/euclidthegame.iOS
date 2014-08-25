@@ -14,12 +14,15 @@
 #import "DHLevels.h"
 #import "DHGameModes.h"
 #import "DHGameCenterManager.h"
+#import "DHPopoverView.h"
 
+@interface DHGameModeSelectionViewController () <DHPopoverViewDelegate>
 
-
+@end
 
 @implementation DHGameModeSelectionViewController {
     BOOL _iPhoneVersion;
+    DHPopoverView* _popoverMenu;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -71,6 +74,10 @@
     if (_iPhoneVersion) {
         self.title = @"Euclid: The Game";
     }
+    
+    UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menu-icon"] style:UIBarButtonItemStylePlain target:self action:@selector(showPopoverMenu:)];
+    self.navigationItem.rightBarButtonItem = menuButton;
+    self.navigationItem.leftBarButtonItem = nil;    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -167,18 +174,7 @@
                                       relatedBy:NSLayoutRelationEqual
                                          toItem:nil attribute:NSLayoutAttributeNotAnAttribute
                                      multiplier:1 constant:self.logoImageView.frame.size.width]];
-        
-        // Game center button
-        [self.layoutConstraintsLandscape addObject:
-         [NSLayoutConstraint constraintWithItem:self.gameCenterButton attribute:NSLayoutAttributeCenterX
-                                      relatedBy:NSLayoutRelationEqual
-                                         toItem:self.logoLabel attribute:NSLayoutAttributeCenterX
-                                     multiplier:1 constant:0]];
-        [self.layoutConstraintsLandscape addObject:
-         [NSLayoutConstraint constraintWithItem:self.gameCenterButton attribute:NSLayoutAttributeTop
-                                      relatedBy:NSLayoutRelationEqual
-                                         toItem:self.logoLabel attribute:NSLayoutAttributeBottom
-                                     multiplier:1 constant:30]];    }
+    }
     
     [self.view removeConstraints:self.layoutConstraintsLandscape];
     [self.view removeConstraints:self.layoutConstraintsPortrait];
@@ -223,7 +219,6 @@
         self.layoutConstraintsiPhone = [[NSMutableArray alloc] initWithCapacity:10];
         self.logoImageView.hidden = YES;
         self.logoLabel.hidden = YES;
-        self.gameCenterButton.hidden = YES;
         self.logoSubtitleLabel.hidden = YES;
         
         // First game mode button
@@ -255,18 +250,6 @@
                                       relatedBy:NSLayoutRelationEqual
                                          toItem:nil attribute:NSLayoutAttributeNotAnAttribute
                                      multiplier:1 constant:self.logoImageView.frame.size.width]];
-        
-        // Game center button
-        [self.layoutConstraintsiPhone addObject:
-         [NSLayoutConstraint constraintWithItem:self.gameCenterButton attribute:NSLayoutAttributeCenterX
-                                      relatedBy:NSLayoutRelationEqual
-                                         toItem:self.logoLabel attribute:NSLayoutAttributeCenterX
-                                     multiplier:1 constant:0]];
-        [self.layoutConstraintsiPhone addObject:
-         [NSLayoutConstraint constraintWithItem:self.gameCenterButton attribute:NSLayoutAttributeTop
-                                      relatedBy:NSLayoutRelationEqual
-                                         toItem:self.logoLabel attribute:NSLayoutAttributeBottom
-                                     multiplier:1 constant:30]];
         
         [self.view removeConstraints:self.layoutConstraintsPortrait];
         [self.view addConstraints:self.layoutConstraintsiPhone];
@@ -422,6 +405,72 @@
     if (!_iPhoneVersion) {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (IBAction)closeAboutView:(UIStoryboardSegue *)unwindSegue
+{
+    if (!_iPhoneVersion) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+#pragma mark - Popover menu methods
+- (void)showPopoverMenu:(id)sender
+{
+    if(!_popoverMenu) {
+        UIView* targetView = [UIApplication sharedApplication].keyWindow.rootViewController.view;
+        CGRect originFrame = [[sender view] convertRect:[sender view].bounds toView:targetView];
+        
+        DHPopoverView *popOverView = [[DHPopoverView alloc] initWithOriginFrame:originFrame
+                                                                       delegate:self
+                                                               firstButtonTitle:nil];
+        popOverView.width = 260;
+        
+        [popOverView addButtonWithTitle:@"Settings"];
+        [popOverView addButtonWithTitle:@"Leaderboards & Achievements"];
+        [popOverView addButtonWithTitle:@"About"];
+        [popOverView show];
+        
+        _popoverMenu = popOverView;
+    } else {
+        [self hidePopoverMenu];
+    }
+}
+
+-(void)hidePopoverMenu
+{
+    [_popoverMenu dismissWithAnimation:YES];
+    _popoverMenu = nil;
+}
+- (void)closePopoverView:(DHPopoverView *)popoverView
+{
+    [self hidePopoverMenu];
+}
+- (void)popoverViewDidClose:(DHPopoverView *)popoverView
+{
+    
+}
+- (void)popoverView:(DHPopoverView *)popoverView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+            [self performSegueWithIdentifier:@"showSettings" sender:nil];
+            break;
+        case 1:
+            [self showLeaderboards:nil];
+            break;
+        case 2:
+            [self performSegueWithIdentifier:@"showAboutView" sender:nil];
+            break;
+        default:
+            break;
+    }
+    
+    [self hidePopoverMenu];
+}
+- (UIColor*)popOverTintColor
+{
+    return self.view.tintColor;
 }
 
 @end

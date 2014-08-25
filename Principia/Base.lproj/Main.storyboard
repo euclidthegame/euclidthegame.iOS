@@ -305,6 +305,79 @@
             </objects>
             <point key="canvasLocation" x="872" y="-144"/>
         </scene>
+        <!--About View Controller - About-->
+        <scene sceneID="SsP-5b-bFS">
+            <objects>
+                <viewController title="About" id="zbv-hW-Kj1" customClass="DHAboutViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="pYk-SI-Vs4"/>
+                        <viewControllerLayoutGuide type="bottom" id="ABU-61-CPd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1xp-Ai-Iq8">
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3KD-Ih-RJK">
+                                <rect key="frame" x="10" y="44" width="520" height="576"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Euclid: The Game">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue-Bold"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <font key="NSFont" size="15" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content">was developed by Kasper Peulen and David Hallgren.
+
+If you have any questions, suggestions or feedback, please let us know!
+
+Reach us at: </string>
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="mailto:mail@euclidthegame.com">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue"/>
+                                            <url key="NSLink" string="mailto:mail@euclidthegame.com"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" link="YES"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="3KD-Ih-RJK" secondAttribute="trailing" constant="10" id="8E9-F8-i3p"/>
+                            <constraint firstItem="ABU-61-CPd" firstAttribute="top" secondItem="3KD-Ih-RJK" secondAttribute="bottom" id="bWQ-kt-pRG"/>
+                            <constraint firstItem="3KD-Ih-RJK" firstAttribute="top" secondItem="pYk-SI-Vs4" secondAttribute="bottom" id="kTF-Fw-E9A"/>
+                            <constraint firstItem="3KD-Ih-RJK" firstAttribute="leading" secondItem="1xp-Ai-Iq8" secondAttribute="leading" constant="10" id="tbk-kv-1ls"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="y5A-br-SCU">
+                        <barButtonItem key="leftBarButtonItem" title="Close" id="pho-Yl-lwo">
+                            <connections>
+                                <segue destination="4Lu-iW-t4d" kind="unwind" unwindAction="closeAboutView:" id="H8T-eu-PjE"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Yka-aj-YaI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="4Lu-iW-t4d" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="662" y="-2244"/>
+        </scene>
         <!--Settings View Controller - Settings-->
         <scene sceneID="YNc-R4-MI6">
             <objects>
@@ -624,17 +697,6 @@
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dyj-Cb-jxH">
-                                <rect key="frame" x="255" y="981" width="259" height="35"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                                <state key="normal" title="Leaderboards &amp; Achievements">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="showLeaderboards:" destination="qen-kL-VqZ" eventType="touchUpInside" id="DX5-Jj-NZz"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By Kasper Peulen and David Hallgren" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OyL-ZN-8LC">
                                 <rect key="frame" x="400" y="224" width="211" height="19"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -648,7 +710,6 @@
                             <constraint firstItem="Bxx-Wr-Kg5" firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="0RL-xK-L1H"/>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="su9-Tg-XSX" secondAttribute="bottom" constant="13" id="1Oi-O1-mcx"/>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="width" secondItem="k82-Ms-g7n" secondAttribute="width" id="5Km-hd-6Mr"/>
-                            <constraint firstItem="yZe-1d-8MW" firstAttribute="top" secondItem="dyj-Cb-jxH" secondAttribute="bottom" constant="8" id="7Gc-DL-ZUb"/>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="cI1-my-sfW" secondAttribute="bottom" constant="40" id="7Lb-9k-5AI"/>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="width" secondItem="vsY-Tg-X0y" secondAttribute="width" id="7Pz-Sc-dvf"/>
                             <constraint firstItem="qtQ-VX-LXh" firstAttribute="top" secondItem="k82-Ms-g7n" secondAttribute="bottom" constant="20" id="8ih-bw-Xjl"/>
@@ -676,18 +737,10 @@
                             <constraint firstItem="OyL-ZN-8LC" firstAttribute="top" secondItem="elH-q6-ObI" secondAttribute="bottom" constant="1" id="syc-LE-q4N"/>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="height" secondItem="k82-Ms-g7n" secondAttribute="height" id="uuz-Ma-Itz"/>
                             <constraint firstItem="Cr8-Ea-dzt" firstAttribute="top" secondItem="vsY-Tg-X0y" secondAttribute="bottom" constant="20" id="vP7-7v-fCX"/>
-                            <constraint firstAttribute="centerX" secondItem="dyj-Cb-jxH" secondAttribute="centerX" id="vvz-gw-hod"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Select game mode" id="gR4-4v-6e5">
-                        <barButtonItem key="leftBarButtonItem" title="Settings" id="Ttz-NP-xIA">
-                            <connections>
-                                <segue destination="9bD-XV-a7J" kind="modal" modalPresentationStyle="formSheet" id="hqp-5r-CNu"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Select game mode" id="gR4-4v-6e5"/>
                     <connections>
-                        <outlet property="gameCenterButton" destination="dyj-Cb-jxH" id="qxn-Qx-fg2"/>
                         <outlet property="gameMode1View" destination="ABq-xw-SHb" id="Sqy-hH-K1L"/>
                         <outlet property="gameMode1ViewHeightConstraint" destination="YG2-I8-5hf" id="TSa-ws-ZUY"/>
                         <outlet property="gameMode1ViewWidthConstraint" destination="QUR-sJ-G77" id="VoO-po-Vqd"/>
@@ -709,8 +762,6 @@
                         <outletCollection property="layoutConstraintsPortrait" destination="h3e-qm-s7o" id="9NT-WV-87r"/>
                         <outletCollection property="layoutConstraintsPortrait" destination="TJe-72-qfg" id="rSD-zt-PNF"/>
                         <outletCollection property="layoutConstraintsPortrait" destination="iJE-e2-weM" id="Lcr-dB-Gtu"/>
-                        <outletCollection property="layoutConstraintsPortrait" destination="vvz-gw-hod" id="vYJ-Np-xb0"/>
-                        <outletCollection property="layoutConstraintsPortrait" destination="7Gc-DL-ZUb" id="Bkm-pN-hj2"/>
                         <outletCollection property="gameModeViewDistanceConstraints" destination="9s9-PE-XGk" id="65r-TC-gx9"/>
                         <outletCollection property="gameModeViewDistanceConstraints" destination="vP7-7v-fCX" id="HeY-uM-tLf"/>
                         <outletCollection property="gameModeViewDistanceConstraints" destination="PX6-dF-0lU" id="ZAC-PF-lpg"/>
@@ -718,6 +769,8 @@
                         <outletCollection property="gameModeViewDistanceConstraints" destination="8ih-bw-Xjl" id="jnN-Eo-VPh"/>
                         <segue destination="taf-kY-eNe" kind="push" identifier="ShowLevelSelection" id="fCc-qv-lTO"/>
                         <segue destination="Soc-Oc-8iV" kind="push" identifier="ShowLevelSelection2" id="lcW-Gv-2gx"/>
+                        <segue destination="9bD-XV-a7J" kind="modal" identifier="showSettings" modalPresentationStyle="formSheet" id="bb5-bX-KHl"/>
+                        <segue destination="DcQ-Wi-0l6" kind="modal" identifier="showAboutView" modalPresentationStyle="formSheet" id="CPd-gt-Q8E"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HkK-8y-Jrg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -765,6 +818,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ssu-a1-xlH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1821" y="-90"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="CIj-qK-EZP">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DcQ-Wi-0l6" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="SDQ-N5-PYE">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="zbv-hW-Kj1" kind="relationship" relationship="rootViewController" id="Wjj-gI-le5"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="T7V-dR-fRS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-84" y="-2244"/>
         </scene>
     </scenes>
     <resources>

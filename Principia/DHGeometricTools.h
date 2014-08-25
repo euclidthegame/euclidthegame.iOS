@@ -95,5 +95,5 @@ typedef NS_OPTIONS(NSUInteger, DHToolsAvailable)
 @property (nonatomic, weak) DHPoint* firstPoint;
 @property (nonatomic, weak) DHPoint* secondPoint;
 @property (nonatomic, weak) DHLineSegment* radiusSegment;
-
+@property (nonatomic, weak) DHCircle* radiusCircle;
 @end

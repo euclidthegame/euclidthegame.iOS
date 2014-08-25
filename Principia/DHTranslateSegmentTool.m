@@ -86,7 +86,7 @@
         }
     }
     
-    if (self.start && self.end) {
+    if (self.start && self.end && !endDefinedThisInteraction) {
         _tempStart = [[DHPoint alloc] initWithPosition:touchPoint];
         _tempTransPoint = [[DHTranslatedPoint alloc] initWithPoint1:self.start
                                                           andPoint2:self.end andOrigin:_tempStart];
@@ -95,22 +95,20 @@
         [self.delegate addTemporaryGeometricObjects:@[_tempTransSegment, _tempTransPoint]];
         [self.delegate toolTipDidChange:_tooltipTempUnfinished];
         
-        if(!endDefinedThisInteraction) {
-            DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
-            if (!point) {
-                point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
-                if (point && point.label.length == 0) {
-                    _tempIntersectionPoint = point;
-                    [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint]];
-                }
-            }
+        DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
+        if (!point) {
+            point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
             if (point) {
-                _tempTransSegment.temporary = NO;
-                _tempTransSegment.start = point;
-                _tempTransPoint.startOfTranslation = point;
-                point.highlighted = YES;
-                [self.delegate toolTipDidChange:_tooltipTempFinished];
+                _tempIntersectionPoint = point;
+                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint]];
             }
+        }
+        if (point) {
+            _tempTransSegment.temporary = NO;
+            _tempTransSegment.start = point;
+            _tempTransPoint.startOfTranslation = point;
+            point.highlighted = YES;
+            [self.delegate toolTipDidChange:_tooltipTempFinished];
         }
     }
     
@@ -128,6 +126,33 @@
         [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint]];
         _tempIntersectionPoint = nil;
     }
+    
+    if (self.start && self.end && !_tempTransSegment) {
+        _tempStart = [[DHPoint alloc] initWithPosition:touchPoint];
+        _tempTransPoint = [[DHTranslatedPoint alloc] initWithPoint1:self.start
+                                                          andPoint2:self.end andOrigin:_tempStart];
+        _tempTransSegment = [[DHLineSegment alloc] initWithStart:_tempStart andEnd:_tempTransPoint];
+        _tempTransSegment.temporary = YES;
+        [self.delegate addTemporaryGeometricObjects:@[_tempTransSegment, _tempTransPoint]];
+        [self.delegate toolTipDidChange:_tooltipTempUnfinished];
+        
+        DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, tapLimitInGeo);
+        if (!point) {
+            point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects,geoViewScale);
+            if (point) {
+                _tempIntersectionPoint = point;
+                [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint]];
+            }
+        }
+        if (point) {
+            _tempTransSegment.temporary = NO;
+            _tempTransSegment.start = point;
+            _tempTransPoint.startOfTranslation = point;
+            point.highlighted = YES;
+            [self.delegate toolTipDidChange:_tooltipTempFinished];
+        }
+    }
+    
     if (_tempTransSegment) {
         if (self.segment || (_tempTransSegment.start != self.start && _tempTransSegment.start != self.end)) {
             _tempTransSegment.start.highlighted = NO;

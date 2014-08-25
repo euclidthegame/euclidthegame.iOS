@@ -16,7 +16,6 @@
     DHPoint* _pointA;
     DHPoint* _pointB;
     DHPoint* _pointC;
-    Message* _message1, *_message2, *_message3;
     BOOL _hintStep1Finished;
     BOOL parallelLineOK;
 }
@@ -173,8 +172,6 @@
     
     for (id object in objects){
         if (EqualDirection(object,par1))  {
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                _message3.alpha = 0;  } completion:nil];
             return MidPointFromLine(par1);
         }
         if (EqualDirection(object,lineAC)) return MidPointFromLine(lineAC);

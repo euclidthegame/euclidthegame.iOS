@@ -16,7 +16,6 @@
     DHPoint* _pointHidden1;
     DHPoint* _pointHidden2;
     DHLine* _lineBC;
-    Message* _message1, *_message2, *_message3, *_message4;
     BOOL _step1finished;
     BOOL pointOnLineOK;
 }

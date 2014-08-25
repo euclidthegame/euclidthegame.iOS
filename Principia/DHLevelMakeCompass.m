@@ -16,7 +16,6 @@
     DHPoint* _pointA;
     DHPoint* _pointB;
     DHPoint* _pointC;
-    Message* _message1, *_message2, *_message3, *_message4;
     BOOL _step1finished;
     BOOL pointOnRadiusOK;
 }
@@ -166,8 +165,6 @@
         if (EqualCircles(object, circle)) return _pointC.position;
         if (PointOnCircle(object,circle))
         {
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                _message3.alpha = 0;  } completion:nil];
             DHPoint* p = object;
             return p.position;
         }

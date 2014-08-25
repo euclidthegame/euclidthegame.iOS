@@ -18,7 +18,6 @@
     DHPoint* _pointA;
     BOOL _dontrepeat;
     BOOL pointOnLineOK;
-    Message* _message1, *_message2, *_message3, *_message4;
     BOOL _step1finished;
     NSUInteger _hintStep;
 }
@@ -147,8 +146,6 @@
         
         if ([object class] == [DHPointOnLine class]) {
             pointOnLineOK = YES;
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                _message4.alpha = 0;  } completion:nil];
         }
     
         if (!EqualPoints(object,_pointA) && PointOnLine(object,b)) midPointOK = YES;

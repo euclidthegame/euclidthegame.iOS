@@ -308,7 +308,6 @@
     [hintView addSubview:message4];
     [hintView addSubview:message5];
     
-    
     [self afterDelay:0.0 performBlock:^{
         [self fadeIn:message1 withDuration:1.0];
     }];

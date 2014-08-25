@@ -16,7 +16,6 @@
     DHPoint* _pointA;
     DHPoint* _pointB;
     DHLine* _lineA;
-    Message* _message1, *_message2, *_message3, *_message4;
     BOOL _step1finished;
     BOOL pointOnLineOK;
 }
@@ -148,8 +147,6 @@
             DHPointOnLine* p = object;
             if (PointOnLine(p, _lineA) ) {
                 pointOnLineOK = YES;
-                [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                    _message4.alpha = 0;  } completion:nil];
             }
         }
         if ([[object class]  isSubclassOfClass:[DHPoint class]]) {

@@ -15,7 +15,6 @@
     DHLineSegment* _lineAB;
     DHPoint* _pointA;
     DHPoint* _pointB;
-    Message* _message1, *_message2, *_message3, *_message4;
     BOOL _step1finished;
     BOOL pointOnMidLineOK;
     BOOL secondPontOnMidLineOK;
@@ -144,13 +143,8 @@
         if (DistanceFromPointToLine(p, midLine) < 0.0001) {
             if (!pointOnMidLineOK) {
                 pointOnMidLineOK = YES;
-                [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                    _message3.alpha = 0;
-                } completion:nil];
             } else {
                 secondPontOnMidLineOK = YES;
-                [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                    _message4.alpha = 0;  } completion:nil];
             }
         }
     }

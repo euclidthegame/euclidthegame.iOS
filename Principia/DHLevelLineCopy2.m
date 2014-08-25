@@ -14,7 +14,6 @@
 @interface DHLevelLineCopy2 () {
     DHLineSegment* _lineAB;
     DHPoint* _pointC;
-    Message* _message1, *_message2, *_message3, *_message4;
     BOOL _step1finished;
 }
 
@@ -175,8 +174,6 @@
         if (EqualPoints(object, tp)) return tp.position;
         if (LineSegmentsWithEqualLength(_lineAB, object) && EqualDirection2(_lineAB,object)){
             DHLineObject* line = object;
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                _message3.alpha = 0; _message4.alpha =0; } completion:nil];
             return MidPointFromLine(line);
         }
     }

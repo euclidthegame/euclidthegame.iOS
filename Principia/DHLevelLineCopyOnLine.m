@@ -14,7 +14,6 @@
 @interface DHLevelLineCopyOnLine () {
     DHLineSegment* _lineAB;
     DHLineSegment* _lineCD;
-    Message* _message1, *_message2, *_message3, *_message4;
     BOOL _step1finished;
     BOOL circleWithABRadiusAtCOK;
 }
@@ -150,8 +149,6 @@
         }
         if (EqualCircles(object,circle)) {
             circleWithABRadiusAtCOK = YES;
-            [UIView animateWithDuration:2.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                _message3.alpha = 0;  } completion:nil];
         }
     }
     

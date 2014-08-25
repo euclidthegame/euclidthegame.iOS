@@ -14,10 +14,7 @@
     DHPoint* _pointB;
     DHPoint* _point;
     Message* message1;
-    Message* message2;
     Message* message3;
-    Message* message4;
-    Message* message5;
     BOOL _noRepeat, _levelComplete;
     NSUInteger _currentStep;
 }
@@ -71,32 +68,28 @@
     [geometricObjects addObject:_pointB];
     
     message1 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
-    message2 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
     message3 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
-    message4 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
-    message5 = [[Message alloc] initWithMessage:@"" andPoint:CGPointMake(0,0)];
 }
 
 - (void)positionMessagesForOrientation:(UIInterfaceOrientation)orientation
 {
     if (UIInterfaceOrientationIsPortrait(orientation)) {
-        [message1 position:CGPointMake(200,260)];
-        [message5 position:CGPointMake(20,850)];
+        [message1 position:CGPointMake(150,260)];
+        [message3 position:CGPointMake(20,810)];
     } else {
         [message1 position:CGPointMake(300,50)];
-        [message5 position:CGPointMake(20,594)];
+        [message3 position:CGPointMake(20,554)];
     }
-    [message2 positionBelow:message1];
-    [message4 positionAbove:message5];
-    [message3 positionAbove:message4];
+    if (self.iPhoneVersion) {
+        [message1 position:CGPointMake(5,50)];
+        [message3 position:CGPointMake(5,530)];
+    }
 }
 
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects
 {
     if (_levelComplete){
-        message3.alpha = 0;
-        message4.alpha = 0;
-        message5.alpha = 0;
+        [self fadeOut:message3 withDuration:1.0];
     }
     return _levelComplete;
 }
@@ -141,280 +134,212 @@
     }
     if (_currentStep == 1) {
         toolInstruction.alpha = 0;
+        message1.alpha = 0;
         _currentStep = 2;
+        [message1 text:@"Points are the most fundamental objects in this game."];
+        [view addSubview:message1];
         
-        [UIView
-         animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             [message1 text:@"Points are the most fundamental objects in this game."]; message1.alpha = 1;
-             [view addSubview:message1];
-         }
-         completion:^(BOOL finished){
+        [self afterDelay:1.0 :^{
+            [self fadeIn:message1 withDuration:1.0];
+        }];
+        
+        [self afterDelay:3.0 :^{
              DHPoint* pointA = [[DHPoint alloc]initWithPosition:_pointA.position];
              DHPoint* pointB = [[DHPoint alloc]initWithPosition:_pointB.position];
-             DHGeometryView* tempView = [[DHGeometryView alloc]initWithObjects:@[pointA,pointB] supView:geometryView addTo:view];
+             DHGeometryView* tempView = [[DHGeometryView alloc]initWithObjects:@[pointA,pointB]
+                                                                       supView:geometryView addTo:view];
              [self fadeIn:tempView withDuration:1.0];
-             [UIView
-              animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  [message2 text:@"They are labeled with capital letters."]; message2.alpha = 1;
-                  [view addSubview:message2];
-              }
-              completion:^(BOOL finished){
-                  [self fadeIn:geometryView withDuration:1.0];
-                  [self fadeOut:tempView withDuration:1.0];
-
-                  [UIView
-                   animateWithDuration:1.5 delay:1.5 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message3 text:@"Other objects can be constructed from points using the toolbar below."];
-                       [view addSubview:message3];
-                       message3.alpha = 1;
-                       toolControl.alpha = 1;
-
-                   }
-                   completion:^(BOOL finished){
-                       [self slideInToolbar];
-                        [UIView
-                        animateWithDuration:1.0 delay:2.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                            [message4 text:@"Let's start by constructing a line segment. Tap on the tool to select it."];
-                            [view addSubview:message4];
-                            message4.alpha = 1;
-                        }
-                        completion:^(BOOL finished){
-                        
-                         [UIView
-                          animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                            [toolControl setEnabled:YES forSegmentAtIndex:2];
-                          } completion:nil];
-                             }]; }]; }]; }];
+             
+             [self afterDelay:2.0 :^{
+                 [message1 appendLine:@"They are labeled with capital letters." withDuration:1.0];
+             }];
+             [self afterDelay:4.0 :^{
+                 [self fadeIn:geometryView withDuration:1.0];
+                 [self fadeOut:tempView withDuration:1.0];
+                 
+                 [UIView
+                  animateWithDuration:1.5 delay:1.5 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+                      [message3 text:@"Other objects can be constructed from points using the toolbar below."];
+                      [view addSubview:message3];
+                      message3.alpha = 1;
+                      toolControl.alpha = 1;
+                      
+                  }
+                  completion:^(BOOL finished){
+                      [self slideInToolbar];
+                      [self afterDelay:2.0 :^{
+                          [message3 appendLine:@"Let's start by constructing a line segment. Tap the tool to select it." withDuration:1.0];
+                      }];
+                      [self afterDelay:3.0 :^{
+                          [toolControl setEnabled:YES forSegmentAtIndex:2];
+                      }];
+                  }];
+             }];
+         }];
     }
     else if (_currentStep == 2 && toolControl.selectedSegmentIndex == 2 ) {
         _currentStep = 3;
-        message1.alpha = 0; message2.alpha = 0;
+        message1.alpha = 0;
         [message1 text:@"Try to construct a line segment that connects point A and B."];
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message3.alpha = 0; message4.alpha = 0; message1.alpha = 1;
-             toolInstruction.alpha = 1;
-         }
-         completion:^(BOOL finished){}];
+        [self fadeInViews:@[message1, toolInstruction] withDuration:1.0];
+        [self fadeOut:message3 withDuration:1.0];
     }
     else if (_currentStep == 3 && segmentAB) {
         _currentStep = 4;
-        CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(sAB)];
-        [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
-                                             withColor:[UIColor blackColor]];
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             [toolControl setEnabled:NO forSegmentAtIndex:2];
-             message1.alpha = 0;
-         }
-         completion:^(BOOL finished){
-             toolInstruction.alpha = 0;
-             [UIView
-              animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  [message3 text: @"Points can also be used to construct a circle."];
-                  message3.alpha = 1;
-              }
-              completion:^(BOOL finished){
-                  [UIView
-                   animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message4 text:@"Tap on the circle tool to select it."];
-                       message4.alpha = 1;
-                       [toolControl setEnabled:YES forSegmentAtIndex:4];
-                   }
-                   completion:^(BOOL finished){ }]; }]; }];
+        [self showWellDoneForObject:sAB];
+        
+        [self fadeOut:message1 withDuration:1.0];
+        [toolControl setEnabled:NO forSegmentAtIndex:2];
+        
+        [self afterDelay:1.0 :^{
+            toolInstruction.alpha = 0;
+            
+            [message3 text: @"Points can also be used to construct a circle."];
+            
+            [self afterDelay:1.0 :^{
+                [self fadeIn:message3 withDuration:1.0];
+            }];
+            [self afterDelay:3.0 :^{
+                [message3 appendLine:@"Tap on the circle tool to select it." withDuration:1.0];
+            }];
+            [self afterDelay:4.0 :^{
+                [toolControl setEnabled:YES forSegmentAtIndex:4];
+            }];
+
+        }];
     }
     else if (_currentStep == 4 && toolControl.selectedSegmentIndex == 4) {
         _currentStep = 5;
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message3.alpha = 0; message4.alpha = 0;
-             toolInstruction.alpha = 1;
-             [message1 text:@"Try to construct a circle with center A and radius AB."];
-             message1.alpha = 1;
-         }
-         completion:^(BOOL finished){ }];
+        [message1 text:@"Try to construct a circle with center A and radius AB."];
+        [self fadeOut:message3 withDuration:1.0];
+        [self fadeInViews:@[toolInstruction, message1] withDuration:1.0];
     }
     else if (_currentStep == 5 && circleAB) {
         _currentStep = 6;
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(cAB)];
-             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
-                                                  withColor:[UIColor blackColor]];
-         }
-         completion:^(BOOL finished){
-             [UIView
-              animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  [message1 text: @"Now, let's make a circle with center B (!) and radius AB."];
-                  message1.alpha = 1;
-              }
-              completion:^(BOOL finished){}] ;}];
+        [self showWellDoneForObject:cAB];
+        
+        [self fadeOut:message1 withDuration:1.0];
+        [self afterDelay:1.0 :^{
+            [message1 text: @"Now, let's make a circle with center B (!) and radius AB."];
+            [self fadeIn:message1 withDuration:1.0];
+        }];
     }
     else if (_currentStep == 6 && circleBA) {
         _currentStep = 7;
-        [UIView
-         animateWithDuration:1.0
-         delay:0.0
-         options: UIViewAnimationOptionAllowAnimatedContent
-         animations:^{
-             message1.alpha = 0;
-             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(cBA)];
-             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
-                                                  withColor:[UIColor blackColor]];
-         }
-         completion:^(BOOL finished){
-             toolInstruction.alpha = 0;
-             [UIView
-              animateWithDuration:1.0
-              delay:1.0
-              options: UIViewAnimationOptionAllowAnimatedContent
-              animations:^{
-                  [message3 text:@"Sometimes it is useful to extend a segment using the line tool."];
-                  message3.alpha = 1;
-                  [toolControl setEnabled:NO forSegmentAtIndex:4];
-              }
-              completion:^(BOOL finished){
-                  [UIView
-                   animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message4 text: @"Tap on it to select it."];
-                       [toolControl setEnabled:YES forSegmentAtIndex:3];
-                       message4.alpha = 1;
-                   }
-                   completion:^(BOOL finished){}];}];}];
+        
+        [self fadeOut:message1 withDuration:1.0];
+        [self showWellDoneForObject:cBA];
+        
+        [self afterDelay:1.0 :^{
+            [self fadeOut:toolInstruction withDuration:1.0];
+            [message3 text:@"Sometimes it is useful to extend a segment using the line tool."];
+            [self fadeIn:message3 withDuration:1.0];
+            [toolControl setEnabled:NO forSegmentAtIndex:4];
+        }];
+        [self afterDelay:3.0 :^{
+            [message3 appendLine:@"Tap the tool to select it." withDuration:1.0];
+            [toolControl setEnabled:YES forSegmentAtIndex:3];
+        }];
     }
     else if (_currentStep == 7 && toolControl.selectedSegmentIndex == 3) {
         _currentStep = 8;
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             toolInstruction.alpha = 1;
-             message3.alpha = 0; message4.alpha = 0;
-             [message1 text:@"Try to construct a line using the points A and B."];
-             message1.alpha = 1;
-         }
-         completion:^(BOOL finished){}];
+        [message1 text:@"Try to construct a line using the points A and B."];
+        [self fadeOut:message3 withDuration:1.0];
+        [self fadeInViews:@[toolInstruction, message1] withDuration:1.0];
     }
     else if (_currentStep == 8 && lineAB) {
         _currentStep = 9;
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message1.alpha = 0;
-             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(lAB)];
-             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
-                                                  withColor:[UIColor blackColor]];
-         }
-         completion:^(BOOL finished){
-             toolInstruction.alpha = 0;
-             [UIView
-              animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  [message3 text:@"If lines or circles intersect we can create a point at the intersection."];
-                  message3.alpha = 1;
-                  [toolControl setEnabled:NO forSegmentAtIndex:3];
-              }
-              completion:^(BOOL finished){
-                  [UIView
-                   animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message4 text:@"Tap on the intersect tool to select it."];
-                       [toolControl setEnabled:YES forSegmentAtIndex:1];
-                       message4.alpha = 1;
-                   }
-                   completion:^(BOOL finished){ }];}];}];
+        
+        [self fadeOut:message1 withDuration:1.0];
+        [self fadeOut:toolInstruction withDuration:1.0];
+        [self showWellDoneForObject:lAB];
+        
+        [self afterDelay:1.0 :^{
+            [message3 text:@"If lines or circles intersect we can create a point at the intersection."];
+            [self fadeIn:message3 withDuration:1.0];
+            [toolControl setEnabled:NO forSegmentAtIndex:3];
+        }];
+        [self afterDelay:3.0 :^{
+            [message3 appendLine:@"Tap the intersect tool to select it." withDuration:1.0];
+            [toolControl setEnabled:YES forSegmentAtIndex:1];
+        }];
     }
     else if (_currentStep == 9 && toolControl.selectedSegmentIndex == 1) {
         _currentStep = 10;
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             toolInstruction.alpha = 1;
-             message3.alpha = 0; message4.alpha = 0;
-             [message1 text:@"Construct a point at an intersection."];
-             message1.alpha = 1;
-         }
-         completion:^(BOOL finished){ }];
+        [self fadeOut:message3 withDuration:1.0];
+        [message1 text:@"Construct a point at an intersection."];
+        [self fadeIn:message1 withDuration:1.0];
+        [self fadeIn:toolInstruction withDuration:1.0];
     }
     else if (_currentStep == 10 && intersection) {
         _currentStep = 11;
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message1.alpha = 0;
-             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(_point)];
-             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
-                                                  withColor:[UIColor blackColor]];
-         }
-         completion:^(BOOL finished){
-             [UIView
-              animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  [message3 text:@"Note that the intersection point is black. Black points are unmovable and precise."];
-                  message3.alpha = 1;
-                  toolInstruction.alpha = 0;
-                  [toolControl setEnabled:NO forSegmentAtIndex:1];
-              }
-              completion:^(BOOL finished){
-                  [UIView
-                   animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message4 text: @"Grey points are not placed precisely on an intersection and are movable."];
-                       message4.alpha = 1;
-                   }
-                   completion:^(BOOL finished){
-                       [UIView
-                        animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                            [message5 text:@"Try to move a grey point using the point tool."];
-                            [view addSubview:message5];
-                            message5.alpha = 1;
-                            [toolControl setEnabled:YES forSegmentAtIndex:0];
-                        }
-                        completion:^(BOOL finished){ }];
-                   }];
-              }];
-         }];
+        [self fadeOut:message1 withDuration:1.0];
+        [self showWellDoneForObject:_point];
+        
+        [self afterDelay:2.0 :^{
+            [message3 text:@"Note that the intersection point is black. Black points are unmovable and precise."];
+            [self fadeIn:message3 withDuration:1.0];
+            [self fadeOut:toolInstruction withDuration:1.0];
+            [toolControl setEnabled:NO forSegmentAtIndex:1];
+        }];
+        
+        [self afterDelay:4.0 :^{
+            [message3 appendLine:@"Grey points are not placed precisely on an intersection and are movable."
+                    withDuration:1.0];
+        }];
+
+        [self afterDelay:6.0 :^{
+            [message3 appendLine:@"Try to move a grey point using the point tool."
+                    withDuration:1.0];
+            [toolControl setEnabled:YES forSegmentAtIndex:0];
+        }];
     }
     else if (_currentStep == 11 && toolControl.selectedSegmentIndex == 0 ) {
         _currentStep = 12;
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message3.alpha = 0; message4.alpha = 0; message5.alpha = 0;
-             toolInstruction.alpha = 1;
-             [message1 text:@"Move one of the grey points."];
-             message1.alpha = 1;
-         }
-         completion:^(BOOL finished){}];
+        
+        [self fadeOut:message3 withDuration:1.0];
+        [self fadeIn:toolInstruction withDuration:1.0];
+        [message1 text:@"Move one of the grey points."];
+        [self fadeIn:message1 withDuration:1.0];
     }
     else if (_currentStep == 12 && moved) {
         _currentStep = 13;
         _noRepeat = YES;
-        [UIView
-         animateWithDuration:1.0 delay:0.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-             message1.alpha = 0;
-             CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(_point)];
-             [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
-                                                  withColor:[UIColor blackColor]];
-         }
-         completion:^(BOOL finished){
-             [UIView
-              animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                  [message3 text: @"These are the 5 primitive tools you will start with in Level 1."];
-                  message3.alpha = 1;
-                  [toolControl setEnabled:YES forSegmentAtIndex:0];
-                  [toolControl setEnabled:YES forSegmentAtIndex:1];
-                  [toolControl setEnabled:YES forSegmentAtIndex:2];
-                  [toolControl setEnabled:YES forSegmentAtIndex:3];
-                  [toolControl setEnabled:YES forSegmentAtIndex:4];
-              }
-              completion:^(BOOL finished){
-                  [UIView
-                   animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                       [message4 text:@"To unlock the other tools, you need to complete more levels!"];
-                       message4.alpha = 1;
-                   }
-                   completion:^(BOOL finished){
-                       [UIView
-                        animateWithDuration:1.0 delay:1.0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                            [message5 text:@"Construct a new object with any of the 5 available tools to complete the tutorial."];
-                            message5.alpha = 1;
-                        }
-                        completion:^(BOOL finished){ _levelComplete=YES;}];
-                   }];
-              }];
-         }];
+        [self fadeOut:message1 withDuration:1.0];
+        [self showWellDoneForObject:_point];
+        
+        [self afterDelay:2.0 :^{
+            [message3 text: @"These are the 5 primitive tools you will start with in Level 1."];
+            [self fadeIn:message3 withDuration:1.0];
+            
+            [toolControl setEnabled:YES forSegmentAtIndex:0];
+            [toolControl setEnabled:YES forSegmentAtIndex:1];
+            [toolControl setEnabled:YES forSegmentAtIndex:2];
+            [toolControl setEnabled:YES forSegmentAtIndex:3];
+            [toolControl setEnabled:YES forSegmentAtIndex:4];
+        
+        }];
+
+        [self afterDelay:4.0 :^{
+            [message3 appendLine:@"To unlock the other tools, you need to complete more levels!"
+                    withDuration:1.0];
+        }];
+
+        [self afterDelay:6.0 :^{
+            [message3 appendLine:@"Construct a new object with any of the 5 available tools to complete the tutorial."
+                    withDuration:1.0];
+            _levelComplete=YES;
+        }];
     }
+}
+
+- (void)showWellDoneForObject:(id)object
+{
+    DHGeometryView* geometryView = self.levelViewController.geometryView;
+    CGPoint messagePos = [geometryView.geoViewTransform geoToView:Position(object)];
+    [self.levelViewController showTemporaryMessage:@"Well done!" atPoint:messagePos
+                                         withColor:[UIColor darkGrayColor]];
+    
 }
 
 @end

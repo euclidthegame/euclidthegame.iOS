@@ -312,7 +312,11 @@
     
     [self setupTools];
     if (_iPhoneVersion) {
-        [self.geometryView.geoViewTransform setOffset:CGPointMake(-30, 0)];
+        if (_currentGameMode == kDHGameModeTutorial) {
+            [self.geometryView.geoViewTransform setOffset:CGPointMake(-30, -50)];
+        } else {
+            [self.geometryView.geoViewTransform setOffset:CGPointMake(-30, 0)];
+        }
         [self.geometryView.geoViewTransform setScale:0.5];
         [self.geometryView.geoViewTransform setRotation:0];
     } else {

@@ -182,7 +182,7 @@ static CGFloat const kACMagnifyingViewDefaultShowDelay = 0.5;
 		_magnifyingGlass.viewToMagnify = self.geometryView;
 		
 	}
-	
+	_magnifyingGlass.scale = 1.2;
 	_magnifyingGlass.touchPoint = point;
 	[[[UIApplication sharedApplication] keyWindow] addSubview:_magnifyingGlass];
 	[_magnifyingGlass setNeedsDisplay];

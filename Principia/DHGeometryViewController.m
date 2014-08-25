@@ -50,6 +50,7 @@ static CGFloat const kACMagnifyingViewDefaultShowDelay = 0.5;
     NSArray *allTouches = [[event allTouches] allObjects];
     if ([allTouches count] == 2) {
         twoFingers = YES;
+        [self removeMagnifyingGlass];
         [_currentTool reset];
         [_currentTool.delegate toolTipDidChange:@"Use two fingers to pan or zoom"];
     }
@@ -58,6 +59,11 @@ static CGFloat const kACMagnifyingViewDefaultShowDelay = 0.5;
         
         if ([DHSettings magnifierEnabled]) {
             UITouch *touch = [touches anyObject];
+            
+            _magnifyingGlass = [[DHMagnifyingView alloc] initWithLoupe];
+            _magnifyingGlass.scale = 1.2;
+            _magnifyingGlass.touchPoint = [touch locationInView:self.geometryView];
+
             NSValue* userInfo = [NSValue valueWithCGPoint:[touch locationInView:self.geometryView]];
             self.touchTimer = [NSTimer scheduledTimerWithTimeInterval:kACMagnifyingViewDefaultShowDelay
                                                                target:self
@@ -134,8 +140,6 @@ static CGFloat const kACMagnifyingViewDefaultShowDelay = 0.5;
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [self.touchTimer invalidate];
-	self.touchTimer = nil;
 	[self removeMagnifyingGlass];
     
     if ([self.currentLevel respondsToSelector:@selector(hideHint)] && self.currentLevel.showingHint) {
@@ -176,23 +180,27 @@ static CGFloat const kACMagnifyingViewDefaultShowDelay = 0.5;
 	
 	if (!_magnifyingGlass) {
 		_magnifyingGlass = [[DHMagnifyingView alloc] initWithLoupe];
+        _magnifyingGlass.scale = 1.2;
+        _magnifyingGlass.touchPoint = point;
 	}
 	
 	if (!_magnifyingGlass.viewToMagnify) {
 		_magnifyingGlass.viewToMagnify = self.geometryView;
 		
 	}
-	_magnifyingGlass.scale = 1.2;
-	_magnifyingGlass.touchPoint = point;
 	[[[UIApplication sharedApplication] keyWindow] addSubview:_magnifyingGlass];
 	[_magnifyingGlass setNeedsDisplay];
 }
 
-- (void)removeMagnifyingGlass {
+- (void)removeMagnifyingGlass
+{
+    [self.touchTimer invalidate];
+	self.touchTimer = nil;
 	[_magnifyingGlass removeFromSuperview];
 }
 
-- (void)updateMagnifyingGlassAtPoint:(CGPoint)point {
+- (void)updateMagnifyingGlassAtPoint:(CGPoint)point
+{
 	_magnifyingGlass.touchPoint = point;
 	[_magnifyingGlass setNeedsDisplay];
 }

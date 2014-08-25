@@ -47,10 +47,6 @@
             self.line = line;
             line.highlighted = true;
             [self.delegate toolTipDidChange:_tooltipTempUnfinished];
-            _tempPoint = [[DHPoint alloc] initWithPosition:touchPoint];
-            _tempPerpLine = [[DHPerpendicularLine alloc] initWithLine:self.line andPoint:_tempPoint];
-            _tempPerpLine.temporary = YES;
-            [self.delegate addTemporaryGeometricObjects:@[_tempPerpLine]];
             [touch.view setNeedsDisplay];
         }
     } else {
@@ -88,6 +84,13 @@
     if (_tempIntersectionPoint) {
         [self.delegate removeTemporaryGeometricObjects:@[_tempIntersectionPoint]];
         _tempIntersectionPoint = nil;
+    }
+    if (self.line && !_tempPerpLine) {
+        _tempPoint = [[DHPoint alloc] initWithPosition:touchPoint];
+        _tempPerpLine = [[DHPerpendicularLine alloc] initWithLine:self.line andPoint:_tempPoint];
+        _tempPerpLine.temporary = YES;
+        [self.delegate addTemporaryGeometricObjects:@[_tempPerpLine]];
+        [touch.view setNeedsDisplay];
     }
     if (_tempPerpLine) {
         _tempPerpLine.point.highlighted = NO;

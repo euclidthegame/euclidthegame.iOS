@@ -12,6 +12,8 @@
 @implementation DHBisectTool {
     __weak DHPoint** _selectedPoint;
     __weak DHLineObject** _selectedLine;
+    DHPoint* _tempIntersectionPoint2;
+    DHPoint* _tempIntersectionPoint3;
 }
 - (NSString*)initialToolTip
 {
@@ -47,8 +49,10 @@
         }
     } else {
         DHPoint* point = FindPointClosestToPoint(touchPoint, geoObjects, kClosestTapLimit / geoViewScale);
+        BOOL tempIntersection = NO;
         if (!point) {
             point = FindClosestUniqueIntersectionPoint(touchPoint, geoObjects, geoViewScale);
+            tempIntersection = YES;
         }
         if (point) {
             if (point == self.firstPoint || point == self.secondPoint) {
@@ -58,10 +62,18 @@
                 self.secondPoint = point;
                 point.highlighted = YES;
                 _selectedPoint = &_secondPoint;
+                if (tempIntersection) {
+                    _tempIntersectionPoint2 = point;
+                    [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint2]];
+                }
             } else {
                 self.thirdPoint = point;
                 point.highlighted = YES;
                 _selectedPoint = &_thirdPoint;
+                if (tempIntersection) {
+                    _tempIntersectionPoint3 = point;
+                    [self.delegate addTemporaryGeometricObjects:@[_tempIntersectionPoint3]];
+                }
                 
                 [self.delegate toolTipDidChange:@"Release to create bisector"];
             }
@@ -160,6 +172,9 @@
         CGVector v2 = CGVectorBetweenPoints(self.secondPoint.position, self.thirdPoint.position);
         CGFloat angle = CGVectorAngleBetween(v1, v2);
         if (angle < 0.0001 || fabs(angle - M_PI) < 0.001) {
+            
+            if (_tempIntersectionPoint3) DHToolTempObjectCleanup(_tempIntersectionPoint3);
+            
             self.thirdPoint.highlighted = NO;
             self.thirdPoint = nil;
             [self.delegate showTemporaryMessage:@"The points can not all lie on a line to define an angle"
@@ -168,6 +183,9 @@
             DHBisectLine* bl = [[DHBisectLine alloc] init];
             bl.line1 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:self.firstPoint];
             bl.line2 = [[DHLineSegment alloc] initWithStart:self.secondPoint andEnd:self.thirdPoint];
+            
+            if (_tempIntersectionPoint2) [objectsToAdd addObject:_tempIntersectionPoint2];
+            if (_tempIntersectionPoint3) [objectsToAdd addObject:_tempIntersectionPoint3];
             [objectsToAdd addObjectsFromArray:@[bl]];
             
             [self.delegate addGeometricObjects:objectsToAdd];
@@ -197,6 +215,9 @@
 }
 - (void)reset
 {
+    DHToolTempObjectCleanup(_tempIntersectionPoint2);
+    DHToolTempObjectCleanup(_tempIntersectionPoint3);
+    
     _selectedPoint = nil;
     _selectedLine = nil;
 
@@ -215,6 +236,9 @@
 }
 - (void)dealloc
 {
+    DHToolTempObjectCleanup(_tempIntersectionPoint2);
+    DHToolTempObjectCleanup(_tempIntersectionPoint3);
+    
     self.firstLine.highlighted = NO;
     self.secondLine.highlighted = NO;
     self.firstPoint.highlighted = NO;

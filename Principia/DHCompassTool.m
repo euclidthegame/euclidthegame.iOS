@@ -30,13 +30,13 @@
         _tooltipTempUnfinished = @"Drag to a point that should be the center of the circle";
         _tooltipTempFinished = @"Release to create circle";
         _toolTipPartial = @"Tap a point to mark the center of the circle";
-        _toolTipPartialOnePoint = @"Tap a second point to define the radius of the circle";
+        _toolTipPartialOnePoint = @"Tap a second point to define the radius";
     }
     return self;
 }
 - (NSString*)initialToolTip
 {
-    return @"Tap two points or a line segment to define the radius, followed by a third point to mark the center";
+    return @"Tap two points, a segment or a circle to define the radius";
 }
 - (void)touchBegan:(UITouch*)touch
 {

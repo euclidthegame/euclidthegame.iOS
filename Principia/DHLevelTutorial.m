@@ -20,7 +20,6 @@
 }
 @end
 
-
 @implementation DHLevelTutorial
 
 - (NSString*)subTitle
@@ -96,7 +95,6 @@
 
 - (void)tutorial:(NSMutableArray*)geometricObjects and:(UISegmentedControl *)toolControl and:(UILabel *)toolInstruction and:(DHGeometryView *)geometryView and:(UIView *)view and:(NSLayoutConstraint*)heightToolControl and:(BOOL)update
 {
-    
     if (_noRepeat && update) return;
     
     BOOL segmentAB = NO;
@@ -135,51 +133,49 @@
     if (_currentStep == 1) {
         toolInstruction.alpha = 0;
         message1.alpha = 0;
+        message3.alpha = 0;
+        
         _currentStep = 2;
         [message1 text:@"Points are the most fundamental objects in this game."];
+        
         [view addSubview:message1];
+        [view addSubview:message3];
         
         [self afterDelay:1.0 :^{
             [self fadeIn:message1 withDuration:1.0];
         }];
         
+        DHPoint* pointA = [[DHPoint alloc]initWithPosition:_pointA.position];
+        DHPoint* pointB = [[DHPoint alloc]initWithPosition:_pointB.position];
+        DHGeometryView* tempView = [[DHGeometryView alloc]initWithObjects:@[pointA,pointB]
+                                                                  supView:geometryView addTo:view];
         [self afterDelay:3.0 :^{
-             DHPoint* pointA = [[DHPoint alloc]initWithPosition:_pointA.position];
-             DHPoint* pointB = [[DHPoint alloc]initWithPosition:_pointB.position];
-             DHGeometryView* tempView = [[DHGeometryView alloc]initWithObjects:@[pointA,pointB]
-                                                                       supView:geometryView addTo:view];
-             [self fadeIn:tempView withDuration:1.0];
-             
-             [self afterDelay:2.0 :^{
-                 [message1 appendLine:@"They are labeled with capital letters." withDuration:1.0];
-             }];
-             [self afterDelay:4.0 :^{
-                 [self fadeIn:geometryView withDuration:1.0];
-                 [self fadeOut:tempView withDuration:1.0];
-                 
-                 [UIView
-                  animateWithDuration:1.5 delay:1.5 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
-                      [message3 text:@"Other objects can be constructed from points using the toolbar below."];
-                      [view addSubview:message3];
-                      message3.alpha = 1;
-                      toolControl.alpha = 1;
-                      
-                  }
-                  completion:^(BOOL finished){
-                      [self slideInToolbar];
-                      [self afterDelay:2.0 :^{
-                          [message3 appendLine:@"Let's start by constructing a line segment. Tap the tool to select it." withDuration:1.0];
-                      }];
-                      [self afterDelay:3.0 :^{
-                          [toolControl setEnabled:YES forSegmentAtIndex:2];
-                      }];
-                  }];
-             }];
-         }];
+            [self fadeIn:tempView withDuration:1.0];
+        }];
+        [self afterDelay:5.0 :^{
+            [message1 appendLine:@"They are labeled with capital letters." withDuration:1.0];
+        }];
+        [self afterDelay:7.0 :^{
+            [self fadeIn:geometryView withDuration:1.0];
+            [self fadeOut:tempView withDuration:1.0];
+        }];
+        [self afterDelay:9.0 :^{
+            [message3 text:@"Other objects can be constructed from points using the toolbar below."];
+            [self fadeIn:message3 withDuration:1.0];
+        }];
+        [self afterDelay:11.0 :^{
+            [self slideInToolbar];
+        }];
+        [self afterDelay:13.0 :^{
+            [message3 appendLine:@"Let's start by constructing a line segment. Tap the tool to select it."
+                    withDuration:1.0];
+            
+            [self enableToolAtIndex:2];
+        }];
     }
     else if (_currentStep == 2 && toolControl.selectedSegmentIndex == 2 ) {
         _currentStep = 3;
-        message1.alpha = 0;
+        [self fadeOut:message1 withDuration:1.0];
         [message1 text:@"Try to construct a line segment that connects point A and B."];
         [self fadeInViews:@[message1, toolInstruction] withDuration:1.0];
         [self fadeOut:message3 withDuration:1.0];
@@ -189,10 +185,10 @@
         [self showWellDoneForObject:sAB];
         
         [self fadeOut:message1 withDuration:1.0];
-        [toolControl setEnabled:NO forSegmentAtIndex:2];
+        [self disableToolAtIndex:2];
         
         [self afterDelay:1.0 :^{
-            toolInstruction.alpha = 0;
+            [self fadeOut:toolInstruction withDuration:1.0];
             
             [message3 text: @"Points can also be used to construct a circle."];
             
@@ -200,12 +196,11 @@
                 [self fadeIn:message3 withDuration:1.0];
             }];
             [self afterDelay:3.0 :^{
-                [message3 appendLine:@"Tap on the circle tool to select it." withDuration:1.0];
+                [message3 appendLine:@"Tap the circle tool to select it." withDuration:1.0];
             }];
             [self afterDelay:4.0 :^{
-                [toolControl setEnabled:YES forSegmentAtIndex:4];
+                [self enableToolAtIndex:4];
             }];
-
         }];
     }
     else if (_currentStep == 4 && toolControl.selectedSegmentIndex == 4) {
@@ -234,11 +229,11 @@
             [self fadeOut:toolInstruction withDuration:1.0];
             [message3 text:@"Sometimes it is useful to extend a segment using the line tool."];
             [self fadeIn:message3 withDuration:1.0];
-            [toolControl setEnabled:NO forSegmentAtIndex:4];
+            [self disableToolAtIndex:4];
         }];
         [self afterDelay:3.0 :^{
             [message3 appendLine:@"Tap the tool to select it." withDuration:1.0];
-            [toolControl setEnabled:YES forSegmentAtIndex:3];
+            [self enableToolAtIndex:3];
         }];
     }
     else if (_currentStep == 7 && toolControl.selectedSegmentIndex == 3) {
@@ -257,11 +252,11 @@
         [self afterDelay:1.0 :^{
             [message3 text:@"If lines or circles intersect we can create a point at the intersection."];
             [self fadeIn:message3 withDuration:1.0];
-            [toolControl setEnabled:NO forSegmentAtIndex:3];
+            [self disableToolAtIndex:3];
         }];
         [self afterDelay:3.0 :^{
             [message3 appendLine:@"Tap the intersect tool to select it." withDuration:1.0];
-            [toolControl setEnabled:YES forSegmentAtIndex:1];
+            [self enableToolAtIndex:1];
         }];
     }
     else if (_currentStep == 9 && toolControl.selectedSegmentIndex == 1) {
@@ -280,7 +275,7 @@
             [message3 text:@"Note that the intersection point is black. Black points are unmovable and precise."];
             [self fadeIn:message3 withDuration:1.0];
             [self fadeOut:toolInstruction withDuration:1.0];
-            [toolControl setEnabled:NO forSegmentAtIndex:1];
+            [self disableToolAtIndex:1];
         }];
         
         [self afterDelay:4.0 :^{
@@ -291,7 +286,7 @@
         [self afterDelay:6.0 :^{
             [message3 appendLine:@"Try to move a grey point using the point tool."
                     withDuration:1.0];
-            [toolControl setEnabled:YES forSegmentAtIndex:0];
+            [self enableToolAtIndex:0];
         }];
     }
     else if (_currentStep == 11 && toolControl.selectedSegmentIndex == 0 ) {
@@ -312,12 +307,11 @@
             [message3 text: @"These are the 5 primitive tools you will start with in Level 1."];
             [self fadeIn:message3 withDuration:1.0];
             
-            [toolControl setEnabled:YES forSegmentAtIndex:0];
-            [toolControl setEnabled:YES forSegmentAtIndex:1];
-            [toolControl setEnabled:YES forSegmentAtIndex:2];
-            [toolControl setEnabled:YES forSegmentAtIndex:3];
-            [toolControl setEnabled:YES forSegmentAtIndex:4];
-        
+            [self enableToolAtIndex:0];
+            [self enableToolAtIndex:1];
+            [self enableToolAtIndex:2];
+            [self enableToolAtIndex:3];
+            [self enableToolAtIndex:4];
         }];
 
         [self afterDelay:4.0 :^{
@@ -331,6 +325,21 @@
             _levelComplete=YES;
         }];
     }
+}
+
+- (void)enableToolAtIndex:(NSUInteger)index
+{
+    [UIView
+     animateWithDuration:1.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+         [self.levelViewController.toolControl setEnabled:YES forSegmentAtIndex:index];
+     } completion:^(BOOL finished) {}];
+}
+- (void)disableToolAtIndex:(NSUInteger)index
+{
+    [UIView
+     animateWithDuration:1.0 delay:0 options: UIViewAnimationOptionAllowAnimatedContent animations:^{
+         [self.levelViewController.toolControl setEnabled:NO forSegmentAtIndex:index];
+     } completion:^(BOOL finished) {}];
 }
 
 - (void)showWellDoneForObject:(id)object

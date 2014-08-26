@@ -13,15 +13,9 @@
 @interface DHLevelPentagon () {
     DHCircle* _circle;
 }
-
 @end
 
 @implementation DHLevelPentagon
-
-- (NSString*)subTitle
-{
-    return @"The Pentagon";
-}
 
 - (NSString*)levelDescription
 {

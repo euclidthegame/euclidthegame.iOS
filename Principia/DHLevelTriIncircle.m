@@ -23,11 +23,6 @@
 
 @implementation DHLevelTriIncircle
 
-- (NSString*)subTitle
-{
-    return @"Drawing within the lines";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct the incircle of a triangle.");

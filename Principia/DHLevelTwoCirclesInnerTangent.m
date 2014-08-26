@@ -24,11 +24,6 @@
 
 @implementation DHLevelTwoCirclesInnerTangent
 
-- (NSString*)subTitle
-{
-    return @"Inner tangent";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct an inner tangent between the two circles.");

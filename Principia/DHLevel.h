@@ -18,7 +18,6 @@
 @protocol DHLevel <NSObject>
 
 @required
-- (NSString*)subTitle;
 - (NSString*)levelDescription;
 - (void)createInitialObjects:(NSMutableArray*)geometricObjects;
 - (BOOL)isLevelComplete:(NSMutableArray*)geometricObjects;

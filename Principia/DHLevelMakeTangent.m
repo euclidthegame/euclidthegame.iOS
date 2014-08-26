@@ -21,11 +21,6 @@
 
 @implementation DHLevelMakeTangent
 
-- (NSString*)subTitle
-{
-    return @"Tangentially related";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct a line (segment) tangent to the given circle");

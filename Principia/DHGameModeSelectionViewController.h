@@ -19,7 +19,6 @@
 @property (nonatomic, weak) IBOutlet UILabel* logoLabel;
 @property (nonatomic, weak) IBOutlet UILabel* logoSubtitleLabel;
 @property (nonatomic, weak) IBOutlet UILabel* selectGameModelLabel;
-@property (nonatomic, weak) IBOutlet UIButton* gameCenterButton;
 
 @property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode1View;
 @property (nonatomic, weak) IBOutlet DHGameModeSelectionButton* gameMode2View;

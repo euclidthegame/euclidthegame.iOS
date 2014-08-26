@@ -24,11 +24,6 @@
 
 @implementation DHLevelMakeCompass
 
-- (NSString*)subTitle
-{
-    return @"Making a compass";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct a circle with radius AB and center C.");

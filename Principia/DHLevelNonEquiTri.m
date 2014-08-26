@@ -20,11 +20,6 @@
     BOOL hint2_OK;
 }
 
-- (NSString*)subTitle
-{
-    return @"Side orders";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct a triangle with AB as base and sides of length CD and EF");

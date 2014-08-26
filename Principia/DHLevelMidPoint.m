@@ -24,11 +24,6 @@
 
 @implementation DHLevelMidPoint
 
-- (NSString*)subTitle
-{
-    return @"Half 'n Half";
-}
-
 - (NSString*)levelDescription
 {
     return @"Construct the midpoint of line segment AB.";

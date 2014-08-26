@@ -23,11 +23,6 @@
 
 @implementation DHLevelCircleCenter
 
-- (NSString*)subTitle
-{
-    return @"Circle center";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct a point at the center of the given circle.");

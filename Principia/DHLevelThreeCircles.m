@@ -20,11 +20,6 @@
 
 @implementation DHLevelThreeCircles
 
-- (NSString*)subTitle
-{
-    return @"Stacking circles";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct two circles of radius AB, mutually tangent and to the given circle");

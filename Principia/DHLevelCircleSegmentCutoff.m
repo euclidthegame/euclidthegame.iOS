@@ -21,11 +21,6 @@
 
 @implementation DHLevelCircleSegmentCutoff
 
-- (NSString*)subTitle
-{
-    return @"Cut it out";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct a circle at C, cutting off a segment of length AB on the given line");

@@ -22,11 +22,6 @@
 
 @implementation DHLevelLineCopyOnLine
 
-- (NSString*)subTitle
-{
-    return @"Staying online";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct a point E on CD such that CE has the same length as AB.");

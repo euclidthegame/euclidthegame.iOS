@@ -24,11 +24,6 @@
 
 @implementation DHLevelPerpendicularB
 
-- (NSString*)subTitle
-{
-    return @"Perpendicular again";
-}
-
 - (NSString*)levelDescription
 {
     return @"Construct a line through A perpendicular to the given line.";

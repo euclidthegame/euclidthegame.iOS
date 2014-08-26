@@ -21,11 +21,6 @@
 
 @implementation DHLevelLineCopy2
 
-- (NSString*)subTitle
-{
-    return @"Straight translation";
-}
-
 - (NSString*)levelDescription
 {
     return @"Translate the segment AB to the point C.";

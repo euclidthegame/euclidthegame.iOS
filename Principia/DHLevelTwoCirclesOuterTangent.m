@@ -24,11 +24,6 @@
 
 @implementation DHLevelTwoCirclesOuterTangent
 
-- (NSString*)subTitle
-{
-    return @"Outer tangent";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct an outer tangent of both circles.");

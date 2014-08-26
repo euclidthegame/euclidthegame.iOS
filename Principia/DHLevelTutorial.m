@@ -22,11 +22,6 @@
 
 @implementation DHLevelTutorial
 
-- (NSString*)subTitle
-{
-    return @"Learn the basics";
-}
-
 - (NSString*)levelDescription
 {
     return (@"");

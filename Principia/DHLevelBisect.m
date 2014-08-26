@@ -25,11 +25,6 @@
 
 @implementation DHLevelBisect
 
-- (NSString*)subTitle
-{
-    return @"Bisecting an angle";
-}
-
 - (NSString*)levelDescription
 {
     return @"Construct an angle bisector of the given angle.";

@@ -22,11 +22,6 @@
 
 @implementation DHLevelCircleTangentFromPoint
 
-- (NSString*)subTitle
-{
-    return @"Barely touching";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct two tangents to the given circle from the point A.");

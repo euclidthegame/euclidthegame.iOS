@@ -23,11 +23,6 @@
 
 @implementation DHLevelTriCircumcircle
 
-- (NSString*)subTitle
-{
-    return @"Drawing outside the lines";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct the circumcircle of a triangle.");

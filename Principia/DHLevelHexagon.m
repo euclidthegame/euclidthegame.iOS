@@ -19,11 +19,6 @@
 
 @implementation DHLevelHexagon
 
-- (NSString*)subTitle
-{
-    return @"Super hexagon";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct a regular hexagon given one side AB.");

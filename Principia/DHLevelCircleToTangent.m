@@ -22,11 +22,6 @@
 
 @implementation DHLevelCircleToTangent
 
-- (NSString*)subTitle
-{
-    return @"Circle to tangent";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct a circle that passes through A and is tangent to the line at B.");

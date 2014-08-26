@@ -24,11 +24,6 @@
 
 @implementation DHLevelCopyAngle
 
-- (NSString*)subTitle
-{
-    return @"Another angle";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct an angle at B to the given line equal to the given angle.");

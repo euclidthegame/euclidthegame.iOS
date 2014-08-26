@@ -11,11 +11,6 @@
 
 @implementation DHLevelPlayground
 
-- (NSString*)subTitle
-{
-    return @"Playground";
-}
-
 - (NSString*)levelDescription
 {
     return (@"None, simply enjoy geometric beauty!");

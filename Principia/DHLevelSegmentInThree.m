@@ -18,11 +18,6 @@
 
 @implementation DHLevelSegmentInThree
 
-- (NSString*)subTitle
-{
-    return @"Lucky number three";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct two points, cutting the given segment into three equal pieces");

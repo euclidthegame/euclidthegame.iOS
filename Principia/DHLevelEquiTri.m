@@ -20,11 +20,6 @@
 
 @implementation DHLevelEquiTri
 
-- (NSString*)subTitle
-{
-    return @"Equilateral triangle";
-}
-
 - (NSString*)levelDescription
 {
     return (@"Construct an equilateral triangle.");

@@ -17,11 +17,6 @@
 
 @implementation DHLevelSquare
 
-- (NSString*)subTitle
-{
-    return @"Squares";
-}
-
 - (NSString*)levelDescription
 {
     return @"Create 4 lines forming a square whose diagonal is equal to the radius of the circle";

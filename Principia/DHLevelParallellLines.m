@@ -22,11 +22,6 @@
 
 @implementation DHLevelParallellLines
 
-- (NSString*)subTitle
-{
-    return @"Parallell";
-}
-
 - (NSString*)levelDescription
 {
     return @"Construct a line through point A parallell to the given line.";

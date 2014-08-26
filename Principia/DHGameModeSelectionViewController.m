@@ -82,32 +82,17 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if ([DHGameCenterManager sharedInstance].gameCenterAvailable) {
-        self.gameCenterButton.enabled = YES;
-    } else {
-        self.gameCenterButton.enabled = NO;
-    }
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:DHGameCenterManagerUserDidAuthenticateNotification
-                        object:nil
-                         queue:nil
-                    usingBlock:^(NSNotification *notification)
-    {
-        self.gameCenterButton.enabled = YES;
-    }];
     [self loadProgressData];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center removeObserver:self];
+
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
@@ -120,7 +105,6 @@
         vc.currentGameMode = [sender unsignedIntegerValue];
     }
 }
-
 
 #pragma mark Layout/appereance
 - (BOOL)prefersStatusBarHidden
@@ -318,62 +302,21 @@
     NSMutableArray* levels = [[NSMutableArray alloc] initWithCapacity:30];
     FillLevelArray(levels);
     
-    NSDictionary* levelResults = [DHLevelResults levelResults];
+    NSUInteger levelsCompleteNormal = 0;
+    NSUInteger levelsCompleteMinimumMoves = 0;
+    NSUInteger levelsCompletePrimitiveOnly = 0;
+    NSUInteger levelsCompletePrimitiveOnlyMinimumMoves = 0;
     
-    NSUInteger levelsCompleteGameModeNormal = 0;
-    NSUInteger levelsCompleteGameModeMinimumMoves = 0;
-    NSUInteger levelsCompleteGameModePrimitiveOnly = 0;
-    NSUInteger levelsCompleteGameModePrimitiveOnlyMinimumMoves = 0;
+    levelsCompleteNormal = [DHLevelResults numberOfLevesCompletedForGameMode:kDHGameModeNormal];
+    levelsCompleteMinimumMoves = [DHLevelResults numberOfLevesCompletedForGameMode:kDHGameModeNormalMinimumMoves];
+    levelsCompletePrimitiveOnly = [DHLevelResults numberOfLevesCompletedForGameMode:kDHGameModePrimitiveOnly];
+    levelsCompletePrimitiveOnlyMinimumMoves = [DHLevelResults
+                                               numberOfLevesCompletedForGameMode:kDHGameModePrimitiveOnlyMinimumMoves];
     
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class])
-                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormal];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModeNormal;
-            }
-        }
-    }
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class])
-                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModeNormalMinimumMoves];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModeMinimumMoves;
-            }
-        }
-    }
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class])
-                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnly];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModePrimitiveOnly;
-            }
-        }
-    }
-    for (id level in levels) {
-        NSString* resultKey = [NSStringFromClass([level class])
-                               stringByAppendingFormat:@"/%lu", (unsigned long)kDHGameModePrimitiveOnlyMinimumMoves];
-        NSDictionary* levelResult = [levelResults objectForKey:resultKey];
-        if (levelResult) {
-            NSNumber* completed = [levelResult objectForKey:kLevelResultKeyCompleted];
-            if (completed.boolValue) {
-                ++levelsCompleteGameModePrimitiveOnlyMinimumMoves;
-            }
-        }
-    }
-    
-    self.gameMode2View.percentComplete = levelsCompleteGameModeNormal*1.0/levels.count;
-    self.gameMode3View.percentComplete = levelsCompleteGameModeMinimumMoves*1.0/levels.count;
-    self.gameMode4View.percentComplete = levelsCompleteGameModePrimitiveOnly*1.0/levels.count;
-    self.gameMode5View.percentComplete = levelsCompleteGameModePrimitiveOnlyMinimumMoves*1.0/levels.count;
+    self.gameMode2View.percentComplete = levelsCompleteNormal*1.0/levels.count;
+    self.gameMode3View.percentComplete = levelsCompleteMinimumMoves*1.0/levels.count;
+    self.gameMode4View.percentComplete = levelsCompletePrimitiveOnly*1.0/levels.count;
+    self.gameMode5View.percentComplete = levelsCompletePrimitiveOnlyMinimumMoves*1.0/levels.count;
     
     // Update achievements here if they were not awarded earlier
     if (self.gameMode2View.percentComplete == 1.0) {

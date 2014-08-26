@@ -219,11 +219,18 @@
     }
     
     self.navigationController.delegate = self;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(resetLevelTimer:)
+                                                 name:@"kDHNotificationResetLevelTimer"
+                                               object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
     // Stop being the navigation controller's delegate
     if (self.navigationController.delegate == self) {
         self.navigationController.delegate = nil;
@@ -1584,7 +1591,7 @@
 {
     [_progressBar setProgress:progress/100.0 animated:YES];
     if (_progressLabelPhone) {
-        _progressLabelPhone.text = [NSString stringWithFormat:@"Progress: %d%%", progress];
+        _progressLabelPhone.text = [NSString stringWithFormat:@"Progress: %lu%%", (unsigned long)progress];
         [_progressLabelPhone sizeToFit];
     }
 }
@@ -1602,6 +1609,11 @@
         [[DHGameCenterManager sharedInstance] reportAchievementIdentifier:kAchievementID_Persistence_30min
                                                           percentComplete:100.0];
     }
+}
+
+- (void)resetLevelTimer:(id)sender
+{
+    _levelStartTime = [NSDate date];
 }
 
 #pragma mark Transition delegate methods

@@ -44,7 +44,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"kDHNotificationResetLevelTimer" object:nil];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

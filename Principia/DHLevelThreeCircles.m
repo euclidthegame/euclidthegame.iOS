@@ -254,16 +254,6 @@
                                                                      supView:geometryView addTo:hintView];
         
         Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
-            [message1 position: CGPointMake(80,460)];
-            [message2 position: CGPointMake(80,480)];
-            [message3 position: CGPointMake(80,500)];
-            [message4 position: CGPointMake(80,520)];
-        }
         
         [self afterDelay:0.0:^{
             [message1 text:@"If two circles are tangent they only touch on exactly one point."];
@@ -271,18 +261,21 @@
         }];
         
         [self afterDelay:4.0 :^{
-            [message2 text:@"From this point a tangent line will also be tangent to both circles."];
-            [self fadeInViews:@[message2, tangentView] withDuration:2.5];
+            [message1 appendLine:@"From this point a tangent line will also be tangent to both circles."
+                    withDuration:2.0];
+            [self fadeInViews:@[tangentView] withDuration:2.5];
         }];
         
         [self afterDelay:8.0 :^{
-            [message3 text:@"We already know the angle between the tangent line and a radial line."];
-            [self fadeInViews:@[message3, radiusView] withDuration:2.5];
+            [message1 appendLine:@"We already know the angle between the tangent line and a radial line."
+                    withDuration:2.0];
+            [self fadeInViews:@[radiusView] withDuration:2.5];
         }];
 
         [self afterDelay:12.0 :^{
-            [message4 text:@"What must the angle between the two radial lines then be?"];
-            [self fadeInViews:@[message4, angleView] withDuration:2.5];
+            [message1 appendLine:@"What must the angle between the two radial lines then be?"
+                    withDuration:2.0];
+            [self fadeInViews:@[angleView] withDuration:2.5];
         }];
         
         [self afterDelay:2.0 :^{

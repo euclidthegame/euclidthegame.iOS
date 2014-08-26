@@ -13,10 +13,7 @@
 
 @interface DHLevelSegmentInThree () {
     DHLineSegment* _lAB;
-    BOOL hint1_OK;
-    BOOL hint2_OK;
 }
-
 @end
 
 @implementation DHLevelSegmentInThree
@@ -55,9 +52,6 @@
 
 - (void)createInitialObjects:(NSMutableArray *)geometricObjects
 {
-    hint1_OK = NO;
-    hint2_OK = NO;
-    
     DHPoint* pA = [[DHPoint alloc] initWithPositionX:150 andY:250];
     DHPoint* pB = [[DHPoint alloc] initWithPositionX:450 andY:230];
     
@@ -180,13 +174,6 @@
     
     [self slideOutToolbar];
     
-    
-    Message* message1 = [[Message alloc] initWithMessage:@"Let's start with a simpler challenge. " andPoint:CGPointMake(30,300)];
-    Message* message2 = [[Message alloc] initWithMessage:@"Construct: - a random point C not on the line and the line segment AC" andPoint:CGPointMake(30,320)];
-    Message* message3 = [[Message alloc] initWithMessage:@"                  - a line segment with length AC that starts on C" andPoint:CGPointMake(30,340)];
-    Message* message4 = [[Message alloc] initWithMessage:@"                  - a line segment with length AC that starts on D" andPoint:CGPointMake(30,360)];
-    Message* message5 = [[Message alloc] initWithMessage:@"Note that the line segment AE is now cut into three equal parts." andPoint:CGPointMake(30,400)];
-    
     DHPoint* pointC = [[DHPoint alloc]initWithPositionX:_lAB.start.position.x+50 andY:_lAB.end.position.y-50];
     pointC.label = @"C";
     DHTranslatedPoint* pointD = [[DHTranslatedPoint alloc]initStart:_lAB.start end:pointC newStart:pointC];
@@ -202,16 +189,6 @@
     DHGeometryView* segment2View = [[DHGeometryView alloc]initWithObjects:@[segment2,pointD] andSuperView:geometryView];
     DHGeometryView* segment3View = [[DHGeometryView alloc]initWithObjects:@[segment3,pointE] andSuperView:geometryView];
     
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
-        [message4 position: CGPointMake(150,580)];
-    }
-    
     [self afterDelay:1.0 :^{
         if (!self.showingHint) return;
         
@@ -222,34 +199,38 @@
         [hintView addSubview:segment2View];
         [hintView addSubview:segment1View];
         
-        [hintView addSubview:message1];
-        [hintView addSubview:message2];
-        [hintView addSubview:message3];
-        [hintView addSubview:message4];
-        [hintView addSubview:message5];
-        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(30,300) addTo:hintView];
+        if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+            [message1 position: CGPointMake(150,400)];
+        }
+
         [self afterDelay:2.0 :^{
             [self showEndHintMessageInView:hintView];
         }];
         
         [self afterDelay:0.0 performBlock:^{
+            [message1 text:@"Let's start with a simpler challenge."];
             [self fadeIn:message1 withDuration:1.0];
         }];
         [self afterDelay:4.0 performBlock:^{
-            [self fadeIn:message2 withDuration:1.0];
+            [message1 appendLine:(@"Construct: \n (1) a random point C, not on the segment AB"
+                                  @"\n (2) a line segment from A to C")
+                    withDuration:1.0 forceNewLine:YES];
             [self fadeIn:segment1View withDuration:1.0];
         }];
         [self afterDelay:8.0 performBlock:^{
-            [self fadeIn:message3 withDuration:1.0];
+            [message1 appendLine:@" (3) a line segment with length AC that starts on C"
+                    withDuration:1.0 forceNewLine:YES];
             [self fadeIn:segment2View withDuration:1.0];
         }];
         [self afterDelay:12.0 performBlock:^{
-            [self fadeIn:message4 withDuration:1.0];
+            [message1 appendLine:@" (4) a line segment with length AC that starts on D"
+                    withDuration:1.0 forceNewLine:YES];
             [self fadeIn:segment3View withDuration:1.0];
         }];
         [self afterDelay:16.0 performBlock:^{
-            [self fadeIn:message5 withDuration:1.0];
-            hint1_OK = YES;
+            [message1 appendLine:@"Note that the line segment AE is now cut into three equal parts."
+                    withDuration:1.0 forceNewLine:YES];
         }];
         
     }];

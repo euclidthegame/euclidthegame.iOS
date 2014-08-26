@@ -228,12 +228,6 @@
     self.showingHint = YES;
     
     [self slideOutToolbar];
-
-    Message* message1 = [[Message alloc] initWithMessage:@"Let's first make the following triangle." andPoint:CGPointMake(430,40)];
-    Message* message2 = [[Message alloc] initWithMessage:@"Place point C on one of the rays." andPoint:CGPointMake(430,60)];
-    Message* message3 = [[Message alloc] initWithMessage:@"Place point D on the other ray." andPoint:CGPointMake(430,80)];
-    Message* message4 = [[Message alloc] initWithMessage:@"We can now construct the triangle ACD." andPoint:CGPointMake(430,100)];
-    Message* message5 = [[Message alloc] initWithMessage:@"Can you make a congruent triangle at B?" andPoint:CGPointMake(430,120)];
     
     DHPoint* pointC = [[DHPoint alloc]initWithPosition:_rayA1.end.position];
     pointC.label = @"C";
@@ -287,44 +281,39 @@
     DHGeometryView* dView = [[DHGeometryView alloc]initWithObjects:@[pointD] andSuperView:geometryView];
     DHGeometryView* segmentView = [[DHGeometryView alloc]initWithObjects:@[segment] andSuperView:geometryView];
     
-    DHGeometryView* tempView = [[DHGeometryView alloc]initWithObjects:@[tempS1,tempS2,tempS3,tempA,tempC,tempD] supView:geometryView addTo:hintView];
+    DHGeometryView* tempView = [[DHGeometryView alloc]initWithObjects:@[tempS1,tempS2,tempS3,tempA,tempC,tempD]
+                                                              supView:geometryView addTo:hintView];
     
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
+    Message* message1 = [[Message alloc] initAtPoint:CGPointMake(430,40) addTo:hintView];
+    if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
         [message1 position: CGPointMake(50,100)];
-        [message2 position: CGPointMake(50,120)];
-        [message3 position: CGPointMake(50,140)];
-        [message4 position: CGPointMake(50,160)];
-        [message5 position: CGPointMake(50,180)];
     }
+    if (self.iPhoneVersion) [message1 position: CGPointMake(0,600)];
     
     [hintView addSubview:segmentView];
     [hintView addSubview:cView];
     [hintView addSubview:dView];
     
     [hintView addSubview:message1];
-    [hintView addSubview:message2];
-    [hintView addSubview:message3];
-    [hintView addSubview:message4];
-    [hintView addSubview:message5];
     
     [self afterDelay:0.0 performBlock:^{
+        [message1 text:@"Let's first make the following triangle."];
         [self fadeIn:message1 withDuration:1.0];
     }];
     [self afterDelay:4.0 performBlock:^{
-        [self fadeIn:message2 withDuration:1.0];
+        [message1 appendLine:@"Place point C on one of the rays." withDuration:1.0];
         [self fadeIn:cView withDuration:1.0];
     }];
     [self afterDelay:8.0 performBlock:^{
-        [self fadeIn:message3 withDuration:1.0];
+        [message1 appendLine:@"Place point D on the other ray." withDuration:1.0];
         [self fadeIn:dView withDuration:1.0];
     }];
     [self afterDelay:12.0 performBlock:^{
-        [self fadeIn:message4 withDuration:1.0];
+        [message1 appendLine:@"We can now construct the triangle ACD." withDuration:1.0];
         [self fadeIn:segmentView withDuration:1.0];
     }];
     [self afterDelay:16.0 performBlock:^{
-        [self fadeIn:message5 withDuration:1.0];
+        [message1 appendLine:@"Can you make a congruent triangle at B?" withDuration:1.0];
         
         [self fadeIn:tempView withDuration:0.0];
         [self movePointFrom:tempA to:_rayB.start withDuration:3.0 inView:tempView];

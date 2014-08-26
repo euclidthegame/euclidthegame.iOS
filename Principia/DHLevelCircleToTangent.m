@@ -196,11 +196,6 @@
         hint2_OK = NO;
     }
     
-    Message* message1 = [[Message alloc] initWithMessage:@"Which properties does a circle have if it is tangent to a line? " andPoint:CGPointMake(30,400)];
-    Message* message2 = [[Message alloc] initWithMessage:@"What do we know about the line connecting the center with the tangent point?" andPoint:CGPointMake(30,420)];
-    Message* message3 = [[Message alloc] initWithMessage:@"It is an interseting fact, we learned in Level 13." andPoint:CGPointMake(30,440)];
-    Message* message4 = [[Message alloc] initWithMessage:@"The perpendicular bisector of DE must pass through the center." andPoint:CGPointMake(30,460)];
-    
     DHPerpendicularLine* pl1 = [[DHPerpendicularLine alloc] init];
     pl1.point = _givenLine.start;
     pl1.line = _givenLine;
@@ -234,48 +229,41 @@
     
     DHGeometryView* perpView = [[DHGeometryView alloc]initWithObjects:@[segment] andSuperView:geometryView];
     
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
-    }
-    
     [self afterDelay:1.0 :^{
         if (!self.showingHint) return;
-        
         
         UIView* hintView = [[UIView alloc]initWithFrame:geometryView.frame];
         [geometryView addSubview:hintView];
         [hintView addSubview:bisectorView];
         [hintView addSubview:circleView];
         [hintView addSubview:perpView];
-        [hintView addSubview:message1];
-        [hintView addSubview:message2];
-        [hintView addSubview:message3];
-        [hintView addSubview:message4];
+
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(30,400) addTo:hintView];
+        if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+            [message1 position: CGPointMake(150,500)];
+        }
         
         [self afterDelay:0.5 :^{
             [self showEndHintMessageInView:hintView];
         }];
         
-        
         if (!hint1_OK) {
             [self afterDelay:0.0 performBlock:^{
+                [message1 text:@"Which properties does a circle have if it is tangent to a line?"];
                 [self fadeIn:message1 withDuration:1.0];
                 [self fadeIn:circleView withDuration:1.0];
             }];
             [self afterDelay:4.0 performBlock:^{
-                [self fadeIn:message2 withDuration:1.0];
+                [message1 appendLine:@"What do we know about the line connecting the center with the tangent point?"
+                        withDuration:1.0];
             }];
             [self afterDelay:8.0 performBlock:^{
-                [self fadeIn:message3 withDuration:1.0];
+                [message1 appendLine:@"It is an interseting fact, we learned in Level 13."
+                        withDuration:1.0];
                 [self fadeIn:perpView withDuration:2.0];
                 
                 hint1_OK = YES;
             }];
-            
         }
         else if (!hint2_OK) {
             
@@ -285,21 +273,22 @@
                 [self fadeIn:circleView withDuration:1.0];
             }];
             [self afterDelay:4.0 performBlock:^{
-                [message2 text:@"So A and B are equidistant from the center."];
-                [self fadeIn:message2 withDuration:1.0];
+                [message1 appendLine:@"So A and B are equidistant from the center."
+                        withDuration:1.0];
+                
                 [perpView.geometricObjects addObject:segment2];
                 [perpView setNeedsDisplay];
                 [self fadeIn:perpView withDuration:2.0];
-                
             }];
+            
             [self afterDelay:8.0 performBlock:^{
-                [message3 text:@"What do we know about the perpendicular bisector of line segment AB?"];
-                [self fadeIn:message3 withDuration:1.0];
-                
+                [message1 appendLine:@"What do we know about the perpendicular bisector of line segment AB?"
+                        withDuration:1.0];
             }];
+            
             [self afterDelay:12.0 performBlock:^{
-                [message4 text:@"It is an interseting fact we learned in Level 14."];
-                [self fadeIn:message4 withDuration:1.0];
+                [message1 appendLine:@"It is an interseting fact we learned in Level 14."
+                        withDuration:1.0];
                 [self fadeIn:bisectorView withDuration:2.0];
                 
                 hint2_OK = YES;

@@ -13,7 +13,6 @@
 
 @interface DHLevelMakeTangent () {
     DHCircle* _circle;
-    Message* _message1,*_message2,*_message3;
     BOOL _step1finished;
     BOOL centerOK;
 }
@@ -140,18 +139,14 @@
     
     return NO;
 }
-- (CGPoint)testObjectsForProgressHints:(NSArray *)objects{
-    
-    
+- (CGPoint)testObjectsForProgressHints:(NSArray *)objects
+{
     for (id object in objects){
         if (EqualPoints(_circle.center, object)) {
-            [self fadeOut:_message3 withDuration:1.0];
             return _circle.center.position;
         }
     
     }
-    
-
     
     return CGPointMake(NAN, NAN);
 }
@@ -170,6 +165,7 @@
     [self slideOutToolbar];
     
     DHGeometryView* hintView = [[DHGeometryView alloc] initWithFrame:geometryView.frame];
+    hintView.geoViewTransform = geometryView.geoViewTransform;
     hintView.backgroundColor = [UIColor whiteColor];
     hintView.layer.opacity = 0;
     hintView.hideBottomBorder = YES;
@@ -186,15 +182,16 @@
         }];
         
         DHLineSegment* s1 = [[DHLineSegment alloc] initWithStart:_circle.center andEnd:_circle.pointOnRadius];
-        s1.temporary = YES;
         DHPerpendicularLine* l1 = [[DHPerpendicularLine alloc] initWithLine:s1 andPoint:_circle.pointOnRadius];
-        l1.temporary = YES;
         DHPoint* p1 = [[DHPoint alloc] initWithPosition:_circle.pointOnRadius.position];
-        p1.temporary = YES;
         DHAngleIndicator* angle = [[DHAngleIndicator alloc] initWithLine1:l1 line2:s1 andRadius:20];
         angle.label = @"?";
-        angle.anglePosition = 2;
+        angle.anglePosition = 1;
         
+        s1.temporary = YES;
+        l1.temporary = YES;
+        p1.temporary = YES;
+
         DHGeometryView* tangentView = [[DHGeometryView alloc] initWithObjects:@[l1]
                                                                    supView:geometryView addTo:hintView];
         DHGeometryView* radiusView = [[DHGeometryView alloc] initWithObjects:@[angle, s1, _circle.center]
@@ -203,21 +200,19 @@
                                                                       supView:geometryView addTo:hintView];
         
         Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
         
         [self afterDelay:0.0:^{
             [message1 text:@"Assume that we already have a tangent to the circle."];
             [self fadeInViews:@[message1, tangentView] withDuration:2.0];
         }];
         [self afterDelay:2.5:^{
-            [message2 text:@"By definition, it will only touch the circle at one point."];
-            [self fadeInViews:@[message2, p1View] withDuration:2.0];
+            [message1 appendLine:@"By definition, it will only touch the circle at one point."
+                    withDuration:2.0];
+            [self fadeInViews:@[p1View] withDuration:2.0];
         }];
         [self afterDelay:5.0:^{
-            [message3 text:@"Can you work out what the angle between the tangent and"];
-            [self fadeInViews:@[message3] withDuration:2.0];
+            [message1 appendLine:@"Can you work out what the angle between the tangent and"
+                    withDuration:2.0];
         }];
 
         [self afterDelay:6.0:^{
@@ -225,8 +220,8 @@
         }];
         
         [self afterDelay:7.5:^{
-            [message4 text:@"a segment from that point to the circle center must be?"];
-            [self fadeInViews:@[message4] withDuration:2.0];
+            [message1 appendLine:@"a segment from that point to the circle center must be?"
+                    withDuration:2.0];
         }];
         
     }];

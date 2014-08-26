@@ -203,19 +203,6 @@
         hint2_OK = NO;
     }
     
-    Message* message1 = [[Message alloc] initWithMessage:@"The incircle is tangent to all three sides." andPoint:CGPointMake(100,200)];
-    Message* message2 = [[Message alloc] initWithMessage:@"Such a tangent is perpendicular to a line from the tangent point to the center." andPoint:CGPointMake(100,220)];
-    Message* message3 = [[Message alloc] initWithMessage:@"Those 3 line segments have length equal to the radius of the circle." andPoint:CGPointMake(100,240)];
-    Message* message4 = [[Message alloc] initWithMessage:@"Hence, the following lines are bisecting the angles of the triangle." andPoint:CGPointMake(100,260)];
-
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
-    }
-    
     DHBisectLine* bl1 = [[DHBisectLine alloc] initWithLine:_lAB andLine:_lAC];
     DHBisectLine* bl2 = [[DHBisectLine alloc] initWithLine:_lAC andLine:_lBC];
     bl1.temporary = YES;
@@ -257,10 +244,14 @@
         [hintView addSubview:bView];
         [hintView addSubview:perpView];
         [hintView addSubview:incircle];
-        [hintView addSubview:message1];
-        [hintView addSubview:message2];
-        [hintView addSubview:message3];
-        [hintView addSubview:message4];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(100,200) addTo:hintView];
+        if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+            [message1 position: CGPointMake(150,500)];
+        }
+        if (self.iPhoneVersion) {
+            [message1 position: CGPointMake(0,550)];
+        }
         
         [self afterDelay:0.5 :^{
             [self showEndHintMessageInView:hintView];
@@ -268,18 +259,22 @@
     
         if (!hint1_OK) {
             [self afterDelay:0.0 performBlock:^{
+                [message1 text:@"The incircle is tangent to all three sides."];
                 [self fadeIn:message1 withDuration:1.0];
                 [self fadeIn:incircle withDuration:2.0];
             }];
             [self afterDelay:4.0 performBlock:^{
-                [self fadeIn:message2 withDuration:1.0];
+                [message1 appendLine:@"Such a tangent is perpendicular to a line from the tangent point to the center."
+                        withDuration:1.0];
                 [self fadeIn:perpView withDuration:2.0];
             }];
             [self afterDelay:9.0 performBlock:^{
-                [self fadeIn:message3 withDuration:1.0];
+                [message1 appendLine:@"Those 3 line segments have length equal to the radius of the circle."
+                        withDuration:1.0];
             }];
             [self afterDelay:14.0 performBlock:^{
-                [self fadeIn:message4 withDuration:1.0];
+                [message1 appendLine:@"Hence, the following lines are bisecting the angles of the triangle."
+                        withDuration:1.0];
                 [self fadeIn:bView withDuration:2.0];
                 hint1_OK = YES;
             }];
@@ -293,8 +288,8 @@
                 [self fadeIn:bisectView withDuration:2.0];
             }];
             [self afterDelay:4.0 performBlock:^{
-                [message2 text:@"We know that the line must pass through the center of the incircle. "];
-                [self fadeIn:message2 withDuration:1.0];
+                [message1 appendLine:@"We know that the line must pass through the center of the incircle."
+                        withDuration:1.0];
                 hint2_OK = YES;
             }];
         }

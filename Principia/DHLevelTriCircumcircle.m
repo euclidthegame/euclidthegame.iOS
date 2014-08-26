@@ -192,19 +192,6 @@
         hint2_OK = NO;
     }
     
-    Message* message1 = [[Message alloc] initWithMessage:@"The circumcircle passes through all three vertices of the triangle." andPoint:CGPointMake(50,200)];
-    Message* message2 = [[Message alloc] initWithMessage:@"So the center of the circumcircle is equidistant from the points A, B and C." andPoint:CGPointMake(50,220)];
-    Message* message3 = [[Message alloc] initWithMessage:@"The midpoint of line segment BC is equidistant from the points B and C." andPoint:CGPointMake(50,240)];
-    Message* message4 = [[Message alloc] initWithMessage:@"Can you construct a line that is equidistant from the points B and C?" andPoint:CGPointMake(50,260)];
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
-    }
-    
     DHMidPoint* midBC = [[DHMidPoint alloc] initWithPoint1:_lBC.start andPoint2:_lBC.end];
     DHGeometryView* midView = [[DHGeometryView alloc] initWithObjects:@[midBC] andSuperView:geometryView];
     
@@ -229,29 +216,38 @@
         [hintView addSubview:perpView];
         [hintView addSubview:midView];
         
-        [hintView addSubview:message1];
-        [hintView addSubview:message2];
-        [hintView addSubview:message3];
-        [hintView addSubview:message4];
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(50,200) addTo:hintView];
+        if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+            [message1 position: CGPointMake(150,500)];
+        }
+        if (self.iPhoneVersion) {
+            [message1 position: CGPointMake(5,50)];
+        }
         
         [self afterDelay:0.5 :^{
             [self showEndHintMessageInView:hintView];
         }];
         
-        
         if (!hint1_OK) {
             [self afterDelay:0.0 performBlock:^{
+                [message1 text:@"The circumcircle passes through all three vertices of the triangle."];
                 [self fadeIn:message1 withDuration:1.0];
             }];
+            
             [self afterDelay:4.0 performBlock:^{
-                [self fadeIn:message2 withDuration:1.0];
+                [message1 appendLine:@"So the center of the circumcircle is equidistant from the points A, B and C."
+                        withDuration:1.0];
             }];
+            
             [self afterDelay:8.0 performBlock:^{
-                [self fadeIn:message3 withDuration:1.0];
+                [message1 appendLine:@"The midpoint of line segment BC is equidistant from the points B and C."
+                        withDuration:1.0];
                 [self fadeIn:midView withDuration:2.0];
             }];
+            
             [self afterDelay:12.0 performBlock:^{
-                [self fadeIn:message4 withDuration:1.0];
+                [message1 appendLine:@"Can you construct a line that is equidistant from the points B and C?"
+                        withDuration:1.0];
                 [self fadeIn:perpView withDuration:2.0];
                 hint1_OK = YES;
             }];
@@ -260,35 +256,31 @@
             [self afterDelay:0.0 performBlock:^{
                 [message1 text:@"The line with this property is called the perpendicular bisector of line segment BC."];
                 [self fadeIn:message1 withDuration:1.0];
-                
             }];
+            
             [self afterDelay:4.0 performBlock:^{
-                [message2 text:@"The line is perpendicular to BC and passes through the midpoint."];
+                [message1 appendLine:@"The line is perpendicular to BC and passes through the midpoint."
+                        withDuration:1.0];
                 [self fadeIn:perpView withDuration:2.0];
                 [self fadeIn:midView withDuration:2.0];
-                [self fadeIn:message2 withDuration:1.0];
-                
-                
             }];
+            
             [self afterDelay:8.0 performBlock:^{
-                [message3 text:@"The center of the circumcircle is equidistant from point B and C."];
-                
-                
-                [self fadeIn:message3 withDuration:1.0];
+                [message1 appendLine:@"The center of the circumcircle is equidistant from point B and C."
+                        withDuration:1.0];
             }];
+            
             [self afterDelay:10.0 performBlock:^{
                 [self fadeIn:circleView withDuration:2.0];
-            }
-             ];
+            }];
+            
             [self afterDelay:12.0 performBlock:^{
-                [message4 text:@"Hence, it must lay somewhere on this line !"];
-                [self fadeIn:message4 withDuration:1.0];
+                [message1 appendLine:@"Hence, it must lay somewhere on this line !"
+                        withDuration:1.0];
                 [self movePointOnLine:point toTValue:-280 withDuration:5.0 inView:circleView];
-                hint2_OK = YES;
             }];
             
             [self afterDelay:17.0 performBlock:^{
-                [self fadeIn:message4 withDuration:1.0];
                 [self movePointOnLine:point toTValue:-100 withDuration:2.0 inView:circleView];
                 hint2_OK = YES;
             }];

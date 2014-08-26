@@ -20,4 +20,5 @@
 - (void)positionAbove:(Message*)message;
 - (void)positionBelow:(Message*)message;
 - (void)appendLine:(NSString*)line withDuration:(CGFloat)duration;
+- (void)appendLine:(NSString*)line withDuration:(CGFloat)duration forceNewLine:(BOOL)newLine;
 @end

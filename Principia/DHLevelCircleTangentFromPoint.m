@@ -218,21 +218,6 @@
         hint2_OK = NO;
     }
     
-    Message* message1 = [[Message alloc] initWithMessage:@"Suppose we have a circle with diameter AB." andPoint:CGPointMake(50,500)];
-    Message* message2 = [[Message alloc] initWithMessage:@"And let C be a point on the circle." andPoint:CGPointMake(50,520)];
-    Message* message3 = [[Message alloc] initWithMessage:@"The triangle ABC is inscribed in the circle." andPoint:CGPointMake(50,540)];
-    Message* message4 = [[Message alloc] initWithMessage:@"A very useful fact is that this inscribed triangle is right." andPoint:CGPointMake(50,560)];
-    Message* message5 = [[Message alloc] initWithMessage:@"For any point C on the circle." andPoint:CGPointMake(50,580)];
-    
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
-    }
-    
     DHMidPoint* mp = [[DHMidPoint alloc] init];
     mp.start = _pointA;
     mp.end = _circle.center;
@@ -305,12 +290,11 @@
         [hintView addSubview:tangentView];
         [hintView addSubview:segentView];
         [hintView addSubview:segmentView];
-        [hintView addSubview:message1];
-        [hintView addSubview:message2];
-        [hintView addSubview:message3];
-        [hintView addSubview:message4];
-        [hintView addSubview:message5];
-
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(50,500) addTo:hintView];
+        if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+            [message1 position: CGPointMake(150,450)];
+        }
         
         [self afterDelay:2.0 :^{
             [self showEndHintMessageInView:hintView];
@@ -327,22 +311,27 @@
                 [self fadeIn:geometryView withDuration:1.0];
             }];
             [self afterDelay:2.0 performBlock:^{
+                [message1 text:@"Suppose we have a circle with diameter AB."];
                 [self fadeIn:message1 withDuration:1.0];
                 [self fadeIn:circleView withDuration:2.0];
             }];
             [self afterDelay:6.0 performBlock:^{
-                [self fadeIn:message2 withDuration:1.0];
+                [message1 appendLine:@"And let C be a point on the circle."
+                        withDuration:1.0];
                 [self fadeIn:pointView withDuration:2.0];
             }];
             [self afterDelay:10.0 performBlock:^{
-                [self fadeIn:message3 withDuration:1.0];
+                [message1 appendLine:@"The triangle ABC is inscribed in the circle."
+                        withDuration:1.0];
                 [self fadeIn:triangleView withDuration:2.0];
             }];
             [self afterDelay:14.0 performBlock:^{
-                [self fadeIn:message4 withDuration:1.0];
+                [message1 appendLine:@"A very useful fact is that this inscribed triangle is right."
+                        withDuration:1.0];
             }];
             [self afterDelay:18.0 performBlock:^{
-                [self fadeIn:message5 withDuration:1.0];
+                [message1 appendLine:@"For any point C on the circle."
+                        withDuration:1.0];
                 [triangleView.geometricObjects addObject:pointC];
                 [pointView.geometricObjects removeObject:pointC];
                 
@@ -361,18 +350,19 @@
                 [self fadeIn:tangentView withDuration:2.0];
             }];
             [self afterDelay:4.0 performBlock:^{
-                [message2 text:@"Note that the following segments are perpendicular to the tangents."];
-                [self fadeIn:message2 withDuration:1.0];
+                [message1 appendLine:@"Note that the following segments are perpendicular to the tangents."
+                        withDuration:1.0];
                 [self fadeIn:segentView withDuration:2.0];
             }];
             [self afterDelay:8.0 performBlock:^{
-                [message3 text:@"Which means that the following triangles are right."];
-                [self fadeIn:message3 withDuration:1.0];
+                [message1 appendLine:@"Which means that the following triangles are right."
+                        withDuration:1.0];
                 [self fadeIn:segmentView withDuration:2.0];
             }];
             [self afterDelay:12.0 performBlock:^{
-                [message4 text:@"Just like an inscribed triangle with one side being the diameter."];
-                [self fadeIn:message4 withDuration:1.0];
+                [message1 appendLine:@"Just like an inscribed triangle with one side being the diameter."
+                        withDuration:1.0];
+                
                 hint2_OK = YES;
             }];
         }

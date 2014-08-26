@@ -289,24 +289,14 @@
                                                                    supView:geometryView addTo:hintView];
         
         Message* message1 = [[Message alloc] initAtPoint:CGPointMake(80,460) addTo:hintView];
-        Message* message2 = [[Message alloc] initAtPoint:CGPointMake(80,480) addTo:hintView];
-        Message* message3 = [[Message alloc] initAtPoint:CGPointMake(80,500) addTo:hintView];
-        Message* message4 = [[Message alloc] initAtPoint:CGPointMake(80,520) addTo:hintView];
-        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if(UIInterfaceOrientationIsLandscape(orientation)) {
-            [message1 position: CGPointMake(80,460)];
-            [message2 position: CGPointMake(80,480)];
-            [message3 position: CGPointMake(80,500)];
-            [message4 position: CGPointMake(80,520)];
-        }
         
         [self afterDelay:0.0:^{
             [message1 text:@"All the inner angles of a hexagon always equal 120°."];
             [self fadeInViews:@[message1, hexaView] withDuration:2.5];
         }];
         [self afterDelay:3.0:^{
-            [message2 text:@"Do you have tool that can make an angle easily related to that?"];
-            [self fadeInViews:@[message2] withDuration:2.5];
+            [message1 appendLine:@"Do you have tool that can make an angle easily related to that?"
+                    withDuration:2.5];
         }];
         
         [self afterDelay:2.0 :^{

@@ -233,30 +233,6 @@
     
     [self slideOutToolbar];
     
-    Message* message1 = [[Message alloc] initWithMessage:@"The line we are looking for must be tangent to both circles."
-                                                andPoint:CGPointMake(50,500)];
-    Message* message2 = [[Message alloc] initWithMessage:(@"We know that the tangent is perpendicular to radial lines "
-                                                          @"from the tangent points.")
-                                                andPoint:CGPointMake(50,520)];
-    Message* message3 = [[Message alloc] initWithMessage:@"What if we translate the tangent to point A?"
-                                                andPoint:CGPointMake(50,540)];
-    Message* message4 = [[Message alloc] initWithMessage:@"We then get a right trangle ABC. "
-                                                andPoint:CGPointMake(50,560)];
-    Message* message5 = [[Message alloc] initWithMessage:(@"Which means that the translated line segment is "
-                                                          @"tangent to the following circle.")
-                                                andPoint:CGPointMake(50,580)];
-    Message* message6 = [[Message alloc] initWithMessage:@"Can you construct that circle and reverse the process?"
-                                                andPoint:CGPointMake(50,600)];
-    
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        [message1 position: CGPointMake(150,500)];
-        [message2 position: CGPointMake(150,520)];
-        [message3 position: CGPointMake(150,540)];
-        [message4 position: CGPointMake(150,560)];
-    }
-    
     DHRay* r1 = [[DHRay alloc] initWithStart:_circleB.center andEnd:_circleA.center];
     DHRay* r2 = [[DHRay alloc] initWithStart:_pRadiusA andEnd:_pRadiusB];
     
@@ -278,8 +254,6 @@
     DHLineSegment* AC = [[DHLineSegment alloc] initWithStart:pointC andEnd:_circleA.center];
     DHLineSegment* BD = [[DHLineSegment alloc] initWithStart:pointD andEnd:_circleB.center];
     DHLineSegment* AB = [[DHLineSegment alloc] initWithStart:_pA andEnd:_pB];
-    
-    
     
     DHLineSegment* tangentSegment = [[DHLineSegment alloc]initWithStart:pointC andEnd:pointD];
     DHTranslatedPoint* tP = [[DHTranslatedPoint alloc] initStart:pointD end:pointC newStart:_circleB.center];
@@ -329,36 +303,37 @@
         [hintView addSubview:triangleView];
         [hintView addSubview:oldObjects];
         [hintView addSubview:tangentView];
-        [hintView addSubview:message1];
-        [hintView addSubview:message2];
-        [hintView addSubview:message3];
-        [hintView addSubview:message4];
-        [hintView addSubview:message5];
-        [hintView addSubview:message6];
+        
+        Message* message1 = [[Message alloc] initAtPoint:CGPointMake(50,500) addTo:hintView];
+        if(UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+            [message1 position: CGPointMake(150,500)];
+        }
         
         [self afterDelay:0.0 performBlock:^{
+            [message1 text:@"The line we are looking for must be tangent to both circles."];
             [self fadeIn:message1 withDuration:1.0];
             [self fadeIn:tangentView withDuration:2.0];
         }];
         [self afterDelay:5.0 performBlock:^{
-            [self fadeIn:message2 withDuration:1.0];
+            [message1 appendLine:(@"We know that the tangent is perpendicular to radial lines "
+                                  @"from the tangent points.") withDuration:1.0];
             [self fadeIn:perpView withDuration:2.0];
         }];
         [self afterDelay:10.0 performBlock:^{
-            [self fadeIn:message3 withDuration:1.0];
+            [message1 appendLine:@"What if we translate the tangent to point A?" withDuration:1.0];
             [self fadeIn:translatedView withDuration:2.0];
         }];
         [self afterDelay:15.0 performBlock:^{
-            [self fadeIn:message4 withDuration:1.0];
+            [message1 appendLine:@"We then get a right trangle ABC." withDuration:1.0];
             [self fadeIn:triangleView withDuration:2.0];
-            
         }];
         [self afterDelay:20.0 performBlock:^{
-            [self fadeIn:message5 withDuration:1.0];
+            [message1 appendLine:(@"Which means that the translated line segment is "
+                                  @"tangent to the following circle.") withDuration:1.0];
             [self fadeIn:circleView withDuration:2.0];
         }];
         [self afterDelay:25.0 performBlock:^{
-            [self fadeIn:message6 withDuration:1.0];
+            [message1 appendLine:@"Can you construct that circle and reverse the process?" withDuration:1.0];
         }];
     }];
     

@@ -260,12 +260,6 @@
     
     [self slideOutToolbar];
     
-    
-    /*Message* message1 = [[Message alloc] initWithMessage:@"We are looking for a point G such that:" andPoint:CGPointMake(450,100)];
-    Message* message2 = [[Message alloc] initWithMessage:@"  1. AG = CD" andPoint:CGPointMake(450,120)];
-    Message* message3 = [[Message alloc] initWithMessage:@"  2. BG = EF" andPoint:CGPointMake(450,140)];
-    Message* message4 = [[Message alloc] initWithMessage:@"How can we construct such a point?" andPoint:CGPointMake(450,160)];*/
-    
     DHTranslatedPoint* tp1 = [[DHTranslatedPoint alloc] initStart:_lineCD.start end:_lineCD.end newStart:_lineAB.start];
     DHTranslatedPoint* tp2 = [[DHTranslatedPoint alloc] initStart:_lineEF.start end:_lineEF.end newStart:_lineAB.end];
     DHCircle* c1 = [[DHCircle alloc] initWithCenter:_lineAB.start andPointOnRadius:tp1];
@@ -311,12 +305,8 @@
         [self fadeIn:pointGView withDuration:2];
         
         [self performBlock:^{
-            if (self.iPhoneVersion) {
-                [message1 appendLine:@"\n  1. AG = CD" withDuration:2.0];
-            } else {
-                [message1 appendLine:@"  1. AG = CD" withDuration:2.0];
-            }
-            
+            [message1 appendLine:@"  1. AG = CD" withDuration:2.0 forceNewLine:YES];
+
             [self fadeIn:moveCD withDuration:0.5];
             [self movePointFrom:pointC to:_lineAB.start withDuration:1.5 inView:moveCD];
             [self movePointFrom:pointD to:pG withDuration:1.5 inView:moveCD];
@@ -324,11 +314,7 @@
         } afterDelay:4.0];
         
         [self performBlock:^{
-            if (self.iPhoneVersion) {
-                [message1 appendLine:@"\n  2. BG = EF" withDuration:2.0];
-            } else {
-                [message1 appendLine:@"  2. BG = EF" withDuration:2.0];
-            }
+            [message1 appendLine:@"  2. BG = EF" withDuration:2.0 forceNewLine:YES];
             
             [self fadeIn:moveEF withDuration:0.5];
             [self movePointFrom:pointE to:pG withDuration:1.5 inView:moveEF];
@@ -337,11 +323,7 @@
         } afterDelay:8.0];
         
         [self performBlock:^{
-            if (self.iPhoneVersion) {
-                [message1 appendLine:@"\nHow can we construct such a point?" withDuration:2.0];
-            } else {
-                [message1 appendLine:@"How can we construct such a point?" withDuration:2.0];
-            }
+            [message1 appendLine:@"How can we construct such a point?" withDuration:2.0 forceNewLine:YES];
             
             hint1_OK = YES;
         } afterDelay:12.0];

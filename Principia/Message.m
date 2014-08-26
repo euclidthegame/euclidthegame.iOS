@@ -196,13 +196,18 @@
 }
 - (void)appendLine:(NSString*)line withDuration:(CGFloat)duration;
 {
+    [self appendLine:line withDuration:duration forceNewLine:NO];
+}
+
+- (void)appendLine:(NSString *)line withDuration:(CGFloat)duration forceNewLine:(BOOL)newLine
+{
     CATransition *animation = [CATransition animation];
     animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     animation.type = kCATransitionFade;
     animation.duration = duration;
     [self.layer addAnimation:animation forKey:@"kCATransitionFade"];
     
-    if (_iPhoneVersion) {
+    if (_iPhoneVersion && !newLine) {
         self.text = [self.text stringByAppendingFormat:@" %@", line];
     } else {
         self.text = [self.text stringByAppendingFormat:@"\n%@", line];

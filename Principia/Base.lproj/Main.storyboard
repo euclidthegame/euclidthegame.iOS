@@ -335,7 +335,7 @@
                                         </attributes>
                                     </fragment>
                                     <fragment>
-                                        <string key="content">was developed by Kasper Peulen and David Hallgren.
+                                        <string key="content">was designed and developed by Kasper Peulen and David Hallgren.
 
 If you have any questions, suggestions or feedback, please let us know!
 
@@ -345,7 +345,7 @@ Reach us at: </string>
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content="mailto:mail@euclidthegame.com">
+                                    <fragment content="mail@euclidthegame.com">
                                         <attributes>
                                             <font key="NSFont" size="18" name="HelveticaNeue"/>
                                             <url key="NSLink" string="mailto:mail@euclidthegame.com"/>
@@ -661,31 +661,31 @@ Reach us at: </string>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vsY-Tg-X0y" customClass="DHGameModeSelectionButton">
-                                <rect key="frame" x="60" y="438" width="648" height="89"/>
+                                <rect key="frame" x="60" y="442" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <gestureRecognizers/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cr8-Ea-dzt" customClass="DHGameModeSelectionButton">
-                                <rect key="frame" x="60" y="547" width="648" height="89"/>
+                                <rect key="frame" x="60" y="555" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <gestureRecognizers/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bxx-Wr-Kg5" customClass="DHGameModeSelectionButton">
-                                <rect key="frame" x="60" y="656" width="648" height="89"/>
+                                <rect key="frame" x="60" y="668" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <gestureRecognizers/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k82-Ms-g7n" customClass="DHGameModeSelectionButton">
-                                <rect key="frame" x="60" y="765" width="648" height="89"/>
+                                <rect key="frame" x="60" y="781" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <gestureRecognizers/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qtQ-VX-LXh" customClass="DHGameModeSelectionButton">
-                                <rect key="frame" x="60" y="874" width="648" height="89"/>
+                                <rect key="frame" x="60" y="894" width="648" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <gestureRecognizers/>
@@ -712,12 +712,12 @@ Reach us at: </string>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="width" secondItem="k82-Ms-g7n" secondAttribute="width" id="5Km-hd-6Mr"/>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="top" secondItem="cI1-my-sfW" secondAttribute="bottom" constant="40" id="7Lb-9k-5AI"/>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="width" secondItem="vsY-Tg-X0y" secondAttribute="width" id="7Pz-Sc-dvf"/>
-                            <constraint firstItem="qtQ-VX-LXh" firstAttribute="top" secondItem="k82-Ms-g7n" secondAttribute="bottom" constant="20" id="8ih-bw-Xjl"/>
-                            <constraint firstItem="k82-Ms-g7n" firstAttribute="top" secondItem="Bxx-Wr-Kg5" secondAttribute="bottom" constant="20" id="9qt-Ex-cOT"/>
-                            <constraint firstItem="vsY-Tg-X0y" firstAttribute="top" secondItem="ABq-xw-SHb" secondAttribute="bottom" constant="20" id="9s9-PE-XGk"/>
+                            <constraint firstItem="qtQ-VX-LXh" firstAttribute="top" secondItem="k82-Ms-g7n" secondAttribute="bottom" constant="24" id="8ih-bw-Xjl"/>
+                            <constraint firstItem="k82-Ms-g7n" firstAttribute="top" secondItem="Bxx-Wr-Kg5" secondAttribute="bottom" constant="24" id="9qt-Ex-cOT"/>
+                            <constraint firstItem="vsY-Tg-X0y" firstAttribute="top" secondItem="ABq-xw-SHb" secondAttribute="bottom" constant="24" id="9s9-PE-XGk"/>
                             <constraint firstItem="Bxx-Wr-Kg5" firstAttribute="width" secondItem="ABq-xw-SHb" secondAttribute="width" id="EQr-tY-COB"/>
                             <constraint firstItem="qtQ-VX-LXh" firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="Hn3-d2-3h5"/>
-                            <constraint firstItem="Bxx-Wr-Kg5" firstAttribute="top" secondItem="Cr8-Ea-dzt" secondAttribute="bottom" constant="20" id="PX6-dF-0lU"/>
+                            <constraint firstItem="Bxx-Wr-Kg5" firstAttribute="top" secondItem="Cr8-Ea-dzt" secondAttribute="bottom" constant="24" id="PX6-dF-0lU"/>
                             <constraint firstItem="Cr8-Ea-dzt" firstAttribute="height" secondItem="ABq-xw-SHb" secondAttribute="height" id="QLr-eG-MWH"/>
                             <constraint firstItem="qtQ-VX-LXh" firstAttribute="width" secondItem="ABq-xw-SHb" secondAttribute="width" id="RCa-W8-iAM"/>
                             <constraint firstItem="su9-Tg-XSX" firstAttribute="centerX" secondItem="ABq-xw-SHb" secondAttribute="centerX" id="RYd-21-rg4"/>
@@ -736,7 +736,7 @@ Reach us at: </string>
                             <constraint firstItem="qtQ-VX-LXh" firstAttribute="height" secondItem="ABq-xw-SHb" secondAttribute="height" id="rQ0-EG-irq"/>
                             <constraint firstItem="OyL-ZN-8LC" firstAttribute="top" secondItem="elH-q6-ObI" secondAttribute="bottom" constant="1" id="syc-LE-q4N"/>
                             <constraint firstItem="ABq-xw-SHb" firstAttribute="height" secondItem="k82-Ms-g7n" secondAttribute="height" id="uuz-Ma-Itz"/>
-                            <constraint firstItem="Cr8-Ea-dzt" firstAttribute="top" secondItem="vsY-Tg-X0y" secondAttribute="bottom" constant="20" id="vP7-7v-fCX"/>
+                            <constraint firstItem="Cr8-Ea-dzt" firstAttribute="top" secondItem="vsY-Tg-X0y" secondAttribute="bottom" constant="24" id="vP7-7v-fCX"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Select game mode" id="gR4-4v-6e5"/>

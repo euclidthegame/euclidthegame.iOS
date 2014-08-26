@@ -134,7 +134,7 @@
          [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeTop
                                       relatedBy:NSLayoutRelationEqual
                                          toItem:self.topLayoutGuide attribute:NSLayoutAttributeTop
-                                     multiplier:1 constant:90]];
+                                     multiplier:1 constant:80]];
         
         [self.layoutConstraintsLandscape addObject:
          [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeRight

@@ -45,6 +45,7 @@
     CGPoint _tempGeoCenter;
     
     YLProgressBar* _progressBar;
+    UILabel* _progressLabelPhone;
     
     BOOL _iPhoneVersion;
     
@@ -182,6 +183,16 @@
                                                               attribute:NSLayoutAttributeWidth
                                                              multiplier:1.0
                                                                constant:-10.0]];
+        
+        if (_currentGameMode != kDHGameModeTutorial &&
+            _currentGameMode != kDHGameModePlayground &&
+            [DHSettings showProgressPercentage])
+        {
+            _progressLabelPhone = [[UILabel alloc] initWithFrame:CGRectMake(6, 5, 100, 100)];
+            _progressLabelPhone.textColor = [UIColor darkGrayColor];
+            _progressLabelPhone.font = [UIFont systemFontOfSize:14];
+            [self.view addSubview:_progressLabelPhone];
+        }
     }
 
     [self setupForLevel];
@@ -947,6 +958,9 @@
         [_currentLevel showHint];
         [_currentTool reset];
     }
+    
+    if (_progressLabelPhone) [_currentLevel fadeOut:_progressLabelPhone withDuration:1.0];
+    if (_movesLabel) [_currentLevel fadeOut:_movesLabel withDuration:1.0];
 }
 - (void)hideHint:(id)sender
 {
@@ -986,6 +1000,9 @@
 }
 - (void)hintFinished
 {
+    if (_progressLabelPhone) [_currentLevel fadeIn:_progressLabelPhone withDuration:1.0];
+    if (_movesLabel) [_currentLevel fadeIn:_movesLabel withDuration:1.0];
+    
     _detailedInstructions.enabled = YES;
     UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain
                                                                  target:self action:nil];
@@ -1560,6 +1577,10 @@
 - (void)setLevelProgress:(NSUInteger)progress
 {
     [_progressBar setProgress:progress/100.0 animated:YES];
+    if (_progressLabelPhone) {
+        _progressLabelPhone.text = [NSString stringWithFormat:@"Progress: %d%%", progress];
+        [_progressLabelPhone sizeToFit];
+    }
 }
 
 #pragma mark Transition delegate methods

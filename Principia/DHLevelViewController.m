@@ -53,6 +53,8 @@
     DHPopoverView* _popoverToolMenu;
     
     DHTriangleView* _toolTriangleIndicator;
+    
+    NSDate* _levelStartTime;
 }
 
 #pragma mark Life-cycle
@@ -237,6 +239,8 @@
     _currentLevel.toolControl = self.toolControl;
     _currentLevel.heightToolbar = self.heightToolBar;
     
+    _levelStartTime = [NSDate date];
+    
     self.firstMoveMade = NO;
     
     // Turn hints off every new level
@@ -399,6 +403,8 @@
 }
 - (void)addGeometricObjects:(NSArray*)objects_
 {
+    [self checkTimePlayed];
+    
     NSMutableArray* tempobjects = [[NSMutableArray alloc]initWithArray:objects_];
     for (id newobject in objects_) {
         for (id oldobject in _geometricObjects) {
@@ -1583,6 +1589,21 @@
     }
 }
 
+- (void)checkTimePlayed
+{
+    if (_currentGameMode == kDHGameModeTutorial || _currentGameMode == kDHGameModePlayground) {
+        return;
+    }
+    
+    // Calculate number of seconds played on level
+    NSTimeInterval timePlayed = -[_levelStartTime timeIntervalSinceNow];
+    
+    if (timePlayed > 60*30) {
+        [[DHGameCenterManager sharedInstance] reportAchievementIdentifier:kAchievementID_Persistence_30min
+                                                          percentComplete:100.0];
+    }
+}
+
 #pragma mark Transition delegate methods
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
                                   animationControllerForOperation:(UINavigationControllerOperation)operation
@@ -1596,7 +1617,7 @@
     }
 }
 
-#pragma mark - Popover menu methods
+#pragma mark Popover menu methods
 - (void)showPopoverMenu:(id)sender
 {
     if(!_popoverMenu) {

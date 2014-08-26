@@ -16,6 +16,9 @@ static NSString* const kAchievementID_GameModeNormalMinimumMoves_1_25 = @"Euclid
 static NSString* const kAchievementID_GameModePrimitiveOnly_1_25 = @"Euclid_GameModePrimitiveOnly_1_25";
 static NSString* const kAchievementID_GameModePrimitiveOnlyMinimumMoves_1_25 = @"Euclid_GameModePrimitiveOnlyMinimumMoves_1_25";
 
+static NSString* const kAchievementID_Persistence_30min = @"Euclid_Persistence1";
+
+
 // Leaderboard identifiers
 static NSString* const kLeaderboardID_LevelsCompletedNormal = @"DH.Euclid.LevelsCompleted_Normal";
 static NSString* const kLeaderboardID_LevelsCompletedNormalMinimumMoves = @"DH.Euclid.LevelsCompleted_NormalMinimumMoves";

@@ -122,10 +122,6 @@ CG_INLINE CGVector CGVectorMultiplyByScalar(CGVector vector, CGFloat value)
     float32x2_t v = vmul_f32(*(float32x2_t *)&vector,
                              vdup_n_f32((float32_t)value));
     return *(CGVector *)&v;
-#elseif defined(__ARM_NEON__) && CGFLOAT_IS_DOUBLE
-    float64x2_t v = vmul_f64(*(float64x2_t *)&vector,
-                             vdup_n_f64((float64_t)value));
-    return *(CGVector *)&v;
 #else
     return CGVectorMake(vector.dx * value, vector.dy * value);
 #endif

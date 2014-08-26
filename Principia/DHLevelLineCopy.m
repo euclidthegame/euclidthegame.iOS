@@ -37,7 +37,7 @@
 - (NSString *)additionalCompletionMessage
 {
     return (@"You unlocked a new tool: Translating lines! Note that this new tool won't work when all points "
-            @"lay on the same line. Enhance your new tool in Level 8.");
+            @"lay on the same line. Enhance the tool in Level 8.");
 }
 
 - (NSUInteger)minimumNumberOfMoves

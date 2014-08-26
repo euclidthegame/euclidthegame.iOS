@@ -205,10 +205,11 @@ const CGFloat kTriangleWidth = 20;
     [UIView setAnimationDuration:0.4];
     self.alpha = 1;
     [UIView commitAnimations];
-    UITapGestureRecognizer* singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closePopoverView)];
+    UITapGestureRecognizer* singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                action:@selector(closePopoverView)];
     singleTap.numberOfTapsRequired = 1;
     singleTap.numberOfTouchesRequired = 1;
-    [self addGestureRecognizer: singleTap];
+    [_container addGestureRecognizer: singleTap];
 }
 
 - (NSInteger)addButtonWithImage:(UIImage *)image enabled:(BOOL)enabled

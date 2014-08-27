@@ -36,8 +36,7 @@
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint* selectGameModeLabelDistanceConstraint;
 @property (nonatomic, strong) IBOutletCollection(NSLayoutConstraint) NSArray *gameModeViewDistanceConstraints;
 
-
-- (IBAction)showLeaderboards:(id)sender;
-- (IBAction)closeSettings:(UIStoryboardSegue *)unwindSegue;
+- (void)showLeaderboards:(id)sender;
+- (void)closeSettings:(UIStoryboardSegue *)unwindSegue;
 
 @end

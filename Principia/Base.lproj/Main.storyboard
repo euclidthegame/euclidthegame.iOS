@@ -365,8 +365,8 @@ Reach us at: </string>
                             <constraint firstItem="3KD-Ih-RJK" firstAttribute="leading" secondItem="1xp-Ai-Iq8" secondAttribute="leading" constant="10" id="tbk-kv-1ls"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="y5A-br-SCU">
-                        <barButtonItem key="leftBarButtonItem" title="Close" id="pho-Yl-lwo">
+                    <navigationItem key="navigationItem" title="About" id="y5A-br-SCU">
+                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="pho-Yl-lwo">
                             <connections>
                                 <segue destination="4Lu-iW-t4d" kind="unwind" unwindAction="closeAboutView:" id="H8T-eu-PjE"/>
                             </connections>
@@ -391,8 +391,9 @@ Reach us at: </string>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gRG-0Z-er9">
-                                <rect key="frame" x="12" y="6" width="37" height="30"/>
+                                <rect key="frame" x="486" y="5" width="42" height="33"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <state key="normal" title="Done">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -428,12 +429,12 @@ Reach us at: </string>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="SOU-G1-0Xe" secondAttribute="trailing" id="2D1-cd-ySm"/>
                             <constraint firstItem="SOU-G1-0Xe" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" id="3mp-Na-yXX"/>
-                            <constraint firstItem="gRG-0Z-er9" firstAttribute="top" secondItem="kzw-TJ-W3W" secondAttribute="bottom" constant="6" id="dGu-t8-cHX"/>
+                            <constraint firstItem="gRG-0Z-er9" firstAttribute="top" secondItem="kzw-TJ-W3W" secondAttribute="bottom" constant="5" id="dGu-t8-cHX"/>
                             <constraint firstAttribute="centerX" secondItem="VMu-TK-ICU" secondAttribute="centerX" id="f6S-ek-4T5"/>
                             <constraint firstItem="g3O-gE-3Fo" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" id="gBg-5f-aZp"/>
                             <constraint firstItem="VMu-TK-ICU" firstAttribute="top" secondItem="kzw-TJ-W3W" secondAttribute="bottom" constant="10" id="k1x-fN-ayd"/>
                             <constraint firstItem="g3O-gE-3Fo" firstAttribute="top" secondItem="SOU-G1-0Xe" secondAttribute="bottom" id="m5C-mI-QXG"/>
-                            <constraint firstItem="gRG-0Z-er9" firstAttribute="leading" secondItem="8gc-Od-lbP" secondAttribute="leading" constant="12" id="myc-b8-VLj"/>
+                            <constraint firstAttribute="trailing" secondItem="gRG-0Z-er9" secondAttribute="trailing" constant="12" id="myc-b8-VLj"/>
                             <constraint firstItem="SOU-G1-0Xe" firstAttribute="top" secondItem="VMu-TK-ICU" secondAttribute="bottom" constant="8" id="qSZ-lL-51d"/>
                             <constraint firstAttribute="trailing" secondItem="g3O-gE-3Fo" secondAttribute="trailing" id="vjF-BB-aLj"/>
                             <constraint firstItem="KjS-fg-e6e" firstAttribute="top" secondItem="g3O-gE-3Fo" secondAttribute="bottom" id="xaQ-RY-PGn"/>

@@ -230,7 +230,7 @@
 }
 - (Message*)createUpperMessageWithSuperView:(UIView*)view
 {
-    CGFloat message1Top = self.iPhoneVersion ? 45 : 90;
+    CGFloat message1Top = self.iPhoneVersion ? 25 : 90;
     Message* message = [[Message alloc] initAtPoint:CGPointMake(100,message1Top) addTo:view];
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];

@@ -253,7 +253,7 @@
                         withDuration:1.0];
             }];
             [self afterDelay:8.0 performBlock:^{
-                [message1 appendLine:@"It is an interseting fact, we learned in Level 13."
+                [message1 appendLine:@"It is an interesting fact, we learned in Level 13."
                         withDuration:1.0];
                 [self fadeIn:perpView withDuration:2.0];
                 
@@ -282,7 +282,7 @@
             }];
             
             [self afterDelay:12.0 performBlock:^{
-                [message1 appendLine:@"It is an interseting fact we learned in Level 14."
+                [message1 appendLine:@"It is an interesting fact we learned in Level 14."
                         withDuration:1.0];
                 [self fadeIn:bisectorView withDuration:2.0];
                 

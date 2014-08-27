@@ -267,7 +267,7 @@
             
         }];
         [self afterDelay:8.0 performBlock:^{
-            [message1 appendLine:@"Remember the intersting fact that we learned in Level 14."
+            [message1 appendLine:@"Remember the interesting fact that we learned in Level 14."
                     withDuration:1.0 forceNewLine:YES];
         }];
         [self afterDelay:12.0 performBlock:^{

@@ -8,6 +8,8 @@
 
 #import "Message.h"
 
+static const CGFloat kMessageiPhoneMargin = 10.0;
+
 @interface Message ()
 
 @property (nonatomic, weak) Message* childAbove;
@@ -31,7 +33,7 @@
             _iPhoneVersion = YES;
         }
         if (_iPhoneVersion) {
-            self.font = [UIFont systemFontOfSize:12];
+            self.font = [UIFont systemFontOfSize:13];
             [self setLineBreakMode:NSLineBreakByWordWrapping];
         }
         self.numberOfLines = 0;
@@ -71,7 +73,7 @@
 }
 - (void)position:(CGPoint)point {
     if (_iPhoneVersion && !_fixedPosition) {
-        point.x = 5;
+        point.x = kMessageiPhoneMargin;
         point.y = point.y * 0.5;
     }
     
@@ -185,9 +187,9 @@
     if (_iPhoneVersion) {
         CGFloat maxWidth;
         if (!self.superview) {
-            maxWidth = [[UIScreen mainScreen] bounds].size.width - 10;
+            maxWidth = [[UIScreen mainScreen] bounds].size.width - kMessageiPhoneMargin*2;
         } else {
-            maxWidth = self.superview.bounds.size.width - 10;
+            maxWidth = self.superview.bounds.size.width - kMessageiPhoneMargin*2;
         }
         return [super sizeThatFits:CGSizeMake(maxWidth, CGFLOAT_MAX)];
     } else {

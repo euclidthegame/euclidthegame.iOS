@@ -1271,7 +1271,7 @@
     [detailedInstructionView addSubview:turnHintOnLabel];
     [detailedInstructionView addSubview:hintSwitch];
     
-    if (!self.currentGameMode == kDHGameModeNormal) {
+    if (!self.currentGameMode == kDHGameModeNormal || _levelIndex == 24) {
         turnHintOnLabel.hidden = YES;
         hintSwitch.hidden  = YES;
     }

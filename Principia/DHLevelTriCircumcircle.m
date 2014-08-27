@@ -270,7 +270,7 @@
             }];
             
             [self afterDelay:12.0 performBlock:^{
-                [message1 appendLine:@"Hence, it must lay somewhere on this line!"
+                [message1 appendLine:@"Hence, it must lie somewhere on this line!"
                         withDuration:1.0];
                 [self movePointOnLine:point toTValue:-280 withDuration:5.0 inView:circleView];
             }];

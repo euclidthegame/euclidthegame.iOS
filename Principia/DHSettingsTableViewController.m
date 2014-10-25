@@ -54,12 +54,12 @@ static const NSUInteger kResetProgressAlertView = 1;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(enableHiddenSettings)];
     tap.numberOfTapsRequired = 2;
     tap.numberOfTouchesRequired = 2;
     [self.view addGestureRecognizer:tap];
-
 }
 
 - (void)didReceiveMemoryWarning

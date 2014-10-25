@@ -208,6 +208,7 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if(UIInterfaceOrientationIsLandscape(orientation)) {
         [self.geometryView centerContent];

@@ -82,12 +82,13 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     [self loadProgressData];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-
+    [super viewDidDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning

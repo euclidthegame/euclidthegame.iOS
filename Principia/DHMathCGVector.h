@@ -70,7 +70,7 @@ CG_INLINE CGFloat CGVectorLength(CGVector vector);
 CG_INLINE CGFloat CGVectorDistance(CGVector vectorStart, CGVector vectorEnd);
 
 /* Create an NSString describing this vector */
-CG_INLINE NSString* NSStringFromCGVector(CGVector vector);
+//static CG_INLINE NSString* NSStringFromCGVector(CGVector vector);
 
 /* Determine if two vectors are equal */
 CG_INLINE bool __CGVectorEqualToVector(CGVector vector1, CGVector vector2);
@@ -202,10 +202,10 @@ CG_INLINE CGFloat CGVectorDistance(CGVector vectorStart, CGVector vectorEnd)
     return CGVectorLength(CGVectorDifference(vectorEnd, vectorStart));
 }
 
-CG_INLINE NSString* NSStringFromCGVector(CGVector vector)
+/*CG_INLINE NSString* NSStringFromCGVector(CGVector vector)
 {
     return [NSString stringWithFormat:@"{%f, %f}", vector.dx, vector.dy];
-}
+}*/
 
 CG_INLINE bool CGVectorEqualToVector(CGVector vector1, CGVector vector2)
 {

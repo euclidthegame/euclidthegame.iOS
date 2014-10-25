@@ -14,6 +14,7 @@
 
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
     if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
         _iPhoneVersion = YES;
     }

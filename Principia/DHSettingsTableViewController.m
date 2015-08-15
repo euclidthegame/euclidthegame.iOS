@@ -10,7 +10,6 @@
 #import "DHSettings.h"
 #import "DHLevelResults.h"
 #import "DHGameCenterManager.h"
-#import "DHIAPManager.h"
 
 static const NSUInteger kResetProgressAlertView = 1;
 
@@ -97,11 +96,6 @@ static const NSUInteger kResetProgressAlertView = 1;
     alertView.tag = kResetProgressAlertView;
     [alertView show];
     
-}
-
-- (IBAction)restorePurchases:(id)sender
-{
-    [[DHIAPManager sharedInstance] restoreCompletedTransactions];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

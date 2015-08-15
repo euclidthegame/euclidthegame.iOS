@@ -127,7 +127,7 @@
         CGVector bc = CGVectorNormalize(_givenLine.vector);
         CGFloat lDotBC = CGVectorDotProduct(CGVectorNormalize(l.vector), bc);
 
-        if (EqualScalarValues(fabsf(lDotBC), 1) && PointOnLine(_pointA, l)) {
+        if (EqualScalarValues(fabs(lDotBC), 1) && PointOnLine(_pointA, l)) {
             self.progress = 100;
             return YES;
         }

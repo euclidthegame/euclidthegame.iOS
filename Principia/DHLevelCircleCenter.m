@@ -289,7 +289,7 @@
         newOffset = CGPointMake(-30, 0);
     }
     
-    if(UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation])) {
+    if(UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) {
         [geometryView.geoViewTransform setScale:newScale];
         [geometryView centerContent];
         newOffset = geometryView.geoViewTransform.offset;

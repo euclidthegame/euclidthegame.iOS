@@ -54,6 +54,8 @@
     
     DHTriangleView* _toolTriangleIndicator;
     
+    UIView* _levelCompletionBackgroundView;
+    
     NSDate* _levelStartTime;
 }
 
@@ -1062,8 +1064,9 @@
     background.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];
     [self.view addSubview:background];
     [self.view bringSubviewToFront:self.levelCompletionMessage];
-    [background addSubview:self.levelCompletionMessage];
+    //[background addSubview:self.levelCompletionMessage];
     background.alpha = 0;
+    _levelCompletionBackgroundView = background;
     
     NSMutableString* completionMessageText = [[NSMutableString alloc] init];
     
@@ -1150,9 +1153,11 @@
 
 - (IBAction)hideCompletionMessage:(id)sender
 {
-    if (self.levelCompletionMessage.superview && self.levelCompletionMessage.superview != self.view) {
-        [self.levelCompletionMessage.superview removeFromSuperview];
-    }
+    //if (self.levelCompletionMessage.superview && self.levelCompletionMessage.superview != self.view) {
+    //    [self.levelCompletionMessage.superview removeFromSuperview];
+    //}
+    [_levelCompletionBackgroundView removeFromSuperview];
+    _levelCompletionBackgroundView = nil;
     self.levelCompletionMessage.hidden = YES;
 }
 

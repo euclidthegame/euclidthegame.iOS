@@ -3,7 +3,8 @@
 //  Euclid
 //
 //  Created by David Hallgren on 2014-08-19.
-//  Copyright (c) 2014 David Hallgren. All rights reserved.
+//  Copyright (c) 2015, Kasper Peulen & David Hallgren. All rights reserved.
+//  Use of this source code is governed by a MIT license that can be found in the LICENSE file.
 //
 
 #import "DHPopoverView.h"

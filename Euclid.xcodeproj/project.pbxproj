@@ -26,6 +26,7 @@
 		681C88B019921C45005307F5 /* DHPerpendicularTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C88AF19921C45005307F5 /* DHPerpendicularTool.m */; };
 		681C88B219921C86005307F5 /* DHParallelTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C88B119921C86005307F5 /* DHParallelTool.m */; };
 		681C88B419921CAE005307F5 /* DHTranslateSegmentTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 681C88B319921CAE005307F5 /* DHTranslateSegmentTool.m */; };
+		681DEC3B1B862FDA006FFF8A /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 681DEC3A1B862FDA006FFF8A /* Launch Screen.xib */; };
 		68376935197C315700D53E21 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9E619587AEC00A97B86 /* XCTest.framework */; };
 		68376936197C315700D53E21 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9C719587AEC00A97B86 /* Foundation.framework */; };
 		68376937197C315700D53E21 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68F0A9CB19587AEC00A97B86 /* UIKit.framework */; };
@@ -131,6 +132,7 @@
 		681C88AF19921C45005307F5 /* DHPerpendicularTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHPerpendicularTool.m; sourceTree = "<group>"; };
 		681C88B119921C86005307F5 /* DHParallelTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHParallelTool.m; sourceTree = "<group>"; };
 		681C88B319921CAE005307F5 /* DHTranslateSegmentTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHTranslateSegmentTool.m; sourceTree = "<group>"; };
+		681DEC3A1B862FDA006FFF8A /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		68376934197C315600D53E21 /* Euclid Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Euclid Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6837693A197C315700D53E21 /* Euclid Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Euclid Tests-Info.plist"; sourceTree = "<group>"; };
 		6837693C197C315700D53E21 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -389,6 +391,7 @@
 				688768C219A84FCF000CAB03 /* Other */,
 				68F0A9DF19587AEC00A97B86 /* Images.xcassets */,
 				68F0A9CE19587AEC00A97B86 /* Supporting Files */,
+				681DEC3A1B862FDA006FFF8A /* Launch Screen.xib */,
 			);
 			name = Euclid;
 			path = Principia;
@@ -647,6 +650,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68F0A9E019587AEC00A97B86 /* Images.xcassets in Resources */,
+				681DEC3B1B862FDA006FFF8A /* Launch Screen.xib in Resources */,
 				68F0A9D219587AEC00A97B86 /* InfoPlist.strings in Resources */,
 				68F0A9DB19587AEC00A97B86 /* Main.storyboard in Resources */,
 			);

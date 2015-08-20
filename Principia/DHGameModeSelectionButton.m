@@ -38,16 +38,17 @@
         _shadowRadiusSelected = 3.0;
         _shadowOffset = CGSizeMake(3, 3);
         _shadowOffsetSelected = CGSizeMake(1, 1);
+        self.layer.cornerRadius = 8.0;
         
         if (_iPhoneVersion) {
-            _shadowRadius = 4.0;
-            _shadowRadiusSelected = 1.5;
-            _shadowOffset = CGSizeMake(1.5, 1.5);
+            _shadowRadius = 1.5;
+            _shadowRadiusSelected = 0;
+            _shadowOffset = CGSizeMake(1.0, 1.0);
+            self.layer.cornerRadius = 4.0;
         }
         
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor whiteColor];
-        self.layer.cornerRadius = 8.0;
         self.layer.shadowColor = [UIColor blackColor].CGColor;
         self.layer.shadowOffset = _shadowOffset;
         self.layer.shadowOpacity = 0.5;

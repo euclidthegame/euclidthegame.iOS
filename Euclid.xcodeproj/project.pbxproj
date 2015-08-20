@@ -602,6 +602,7 @@
 						TestTargetID = 68F0A9C319587AEC00A97B86;
 					};
 					68F0A9C319587AEC00A97B86 = {
+						DevelopmentTeam = 99K4X6B359;
 						SystemCapabilities = {
 							com.apple.GameCenter = {
 								enabled = 1;

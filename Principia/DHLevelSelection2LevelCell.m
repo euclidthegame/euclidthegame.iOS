@@ -9,6 +9,20 @@
 #import "DHLevelSelection2LevelCell.h"
 #import "DHGeometryView.h"
 
+const float shadowRadiusDisabledIphone = 1.0;
+const float shadowRadiusEnabledIphone = 2.0;
+const float shadowRadiusEnabledSelectedIphone = 1.0;
+const CGSize shadowOffsetDisabledIphone = {1.0, 1.0};
+const CGSize shadowOffsetEnabledIphone = {2.0, 2.0};
+const CGSize shadowOffsetEnabledSelectedIphone = {1.0, 1.0};
+
+const float shadowRadiusDisabled = 1.0;
+const float shadowRadiusEnabled = 4.0;
+const float shadowRadiusEnabledSelected = 2.0;
+const CGSize shadowOffsetDisabled = {1.0, 1.0};
+const CGSize shadowOffsetEnabled = {3.0, 3.0};
+const CGSize shadowOffsetEnabledSelected = {1.0, 1.0};
+
 @implementation DHLevelSelection2LevelCell {
     BOOL _selected;
     id _target;
@@ -32,10 +46,16 @@
         _selected = NO;
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor whiteColor];
-        self.layer.cornerRadius = 6.0;
         self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOffset = CGSizeMake(3, 3);
         self.layer.shadowOpacity = 0.5;
+
+        if (_iPhoneVersion) {
+            self.layer.cornerRadius = 3.0;
+            self.layer.shadowOffset = shadowOffsetEnabledIphone;
+        } else {
+            self.layer.cornerRadius = 6.0;
+            self.layer.shadowOffset = shadowOffsetEnabled;
+        }
         
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
         [self addSubview:_titleLabel];
@@ -183,18 +203,31 @@
         _titleLabel.textColor = [[UIApplication sharedApplication] delegate].window.tintColor;
         _geometryView.alpha = 1;
         self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOffset = CGSizeMake(3, 3);
         self.layer.shadowOpacity = 0.5;
-        self.layer.shadowRadius = 5.0;
+
+        if (_iPhoneVersion) {
+            self.layer.shadowOffset = shadowOffsetEnabledIphone;
+            self.layer.shadowRadius = shadowRadiusEnabledIphone;
+        } else {
+            self.layer.shadowOffset = shadowOffsetEnabled;
+            self.layer.shadowRadius = shadowRadiusEnabled;
+        }
+
     } else {
         self.userInteractionEnabled = NO;
         _titleLabel.textColor = [UIColor colorWithRed:0.85 green:0.85 blue:0.85 alpha:1];
         _geometryView.alpha = 0.2;
 
         self.layer.shadowColor = [UIColor darkGrayColor].CGColor;
-        self.layer.shadowOffset = CGSizeMake(1, 1);
         self.layer.shadowOpacity = 0.2;
-        self.layer.shadowRadius = 2.0;
+        
+        if (_iPhoneVersion) {
+            self.layer.shadowOffset = shadowOffsetDisabledIphone;
+            self.layer.shadowRadius = shadowRadiusDisabledIphone;
+        } else {
+            self.layer.shadowOffset = shadowOffsetDisabled;
+            self.layer.shadowRadius = shadowRadiusDisabled;
+        }
     }
 }
 
@@ -239,8 +272,14 @@
 }
 - (void)select
 {
-    self.layer.shadowOffset = CGSizeMake(1, 1);
-    self.layer.shadowRadius = 2.0;
+    if (_iPhoneVersion) {
+        self.layer.shadowOffset = shadowOffsetEnabledSelectedIphone;
+        self.layer.shadowRadius = shadowRadiusEnabledSelectedIphone;
+    } else {
+        self.layer.shadowOffset = shadowOffsetEnabledSelected;
+        self.layer.shadowRadius = shadowRadiusEnabledSelected;
+    }
+    
     _selected = YES;
 }
 - (void)deselect
@@ -248,15 +287,24 @@
     if (!_selected) return;
     
     _selected = NO;
-    self.layer.shadowOffset = CGSizeMake(3, 3);
+    if (_iPhoneVersion) {
+        self.layer.shadowOffset = shadowOffsetEnabledIphone;
+    } else {
+        self.layer.shadowOffset = shadowOffsetEnabled;
+    }
+    
     CABasicAnimation* fadeAnim = [CABasicAnimation animationWithKeyPath:@"shadowRadius"];
-    fadeAnim.fromValue = [NSNumber numberWithFloat:2.0];
-    fadeAnim.toValue = [NSNumber numberWithFloat:6.0];
+    fadeAnim.fromValue = [NSNumber numberWithFloat:shadowRadiusEnabledSelectedIphone];
+    fadeAnim.toValue = [NSNumber numberWithFloat:shadowRadiusEnabledIphone];
     fadeAnim.duration = 0.5;
     [self.layer addAnimation:fadeAnim forKey:@"shadowRadius"];
     
     // Change the actual data value in the layer to the final value.
-    self.layer.shadowRadius = 6.0;
+    if (_iPhoneVersion) {
+        self.layer.shadowRadius = shadowRadiusEnabledIphone;
+    } else {
+        self.layer.shadowRadius = shadowRadiusEnabled;
+    }
 }
 
 @end

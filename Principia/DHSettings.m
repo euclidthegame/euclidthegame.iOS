@@ -119,15 +119,6 @@
     [self setBoolSettingForKey:kSettingKey_EnableMagnifier toValue:value];
 }
 
-+ (BOOL)levelPack1Purchased
-{
-    return [self getBoolSettingForKey:kSettingKey_LevelPack1Purchased withDefault:NO];
-}
-+ (void)setLevelPack1Purchased:(BOOL)value
-{
-    [self setBoolSettingForKey:kSettingKey_LevelPack1Purchased toValue:value];
-}
-
 + (NSUInteger)numberOfObjectsMadeInPlayground
 {
     return [self getEncryptedUIntSettingForKey:kSettingKey_ObjectsInPlayground withDefault:0];

@@ -169,10 +169,6 @@ NSInteger const kDHIAPManagerTransactionFailed = 1;
 {
     [_purchasedProductIdentifiers addObject:productIdentifier];
     
-    if ([productIdentifier isEqualToString:DHIAPManagerLevelPack1ProductID]) {
-        [DHSettings setLevelPack1Purchased:YES];
-    }
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:DHIAPManagerProductPurchasedNotification
                                                         object:productIdentifier userInfo:nil];
 }

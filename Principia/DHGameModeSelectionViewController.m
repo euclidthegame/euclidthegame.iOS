@@ -214,10 +214,10 @@
                                      multiplier:1 constant:topSpacing]];
         
         [self.layoutConstraintsiPhone addObject:
-         [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeLeft
+         [NSLayoutConstraint constraintWithItem:self.gameMode1View attribute:NSLayoutAttributeCenterX
                                       relatedBy:NSLayoutRelationEqual
-                                         toItem:self.view attribute:NSLayoutAttributeLeft
-                                     multiplier:1 constant:5]];
+                                         toItem:self.view attribute:NSLayoutAttributeCenterX
+                                     multiplier:1 constant:0]];
         
         // Logo
         [self.layoutConstraintsiPhone addObject:

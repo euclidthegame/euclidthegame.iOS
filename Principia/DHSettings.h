@@ -12,7 +12,6 @@ static NSString* const kSettingKey_AllLevelsUnlocked = @"AllLevelsUnlocked";
 static NSString* const kSettingKey_ShowWellDoneMessages = @"ShowWellDoneMessages";
 static NSString* const kSettingKey_ShowProgressPercentage = @"ShowProgressPercentage";
 static NSString* const kSettingKey_ShowHints = @"ShowHints";
-static NSString* const kSettingKey_LevelPack1Purchased = @"LevelPack1Purchased";
 static NSString* const kSettingKey_ObjectsInPlayground = @"ObjectsMadeInPlayground";
 static NSString* const kSettingKey_EnableMagnifier = @"EnableMagnifier";
 
@@ -32,9 +31,6 @@ static NSString* const kSettingKey_EnableMagnifier = @"EnableMagnifier";
 
 + (BOOL)magnifierEnabled;
 + (void)setMagnifierEnabled:(BOOL)value;
-
-+ (BOOL)levelPack1Purchased;
-+ (void)setLevelPack1Purchased:(BOOL)value;
 
 + (NSUInteger)numberOfObjectsMadeInPlayground;
 + (void)setNumberOfObjectsMadeInPlayground:(NSUInteger)value;

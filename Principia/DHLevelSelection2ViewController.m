@@ -178,11 +178,7 @@
 #pragma mark - Collection view delegate & data source methods
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    if ([DHSettings levelPack1Purchased]) {
-        return 3;
-    } else {
-        return 1;
-    }
+    return 3;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
@@ -288,13 +284,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section
 {
-    if (section==0 && ![DHSettings levelPack1Purchased]) {
-        return  CGSizeMake(0, 80);
-    }
-    else
-    {
-        return CGSizeMake(0, 0);
-    }
+    return CGSizeMake(0, 0);
 }
 
 #pragma mark Launch level

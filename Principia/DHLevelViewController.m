@@ -217,6 +217,12 @@
         [self.geometryView setNeedsDisplay];
     }
     
+    if (_toolTriangleIndicator) {
+        CGFloat triLeft = _toolControl.frame.size.width*5.5/6 - 15;
+        CGRect triRect = CGRectMake(triLeft, -4, 30, 4);
+        [_toolTriangleIndicator setFrame:triRect];
+    }
+    
     if ([_currentLevel respondsToSelector:@selector(positionMessagesForOrientation:)]) {
         [(id)_currentLevel positionMessagesForOrientation:orientation];
     }
@@ -507,10 +513,10 @@
         CGPoint hintLocation = [_currentLevel testObjectsForProgressHints:objects];
         if (!isnan(hintLocation.x)) {
             CGPoint hintLocationInView = [self.geoViewTransform geoToView:hintLocation];
-            if (_progressBar.progress < _currentLevel.progress/100.0 && [DHSettings showWellDoneMessages]) {
+            if (_progressBar.progress < _currentLevel.progress/100.0 &&
+                ([DHSettings showWellDoneMessages] || [DHSettings showHints])) {
                 [self showTemporaryMessage:[NSString stringWithFormat:@"Well done!"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
-            }
-            else if ([DHSettings showHints] && self.currentGameMode == kDHGameModeNormal ) {
+            } else if ([DHSettings showHints] && self.currentGameMode == kDHGameModeNormal) {
                 [self showTemporaryMessage:[NSString stringWithFormat:@"Good choice!"] atPoint:hintLocationInView withColor:[UIColor darkGrayColor]];
             }
         }

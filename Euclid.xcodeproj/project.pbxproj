@@ -393,8 +393,7 @@
 				68F0A9CE19587AEC00A97B86 /* Supporting Files */,
 				681DEC3A1B862FDA006FFF8A /* Launch Screen.xib */,
 			);
-			name = Euclid;
-			path = Principia;
+			path = Euclid;
 			sourceTree = "<group>";
 		};
 		68F0A9CE19587AEC00A97B86 /* Supporting Files */ = {

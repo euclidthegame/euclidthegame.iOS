@@ -12,3 +12,14 @@ Euclid's Elements has been referred to as the most successful and influential te
 The web game (euclidthegame.com) is played by 500.000 users in in 213 different countries, we hope that as much people will enjoy the much improved iOS game (to be released september 2015). The game teaches highschool geometry. But anyone from any age with enough patience and determination should be able to solve the puzzles.
 
 This iOS game also includes lots of hints that explains in an interactive way many geometric concepts.
+
+### License and Contributing
+
+The source code of this game is governed by a MIT license (see the LICENSE file). This basicly means that you are able
+to do anything with the source code as long as you give appropriate credits to use (Kasper Peulen & David Hallgren).
+
+We would love to see people forking the game, and making contributions. We don't earn anything from this game,
+so we do all the work in our free time. If you are as excited as us about the possibilities for future version of this game,
+you can submit issues and pull request, or join us at gitter:
+
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/euclidthegame/euclidthegame.iOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)

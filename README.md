@@ -16,7 +16,7 @@ This iOS game also includes lots of hints that explains in an interactive way ma
 ### License and Contributing
 
 The source code of this game is governed by a MIT license (see the LICENSE file). This basicly means that you are able
-to do anything with the source code as long as you give appropriate credits to use (Kasper Peulen & David Hallgren).
+to do anything with the source code as long as you give appropriate credits to us (Kasper Peulen & David Hallgren).
 
 We would love to see people forking the game, and making contributions. We don't earn anything from this game,
 so we do all the work in our free time. If you are as excited as us about the possibilities for future version of this game,

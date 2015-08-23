@@ -586,7 +586,7 @@
 			dependencies = (
 			);
 			name = Euclid;
-			productName = Principia;
+			productName = Euclid;
 			productReference = 68F0A9C419587AEC00A97B86 /* Euclid.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -903,8 +903,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Principia/Euclid-Prefix.pch";
-				INFOPLIST_FILE = "Principia/Euclid-Info.plist";
+				GCC_PREFIX_HEADER = "Euclid/Euclid-Prefix.pch";
+				INFOPLIST_FILE = "Euclid/Euclid-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Euclid;
 				PROVISIONING_PROFILE = "";
@@ -921,8 +921,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Principia/Euclid-Prefix.pch";
-				INFOPLIST_FILE = "Principia/Euclid-Info.plist";
+				GCC_PREFIX_HEADER = "Euclid/Euclid-Prefix.pch";
+				INFOPLIST_FILE = "Euclid/Euclid-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = Euclid;
 				PROVISIONING_PROFILE = "";

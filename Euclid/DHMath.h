@@ -7,8 +7,8 @@
 //  Use of this source code is governed by a MIT license that can be found in the LICENSE file.
 //
 
-#ifndef Principia_DHMath_h
-#define Principia_DHMath_h
+#ifndef Euclid_DHMath_h
+#define Euclid_DHMath_h
 
 #import "DHGeometricObjects.h"
 #import "DHMathCGVector.h"

@@ -7,8 +7,8 @@
 //  Use of this source code is governed by a MIT license that can be found in the LICENSE file.
 //
 
-#ifndef Principia_DHLevels_h
-#define Principia_DHLevels_h
+#ifndef Euclid_DHLevels_h
+#define Euclid_DHLevels_h
 
 #import "DHLevelTutorial.h"
 #import "DHLevelEquiTri.h"

@@ -7,8 +7,8 @@
 //  Use of this source code is governed by a MIT license that can be found in the LICENSE file.
 //
 
-#ifndef Principia_DHMathCGVector_h
-#define Principia_DHMathCGVector_h
+#ifndef Euclid_DHMathCGVector_h
+#define Euclid_DHMathCGVector_h
 
 @import CoreGraphics;
 @import Foundation;

@@ -322,18 +322,22 @@
                                     <fragment>
                                         <string key="content">was designed and developed by Kasper Peulen and David Hallgren.
 
-If you have any questions, suggestions or feedback, please let us know!
-
-Reach us at: </string>
+If you have any questions, suggestions or feedback, please let us know at github: </string>
                                         <attributes>
                                             <font key="NSFont" size="18" name="HelveticaNeue"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content="mail@euclidthegame.com">
+                                    <fragment content="https://github.com/euclidthegame/euclidthegame.iOS/">
                                         <attributes>
                                             <font key="NSFont" size="18" name="HelveticaNeue"/>
-                                            <url key="NSLink" string="mailto:mail@euclidthegame.com"/>
+                                            <string key="NSLink">https://github.com/euclidthegame/euclidthegame.iOS/issues</string>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="  Or join us in the chat at gitter: https://gitter.im/euclidthegame/euclidthegame.iOS">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
                                         </attributes>
                                     </fragment>

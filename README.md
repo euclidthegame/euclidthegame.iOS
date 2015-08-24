@@ -13,6 +13,10 @@ The web game (euclidthegame.com) is played by 500.000 users in in 213 different 
 
 This iOS game also includes lots of hints that explains in an interactive way many geometric concepts.
 
+### Beta testing
+
+You want to help with beta testing? Great! Please send the email adress associated to your App Store to beta@euclidthegame.com and we will invite you to beta testing (using the TestFlight app).
+
 ### License and Contributing
 
 The source code of this game is governed by a MIT license (see the LICENSE file). This basicly means that you are able

@@ -54,7 +54,6 @@
 		686622401972A7AB004DCFAC /* DHGameModeSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6866223F1972A7AB004DCFAC /* DHGameModeSelectionViewController.m */; };
 		686622431972B78E004DCFAC /* DHLevelPlayground.m in Sources */ = {isa = PBXBuildFile; fileRef = 686622421972B78E004DCFAC /* DHLevelPlayground.m */; };
 		6866224619779204004DCFAC /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6866224519779203004DCFAC /* GameKit.framework */; };
-		6866224819779217004DCFAC /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6866224719779217004DCFAC /* StoreKit.framework */; };
 		6866224C197792BC004DCFAC /* DHGameCenterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6866224B197792BC004DCFAC /* DHGameCenterManager.m */; };
 		6866224F1977C304004DCFAC /* DHIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6866224E1977C304004DCFAC /* DHIAPManager.m */; };
 		6872A7D2196E548F00823AF9 /* DHGeometricTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = 6872A7D1196E548F00823AF9 /* DHGeometricTransform.m */; };
@@ -181,7 +180,6 @@
 		686622421972B78E004DCFAC /* DHLevelPlayground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHLevelPlayground.m; sourceTree = "<group>"; };
 		6866224419730417004DCFAC /* DHGameModes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHGameModes.h; sourceTree = "<group>"; };
 		6866224519779203004DCFAC /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
-		6866224719779217004DCFAC /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		6866224A197792BC004DCFAC /* DHGameCenterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHGameCenterManager.h; sourceTree = "<group>"; };
 		6866224B197792BC004DCFAC /* DHGameCenterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGameCenterManager.m; sourceTree = "<group>"; };
 		6866224D1977C304004DCFAC /* DHIAPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHIAPManager.h; sourceTree = "<group>"; };
@@ -218,7 +216,7 @@
 		68E3CAB619A20FD20018851F /* DHGameModeSelectionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHGameModeSelectionButton.m; sourceTree = "<group>"; };
 		68E3CAB819A339F10018851F /* DHPopoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHPopoverView.h; sourceTree = "<group>"; };
 		68E3CAB919A339F10018851F /* DHPopoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHPopoverView.m; sourceTree = "<group>"; };
-		68F0A9C419587AEC00A97B86 /* Euclid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Euclid.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		68F0A9C419587AEC00A97B86 /* Euclid: The Game.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Euclid: The Game.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		68F0A9C719587AEC00A97B86 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		68F0A9CB19587AEC00A97B86 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -279,7 +277,6 @@
 			files = (
 				68F0A9CA19587AEC00A97B86 /* CoreGraphics.framework in Frameworks */,
 				68F0A9CC19587AEC00A97B86 /* UIKit.framework in Frameworks */,
-				6866224819779217004DCFAC /* StoreKit.framework in Frameworks */,
 				68F0A9C819587AEC00A97B86 /* Foundation.framework in Frameworks */,
 				6866224619779204004DCFAC /* GameKit.framework in Frameworks */,
 			);
@@ -353,7 +350,7 @@
 		68F0A9C519587AEC00A97B86 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				68F0A9C419587AEC00A97B86 /* Euclid.app */,
+				68F0A9C419587AEC00A97B86 /* Euclid: The Game.app */,
 				68376934197C315600D53E21 /* Euclid Tests.xctest */,
 			);
 			name = Products;
@@ -362,7 +359,6 @@
 		68F0A9C619587AEC00A97B86 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6866224719779217004DCFAC /* StoreKit.framework */,
 				6866224519779203004DCFAC /* GameKit.framework */,
 				68F0A9C719587AEC00A97B86 /* Foundation.framework */,
 				68F0A9C919587AEC00A97B86 /* CoreGraphics.framework */,
@@ -587,7 +583,7 @@
 			);
 			name = Euclid;
 			productName = Euclid;
-			productReference = 68F0A9C419587AEC00A97B86 /* Euclid.app */;
+			productReference = 68F0A9C419587AEC00A97B86 /* Euclid: The Game.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -598,19 +594,19 @@
 			attributes = {
 				CLASSPREFIX = DH;
 				LastUpgradeCheck = 0510;
-				ORGANIZATIONNAME = "David Hallgren";
+				ORGANIZATIONNAME = "Kasper Peulen & David Hallgren";
 				TargetAttributes = {
 					68376933197C315600D53E21 = {
 						TestTargetID = 68F0A9C319587AEC00A97B86;
 					};
 					68F0A9C319587AEC00A97B86 = {
-						DevelopmentTeam = 99K4X6B359;
+						DevelopmentTeam = U32EN77UD5;
 						SystemCapabilities = {
 							com.apple.GameCenter = {
 								enabled = 1;
 							};
 							com.apple.InAppPurchase = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -906,7 +902,7 @@
 				GCC_PREFIX_HEADER = "Euclid/Euclid-Prefix.pch";
 				INFOPLIST_FILE = "Euclid/Euclid-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_NAME = Euclid;
+				PRODUCT_NAME = "Euclid: The Game";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -924,7 +920,7 @@
 				GCC_PREFIX_HEADER = "Euclid/Euclid-Prefix.pch";
 				INFOPLIST_FILE = "Euclid/Euclid-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_NAME = Euclid;
+				PRODUCT_NAME = "Euclid: The Game";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

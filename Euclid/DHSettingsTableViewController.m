@@ -55,11 +55,14 @@ static const NSUInteger kResetProgressAlertView = 1;
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+    
+    #if TARGET_IPHONE_SIMULATOR
+        UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(enableHiddenSettings)];
-    tap.numberOfTapsRequired = 2;
-    tap.numberOfTouchesRequired = 2;
-    [self.view addGestureRecognizer:tap];
+        tap.numberOfTapsRequired = 2;
+        tap.numberOfTouchesRequired = 2;
+        [self.view addGestureRecognizer:tap];
+    #endif
 }
 
 - (void)didReceiveMemoryWarning

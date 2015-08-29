@@ -135,29 +135,13 @@ const CGFloat kTriangleWidth = 20;
 
 - (void)rotateToOrientation:(UIInterfaceOrientation)orientation
 {
+    // TODO: Clean up this function, previously required to rotate view with orientation, now works automatically
     UIWindow* window = [UIApplication sharedApplication].keyWindow;
     if (!window) {
         window = [[UIApplication sharedApplication].windows objectAtIndex:0];
     }
-    CGFloat rotation = 0;
-    switch (orientation)
-    {
-        case UIInterfaceOrientationLandscapeLeft:
-            rotation = -M_PI_2;
-            break;
-        case UIInterfaceOrientationLandscapeRight:
-            rotation = M_PI_2;
-            break;
-        case UIInterfaceOrientationPortraitUpsideDown:
-            rotation = M_PI;
-            break;
-        case UIInterfaceOrientationPortrait:
-        default:
-            rotation = 0;
-            break;
-    }
-    
-    CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(rotation);
+
+    CGAffineTransform rotationTransform = CGAffineTransformMakeRotation(0);
     CGSize rotatedSize = CGRectApplyAffineTransform(window.bounds, rotationTransform).size;
     
     const CGFloat buttonHeight = self.buttonHeight;
@@ -295,12 +279,14 @@ const CGFloat kTriangleWidth = 20;
 
 - (void)show
 {
-    [self rotateToOrientation:[_delegate interfaceOrientation]];
     UIWindow* window = [UIApplication sharedApplication].keyWindow;
     if (!window) {
         window = [[UIApplication sharedApplication].windows objectAtIndex:0];
     }
     window.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
+
+    [self rotateToOrientation:[UIApplication sharedApplication].statusBarOrientation];
+    
     [window addSubview:self];
 }
 

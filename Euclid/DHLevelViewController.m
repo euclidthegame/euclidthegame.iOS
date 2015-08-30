@@ -1651,7 +1651,11 @@
             if (!_levelCompleted) {
                 [popOverView addButtonWithTitle:@"Show level instruction"];
             } else {
-                [popOverView addButtonWithTitle:@"Go to next level"];
+                // Unless this is the last level, show a button to go the next level
+                if (self.levelIndex >= self.levelArray.count - 1) {
+                } else {
+                    [popOverView addButtonWithTitle:@"Go to next level"];
+                }
             }
             if ([DHSettings showHints] && _currentGameMode == kDHGameModeNormal) {
                 [popOverView addButtonWithTitle:@"Show hint" enabled:YES];

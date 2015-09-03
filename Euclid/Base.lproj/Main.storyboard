@@ -335,9 +335,16 @@ If you have any questions, suggestions or feedback, please let us know at github
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
                                         </attributes>
                                     </fragment>
-                                    <fragment content="  Or join us in the chat at gitter: https://gitter.im/euclidthegame/euclidthegame.iOS">
+                                    <fragment content="  Or join us in the chat at gitter: ">
                                         <attributes>
                                             <font key="NSFont" size="18" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="https://gitter.im/euclidthegame/euclidthegame.iOS">
+                                        <attributes>
+                                            <font key="NSFont" size="18" name="HelveticaNeue"/>
+                                            <url key="NSLink" string="https://gitter.im/euclidthegame/euclidthegame.iOS"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
                                         </attributes>
                                     </fragment>

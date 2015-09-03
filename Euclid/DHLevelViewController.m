@@ -260,8 +260,6 @@
     
     self.firstMoveMade = NO;
     
-    // Turn hints off every new level
-    [DHSettings setShowHints:NO];
     self.geometryViewController.currentLevel = _currentLevel;
     
     [self.geometryView.subviews makeObjectsPerformSelector: @selector(removeFromSuperview)];
@@ -1002,7 +1000,8 @@
 }
 - (void)showOrHideHintButton
 {
-    if (_iPhoneVersion) {
+    // Only use hint button on iPad in normal game mode
+    if (_iPhoneVersion || _currentGameMode != kDHGameModeNormal) {
         return;
     }
     
@@ -1136,7 +1135,6 @@
 - (IBAction)loadNextLevel:(id)sender
 {
     [self hideCompletionMessage:nil];
-    [DHSettings setShowHints:NO];
 
     if (self.levelArray) {
         self.levelIndex = self.levelIndex + 1;
@@ -1653,9 +1651,13 @@
             if (!_levelCompleted) {
                 [popOverView addButtonWithTitle:@"Show level instruction"];
             } else {
-                [popOverView addButtonWithTitle:@"Go to next level"];
+                // Unless this is the last level, show a button to go the next level
+                if (self.levelIndex >= self.levelArray.count - 1) {
+                } else {
+                    [popOverView addButtonWithTitle:@"Go to next level"];
+                }
             }
-            if ([DHSettings showHints]) {
+            if ([DHSettings showHints] && _currentGameMode == kDHGameModeNormal) {
                 [popOverView addButtonWithTitle:@"Show hint" enabled:YES];
             }
         }
